@@ -10,7 +10,7 @@ import Image from "next/image";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [rollNo, setRollNo] = useState<string>("");
+  const [newpassword, set] = useState<string>("");
   const [Password, setPass] = useState<string>("");
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<Boolean>(false);
