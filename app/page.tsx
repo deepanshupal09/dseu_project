@@ -26,7 +26,6 @@ export default function Home() {
           <div className="text-sm mt-4">Password</div>
           <Input value={Password} onChange={(e)=>{setPass(e.target.value)}}  type="password" required />
           <Button className="mt-3" color="primary" type="submit" >Sign In</Button>
-
         </form>
       </div>
     </>
