@@ -2,4 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+.btn-grad {
+  background-color: #21d4fd;
+  background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
+  margin: 10px;
+  padding: 15px 45px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: #ece9e9;
+  box-shadow: 0 0 10px #353535;
+  border-radius: 10px;
+  display: block;
+  width: 100%;
+  border-radius: 50px;
+}
+
+.btn-grad:hover {
+  background-position: right center;
+  text-decoration: none;
+}
+
+.btn-grad:disabled {
+  background-color: #a7a7a7;
+  background-image: none;
+  cursor: no-drop;
+}
+
 

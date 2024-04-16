@@ -1,32 +1,139 @@
-"use client"
+"use client";
 
+import { TextField } from "@mui/material";
 import Input from "@mui/joy/Input";
 import { useState } from "react";
-import { Inter } from "next/font/google";
-import { Button } from "@mui/joy";
-import logo from "./images/logo.png";
-import Image from "next/image";
-
-const inter = Inter({ subsets: ["latin"] });
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 export default function Home() {
-  const [rollNo, setRollNo] = useState<string>("");
+  const [RollNo, setRollNo] = useState<string>("");
   const [Password, setPass] = useState<string>("");
   const [helperText, setHelperText] = useState<string>("");
-  const [error, setError] = useState<Boolean>(false);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <>
-      <div  className={`${inter.className} flex font-light  flex-col pt-[5vh] gap-y-5 items-center `}>
-        <Image alt="logo" height={150} src={logo} className="" />
-        <form onSubmit={(e)=>{ e.preventDefault(); console.log(rollNo)}} className="bg-[#F6F8FA] w-80 pt-4 mt-5 pb-6 px-4 border-2 rounded-lg flex flex-col gap-y-2 h-fit">
-          <div className="my-1 text-sm">Roll No</div>
-          <Input value={rollNo} onChange={(e)=>{setRollNo(e.target.value)}} autoFocus required />
-          <div className="text-sm mt-4">Password</div>
-          <Input value={Password} onChange={(e)=>{setPass(e.target.value)}}  type="password" required />
-          <Button className="mt-3" color="primary" type="submit" >Sign In</Button>
-        </form>
+      <div  className=" ">
+        <div className="flex justify-center h-[100vh]  items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              console.log(RollNo);
+            }}
+            className="flex flex-col  bg-white  rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100%] w-[460px] ] "
+          >
+            <span className="text-4xl font-semibold ">Login</span>
+            <div className="mt-1 w-[100%]">
+              <TextField
+                required
+                onChange={(e) => {
+                  setRollNo(e.target.value);
+                  setHelperText("");
+                  setError(false);
+                }}
+                value={RollNo}
+                helperText={helperText}
+                error={error}
+                className=""
+                sx={{
+                  "& .MuiInputBase-root": {
+                    //   color: "#ece9e9",
+                  },
+                  "& .MuiFormLabel-root": {
+                    //   color: "#ece9e9",
+                  },
+                  "& .MuiFormLabel-root.Mui-focused": {
+                    //   color: "#ece9e9",
+                  },
+                  ".MuiInputBase-input": {
+                    //   background: "#130f22",
+                    borderRadius: "10px",
+                    "&:-webkit-autofill": {
+                      // WebkitBoxShadow: "0 0 0px 1000px #130f22 inset",
+                      // WebkitTextFillColor: "#ece9e9",
+                    },
+                  },
+                  ".MuiTextField-root": {
+                    //   background: "#130f22",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    // borderColor: "#fff",
+                  },
+                  "&:before, &:after": {
+                    borderRadius: "10px",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    borderRadius: "10px",
+                  },
+                }}
+                id="myfilled-name"
+                label="Roll No"
+                variant="outlined"
+                color="grey"
+                fullWidth
+              />
+            </div>
+            <div className="mt-1 w-[100%]">
+              <TextField
+                required
+                onChange={(e) => {
+                  setPass(e.target.value);
+                  setHelperText("");
+                  setError(false);
+                }}
+                type="password"
+                value={Password}
+                helperText={helperText}
+                error={error}
+                sx={{
+                  "& .MuiInputBase-root": {
+                    //   color: "#ece9e9",
+                  },
+                  "& .MuiFormLabel-root": {
+                    //   color: "#ece9e9",
+                  },
+                  "& .MuiFormLabel-root.Mui-focused": {
+                    //   color: "#ece9e9",
+                  },
+                  ".MuiInputBase-input": {
+                    //   background: "#130f22",
+                    borderRadius: "10px",
+                    "&:-webkit-autofill": {
+                      // WebkitBoxShadow: "0 0 0px 1000px #130f22 inset",
+                      // WebkitTextFillColor: "#ece9e9",
+                    },
+                  },
+                  ".MuiTextField-root": {
+                    //   background: "#130f22",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    // borderColor: "#fff",
+                  },
+                  "&:before, &:after": {
+                    borderRadius: "10px",
+                  },
+                }}
+                InputProps={{
+                  style: {
+                    borderRadius: "10px",
+                  },
+                }}
+                id="myfilled-name"
+                label="Password"
+                variant="outlined"
+                color="grey"
+                fullWidth
+              />
+            </div>
+            <button className="bg-black flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold">
+              <div> Sign In </div>{" "}
+              <ArrowForwardIosIcon className="scale-75  " />
+            </button>
+          </form>
+        </div>
       </div>
     </>
   );
