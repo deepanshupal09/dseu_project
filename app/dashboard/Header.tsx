@@ -15,8 +15,8 @@ export default function Header({ username }: Props) {
   return (
     <>
       <div className="bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2  shadow-2xl shadow-slate-200 ">
-        <div className="">
-          <Image height={40} src={logo} alt="dseu" />{" "}
+        <div className="flex items-center space-x-2">
+         {" "}<span className="text-lg">DSEU Student Portal </span>
         </div>
         <div className="relative">
           <div
@@ -25,7 +25,7 @@ export default function Header({ username }: Props) {
               setOpen(!open);
             }}
           >
-            <img height={40} width={40} alt="photo" src={user.src} />{" "}
+            <div><img height={40} width={40} alt="photo" src={user.src} />{" "}</div>
             <div>{username}</div>
           </div>
           <div
