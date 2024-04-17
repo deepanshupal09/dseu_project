@@ -1,9 +1,11 @@
 "use client";
 
-import { TextField } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import Input from "@mui/joy/Input";
 import { useState } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import logo from "./images/logo.png";
+import Image from "next/image";
 
 export default function Home() {
   const [RollNo, setRollNo] = useState<string>("");
@@ -11,11 +13,12 @@ export default function Home() {
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [gender, setGender] = useState("Male");
 
   return (
     <>
-      <div  className=" ">
-        <div className="flex justify-center h-[100vh]  items-center">
+      <div className=" ">
+        <div className="flex self-center justify-center h-[100vh]  items-center">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -23,8 +26,12 @@ export default function Home() {
             }}
             className="flex flex-col  bg-white  rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100%] w-[460px] ] "
           >
-            <span className="text-4xl font-semibold ">Login</span>
+            <Image height={130} className="-mb-4" src={logo} alt="logo" />
+            <div className="text-[32px] font-semibold  ">Student Portal</div>
+            <div className="text-2xl w-full font-semibold ">Login</div>
             <div className="mt-1 w-[100%]">
+
+
               <TextField
                 required
                 onChange={(e) => {
@@ -37,28 +44,8 @@ export default function Home() {
                 error={error}
                 className=""
                 sx={{
-                  "& .MuiInputBase-root": {
-                    //   color: "#ece9e9",
-                  },
-                  "& .MuiFormLabel-root": {
-                    //   color: "#ece9e9",
-                  },
-                  "& .MuiFormLabel-root.Mui-focused": {
-                    //   color: "#ece9e9",
-                  },
                   ".MuiInputBase-input": {
-                    //   background: "#130f22",
                     borderRadius: "10px",
-                    "&:-webkit-autofill": {
-                      // WebkitBoxShadow: "0 0 0px 1000px #130f22 inset",
-                      // WebkitTextFillColor: "#ece9e9",
-                    },
-                  },
-                  ".MuiTextField-root": {
-                    //   background: "#130f22",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    // borderColor: "#fff",
                   },
                   "&:before, &:after": {
                     borderRadius: "10px",
