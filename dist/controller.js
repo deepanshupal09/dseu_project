@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPasswordByRollno = exports.getUserByRollno = void 0;
+exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
 const db_1 = __importDefault(require("./db"));
 const queries_1 = require("./queries");
 const getUserByRollno = (req, res) => {
@@ -61,3 +61,18 @@ const getPasswordByRollno = (req, res) => {
     }
 };
 exports.getPasswordByRollno = getPasswordByRollno;
+const updateDetailsByRollno = (req, res) => {
+    try {
+        const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno } = req.body;
+        db_1.default.query(queries_1.updateDetailsByRollno, [program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno], (error, results) => {
+            if (error)
+                throw error;
+            res.status(200).send("Database successfully updated!");
+        });
+    }
+    catch (error) {
+        res.status(400).send('There was an error processing your request.');
+        console.log("error: ", error);
+    }
+};
+exports.updateDetailsByRollno = updateDetailsByRollno;

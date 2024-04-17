@@ -61,7 +61,7 @@ const getPasswordByRollno = (req: Request, res: Response): void => {
 
 const updateDetailsByRollno = (req: Request, res: Response): void => {
     try{
-        const{program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno} = req.body;
+        const{ program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno } = req.body;
         pool.query(updateDetailsByRollnoQuery, [program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno], (error, results) => {
             if (error) throw error;
             res.status(200).send("Database successfully updated!");

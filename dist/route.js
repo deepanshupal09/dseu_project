@@ -28,4 +28,5 @@ const controller = __importStar(require("./controller"));
 const router = (0, express_1.Router)();
 router.get("/getUserByRollno", controller.getUserByRollno);
 router.get("/getPasswordByRollno", controller.getPasswordByRollno);
+router.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
 exports.default = router;

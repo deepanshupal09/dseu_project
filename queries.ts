@@ -13,13 +13,7 @@ export const updateDetailsByRollno: string = `
       mother = COALESCE($9, mother),
       guardian = COALESCE($10, guardian),
       last_modified = COALESCE($11, last_modified)
-  WHERE rollno = $12
-  AND $1 IS NOT NULL
-  AND $2 IS NOT NULL
-  AND $3 IS NOT NULL
-  AND $4 IS NOT NULL
-  AND $5 IS NOT NULL
-  AND $6 IS NOT NULL;
+  WHERE rollno = $12;
 `;
 
  
