@@ -69,10 +69,10 @@ export default function Home() {
                     borderRadius: "10px",
                   },
                 }}
+                color="grey"
                 id="myfilled-name"
                 label="Roll No"
                 variant="outlined"
-                color="grey"
                 fullWidth
               />
             </div>
