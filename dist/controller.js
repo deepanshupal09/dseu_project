@@ -1,24 +1,17 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateDetailsByRollno = exports.authenticateUserByRollnoAndPassword = exports.getUserByRollno = void 0;
-const db_1 = __importDefault(require("./db"));
-const queries_1 = require("./queries");
 const service_1 = require("./service");
 const getUserByRollno = (req, res) => {
     try {
         const rollno = req.headers.rollno;
         if (rollno) {
-            db_1.default.query(queries_1.getUserByRollno, [rollno], (error, results) => {
-                if (error)
-                    throw error;
-                res.status(200).json(results.rows);
+            (0, service_1.fetchUserByRollno)(rollno).then((results) => {
+                res.status(200).send(results);
+            })
+                .catch((error) => {
+                res.status(500).send("internal server error");
             });
-        }
-        else {
-            res.status(400).send("RollNo Is required!");
         }
     }
     catch (error) {

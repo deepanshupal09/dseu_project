@@ -1,7 +1,7 @@
 "use strict";
 // service.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDetails = exports.handleLogin = void 0;
+exports.fetchUserByRollno = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 function generateToken() {
     const tokenLength = 20; // Adjust the length of the random part of the token as needed
@@ -64,3 +64,15 @@ function updateDetails(rollno, program, semester, phone, campus, emailid, gender
     });
 }
 exports.updateDetails = updateDetails;
+function fetchUserByRollno(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchUser)(rollno).then((results) => {
+            resolve(results.rows);
+        })
+            .catch((error) => {
+            console.log("Service error: ", error);
+            reject("internal server error");
+        });
+    });
+}
+exports.fetchUserByRollno = fetchUserByRollno;

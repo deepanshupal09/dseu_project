@@ -7,6 +7,7 @@ import {
   fetchPasswordByRollNo,
   putDetailsByRollno,
   updateToken,
+  fetchUser
 } from "./model";
 
 function generateToken() {
@@ -98,4 +99,17 @@ export function updateDetails(
         reject("internal server error");
       });
   });
+}
+
+
+export function fetchUserByRollno ( rollno:string ) : Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchUser(rollno) .then((results) => {
+      resolve(results.rows);
+    })
+    .catch((error) => {
+      console.log("Service error: ", error);
+      reject("internal server error");
+    })
+  })
 }

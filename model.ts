@@ -8,6 +8,7 @@ import {
   fetchToken,
   pushTokenQuery,
   updateDetailsByRollno,
+  getUserByRollno
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -121,4 +122,17 @@ export function putDetailsByRollno(
       }
     );
   });
+}
+
+export function fetchUser ( rollno:string ) : Promise<QueryResult<any>> { 
+  return new Promise(( resolve, reject )=> {
+    pool.query(getUserByRollno, [rollno], (error, results) => {
+      if (error) {
+        console.log("Model error: ",error);
+        reject(error);
+      } else{
+        resolve(results);
+      }
+    });
+  })
 }

@@ -1,23 +1,17 @@
-import pool from "./db";
-import {
-  getUserByRollno as getUserByRollnoQuery,
-  getPasswordByRollno as getPasswordByRollnoQuery,
-  updateDetailsByRollno as updateDetailsByRollnoQuery,
-} from "./queries";
 import { Request, Response } from "express";
-import { handleLogin, updateDetails } from "./service";
+import { handleLogin, updateDetails, fetchUserByRollno} from "./service";
 
 const getUserByRollno = (req: Request, res: Response): void => {
-  try {
-    const rollno = req.headers.rollno;
-    if (rollno) {
-      pool.query(getUserByRollnoQuery, [rollno], (error, results) => {
-        if (error) throw error;
 
-        res.status(200).json(results.rows);
-      });
-    } else {
-      res.status(400).send("RollNo Is required!");
+  try {
+    const rollno: string = req.headers.rollno as string;
+    if (rollno) {
+      fetchUserByRollno(rollno).then((results)=> {
+        res.status(200).send(results);
+      }) 
+      .catch ((error)=> {
+        res.status(500).send("internal server error");
+      })
     }
   } catch (error) {
     res.status(400).send("There is some error encountered!");

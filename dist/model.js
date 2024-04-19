@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
+exports.fetchUser = exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
 const db_1 = __importDefault(require("./db"));
 const queries_1 = require("./queries");
 function fetchPasswordByRollNo(rollno) {
@@ -87,3 +87,17 @@ function putDetailsByRollno(rollno, program, semester, phone, campus, emailid, g
     });
 }
 exports.putDetailsByRollno = putDetailsByRollno;
+function fetchUser(rollno) {
+    return new Promise((resolve, reject) => {
+        db_1.default.query(queries_1.getUserByRollno, [rollno], (error, results) => {
+            if (error) {
+                console.log("Model error: ", error);
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.fetchUser = fetchUser;
