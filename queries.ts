@@ -21,5 +21,8 @@ export const updateDetailsByRollno: string = `
   AND $5 IS NOT NULL
   AND $6 IS NOT NULL;
 `;
+export const putToken: string = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
+export const fetchToken: string = "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
+export const pushTokenQuery: string = "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
 
  
