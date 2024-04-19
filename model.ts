@@ -8,7 +8,9 @@ import {
   fetchToken,
   pushTokenQuery,
   updateDetailsByRollno,
-  getUserByRollno
+  getUserByRollno,
+  addExamRegisterationByRollno,
+  fetchCoursesBySemester,
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -92,6 +94,7 @@ export function putDetailsByRollno(
   father: string,
   mother: string,
   guardian: string,
+  program_type: string,
   last_modified: string
 ): Promise<QueryResult<any>> {
   console.log("here");
@@ -109,6 +112,7 @@ export function putDetailsByRollno(
         father,
         mother,
         guardian,
+        program_type,
         last_modified,
         rollno,
       ],
@@ -135,4 +139,31 @@ export function fetchUser ( rollno:string ) : Promise<QueryResult<any>> {
       }
     });
   })
+}
+
+export function addExamRegisteration ( rollno:string, course_code:string, last_modified:string ): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    pool.query(addExamRegisterationByRollno, [rollno, course_code, last_modified], (error, results)=>{
+      if(error) {
+        console.log("Exam registeration model error: ",error);
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    })
+  })
+}
+
+
+export function fetchCourses(semester: number, course_code: string): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    pool.query(fetchCoursesBySemester, [semester, course_code], (error, results) => {
+      if (error) {
+        console.log("fetch courses error: ",error);
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
 }

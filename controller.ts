@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { handleLogin, updateDetails, fetchUserByRollno} from "./service";
+import { handleLogin, updateDetails, fetchUserByRollno, addInExamRegisteration, fetchTheCourses} from "./service";
 
 const getUserByRollno = (req: Request, res: Response): void => {
-
   try {
     const rollno: string = req.headers.rollno as string;
     if (rollno) {
@@ -60,10 +59,11 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       father,
       mother,
       guardian,
+      program_type,
       rollno,
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian, program_type).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -73,8 +73,39 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
   }
 };
 
+const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
+  try {
+    const {rollno, course_code} =req.body;
+    addInExamRegisteration(rollno, course_code). then((results) =>{
+      res.status(200).send("succesfully inserted!");
+    }).catch((error) => {
+      res.status(500).send("internal server");
+    })
+  }
+  catch(error) {
+    res.send("internal server error");
+  }
+}
+
+const fetchCoursesBySemester = (req: Request, res: Response):void => {
+  try{
+    const semester: number = parseInt(req.params.semester);
+    const course_code: string = req.params.course_code as string;
+    fetchTheCourses(semester, course_code).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server 2");
+    })
+  }
+  catch(error) {
+    res.send("Internal server error 3");
+  }
+}
+
 export {
   getUserByRollno,
   authenticateUserByRollnoAndPassword,
   updateDetailsByRollno,
+  addExamRegisterationByRollNo,
+  fetchCoursesBySemester
 };

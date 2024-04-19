@@ -1,7 +1,7 @@
 "use strict";
 // service.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchUserByRollno = exports.updateDetails = exports.handleLogin = void 0;
+exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 function generateToken() {
     const tokenLength = 20; // Adjust the length of the random part of the token as needed
@@ -50,10 +50,10 @@ function handleLogin(rollno, password) {
     });
 }
 exports.handleLogin = handleLogin;
-function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian) {
+function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, program_type) {
     return new Promise((resolve, reject) => {
         const last_modified = new Date().toString();
-        (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified)
+        (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, program_type, last_modified)
             .then((results) => {
             resolve("successfully updated!");
         })
@@ -76,3 +76,26 @@ function fetchUserByRollno(rollno) {
     });
 }
 exports.fetchUserByRollno = fetchUserByRollno;
+function addInExamRegisteration(rollno, course_code) {
+    return new Promise((resolve, reject) => {
+        const last_modified = new Date().toString();
+        (0, model_1.addExamRegisteration)(rollno, course_code, last_modified).then((results) => {
+            resolve("Successfully inserted in Exam Registeration!");
+        }).catch((error) => {
+            console.log("Exam registeration service error: ", error);
+            reject("Internal server error");
+        });
+    });
+}
+exports.addInExamRegisteration = addInExamRegisteration;
+function fetchTheCourses(semester, course_code) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchCourses)(semester, course_code).then((results) => {
+            resolve("Successfully courses details fetched");
+        }).catch((error) => {
+            console.log("error in fetching courses: ", error);
+            reject("Internal server error 1");
+        });
+    });
+}
+exports.fetchTheCourses = fetchTheCourses;

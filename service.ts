@@ -7,7 +7,9 @@ import {
   fetchPasswordByRollNo,
   putDetailsByRollno,
   updateToken,
-  fetchUser
+  fetchUser,
+  addExamRegisteration,
+  fetchCourses
 } from "./model";
 
 function generateToken() {
@@ -73,7 +75,8 @@ export function updateDetails(
   alternate_phone: string,
   father: string,
   mother: string,
-  guardian: string
+  guardian: string,
+  program_type: string
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const last_modified: string = new Date().toString();
@@ -89,6 +92,7 @@ export function updateDetails(
       father,
       mother,
       guardian,
+      program_type,
       last_modified
     )
       .then((results) => {
@@ -110,6 +114,30 @@ export function fetchUserByRollno ( rollno:string ) : Promise<any> {
     .catch((error) => {
       console.log("Service error: ", error);
       reject("internal server error");
+    })
+  })
+}
+
+export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
+  return new Promise((resolve, reject) => {
+    const last_modified: string = new Date().toString();
+    addExamRegisteration(rollno, course_code, last_modified).then((results) => {
+      resolve("Successfully inserted in Exam Registeration!");
+    }).catch((error) => {
+      console.log("Exam registeration service error: ",error);
+      reject("Internal server error");
+    })
+  })
+}
+
+
+export function fetchTheCourses ( semester:number, course_code:string ): Promise<string> {
+  return new Promise((resolve, reject) => {
+    fetchCourses(semester,course_code). then((results) => {
+      resolve("Successfully courses details fetched");
+    }).catch((error) => {
+      console.log("error in fetching courses: ",error);
+      reject("Internal server error 1");
     })
   })
 }

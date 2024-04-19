@@ -5,6 +5,8 @@ const router = Router();
 
 router.get("/getUserByRollno", controller.getUserByRollno);
 router.get("/authenticateUserByRollnoAndPassword", controller.authenticateUserByRollnoAndPassword);
-router.post("/updateDetailsByRollno",controller.updateDetailsByRollno)
+router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
+router.post("/addExamRegisterationByRollNo",controller.addExamRegisterationByRollNo);
+router.get("/fetchCoursesBySemester",controller.fetchCoursesBySemester);
 
 export default router;

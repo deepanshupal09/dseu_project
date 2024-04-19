@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pushTokenQuery = exports.fetchToken = exports.putToken = exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
+exports.fetchCoursesBySemester = exports.addExamRegisterationByRollno = exports.pushTokenQuery = exports.fetchToken = exports.putToken = exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
 exports.getUserByRollno = "SELECT * FROM users WHERE rollno=$1";
 exports.getPasswordByRollno = "SELECT password FROM users WHERE rollno=$1";
 exports.updateDetailsByRollno = `
@@ -15,9 +15,16 @@ exports.updateDetailsByRollno = `
       father = COALESCE($8, father),
       mother = COALESCE($9, mother),
       guardian = COALESCE($10, guardian),
-      last_modified = COALESCE($11, last_modified)
-  WHERE rollno = $12;
+      program_type = COALESCE($11, program_type),
+      last_modified = COALESCE($12, last_modified)
+  WHERE rollno = $13;
 `;
 exports.putToken = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
 exports.fetchToken = "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
 exports.pushTokenQuery = "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
+exports.addExamRegisterationByRollno = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
+exports.fetchCoursesBySemester = `
+  SELECT sc.course_code, c.course_name, sc.semester FROM semester_course sc
+  JOIN courses c ON sc.course_code = c.course_code
+  WHERE sc.semester=$1 AND sc.course_code=$2;
+`;
