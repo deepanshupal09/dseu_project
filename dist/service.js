@@ -52,10 +52,12 @@ function handleLogin(rollno, password) {
 exports.handleLogin = handleLogin;
 function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian) {
     return new Promise((resolve, reject) => {
-        const last_modified = (new Date()).toString();
-        (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified).then((results) => {
+        const last_modified = new Date().toString();
+        (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified)
+            .then((results) => {
             resolve("successfully updated!");
-        }).catch((error) => {
+        })
+            .catch((error) => {
             console.log(error);
             reject("internal server error");
         });
