@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
+exports.pushTokenQuery = exports.fetchToken = exports.putToken = exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
 exports.getUserByRollno = "SELECT * FROM users WHERE rollno=$1";
 exports.getPasswordByRollno = "SELECT password FROM users WHERE rollno=$1";
 exports.updateDetailsByRollno = `
@@ -18,3 +18,6 @@ exports.updateDetailsByRollno = `
       last_modified = COALESCE($11, last_modified)
   WHERE rollno = $12;
 `;
+exports.putToken = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
+exports.fetchToken = "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
+exports.pushTokenQuery = "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";

@@ -1,5 +1,5 @@
 import express, {Express, Request, Response} from "express";
-import routes from './route';
+import routes from './routes';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -14,11 +14,8 @@ app.use('/api/data/', routes);
 
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Hello yoyo nononno hehehe goomomomo");
-});
-app.get("/hi", (req: Request, res: Response) => {
-    res.send("hello dfgbfdgbdfbfd vsdfsdvdsvsdvds");
-});
+})
+
 
 app.listen(port, ()=> {
     console.log(`listening to port ${port}`)

@@ -1,77 +1,86 @@
-import pool from './db';
-import { 
-    getUserByRollno as getUserByRollnoQuery,
-    getPasswordByRollno as getPasswordByRollnoQuery,
-    updateDetailsByRollno as updateDetailsByRollnoQuery,
- } from './queries';
-import { Request, Response } from 'express';
+import pool from "./db";
+import {
+  getUserByRollno as getUserByRollnoQuery,
+  getPasswordByRollno as getPasswordByRollnoQuery,
+  updateDetailsByRollno as updateDetailsByRollnoQuery,
+} from "./queries";
+import { Request, Response } from "express";
+import { handleLogin, updateDetails } from "./service";
 
+const getUserByRollno = (req: Request, res: Response): void => {
+  try {
+    const rollno = req.headers.rollno;
+    if (rollno) {
+      pool.query(getUserByRollnoQuery, [rollno], (error, results) => {
+        if (error) throw error;
 
-const getUserByRollno= (req: Request, res: Response): void => {
-    try{
-        const rollno = req.headers.rollno;
-        if (rollno) {
-            pool.query(getUserByRollnoQuery,[rollno], (error, results) => {
-                if (error) throw error;
-
-                res.status(200).json(results.rows);
-            });
-        } else {
-            res.status(400).send('RollNo Is required!');
-        }
+        res.status(200).json(results.rows);
+      });
+    } else {
+      res.status(400).send("RollNo Is required!");
     }
-    catch(error){
-        res.status(400).send('There is some error encountered!');
-        console.log("error: ",error);
+  } catch (error) {
+    res.status(400).send("There is some error encountered!");
+    console.log("error: ", error);
+  }
+};
+
+const authenticateUserByRollnoAndPassword = (
+  req: Request,
+  res: Response
+): void => {
+  try {
+    const rollno: string = req.headers.rollno as string;
+    const password: string = req.headers.password as string;
+
+    if (rollno && password) {
+      handleLogin(rollno, password)
+        .then((token: string) => {
+          res.status(200).send(token);
+        })
+        .catch((error: string) => {
+          if (error === "internal server error")
+            res.status(500).send("Internal Server Error!");
+          else if (error === "incorrect password")
+            res.status(400).send("Incorrect Password");
+          else res.status(404).send("RollNo not found!");
+        });
+    } else {
+      res.status(404).send("RollNo not found!");
     }
-}
-
-const getPasswordByRollno = (req: Request, res: Response): void => {
-    try {
-        const rollno = req.headers.rollno;
-        const password = req.headers.password;
-
-        if (rollno && password) {
-            // First, check if the roll number exists
-            pool.query(getPasswordByRollnoQuery, [rollno], (error, results) => {
-                if (error) throw error;
-
-                // If the roll number exists
-                if (results.rows.length > 0) {
-                    const dbPassword = results.rows[0].password;
-
-                    // Check if the entered password matches the one in the database
-                    if (dbPassword === password) {
-                        res.status(200).send('Authentication successful!');
-                    } else {
-                        res.status(401).send('Incorrect password!');
-                    }
-                } else {
-                    res.status(404).send('Roll number not found!');
-                }
-            });
-        } else {
-            res.status(400).send('Roll number and password are required!');
-        }
-    } catch (error) {
-        res.status(400).send('There was an error processing your request.');
-        console.log("error: ", error);
-    }
-}
+  } catch (error) {
+    res.status(500).send("Internal Server Error!");
+  }
+};
 
 const updateDetailsByRollno = (req: Request, res: Response): void => {
-    try{
-        const{ program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno } = req.body;
-        pool.query(updateDetailsByRollnoQuery, [program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, rollno], (error, results) => {
-            if (error) throw error;
-            res.status(200).send("Database successfully updated!");
-        })
-    }
-    catch(error){
-        res.status(400).send('There was an error processing your request.');
-        console.log("error: ", error);
-    }
-}
+  try {
+    const {
+      program,
+      semester,
+      phone,
+      campus,
+      emailid,
+      gender,
+      alternate_phone,
+      father,
+      mother,
+      guardian,
+      rollno,
+    } = req.body;
+    console.log(req.body)
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian).then((results)=>{
+        res.status(200).send("successfully updated!")
+    }).catch((error)=>{
+        res.status(500).send("internal server error");
+    })
+} catch (error) {
+      res.send("internal server error");    
+  }
+};
 
-
-export { getUserByRollno, getPasswordByRollno, updateDetailsByRollno};
+export {
+  getUserByRollno,
+  authenticateUserByRollnoAndPassword,
+  updateDetailsByRollno,
+};
