@@ -25,7 +25,7 @@ const getUserByRollno = (req: Request, res: Response): void => {
   }
 };
 
-const authenticateUserByRollnoAndPassword = (
+const login = (
   req: Request,
   res: Response
 ): void => {
@@ -81,6 +81,6 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
 
 export {
   getUserByRollno,
-  authenticateUserByRollnoAndPassword,
+  login,
   updateDetailsByRollno,
 };

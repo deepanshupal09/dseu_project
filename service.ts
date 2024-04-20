@@ -5,9 +5,12 @@ import { Request, Response } from "express"; // Assuming you're using Express
 import { QueryResult } from "pg";
 import {
   fetchPasswordByRollNo,
+  fetchTokenByRollNo,
   putDetailsByRollno,
   updateToken,
 } from "./model";
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs';
 
 function generateToken() {
   const tokenLength = 20; // Adjust the length of the random part of the token as needed
@@ -35,19 +38,21 @@ export function handleLogin(rollno: string, password: string): Promise<string> {
         if (results.rows.length > 0) {
           const dbPassword = results.rows[0].password;
           if (dbPassword === password) {
-            const token: string = generateToken();
+            // const token: string = generateToken();
+            const token = jwt.sign(results.rows[0], 'chotahathi',{ expiresIn: '2h' });
             const last_modified: string = new Date().toString();
             const currentDate = new Date();
             currentDate.setHours(currentDate.getHours() + 2);
             const expiry: string = currentDate.toString();
+            resolve(token);
 
-            updateToken(token, rollno, last_modified, expiry)
-              .then((results: QueryResult<any>) => {
-                resolve(token);
-              })
-              .catch((error) => {
-                reject("internal server error");
-              });
+            // updateToken(token, rollno, last_modified, expiry)
+            //   .then((results: QueryResult<any>) => {
+            //     resolve(token);
+            //   })
+            //   .catch((error) => {
+            //     reject("internal server error");
+            //   });
           } else {
             reject("incorrect password");
           }
@@ -98,4 +103,13 @@ export function updateDetails(
         reject("internal server error");
       });
   });
+}
+
+export async function verifyTokenByRollNo(rollno: string) {
+  try {
+    const result = await fetchTokenByRollNo(rollno);
+    return result.rows[0]; // Return token data or null if not found
+  } catch (error) {
+    throw new Error('Error verifying token');
+  }
 }

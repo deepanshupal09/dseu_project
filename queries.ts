@@ -1,5 +1,5 @@
 export const getUserByRollno: string = "SELECT * FROM users WHERE rollno=$1";
-export const getPasswordByRollno: string = "SELECT password FROM users WHERE rollno=$1";
+export const getPasswordByRollno: string = "SELECT * FROM users WHERE rollno=$1";
 export const updateDetailsByRollno: string = `
   UPDATE users 
   SET program = COALESCE($1, program),

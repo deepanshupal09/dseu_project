@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDetailsByRollno = exports.authenticateUserByRollnoAndPassword = exports.getUserByRollno = void 0;
+exports.updateDetailsByRollno = exports.login = exports.getUserByRollno = void 0;
 const db_1 = __importDefault(require("./db"));
 const queries_1 = require("./queries");
 const service_1 = require("./service");
@@ -27,7 +27,7 @@ const getUserByRollno = (req, res) => {
     }
 };
 exports.getUserByRollno = getUserByRollno;
-const authenticateUserByRollnoAndPassword = (req, res) => {
+const login = (req, res) => {
     try {
         const rollno = req.headers.rollno;
         const password = req.headers.password;
@@ -53,7 +53,7 @@ const authenticateUserByRollnoAndPassword = (req, res) => {
         res.status(500).send("Internal Server Error!");
     }
 };
-exports.authenticateUserByRollnoAndPassword = authenticateUserByRollnoAndPassword;
+exports.login = login;
 const updateDetailsByRollno = (req, res) => {
     try {
         const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, rollno, } = req.body;

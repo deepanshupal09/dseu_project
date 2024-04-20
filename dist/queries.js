@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pushTokenQuery = exports.fetchToken = exports.putToken = exports.updateDetailsByRollno = exports.getPasswordByRollno = exports.getUserByRollno = void 0;
 exports.getUserByRollno = "SELECT * FROM users WHERE rollno=$1";
-exports.getPasswordByRollno = "SELECT password FROM users WHERE rollno=$1";
+exports.getPasswordByRollno = "SELECT * FROM users WHERE rollno=$1";
 exports.updateDetailsByRollno = `
   UPDATE users 
   SET program = COALESCE($1, program),
