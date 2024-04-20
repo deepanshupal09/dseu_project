@@ -59,7 +59,7 @@ function pushToken(rollno, token, created_at, last_modified, expiry) {
     });
 }
 exports.pushToken = pushToken;
-function putDetailsByRollno(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified) {
+function putDetailsByRollno(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, password) {
     console.log("here");
     return new Promise((resolve, reject) => {
         db_1.default.query(queries_1.updateDetailsByRollno, [
@@ -75,6 +75,7 @@ function putDetailsByRollno(rollno, program, semester, phone, campus, emailid, g
             guardian,
             last_modified,
             rollno,
+            password
         ], (error, results) => {
             if (error) {
                 console.log("model", error);

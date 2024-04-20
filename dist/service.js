@@ -37,12 +37,17 @@ function handleLogin(rollno, password) {
                 const dbPassword = results.rows[0].password;
                 if (dbPassword === password) {
                     // const token: string = generateToken();
+                    // const last_modified: string = new Date().toString();
+                    // const currentDate = new Date();
+                    // currentDate.setHours(currentDate.getHours() + 2);
+                    // const expiry: string = currentDate.toString();
                     const token = jsonwebtoken_1.default.sign(results.rows[0], 'chotahathi', { expiresIn: '2h' });
-                    const last_modified = new Date().toString();
-                    const currentDate = new Date();
-                    currentDate.setHours(currentDate.getHours() + 2);
-                    const expiry = currentDate.toString();
-                    resolve(token);
+                    const default_pass = (results.rows[0].name + '0000').substring(0, 4) + rollno;
+                    const result = {
+                        token: token,
+                        defaultPass: password === default_pass
+                    };
+                    resolve(result);
                     // updateToken(token, rollno, last_modified, expiry)
                     //   .then((results: QueryResult<any>) => {
                     //     resolve(token);
@@ -65,16 +70,25 @@ function handleLogin(rollno, password) {
     });
 }
 exports.handleLogin = handleLogin;
-function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian) {
+function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password) {
     return new Promise((resolve, reject) => {
         const last_modified = new Date().toString();
-        (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified)
-            .then((results) => {
-            resolve("successfully updated!");
-        })
-            .catch((error) => {
-            console.log(error);
-            reject("internal server error");
+        console.log("rollno ", rollno);
+        (0, model_1.fetchPasswordByRollNo)(rollno).then((result) => {
+            console.log("service ", result.rows);
+            if (result.rows.length > 0) {
+                (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, password)
+                    .then((results) => {
+                    resolve("successfully updated!");
+                })
+                    .catch((error) => {
+                    console.log(error);
+                    reject("internal server error");
+                });
+            }
+            else {
+                reject("rollno not found!");
+            }
         });
     });
 }

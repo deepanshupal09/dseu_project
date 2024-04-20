@@ -91,7 +91,8 @@ export function putDetailsByRollno(
   father: string,
   mother: string,
   guardian: string,
-  last_modified: string
+  last_modified: string,
+  password: string
 ): Promise<QueryResult<any>> {
   console.log("here");
   return new Promise((resolve, reject) => {
@@ -110,6 +111,7 @@ export function putDetailsByRollno(
         guardian,
         last_modified,
         rollno,
+        password
       ],
       (error, results) => {
         if (error) {

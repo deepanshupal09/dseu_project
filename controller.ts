@@ -32,11 +32,12 @@ const login = (
   try {
     const rollno: string = req.headers.rollno as string;
     const password: string = req.headers.password as string;
+    console.log("rollno", password)
 
     if (rollno && password) {
       handleLogin(rollno, password)
-        .then((token: string) => {
-          res.status(200).send(token);
+        .then(({token, defaultPass}) => {
+          res.status(200).send({token, defaultPass});
         })
         .catch((error: string) => {
           if (error === "internal server error")
@@ -67,9 +68,10 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       mother,
       guardian,
       rollno,
+      password
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -79,8 +81,37 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
   }
 };
 
+function signup(req: Request, res: Response):void {
+  console.log('singup')
+  try {
+    const {
+      program,
+      semester,
+      phone,
+      campus,
+      emailid,
+      gender,
+      alternate_phone,
+      father,
+      mother,
+      guardian,
+      rollno,
+      password
+    } = req.body;
+    console.log(101,req.body)
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
+        res.status(200).send("successfully updated!")
+    }).catch((error)=>{
+        res.status(500).send("internal server error");
+    })
+} catch (error) {
+      res.send("internal server error");    
+  }
+}
+
 export {
   getUserByRollno,
   login,
   updateDetailsByRollno,
+  signup
 };

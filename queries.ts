@@ -12,7 +12,8 @@ export const updateDetailsByRollno: string = `
       father = COALESCE($8, father),
       mother = COALESCE($9, mother),
       guardian = COALESCE($10, guardian),
-      last_modified = COALESCE($11, last_modified)
+      last_modified = COALESCE($11, last_modified),
+      password = $13
   WHERE rollno = $12;
 `;
 export const putToken: string = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";

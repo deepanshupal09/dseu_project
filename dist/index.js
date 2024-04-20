@@ -36,12 +36,15 @@ const middleware_1 = require("./middleware");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = 8000;
-app.use(express_1.default.json());
+// app.use(express.json());
 app.use((0, cors_1.default)());
+// app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/api/data/', middleware_1.verifyToken, routes_1.default);
 app.get("/", (req, res) => {
 });
 app.get("/login", controller.login);
+app.post("/signup", controller.signup);
 app.listen(port, () => {
     console.log(`listening to port ${port}`);
 });
