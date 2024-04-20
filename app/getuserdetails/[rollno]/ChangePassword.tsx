@@ -6,10 +6,11 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 interface ChangePasswordProps {
   newpassword: string;
   confirm: string;
+  setnewpassword: React.Dispatch<React.SetStateAction<string>>;
   onNext: (newpassword: string) => void;
 }
 
-export default function ChangePassword({ newpassword, confirm, onNext }: ChangePasswordProps) {
+export default function ChangePassword({setnewpassword, newpassword, confirm, onNext }: ChangePasswordProps) {
   const [newPassword, setNewPassword] = useState(newpassword || '');
   const [confirmPassword, setConfirmPassword] = useState(confirm || '');
   const [helperText, setHelperText] = useState('');
@@ -22,8 +23,15 @@ export default function ChangePassword({ newpassword, confirm, onNext }: ChangeP
       setError(true);
       return;
     }
+    if (newPassword.length < 8) {
+      setHelperText("Password must contain 8 characters");
+      setError(true);
+      return;
+
+    }
     console.log('New Password:', newPassword);
     console.log('Confirm Password:', confirmPassword);
+    setnewpassword(newPassword);
     setNewPassword('');
     setConfirmPassword('');
     setHelperText('');

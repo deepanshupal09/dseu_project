@@ -1,10 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
 import GeneralDetails from "./GeneralDetails";
 import CollegeDetails from "./CollegeDetails";
 import FamilyDetails from "./FamilyDetails";
 import LinearProgress from "@mui/joy/LinearProgress";
+import { redirect, usePathname } from "next/navigation";
+import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
   const [step, setStep] = useState<number>(1);
@@ -17,23 +21,122 @@ export default function Home() {
   const [alternatePhone, setAlternatePhone] = useState<string>("");
   const [college, setCollege] = useState<string>("");
   const [program, setProgram] = useState(null);
-  const [semester, setSemester] = useState(null);
+  const [semester, setSemester] = useState("Semester 1");
   const [fatherName, setFatherName] = useState<string>("");
   const [motherName, setMotherName] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
   const [parentRelation, setParentRelation] = useState<string>("");
   const [singleParentGuardianName, setSingleParentGuardianName] =
     useState<string>("");
-  const handleNext = () => {
+    
+
+   const pathname = usePathname();
+   const rollno = pathname.split("/")[2];
+
+  const handleNext = async () => {
     if (step < 4) {
       setStep(step + 1);
+    } else {
+      console.log("Father's Name:", fatherName);
+      console.log("Mother's Name:", motherName);
+      console.log("Single Parent/Guardian:", singleParentGuardian);
+      if (singleParentGuardian) {
+        console.log("Single Parent/Guardian Name:", singleParentGuardianName);
+        console.log("Parent's Relation:", parentRelation);
+      }
+      let father = null,
+        mother = null,
+        guardian = null;
+      if (singleParentGuardian) {
+        if (parentRelation === "father") father = singleParentGuardianName;
+        else if (parentRelation === "mother") mother = singleParentGuardianName;
+        else guardian = singleParentGuardianName;
+      } else {
+        father = fatherName;
+        mother = motherName;
+        // guardian=null;
+      }
+      interface BodyType {
+        program: string | null;
+        semester: number;
+        father: string | null;
+        mother: string | null;
+        campus: string;
+        emailid: string;
+        gender: string;
+        alternate_phone: string | null;
+        guardian: string | null;
+        rollno: string;
+        password: string;
+      }
+      const body: BodyType = {
+        "program": program,
+        "semester": parseInt(semester.split(" ")[1]),
+        "father": father,
+        "mother": mother,
+        "campus": college,
+        "emailid": emailid,
+        "gender": gender,
+        "alternate_phone": alternatePhone === "" ? null : alternatePhone,
+        "guardian": guardian,
+        "rollno": rollno,
+        "password": newpass,
+      };
+      // console.log(body)
+      console.log(101,JSON.stringify(body))
+      const requestOptions = {
+        method: "POST",
+        headers: {},
+        body: JSON.stringify(body), 
+      };
+
+
+      try {
+        setLoading(true)
+        const response = await fetch(
+          "http://localhost:8000/signup",
+          requestOptions
+        );
+        setLoading(false)
+        
+        if(!response.ok) {
+          setOpen(true);
+          console.log("error: ", response)
+          return;
+        }
+        console.log(response);
+        router.push('/dashboard')
+        
+      } catch(error) {
+        setLoading(false)
+        setOpen(true);
+        return;
+      }
+
+
     }
   };
   const handlePrevious = () => {
     if (step > 1) {
       setStep(step - 1);
     }
+  };
+
+
+  // useEffect(() => {
+  //   console.log("rollno ", rollno)
+  // })
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
   const campusList = [
@@ -87,11 +190,7 @@ export default function Home() {
       </div>
       <div className="my-auto">
         {step === 1 && (
-          <ChangePassword
-            newpassword={newpass}
-            confirm={confirm}
-            onNext={handleNext}
-          />
+          <ChangePassword setnewpassword={setNewpass} onNext={handleNext} />
         )}
         {step === 2 && (
           <GeneralDetails
@@ -99,6 +198,10 @@ export default function Home() {
             gen={gender}
             phoneno={phone}
             altphone={alternatePhone}
+            setemailid={setEmailid}
+            setgender={setGender}
+            setphone={setPhone}
+            setaltphone={setAlternatePhone}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
@@ -110,6 +213,9 @@ export default function Home() {
             campusList={campusList}
             programList={programList}
             semesterList={semesterList}
+            setsemester={setSemester}
+            setprogram={setProgram}
+            setcollege={setCollege}
           />
         )}
         {step === 4 && ( // Add this condition for the new FamilyDetails component
@@ -119,10 +225,32 @@ export default function Home() {
             spg={singleParentGuardian}
             parrel={parentRelation}
             spgname={singleParentGuardianName}
+            setfathername={setFatherName}
+            setmothername={setMotherName}
+            setspg={setSingleParentGuardian}
+            setparrel={setParentRelation}
+            setspgname={setSingleParentGuardianName}
             onPrevious={handlePrevious}
+            onNext={handleNext}
           />
         )}
       </div>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Internal Server Error
+        </Alert>
+      </Snackbar>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
