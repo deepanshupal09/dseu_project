@@ -1,5 +1,4 @@
 "use client";
-
 import React,{useState} from 'react';
 import Navbar from '../dashboard/Navbar'; 
 import Header from '../dashboard/Header';
@@ -90,9 +89,32 @@ export default function Home() {
   };
   
   const renderField = (field: keyof PersonalDetails, label: string) => {
+    let icon;
+    switch (field) {
+      case "name":
+      case "fathersName":
+      case "mothersName":
+        icon = <PersonIcon className="mr-2" />;
+        break;
+      case "address":
+        icon = <HomeIcon className="mr-2" />;
+        break;
+      case "mobileNumber":
+        icon = <PhoneIcon className="mr-2" />;
+        break;
+      case "email":
+        icon = <MailIcon className="mr-2" />;
+        break;
+      case "aadharCard":
+        icon = <CreditCardRoundedIcon className="mr-2" />;
+        break;
+      default:
+        icon = null;
+    }
+  
     return (
       <div className="flex items-center mb-2">
-        <PersonIcon className="mr-2" />
+        {icon}
         {editMode ? (
           <input
             type="text"
@@ -113,47 +135,118 @@ export default function Home() {
     return (
       <div className="flex items-center mb-2">
         <MaleRoundedIcon className="mr-2" />
-        {editMode ? (
-          <>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Male"
-                checked={tempPersonalDetails ? tempPersonalDetails.gender === "Male" : personalDetails.gender === "Male"}
-                onChange={(e) => handleInputChange("gender", e.target.value)}
-              />
-              Male
-            </label>
-            <FemaleRoundedIcon className="ml-1" />
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Female"
-                checked={tempPersonalDetails ? tempPersonalDetails.gender === "Female" : personalDetails.gender === "Female"}
-                onChange={(e) => handleInputChange("gender", e.target.value)}
-              />
-              Female
-            </label>
-            <Face6RoundedIcon className="ml-1" />
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="Others"
-                checked={tempPersonalDetails ? tempPersonalDetails.gender === "Others" : personalDetails.gender === "Others"}
-                onChange={(e) => handleInputChange("gender", e.target.value)}
-              />
-              Others
-            </label>
-          </>
-        ) : (
-          <p>
-            <span className="font-bold">Gender:</span>
-            <br /> {personalDetails.gender}
-          </p>
-        )}
+        <div className="flex flex-col"> 
+          {editMode ? (
+            <>
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Male"
+                  checked={tempPersonalDetails ? tempPersonalDetails.gender === "Male" : personalDetails.gender === "Male"}
+                  onChange={(e) => handleInputChange("gender", e.target.value)}
+                />
+                Male
+              </label>
+              <FemaleRoundedIcon className="mr-2" /> 
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Female"
+                  checked={tempPersonalDetails ? tempPersonalDetails.gender === "Female" : personalDetails.gender === "Female"}
+                  onChange={(e) => handleInputChange("gender", e.target.value)}
+                />
+                Female
+              </label>
+              <Face6RoundedIcon className="mr-2" /> 
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Others"
+                  checked={tempPersonalDetails ? tempPersonalDetails.gender === "Others" : personalDetails.gender === "Others"}
+                  onChange={(e) => handleInputChange("gender", e.target.value)}
+                />
+                Others
+              </label>
+            </>
+          ) : (
+            <p>
+              <span className="font-bold">Gender:</span>
+              <br /> {personalDetails.gender}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  };
+  
+  const renderCategoryField = () => {
+    return (
+      <div className="flex items-center mb-2">
+        <Face6RoundedIcon className="mr-2" /> 
+        <div className="flex flex-col"> 
+          {editMode ? (
+            <>
+              <label>
+                <input
+                  type="checkbox"
+                  name="category"
+                  value="General"
+                  checked={tempPersonalDetails ? tempPersonalDetails.category === "General" : personalDetails.category === "General"}
+                  onChange={(e) => handleInputChange("category", e.target.checked ? "General" : "")}
+                />
+                General
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="category"
+                  value="EWS"
+                  checked={tempPersonalDetails ? tempPersonalDetails.category === "EWS" : personalDetails.category === "EWS"}
+                  onChange={(e) => handleInputChange("category", e.target.checked ? "EWS" : "")}
+                />
+                EWS
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="category"
+                  value="OBC"
+                  checked={tempPersonalDetails ? tempPersonalDetails.category === "OBC" : personalDetails.category === "OBC"}
+                  onChange={(e) => handleInputChange("category", e.target.checked ? "OBC" : "")}
+                />
+                OBC
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="category"
+                  value="SC"
+                  checked={tempPersonalDetails ? tempPersonalDetails.category === "SC" : personalDetails.category === "SC"}
+                  onChange={(e) => handleInputChange("category", e.target.checked ? "SC" : "")}
+                />
+                SC
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="category"
+                  value="ST"
+                  checked={tempPersonalDetails ? tempPersonalDetails.category === "ST" : personalDetails.category === "ST"}
+                  onChange={(e) => handleInputChange("category", e.target.checked ? "ST" : "")}
+                />
+                ST
+              </label>
+            </>
+          ) : (
+            <p>
+              <span className="font-bold">Category:</span>
+              <br /> {personalDetails.category}
+            </p>
+          )}
+        </div>
       </div>
     );
   };
@@ -202,7 +295,7 @@ export default function Home() {
               {renderField("fathersName", "Father's Name")}
               {renderField("mothersName", "Mother's Name")}
               {renderGenderField()}
-              {renderField("category", "Category")}
+              {renderCategoryField()}
               {renderField("mobileNumber", "Mobile Number")}
               {renderField("email", "Email")}
               {renderField("aadharCard", "Aadhar Card")}
