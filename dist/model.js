@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchCourses = exports.addExamRegisteration = exports.fetchUser = exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
+exports.fetchExamRegistrationProgramAndSemester = exports.fetchExamRegistrationCourse = exports.fetchExamRegistration = exports.fetchCoursesRollNo = exports.fetchCourses = exports.addExamRegisteration = exports.fetchUser = exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
 const db_1 = __importDefault(require("./db"));
 const queries_1 = require("./queries");
 function fetchPasswordByRollNo(rollno) {
@@ -116,9 +116,9 @@ function addExamRegisteration(rollno, course_code, last_modified) {
     });
 }
 exports.addExamRegisteration = addExamRegisteration;
-function fetchCourses(semester, course_code) {
+function fetchCourses(semester, program) {
     return new Promise((resolve, reject) => {
-        db_1.default.query(queries_1.fetchCoursesBySemester, [semester, course_code], (error, results) => {
+        db_1.default.query(queries_1.fetchCoursesBySemester, [semester, program], (error, results) => {
             if (error) {
                 console.log("fetch courses error: ", error);
                 reject(error);
@@ -130,3 +130,56 @@ function fetchCourses(semester, course_code) {
     });
 }
 exports.fetchCourses = fetchCourses;
+function fetchCoursesRollNo(rollno) {
+    return new Promise((resolve, reject) => {
+        db_1.default.query(queries_1.fetchCoursesByRollNo, [rollno], (error, results) => {
+            if (error) {
+                console.log("fetch courses by roll no error: ", error);
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.fetchCoursesRollNo = fetchCoursesRollNo;
+function fetchExamRegistration(rollno) {
+    return new Promise((resolve, reject) => {
+        db_1.default.query(queries_1.fetchExamRegistrationByRollNo, [rollno], (error, results) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.fetchExamRegistration = fetchExamRegistration;
+function fetchExamRegistrationCourse(course_code) {
+    return new Promise((resolve, reject) => {
+        db_1.default.query(queries_1.fetchExamRegistrationByCourseCode, [course_code], (error, results) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.fetchExamRegistrationCourse = fetchExamRegistrationCourse;
+function fetchExamRegistrationProgramAndSemester(program, semester) {
+    return new Promise((resolve, reject) => {
+        db_1.default.query(queries_1.fetchExamRegistrationByProgramAndSemester, [program, semester], (error, results) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.fetchExamRegistrationProgramAndSemester = fetchExamRegistrationProgramAndSemester;

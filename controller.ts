@@ -1,5 +1,15 @@
 import { Request, Response } from "express";
-import { handleLogin, updateDetails, fetchUserByRollno, addInExamRegisteration, fetchTheCourses} from "./service";
+import { 
+  handleLogin, 
+  updateDetails, 
+  fetchUserByRollno, 
+  addInExamRegisteration, 
+  fetchTheCourses, 
+  fetchTheCoursesRollNo,
+  fetchTheExamRegistration,
+  fetchTheExamRegistrationCourse,
+  fetchTheExamRegistrationProgramAndSemester
+} from "./service";
 
 const getUserByRollno = (req: Request, res: Response): void => {
   try {
@@ -89,9 +99,10 @@ const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
 
 const fetchCoursesBySemester = (req: Request, res: Response):void => {
   try{
-    const semester: number = parseInt(req.params.semester);
-    const course_code: string = req.params.course_code as string;
-    fetchTheCourses(semester, course_code).then((results) => {
+    const semester: number = parseInt(req.headers.semester as string);
+    const program: string = req.headers.program as string;
+    console.log("semester , course_code :", semester, program);
+    fetchTheCourses(semester, program).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server 2");
@@ -102,10 +113,72 @@ const fetchCoursesBySemester = (req: Request, res: Response):void => {
   }
 }
 
+const fetchCoursesByRollNo = (req: Request, res: Response):void => {
+  try{
+    const rollno: string = req.headers.rollno as string;
+    console.log("rolllno: ",rollno);
+    fetchTheCoursesRollNo(rollno). then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server error roll 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error roll 3");
+  }
+}
+
+const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
+  try{
+    const rollno: string = req.headers.rollno as string;
+    fetchTheExamRegistration(rollno).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server error exam registeration 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error exam registeration 3");
+  }
+}
+
+const fetchExamRegistrationByCourseCode = (req: Request, res: Response):void => {
+  try{
+    const course_code:string =req.headers.course_code as string;
+    fetchTheExamRegistrationCourse(course_code).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("Internal server error fetch exam registeration course 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error fetch exam registeration course 3");
+  }
+}
+
+const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):void => {
+  try{
+    const semester: number = parseInt(req.headers.semester as string);
+    const program: string = req.headers.program as string;
+    fetchTheExamRegistrationProgramAndSemester(program, semester).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("Internal server error fetch exam registeration program and semester 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error fetch exam registeration program and semester 3");
+  }
+}
+
 export {
   getUserByRollno,
   authenticateUserByRollnoAndPassword,
   updateDetailsByRollno,
   addExamRegisterationByRollNo,
-  fetchCoursesBySemester
+  fetchCoursesBySemester,
+  fetchCoursesByRollNo,
+  fetchExamRegistrationByRollNo,
+  fetchExamRegistrationByCourseCode,
+  fetchExamRegistrationByProgramAndSemester
 };

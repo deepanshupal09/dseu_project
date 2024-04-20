@@ -31,4 +31,8 @@ router.get("/authenticateUserByRollnoAndPassword", controller.authenticateUserBy
 router.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
 router.post("/addExamRegisterationByRollNo", controller.addExamRegisterationByRollNo);
 router.get("/fetchCoursesBySemester", controller.fetchCoursesBySemester);
+router.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
+router.get("/fetchExamRegistrationByRollNo", controller.fetchExamRegistrationByRollNo);
+router.get("/fetchExamRegistrationByCourseCode", controller.fetchExamRegistrationByCourseCode);
+router.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 exports.default = router;

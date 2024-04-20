@@ -1,7 +1,7 @@
 "use strict";
 // service.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.updateDetails = exports.handleLogin = void 0;
+exports.fetchTheExamRegistrationProgramAndSemester = exports.fetchTheExamRegistrationCourse = exports.fetchTheExamRegistration = exports.fetchTheCoursesRollNo = exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 function generateToken() {
     const tokenLength = 20; // Adjust the length of the random part of the token as needed
@@ -88,10 +88,10 @@ function addInExamRegisteration(rollno, course_code) {
     });
 }
 exports.addInExamRegisteration = addInExamRegisteration;
-function fetchTheCourses(semester, course_code) {
+function fetchTheCourses(semester, program) {
     return new Promise((resolve, reject) => {
-        (0, model_1.fetchCourses)(semester, course_code).then((results) => {
-            resolve("Successfully courses details fetched");
+        (0, model_1.fetchCourses)(semester, program).then((results) => {
+            resolve(results.rows);
         }).catch((error) => {
             console.log("error in fetching courses: ", error);
             reject("Internal server error 1");
@@ -99,3 +99,47 @@ function fetchTheCourses(semester, course_code) {
     });
 }
 exports.fetchTheCourses = fetchTheCourses;
+function fetchTheCoursesRollNo(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchCoursesRollNo)(rollno).then((results) => {
+            resolve(results.rows);
+        }).catch((error) => {
+            console.log("error in fetching courses by rollno: ", error);
+            reject("Internal server error roll 1");
+        });
+    });
+}
+exports.fetchTheCoursesRollNo = fetchTheCoursesRollNo;
+function fetchTheExamRegistration(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistration)(rollno).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration: ", error);
+            reject("Internal server error fetch exam registeration 1");
+        });
+    });
+}
+exports.fetchTheExamRegistration = fetchTheExamRegistration;
+function fetchTheExamRegistrationCourse(course_code) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistrationCourse)(course_code).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration by course: ", error);
+            reject("Internal server error fetch exam registeration course 1");
+        });
+    });
+}
+exports.fetchTheExamRegistrationCourse = fetchTheExamRegistrationCourse;
+function fetchTheExamRegistrationProgramAndSemester(program, semester) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistrationProgramAndSemester)(program, semester).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration by program and course: ", error);
+            reject("Internal server error fetch exam registeration progrtam and semester 1");
+        });
+    });
+}
+exports.fetchTheExamRegistrationProgramAndSemester = fetchTheExamRegistrationProgramAndSemester;

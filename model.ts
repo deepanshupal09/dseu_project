@@ -11,6 +11,10 @@ import {
   getUserByRollno,
   addExamRegisterationByRollno,
   fetchCoursesBySemester,
+  fetchCoursesByRollNo,
+  fetchExamRegistrationByRollNo,
+  fetchExamRegistrationByCourseCode,
+  fetchExamRegistrationByProgramAndSemester
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -155,9 +159,9 @@ export function addExamRegisteration ( rollno:string, course_code:string, last_m
 }
 
 
-export function fetchCourses(semester: number, course_code: string): Promise<QueryResult<any>> {
+export function fetchCourses(semester: number, program: string): Promise<QueryResult<any>> {
   return new Promise((resolve, reject) => {
-    pool.query(fetchCoursesBySemester, [semester, course_code], (error, results) => {
+    pool.query(fetchCoursesBySemester, [semester, program], (error, results) => {
       if (error) {
         console.log("fetch courses error: ",error);
         reject(error);
@@ -166,4 +170,52 @@ export function fetchCourses(semester: number, course_code: string): Promise<Que
       }
     });
   });
+}
+
+export function fetchCoursesRollNo(rollno: string): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    pool.query(fetchCoursesByRollNo, [rollno], (error, results) => {
+      if (error) {
+        console.log("fetch courses by roll no error: ", error);
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+export function fetchExamRegistration( rollno:string ): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    pool.query(fetchExamRegistrationByRollNo, [rollno], (error, results) => {
+      if(error) {
+        reject(error);
+      } else{
+        resolve(results);
+      }
+    })
+  })
+}
+
+export function fetchExamRegistrationCourse( course_code:string) :Promise<QueryResult<any>> {
+  return new Promise ((resolve, reject) => {
+    pool.query(fetchExamRegistrationByCourseCode, [course_code], (error, results)=> {
+      if(error) {
+        reject(error);
+      } else{
+        resolve(results);
+      }
+    })
+  })
+}
+export function fetchExamRegistrationProgramAndSemester( program:string ,semester:number) :Promise<QueryResult<any>> {
+  return new Promise ((resolve, reject) => {
+    pool.query(fetchExamRegistrationByProgramAndSemester, [program ,semester], (error, results)=> {
+      if(error) {
+        reject(error);
+      } else{
+        resolve(results);
+      }
+    })
+  })
 }
