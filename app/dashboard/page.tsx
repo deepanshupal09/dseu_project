@@ -9,9 +9,9 @@ export default function Home() {
   const options = ["Dashboard", "Profile", "Exam Registration", "Course Details"];
 
   const recentChange = {
-    title: "Examination Details",
+    title: "Exam Registerations",
     timestamp: "2024-04-19",
-    details: "sixth semester final examination details were chosen and submitted.",
+    details: "sixth semester final examination subjects were chosen and submitted.",
   };
 
   const [expanded, setExpanded] = useState(false);
@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <div className="bg-[#dfdede] ">
         <Header username={"Abhinav M"} />
-        <Navbar selected={selected} setSelected={setSelected} />
+        <Navbar />
       </div>
       <div className="welcome py-2 px-4 rounded shadow absolute top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-12 ">
         <h1 className="text-2xl text-white-800 font-bold ">Welcome {"Abhinav M"}</h1>
