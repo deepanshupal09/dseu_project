@@ -22,6 +22,7 @@ export default function Home() {
       setLoading(true)
       const response = await fetch("http://localhost:8000/login", {
         method: "GET",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
           rollno: RollNo,

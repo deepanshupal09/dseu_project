@@ -9,7 +9,6 @@ import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-
 export default function Home() {
   const [step, setStep] = useState<number>(1);
   const [newpass, setNewpass] = useState<string>("");
@@ -26,16 +25,15 @@ export default function Home() {
   const [motherName, setMotherName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  
+
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
   const [parentRelation, setParentRelation] = useState<string>("");
   const [singleParentGuardianName, setSingleParentGuardianName] =
     useState<string>("");
-    
 
-   const pathname = usePathname();
-   const rollno = pathname.split("/")[2];
+  const pathname = usePathname();
+  const rollno = pathname.split("/")[2];
 
   const handleNext = async () => {
     if (step < 4) {
@@ -74,50 +72,44 @@ export default function Home() {
         password: string;
       }
       const body: BodyType = {
-        "program": program,
-        "semester": parseInt(semester.split(" ")[1]),
-        "father": father,
-        "mother": mother,
-        "campus": college,
-        "emailid": emailid,
-        "gender": gender,
-        "alternate_phone": alternatePhone === "" ? null : alternatePhone,
-        "guardian": guardian,
-        "rollno": rollno,
-        "password": newpass,
+        program: program,
+        semester: parseInt(semester.split(" ")[1]),
+        father: father,
+        mother: mother,
+        campus: college,
+        emailid: emailid,
+        gender: gender,
+        alternate_phone: alternatePhone === "" ? null : alternatePhone,
+        guardian: guardian,
+        rollno: rollno,
+        password: newpass,
       };
       // console.log(body)
-      console.log(101,JSON.stringify(body))
-      const requestOptions = {
-        method: "POST",
-        headers: {},
-        body: JSON.stringify(body), 
-      };
-
+      console.log(101, JSON.stringify(body));
+      // const requestOptions =;
 
       try {
-        setLoading(true)
-        const response = await fetch(
-          "http://localhost:8000/signup",
-          requestOptions
-        );
-        setLoading(false)
-        
-        if(!response.ok) {
+        setLoading(true);
+        const response = await fetch("http://localhost:8000/signup", {
+          method: "POST",
+          mode: "cors",
+          headers: {},
+          body: JSON.stringify(body),
+        });
+        setLoading(false);
+
+        if (!response.ok) {
           setOpen(true);
-          console.log("error: ", response)
+          console.log("error: ", response);
           return;
         }
         console.log(response);
-        router.push('/dashboard')
-        
-      } catch(error) {
-        setLoading(false)
+        router.push("/dashboard");
+      } catch (error) {
+        setLoading(false);
         setOpen(true);
         return;
       }
-
-
     }
   };
   const handlePrevious = () => {
@@ -126,13 +118,15 @@ export default function Home() {
     }
   };
 
-
   // useEffect(() => {
   //   console.log("rollno ", rollno)
   // })
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -246,7 +240,7 @@ export default function Home() {
         </Alert>
       </Snackbar>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
