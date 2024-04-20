@@ -11,7 +11,6 @@ export default function Home() {
   const [newpass, setNewpass] = useState<string>("");
   const [confirm, setConfirm] = useState<string>("");
   const [emailid, setEmailid] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [alternatePhone, setAlternatePhone] = useState<string>("");
@@ -35,6 +34,14 @@ export default function Home() {
       setStep(step - 1);
     }
   };
+
+  const programtypeList = [
+    "Undergraduate Course",
+    "Postgraduate Course",
+    "Doctoral Courses",
+    "Diploma Courses",
+    "Certificate Courses",
+  ]
 
   const campusList = [
     "Ambedkar DSEU Shakarpur Campus I",
@@ -105,6 +112,7 @@ export default function Home() {
         )}
         {step === 3 && (
           <CollegeDetails
+          ProgramTypeList={programtypeList}
             onNext={handleNext}
             onPrevious={handlePrevious}
             campusList={campusList}

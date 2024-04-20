@@ -89,6 +89,7 @@ export default function UserDetailsPage({ emailid, gen, phoneno, altphone, onNex
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
                 label="Gender"
+                required
                 fullWidth
                 >
                 <MenuItem value="male">Male</MenuItem>

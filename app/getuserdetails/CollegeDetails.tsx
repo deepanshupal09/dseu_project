@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, FormControl, Select, InputLabel, MenuItem, Autocomplete } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-export default function UserDetailsPage({ onNext, onPrevious, campusList, programList, semesterList }) {
+export default function UserDetailsPage({ onNext, onPrevious, ProgramTypeList, campusList, programList, semesterList }) {
+  const [programtype, setProgramtype] = useState('');
   const [college, setCollege] = useState('');
   const [program, setProgram] = useState(null);
   const [semester, setSemester] = useState(null);
@@ -26,6 +27,16 @@ export default function UserDetailsPage({ onNext, onPrevious, campusList, progra
       <Typography variant="h4" gutterBottom>
         College Details
       </Typography>
+      <div className="w-[100%]">
+        <Autocomplete
+          options={ProgramTypeList}
+          value={programtype}
+          onChange={(event, newValue) => {
+            setProgramtype(newValue);
+          }}
+          renderInput={(params) => <TextField {...params} label="Program Category" required variant="outlined" fullWidth />}
+        />
+      </div>
       <div className="w-[100%]">
       <Autocomplete
           options={campusList}
