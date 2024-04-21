@@ -5,8 +5,11 @@ import { useState } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
 import logo from "./images/logo.png";
-import { useRouter } from 'next/navigation';
-
+import { useRouter } from "next/navigation";
+import { login } from "./actions/api";
+import { getAuth, setAuth, setSignupCookie } from "./actions/cookie";
+import jwt_decode, { JwtPayload } from "jwt-decode"; // Import JwtPayload type
+import { parseJwt } from "./actions/utils";
 
 export default function Home() {
   const [RollNo, setRollNo] = useState<string>("");
@@ -17,41 +20,39 @@ export default function Home() {
   const router = useRouter();
 
 
+
   async function handleLogin() {
     try {
-      setLoading(true)
-      const response = await fetch("http://localhost:8000/login", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          rollno: RollNo,
-          password: Password,
-        },
-        cache: "no-store",
-      });
-      setLoading(false)
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("Response Data:", responseData);
-        if (responseData.defaultPass) {
+      setLoading(true);
+      const response = await login({ rollno: RollNo, password: Password });
+      console.log("response: ", response);
+      if (response === 400) {
+        setError(true);
+        setHelperText("Incorrect password");
+      } else if (response === 404) {
+        setError(true);
+        setHelperText("Roll No. Not found");
+      } else if (response === 500) {
+        setError(true);
+        setHelperText("Internal Server Error");
+      } else {
+        if (response.defaultPass) {
+          await setSignupCookie();
           router.push(`/getuserdetails/${RollNo}`)
         } else {
-          // store cookie here using next/header
-          router.push('/dashboard')
+          await setAuth(response.token);
+          router.push("/dashboard")
         }
-      } else {
-        // console.log('Request failed with status code:', response.status);
-        const errorData = await response.text(); // Get error message as text
-        setHelperText(errorData);
-        console.log(errorData);
-        // You can handle different status codes here
+        // const token = await getAuth();
+        // console.log("user: ", parseJwt(token?.value as string));
       }
+      setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
-      setHelperText("Internal Server Error!");
-      
+      setLoading(false);
+      // const errorData = await response.text();
+      setError(true);
+        setHelperText("Internal Server Error");
+      console.log("error: ", error);
     }
   }
 
@@ -130,9 +131,7 @@ export default function Home() {
                 fullWidth
               />
             </div>
-            <button
-              className="bg-black flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold"
-            >
+            <button className="bg-black flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold">
               <div> Sign In </div>{" "}
               <ArrowForwardIosIcon className="scale-75  " />
             </button>
@@ -140,7 +139,7 @@ export default function Home() {
         </div>
       </div>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />

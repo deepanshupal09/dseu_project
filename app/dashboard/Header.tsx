@@ -5,6 +5,8 @@ import logo from "../images/logo.png";
 import user from "../images/user.svg";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { deleteAuth } from "../actions/cookie";
+import {useRouter} from "next/navigation";
 
 interface Props {
   username: string;
@@ -12,6 +14,11 @@ interface Props {
 
 export default function Header({ username }: Props) {
   const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
+  async function handleLogout() {
+    await deleteAuth();
+    router.push("/");
+  }
   return (
     <>
       <div className="bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2  shadow-2xl shadow-slate-200 ">
@@ -38,7 +45,7 @@ export default function Header({ username }: Props) {
               <PersonIcon className="scale-90" />
               &nbsp; Profile
             </div>
-            <div className="hover:bg-black hover:text-white cursor-pointer  text-gray-900 group flex w-full items-center rounded-md px-2 py-2 text-sm">
+            <div onClick={handleLogout} className="hover:bg-black hover:text-white cursor-pointer  text-gray-900 group flex w-full items-center rounded-md px-2 py-2 text-sm">
               <LogoutIcon className="scale-90" />
               &nbsp; Logout
             </div>

@@ -4,15 +4,13 @@ import { TextField } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 interface ChangePasswordProps {
-  newpassword: string;
-  confirm: string;
   setnewpassword: React.Dispatch<React.SetStateAction<string>>;
   onNext: (newpassword: string) => void;
 }
 
-export default function ChangePassword({setnewpassword, newpassword, confirm, onNext }: ChangePasswordProps) {
-  const [newPassword, setNewPassword] = useState(newpassword || '');
-  const [confirmPassword, setConfirmPassword] = useState(confirm || '');
+export default function ChangePassword({setnewpassword, onNext }: ChangePasswordProps) {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [helperText, setHelperText] = useState('');
   const [error, setError] = useState(false);
 
