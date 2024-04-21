@@ -16,49 +16,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchTheExamRegistrationProgramAndSemester = exports.fetchTheExamRegistrationCourse = exports.fetchTheExamRegistration = exports.fetchTheCoursesRollNo = exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.verifyTokenByRollNo = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-function generateToken() {
-    const tokenLength = 20; // Adjust the length of the random part of the token as needed
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const randomPartLength = 20; // 13 characters are for the timestamp
-    // Generate random part of the token
-    let randomPart = "";
-    for (let i = 0; i < randomPartLength; i++) {
-        randomPart += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    const timestamp = new Date().getTime().toString().substr(-5);
-    const token = randomPart + timestamp;
-    return token;
-}
+const bcrypt_1 = __importDefault(require("bcrypt"));
 function handleLogin(rollno, password) {
     return new Promise((resolve, reject) => {
         (0, model_1.fetchPasswordByRollNo)(rollno)
             .then((results) => {
             if (results.rows.length > 0) {
                 const dbPassword = results.rows[0].password;
-                if (dbPassword === password) {
-                    // const token: string = generateToken();
-                    // const last_modified: string = new Date().toString();
-                    // const currentDate = new Date();
-                    // currentDate.setHours(currentDate.getHours() + 2);
-                    // const expiry: string = currentDate.toString();
-                    const token = jsonwebtoken_1.default.sign(results.rows[0], 'chotahathi', { expiresIn: '2h' });
-                    const default_pass = (results.rows[0].name + '0000').substring(0, 4) + rollno;
-                    const result = {
-                        token: token,
-                        defaultPass: password === default_pass
-                    };
-                    resolve(result);
-                    // updateToken(token, rollno, last_modified, expiry)
-                    //   .then((results: QueryResult<any>) => {
-                    //     resolve(token);
-                    //   })
-                    //   .catch((error) => {
-                    //     reject("internal server error");
-                    //   });
-                }
-                else {
-                    reject("incorrect password");
-                }
+                bcrypt_1.default.compare(password, dbPassword).then(function (result) {
+                    bcrypt_1.default.hash("anan41521005", 10).then(function (hash) {
+                        console.log(hash);
+                    });
+                    if (result) {
+                        const token = jsonwebtoken_1.default.sign({ user: results.rows[0] }, "chotahathi", {
+                            expiresIn: "2h",
+                        });
+                        const default_pass = (results.rows[0].name + "0000").substring(0, 4) + rollno;
+                        const result = {
+                            token: token,
+                            defaultPass: password === default_pass,
+                        };
+                        resolve(result);
+                    }
+                    else {
+                        reject("incorrect password");
+                    }
+                });
+                // const token: string = generateToken();
+                // const last_modified: string = new Date().toString();
+                // const currentDate = new Date();
+                // currentDate.setHours(currentDate.getHours() + 2);
+                // const expiry: string = currentDate.toString();
+                // updateToken(token, rollno, last_modified, expiry)
+                //   .then((results: QueryResult<any>) => {
+                //     resolve(token);
+                //   })
+                //   .catch((error) => {
+                //     reject("internal server error");
+                //   });
             }
             else {
                 reject("roll no. doesn't exist");
@@ -77,13 +72,16 @@ function updateDetails(rollno, program, semester, phone, campus, emailid, gender
         (0, model_1.fetchPasswordByRollNo)(rollno).then((result) => {
             console.log("service ", result.rows);
             if (result.rows.length > 0) {
-                (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, password)
-                    .then((results) => {
-                    resolve("successfully updated!");
-                })
-                    .catch((error) => {
-                    console.log(error);
-                    reject("internal server error");
+                bcrypt_1.default.hash(password, 10).then(function (hash) {
+                    // Store hash in your password DB.
+                    (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, hash)
+                        .then((results) => {
+                        resolve("successfully updated!");
+                    })
+                        .catch((error) => {
+                        console.log(error);
+                        reject("internal server error");
+                    });
                 });
             }
             else {
@@ -100,7 +98,7 @@ function verifyTokenByRollNo(rollno) {
             return result.rows[0]; // Return token data or null if not found
         }
         catch (error) {
-            throw new Error('Error verifying token');
+            throw new Error("Error verifying token");
         }
     });
 }
