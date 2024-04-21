@@ -29,9 +29,9 @@ export function handleLogin(
         if (results.rows.length > 0) {
           const dbPassword = results.rows[0].password;
           bcrypt.compare(password, dbPassword).then(function (result) {
-            bcrypt.hash("anan41521005", 10).then(function(hash) {
-              console.log(hash)
-          });
+          //   bcrypt.hash("anan41521005", 10).then(function(hash) {
+          //     console.log(hash)
+          // });
             if (result) {
               const token = jwt.sign({ user: results.rows[0] }, "chotahathi", {
                 expiresIn: "2h",

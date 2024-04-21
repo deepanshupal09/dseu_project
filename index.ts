@@ -24,7 +24,7 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.get("/login", controller.login);
-app.post("/signup", controller.signup)
+app.post("/signup", controller.signup);
 
 
 app.listen(port, ()=> {

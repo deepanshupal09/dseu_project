@@ -24,9 +24,9 @@ function handleLogin(rollno, password) {
             if (results.rows.length > 0) {
                 const dbPassword = results.rows[0].password;
                 bcrypt_1.default.compare(password, dbPassword).then(function (result) {
-                    bcrypt_1.default.hash("anan41521005", 10).then(function (hash) {
-                        console.log(hash);
-                    });
+                    //   bcrypt.hash("anan41521005", 10).then(function(hash) {
+                    //     console.log(hash)
+                    // });
                     if (result) {
                         const token = jsonwebtoken_1.default.sign({ user: results.rows[0] }, "chotahathi", {
                             expiresIn: "2h",
