@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const [activeLink, setActiveLink] = useState('');
-  const options = ["Dashboard", "Profile", "Exam Registration", "Course Details"];
+  const options = ["Dashboard", "Profile", "Exam Registration"];
   useEffect(() => {
     setActiveLink(window.location.pathname);
   }, []);
@@ -27,7 +27,7 @@ export default function Navbar() {
               })}
             </div>
             <div className="sm:hidden block">
-              <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} /> 
+              <MenuIcon className="mx-2" onClick={() => setIsMenuOpen(!isMenuOpen)} /> 
               {isMenuOpen && ( 
                 <div className="flex flex-row items-center space-x-4 bg-white p-4 shadow-lg absolute top-[60px] left-0 right-0 z-20">
                   {options.map((option, index) => {

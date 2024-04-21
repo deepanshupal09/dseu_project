@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 export async function getAuth() {
   const cookieStore = cookies()
   const auth = cookieStore.get('auth')
-  console.log(auth)
+//   console.log(auth)
   return auth
 }
 
