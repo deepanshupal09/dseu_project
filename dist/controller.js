@@ -72,6 +72,7 @@ function signup(req, res) {
             res.status(200).send({ message: "successfully updated!" });
         }).catch((error) => {
             res.status(500).send({ message: "internal server error" });
+            res.status(500).send({ message: "internal server error" });
         });
     }
     catch (error) {
@@ -89,7 +90,7 @@ const addExamRegisterationByRollNo = (req, res) => {
         });
     }
     catch (error) {
-        res.send({ message: "internal server error" });
+        res.send("internal server error");
     }
 };
 exports.addExamRegisterationByRollNo = addExamRegisterationByRollNo;
