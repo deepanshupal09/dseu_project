@@ -3,12 +3,14 @@ import {
   handleLogin, 
   updateDetails, 
   fetchUserByRollno, 
-  addInExamRegisteration, 
+  // addInExamRegisteration, 
   fetchTheCourses, 
   fetchTheCoursesRollNo,
   fetchTheExamRegistration,
   fetchTheExamRegistrationCourse,
-  fetchTheExamRegistrationProgramAndSemester
+  fetchTheExamRegistrationProgramAndSemester,
+  insertTheUsers,
+  insertTheExamRegisterations
 } from "./service";
 
 const getUserByRollno = (req: Request, res: Response): void => {
@@ -114,19 +116,19 @@ function signup(req: Request, res: Response):void {
   }
 }
 
-const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
-  try {
-    const {rollno, course_code} =req.body;
-    addInExamRegisteration(rollno, course_code). then((results) =>{
-      res.status(200).send("succesfully inserted!");
-    }).catch((error) => {
-      res.status(500).send("internal server");
-    })
-  }
-  catch(error) {
-    res.send("internal server error");
-  }
-}
+// const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
+//   try {
+//     const {rollno, course_code} =req.body;
+//     addInExamRegisteration(rollno, course_code). then((results) =>{
+//       res.status(200).send("succesfully inserted!");
+//     }).catch((error) => {
+//       res.status(500).send("internal server");
+//     })
+//   }
+//   catch(error) {
+//     res.send("internal server error");
+//   }
+// }
 
 const fetchCoursesBySemester = (req: Request, res: Response):void => {
   try{
@@ -202,15 +204,43 @@ const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):
   }
 }
 
+const addUsers = (req: Request, res: Response): void => {
+  try {
+    const users = req.body;
+    insertTheUsers(users).then((results) => {
+      res.status(200).send("succesfully inserted!");
+    }).catch((error) => {
+      res.status(500).send("Internal server error insert in users 2");
+    })
+  } catch (error) {
+    res.send("Internal server error insert in users 3");
+  }
+}
+
+const addExamRegisterations = (req: Request, res: Response): void => {
+  try {
+    const registeration = req.body;
+    insertTheExamRegisterations(registeration).then((results) => {
+      res.status(200).send("Successfully inserted!");
+    }).catch((error) => {
+      res.status(500).send("Internal server error in insertExamRegisterations");
+    })
+  } catch (error) {
+    res.send("Internal server error in addExamRegisterations");
+  }
+}
+
 export {
   getUserByRollno,
   login,
   updateDetailsByRollno,
   signup,
-  addExamRegisterationByRollNo,
+  // addExamRegisterationByRollNo,
   fetchCoursesBySemester,
   fetchCoursesByRollNo,
   fetchExamRegistrationByRollNo,
   fetchExamRegistrationByCourseCode,
-  fetchExamRegistrationByProgramAndSemester
+  fetchExamRegistrationByProgramAndSemester,
+  addUsers,
+  addExamRegisterations
 };

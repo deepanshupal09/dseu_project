@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchExamRegistrationByProgramAndSemester = exports.fetchExamRegistrationByCourseCode = exports.fetchExamRegistrationByRollNo = exports.fetchCoursesByRollNo = exports.fetchCoursesBySemester = exports.addExamRegisterationByRollNo = exports.signup = exports.updateDetailsByRollno = exports.login = exports.getUserByRollno = void 0;
+exports.addExamRegisterations = exports.addUsers = exports.fetchExamRegistrationByProgramAndSemester = exports.fetchExamRegistrationByCourseCode = exports.fetchExamRegistrationByRollNo = exports.fetchCoursesByRollNo = exports.fetchCoursesBySemester = exports.signup = exports.updateDetailsByRollno = exports.login = exports.getUserByRollno = void 0;
 const service_1 = require("./service");
 const getUserByRollno = (req, res) => {
     try {
@@ -80,20 +80,19 @@ function signup(req, res) {
     }
 }
 exports.signup = signup;
-const addExamRegisterationByRollNo = (req, res) => {
-    try {
-        const { rollno, course_code } = req.body;
-        (0, service_1.addInExamRegisteration)(rollno, course_code).then((results) => {
-            res.status(200).send("succesfully inserted!");
-        }).catch((error) => {
-            res.status(500).send("internal server");
-        });
-    }
-    catch (error) {
-        res.send("internal server error");
-    }
-};
-exports.addExamRegisterationByRollNo = addExamRegisterationByRollNo;
+// const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
+//   try {
+//     const {rollno, course_code} =req.body;
+//     addInExamRegisteration(rollno, course_code). then((results) =>{
+//       res.status(200).send("succesfully inserted!");
+//     }).catch((error) => {
+//       res.status(500).send("internal server");
+//     })
+//   }
+//   catch(error) {
+//     res.send("internal server error");
+//   }
+// }
 const fetchCoursesBySemester = (req, res) => {
     try {
         const semester = parseInt(req.headers.semester);
@@ -168,3 +167,31 @@ const fetchExamRegistrationByProgramAndSemester = (req, res) => {
     }
 };
 exports.fetchExamRegistrationByProgramAndSemester = fetchExamRegistrationByProgramAndSemester;
+const addUsers = (req, res) => {
+    try {
+        const users = req.body;
+        (0, service_1.insertTheUsers)(users).then((results) => {
+            res.status(200).send("succesfully inserted!");
+        }).catch((error) => {
+            res.status(500).send("Internal server error insert in users 2");
+        });
+    }
+    catch (error) {
+        res.send("Internal server error insert in users 3");
+    }
+};
+exports.addUsers = addUsers;
+const addExamRegisterations = (req, res) => {
+    try {
+        const registeration = req.body;
+        (0, service_1.insertTheExamRegisterations)(registeration).then((results) => {
+            res.status(200).send("Successfully inserted!");
+        }).catch((error) => {
+            res.status(500).send("Internal server error in insertExamRegisterations");
+        });
+    }
+    catch (error) {
+        res.send("Internal server error in addExamRegisterations");
+    }
+};
+exports.addExamRegisterations = addExamRegisterations;

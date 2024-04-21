@@ -9,12 +9,14 @@ import {
   putDetailsByRollno,
   updateToken,
   fetchUser,
-  addExamRegisteration,
+  // addExamRegisteration,
   fetchCourses,
   fetchCoursesRollNo,
   fetchExamRegistration,
   fetchExamRegistrationCourse,
-  fetchExamRegistrationProgramAndSemester
+  fetchExamRegistrationProgramAndSemester,
+  insertUsers,
+  insertExamRegisterations
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -145,17 +147,17 @@ export function fetchUserByRollno ( rollno:string ) : Promise<any> {
   })
 }
 
-export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
-  return new Promise((resolve, reject) => {
-    const last_modified: string = new Date().toString();
-    addExamRegisteration(rollno, course_code, last_modified).then((results) => {
-      resolve("Successfully inserted in Exam Registeration!");
-    }).catch((error) => {
-      console.log("Exam registeration service error: ",error);
-      reject("Internal server error");
-    })
-  })
-}
+// export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
+//   return new Promise((resolve, reject) => {
+//     const last_modified: string = new Date().toString();
+//     addExamRegisteration(rollno, course_code, last_modified).then((results) => {
+//       resolve("Successfully inserted in Exam Registeration!");
+//     }).catch((error) => {
+//       console.log("Exam registeration service error: ",error);
+//       reject("Internal server error");
+//     })
+//   })
+// }
 
 
 export function fetchTheCourses ( semester:number, program:string ): Promise<any> {
@@ -212,3 +214,46 @@ export function fetchTheExamRegistrationProgramAndSemester (program:string ,seme
     })
   })
 }
+
+export function insertTheUsers(users: any): Promise<any> {
+  console.log("hello");
+  return new Promise((resolve, reject) => {
+    let data:any=[];
+    // Use Promise.all to wait for all bcrypt hash operations to complete
+    Promise.all(users.map((user:any) => {
+      const password = (user.name.toUpperCase()+'0000').substring(0, 4) + user.rollno;
+      return new Promise((resolve, reject) => {
+        bcrypt.hash(password, 10, function(err, hash) {
+          data.push({...user,password:hash});
+          resolve(data);
+        });
+      });
+    })).then(() => {
+      console.log("data: ",data);
+      // Assuming insertUsers returns a Promise
+      insertUsers(data).then((result) => {
+        resolve(result.rows);
+      }).catch((error) => {
+        console.log("Error in inserting users: ", error);
+        reject("Internal server error in insertUsers 1");
+      });
+    }).catch((error) => {
+      console.log("Error in hashing passwords: ", error);
+      reject("Internal server error in hashing passwords");
+    });
+  });
+}
+
+export function insertTheExamRegisterations(registeration: any): Promise<any> {
+  console.log("hello");
+  return new Promise((resolve, reject) => {
+    insertExamRegisterations(registeration).then((result) => {
+      resolve(result.rows);
+    }).catch((error) => {
+      console.log("Error in inserting exam registerations: ", error);
+      reject("Internal server error in insertExamRegisterations");
+    });
+  });
+}
+
+

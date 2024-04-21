@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchExamRegistrationProgramAndSemester = exports.fetchExamRegistrationCourse = exports.fetchExamRegistration = exports.fetchCoursesRollNo = exports.fetchCourses = exports.addExamRegisteration = exports.fetchUser = exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
+exports.insertExamRegisterations = exports.insertUsers = exports.fetchExamRegistrationProgramAndSemester = exports.fetchExamRegistrationCourse = exports.fetchExamRegistration = exports.fetchCoursesRollNo = exports.fetchCourses = exports.fetchUser = exports.putDetailsByRollno = exports.pushToken = exports.fetchTokenByRollNo = exports.updateToken = exports.fetchPasswordByRollNo = void 0;
 const db_1 = __importDefault(require("./db"));
 const queries_1 = require("./queries");
 function fetchPasswordByRollNo(rollno) {
@@ -102,20 +102,18 @@ function fetchUser(rollno) {
     });
 }
 exports.fetchUser = fetchUser;
-function addExamRegisteration(rollno, course_code, last_modified) {
-    return new Promise((resolve, reject) => {
-        db_1.default.query(queries_1.addExamRegisterationByRollno, [rollno, course_code, last_modified], (error, results) => {
-            if (error) {
-                console.log("Exam registeration model error: ", error);
-                reject(error);
-            }
-            else {
-                resolve(results);
-            }
-        });
-    });
-}
-exports.addExamRegisteration = addExamRegisteration;
+// export function addExamRegisteration ( rollno:string, course_code:string, last_modified:string ): Promise<QueryResult<any>> {
+//   return new Promise((resolve, reject) => {
+//     pool.query(addExamRegisterationByRollno, [rollno, course_code, last_modified], (error, results)=>{
+//       if(error) {
+//         console.log("Exam registeration model error: ",error);
+//         reject(error);
+//       } else {
+//         resolve(results);
+//       }
+//     })
+//   })
+// }
 function fetchCourses(semester, program) {
     return new Promise((resolve, reject) => {
         db_1.default.query(queries_1.fetchCoursesBySemester, [semester, program], (error, results) => {
@@ -183,3 +181,42 @@ function fetchExamRegistrationProgramAndSemester(program, semester) {
     });
 }
 exports.fetchExamRegistrationProgramAndSemester = fetchExamRegistrationProgramAndSemester;
+function insertUsers(users) {
+    return new Promise((resolve, reject) => {
+        const query = `
+      INSERT INTO users (rollno, name, password)
+      VALUES ${users.map(user => {
+            return `('${user.rollno}', '${user.name}', '${user.password}')`;
+        }).join(', ')}
+    `;
+        db_1.default.query(query, (error, results) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.insertUsers = insertUsers;
+function insertExamRegisterations(registeration) {
+    return new Promise((resolve, reject) => {
+        const last_modified = new Date().toString();
+        const query = `
+      INSERT INTO exam_registeration (rollno, course_code, last_modified)
+      VALUES ${registeration.course_code.map(courseCode => {
+            return `('${registeration.rollno}', '${courseCode}', '${last_modified}')`;
+        }).join(', ')}
+    `;
+        db_1.default.query(query, (error, results) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(results);
+            }
+        });
+    });
+}
+exports.insertExamRegisterations = insertExamRegisterations;
