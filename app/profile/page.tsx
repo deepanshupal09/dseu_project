@@ -27,8 +27,6 @@ interface PersonalDetails {
   mothersNameInput: string;
   gender: string;
   genderInput: string;
-  category: string;
-  categoryInput: string;
   mobileNumber: string;
   mobileNumberInput: string;
   email: string;
@@ -50,8 +48,6 @@ export default function Home() {
     mothersNameInput: "NAME NAME", 
     gender: "Male", 
     genderInput: "Male", 
-    category: "General", 
-    categoryInput: "General", 
     mobileNumber: "+919876543210", 
     mobileNumberInput: "+919876543210",
     email: "ab1111@dseu.ac.in", 
@@ -182,75 +178,7 @@ export default function Home() {
     );
   };
   
-  const renderCategoryField = () => {
-    return (
-      <div className="flex items-center mb-2">
-        <Face6RoundedIcon className="mr-2" /> 
-        <div className="flex flex-col"> 
-          {editMode ? (
-            <>
-              <label>
-                <input
-                  type="checkbox"
-                  name="category"
-                  value="General"
-                  checked={tempPersonalDetails ? tempPersonalDetails.category === "General" : personalDetails.category === "General"}
-                  onChange={(e) => handleInputChange("category", e.target.checked ? "General" : "")}
-                />
-                General
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="category"
-                  value="EWS"
-                  checked={tempPersonalDetails ? tempPersonalDetails.category === "EWS" : personalDetails.category === "EWS"}
-                  onChange={(e) => handleInputChange("category", e.target.checked ? "EWS" : "")}
-                />
-                EWS
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="category"
-                  value="OBC"
-                  checked={tempPersonalDetails ? tempPersonalDetails.category === "OBC" : personalDetails.category === "OBC"}
-                  onChange={(e) => handleInputChange("category", e.target.checked ? "OBC" : "")}
-                />
-                OBC
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="category"
-                  value="SC"
-                  checked={tempPersonalDetails ? tempPersonalDetails.category === "SC" : personalDetails.category === "SC"}
-                  onChange={(e) => handleInputChange("category", e.target.checked ? "SC" : "")}
-                />
-                SC
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="category"
-                  value="ST"
-                  checked={tempPersonalDetails ? tempPersonalDetails.category === "ST" : personalDetails.category === "ST"}
-                  onChange={(e) => handleInputChange("category", e.target.checked ? "ST" : "")}
-                />
-                ST
-              </label>
-            </>
-          ) : (
-            <p>
-              <span className="font-bold">Category:</span>
-              <br /> {personalDetails.category}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  };
-
+  
   const handleEditAndConfirm = () =>{
     if(editMode){
       handleConfirmPersonalDetails();
@@ -295,7 +223,6 @@ export default function Home() {
               {renderField("fathersName", "Father's Name")}
               {renderField("mothersName", "Mother's Name")}
               {renderGenderField()}
-              {renderCategoryField()}
               {renderField("mobileNumber", "Mobile Number")}
               {renderField("email", "Email")}
               {renderField("aadharCard", "Aadhar Card")}

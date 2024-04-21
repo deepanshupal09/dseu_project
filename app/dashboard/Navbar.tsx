@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const [activeLink, setActiveLink] = useState('');
-  const options = ["Dashboard", "Profile", "Exam Registration", "Course Details"];
+  const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
   useEffect(() => {
     setActiveLink(window.location.pathname);
   }, []);

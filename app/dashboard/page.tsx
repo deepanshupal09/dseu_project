@@ -6,12 +6,12 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
-  const options = ["Dashboard", "Profile", "Exam Registration", "Course Details"];
+  const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
 
   const recentChange = {
     title: "Exam Registerations",
     timestamp: "2024-04-19",
-    details: "sixth semester final examination subjects were chosen and submitted.",
+    details: "Current semester's final examination subjects were chosen and submitted.",
   };
 
   const [expanded, setExpanded] = useState(false);
