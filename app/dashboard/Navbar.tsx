@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import MenuIcon from '@mui/icons-material/Menu'; 
+import { MenuOpen } from "@mui/icons-material";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const [activeLink, setActiveLink] = useState('');
-  const options = ["Dashboard", "Profile", "Exam Registration"];
+  const options = ["Dashboard", "Profile", "Exam Registration","Help"];
   useEffect(() => {
     setActiveLink(window.location.pathname);
   }, []);
@@ -26,10 +27,10 @@ export default function Navbar() {
                 );
               })}
             </div>
-            <div className="sm:hidden block">
-              <MenuIcon className="mx-2" onClick={() => setIsMenuOpen(!isMenuOpen)} /> 
-              {isMenuOpen && ( 
-                <div className="flex flex-row items-center space-x-4 bg-white p-4 shadow-lg absolute top-[60px] left-0 right-0 z-20">
+            <div className="sm:hidden absolute top-[60px] w-full flex flex-col">
+              
+              {true && ( 
+                <div className="flex flex-row items-center space-x-7 bg-white p-4 shadow-lg  ">
                   {options.map((option, index) => {
                     const path = `/${option.toLowerCase().replace(/\s+/g, '-')}`;
                     return (
@@ -44,6 +45,7 @@ export default function Navbar() {
                   })}
                 </div>
               )}
+              {/* <div> <MenuIcon className="mx-2" onClick={() => setIsMenuOpen(!isMenuOpen)} /> </div> */}
             </div>
           </div>
         </div>

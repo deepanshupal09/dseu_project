@@ -21,7 +21,7 @@ export default function Header({ username }: Props) {
   }
   return (
     <>
-      <div className="bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2  shadow-2xl shadow-slate-200 ">
+      <div className="bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2 w-full absolute top-0 shadow-2xl shadow-slate-200 ">
         <div className="flex items-center space-x-2">
          {" "}<span className="text-lg">DSEU Student Portal </span>
         </div>
