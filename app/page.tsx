@@ -92,9 +92,7 @@ export default function Home() {
                 fullWidth
               />
             </div>
-            <button
-              className="bg-black flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold"
-            >
+            <button className="bg-black flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold">
               <div> Sign In </div>{" "}
               <ArrowForwardIosIcon className="scale-75  " />
             </button>
@@ -102,7 +100,7 @@ export default function Home() {
         </div>
       </div>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />

@@ -8,6 +8,10 @@ import LinearProgress from "@mui/joy/LinearProgress";
 import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
+import axios from 'axios';
+import { login, signup } from "@/app/actions/api";
+import { deleteSignupCookie } from "@/app/actions/cookie";
+
 
 export default function Home() {
   const [step, setStep] = useState<number>(1);
@@ -33,6 +37,7 @@ export default function Home() {
     useState<string>("");
 
   const pathname = usePathname();
+  const router = useRouter();
   const rollno = pathname.split("/")[2];
 
   const handleNext = async () => {
@@ -90,22 +95,16 @@ export default function Home() {
 
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8000/signup", {
-          method: "POST",
-          mode: "cors",
-          headers: {},
-          body: JSON.stringify(body),
-        });
-        setLoading(false);
+        const response:any= await signup(body);
+        const res = await login({rollno: rollno, password: newpass});
+        setLoading(false);        
+        console.log("response: ",response)    
+        deleteSignupCookie();
+        router.push("/")
 
-        if (!response.ok) {
-          setOpen(true);
-          console.log("error: ", response);
-          return;
-        }
-        console.log(response);
-        router.push("/dashboard");
+        
       } catch (error) {
+        console.log("error", error)
         setLoading(false);
         setOpen(true);
         return;
@@ -117,10 +116,6 @@ export default function Home() {
       setStep(step - 1);
     }
   };
-
-  // useEffect(() => {
-  //   console.log("rollno ", rollno)
-  // })
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,

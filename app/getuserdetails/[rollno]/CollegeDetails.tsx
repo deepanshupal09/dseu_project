@@ -89,18 +89,18 @@ export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campu
         />
       </div>
       <div className="flex  gap-x-2 w-full">
-        <Button
+        <button
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           onClick={onPrevious}
         ><ArrowBackIosNew className="scale-75 -ml-4" />Previous
-        </Button>
-        <Button
+        </button>
+        <button
           type="submit"
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
         >
           <div>Next</div>
           <ArrowForwardIosIcon className="scale-75 -mr-4" />
-        </Button>
+        </button>
       </div>
     </form>
   );
