@@ -75,7 +75,7 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       password
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password,program_type).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -100,10 +100,11 @@ function signup(req: Request, res: Response):void {
       mother,
       guardian,
       rollno,
-      password
+      password,
+      program_type
     } = req.body;
     console.log(101,req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password,program_type).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});

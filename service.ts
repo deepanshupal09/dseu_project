@@ -83,7 +83,8 @@ export function updateDetails(
   father: string,
   mother: string,
   guardian: string,
-  password: string
+  password: string,
+  program_type: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const last_modified: string = new Date().toString();
@@ -106,6 +107,7 @@ export function updateDetails(
             mother,
             guardian,
             last_modified,
+            program_type,
             hash
           )
             .then((results) => {

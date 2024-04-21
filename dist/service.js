@@ -65,7 +65,7 @@ function handleLogin(rollno, password) {
     });
 }
 exports.handleLogin = handleLogin;
-function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password) {
+function updateDetails(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password, program_type) {
     return new Promise((resolve, reject) => {
         const last_modified = new Date().toString();
         console.log("rollno ", rollno);
@@ -74,7 +74,7 @@ function updateDetails(rollno, program, semester, phone, campus, emailid, gender
             if (result.rows.length > 0) {
                 bcrypt_1.default.hash(password, 10).then(function (hash) {
                     // Store hash in your password DB.
-                    (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, hash)
+                    (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, last_modified, program_type, hash)
                         .then((results) => {
                         resolve("successfully updated!");
                     })

@@ -52,7 +52,7 @@ const updateDetailsByRollno = (req, res) => {
     try {
         const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, program_type, rollno, password } = req.body;
         console.log(req.body);
-        (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password).then((results) => {
+        (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password, program_type).then((results) => {
             res.status(200).send("successfully updated!");
         }).catch((error) => {
             res.status(500).send("internal server error");
@@ -66,9 +66,9 @@ exports.updateDetailsByRollno = updateDetailsByRollno;
 function signup(req, res) {
     console.log('singup');
     try {
-        const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, rollno, password } = req.body;
+        const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, rollno, password, program_type } = req.body;
         console.log(101, req.body);
-        (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password).then((results) => {
+        (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password, program_type).then((results) => {
             res.status(200).send({ message: "successfully updated!" });
         }).catch((error) => {
             res.status(500).send({ message: "internal server error" });
