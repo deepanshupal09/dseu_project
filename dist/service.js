@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchTheExamRegistrationProgramAndSemester = exports.fetchTheExamRegistrationCourse = exports.fetchTheExamRegistration = exports.fetchTheCoursesRollNo = exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.verifyTokenByRollNo = exports.updateDetails = exports.handleLogin = void 0;
+exports.insertTheExamRegisterations = exports.insertTheUsers = exports.fetchTheExamRegistrationProgramAndSemester = exports.fetchTheExamRegistrationCourse = exports.fetchTheExamRegistration = exports.fetchTheCoursesRollNo = exports.fetchTheCourses = exports.fetchUserByRollno = exports.verifyTokenByRollNo = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -115,18 +115,17 @@ function fetchUserByRollno(rollno) {
     });
 }
 exports.fetchUserByRollno = fetchUserByRollno;
-function addInExamRegisteration(rollno, course_code) {
-    return new Promise((resolve, reject) => {
-        const last_modified = new Date().toString();
-        (0, model_1.addExamRegisteration)(rollno, course_code, last_modified).then((results) => {
-            resolve("Successfully inserted in Exam Registeration!");
-        }).catch((error) => {
-            console.log("Exam registeration service error: ", error);
-            reject("Internal server error");
-        });
-    });
-}
-exports.addInExamRegisteration = addInExamRegisteration;
+// export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
+//   return new Promise((resolve, reject) => {
+//     const last_modified: string = new Date().toString();
+//     addExamRegisteration(rollno, course_code, last_modified).then((results) => {
+//       resolve("Successfully inserted in Exam Registeration!");
+//     }).catch((error) => {
+//       console.log("Exam registeration service error: ",error);
+//       reject("Internal server error");
+//     })
+//   })
+// }
 function fetchTheCourses(semester, program) {
     return new Promise((resolve, reject) => {
         (0, model_1.fetchCourses)(semester, program).then((results) => {
@@ -182,3 +181,44 @@ function fetchTheExamRegistrationProgramAndSemester(program, semester) {
     });
 }
 exports.fetchTheExamRegistrationProgramAndSemester = fetchTheExamRegistrationProgramAndSemester;
+function insertTheUsers(users) {
+    console.log("hello");
+    return new Promise((resolve, reject) => {
+        let data = [];
+        // Use Promise.all to wait for all bcrypt hash operations to complete
+        Promise.all(users.map((user) => {
+            const password = (user.name.toUpperCase() + '0000').substring(0, 4) + user.rollno;
+            return new Promise((resolve, reject) => {
+                bcrypt_1.default.hash(password, 10, function (err, hash) {
+                    data.push(Object.assign(Object.assign({}, user), { password: hash }));
+                    resolve(data);
+                });
+            });
+        })).then(() => {
+            console.log("data: ", data);
+            // Assuming insertUsers returns a Promise
+            (0, model_1.insertUsers)(data).then((result) => {
+                resolve(result.rows);
+            }).catch((error) => {
+                console.log("Error in inserting users: ", error);
+                reject("Internal server error in insertUsers 1");
+            });
+        }).catch((error) => {
+            console.log("Error in hashing passwords: ", error);
+            reject("Internal server error in hashing passwords");
+        });
+    });
+}
+exports.insertTheUsers = insertTheUsers;
+function insertTheExamRegisterations(registeration) {
+    console.log("hello");
+    return new Promise((resolve, reject) => {
+        (0, model_1.insertExamRegisterations)(registeration).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in inserting exam registerations: ", error);
+            reject("Internal server error in insertExamRegisterations");
+        });
+    });
+}
+exports.insertTheExamRegisterations = insertTheExamRegisterations;

@@ -17,10 +17,11 @@ export const updateDetailsByRollno: string = `
       password = $14
   WHERE rollno = $12;
 `;
+
 export const putToken: string = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
 export const fetchToken: string = "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
 export const pushTokenQuery: string = "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
-export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
+// export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
 
 export const fetchCoursesBySemester: string = `
   SELECT sc.course_code, sc.program, c.course_name, sc.semester FROM semester_course sc
@@ -55,8 +56,10 @@ export const fetchExamRegistrationByCourseCode: string = `
   JOIN users u ON er.rollno = u.rollno
   where er.course_code=$1;  
 `;
+
 export const fetchExamRegistrationByProgramAndSemester: string = `
   SELECT u.name, er.rollno, u.program, u.semester ,er.course_code FROM exam_registeration er
   JOIN users u ON er.rollno = u.rollno
   where u.program=$1 AND u.semester=$2;  
 `;
+

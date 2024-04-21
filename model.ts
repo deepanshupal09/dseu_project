@@ -9,12 +9,12 @@ import {
   pushTokenQuery,
   updateDetailsByRollno,
   getUserByRollno,
-  addExamRegisterationByRollno,
+  // addExamRegisterationByRollno,
   fetchCoursesBySemester,
   fetchCoursesByRollNo,
   fetchExamRegistrationByRollNo,
   fetchExamRegistrationByCourseCode,
-  fetchExamRegistrationByProgramAndSemester
+  fetchExamRegistrationByProgramAndSemester,
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -147,18 +147,18 @@ export function fetchUser ( rollno:string ) : Promise<QueryResult<any>> {
   })
 }
 
-export function addExamRegisteration ( rollno:string, course_code:string, last_modified:string ): Promise<QueryResult<any>> {
-  return new Promise((resolve, reject) => {
-    pool.query(addExamRegisterationByRollno, [rollno, course_code, last_modified], (error, results)=>{
-      if(error) {
-        console.log("Exam registeration model error: ",error);
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    })
-  })
-}
+// export function addExamRegisteration ( rollno:string, course_code:string, last_modified:string ): Promise<QueryResult<any>> {
+//   return new Promise((resolve, reject) => {
+//     pool.query(addExamRegisterationByRollno, [rollno, course_code, last_modified], (error, results)=>{
+//       if(error) {
+//         console.log("Exam registeration model error: ",error);
+//         reject(error);
+//       } else {
+//         resolve(results);
+//       }
+//     })
+//   })
+// }
 
 
 export function fetchCourses(semester: number, program: string): Promise<QueryResult<any>> {
@@ -210,6 +210,7 @@ export function fetchExamRegistrationCourse( course_code:string) :Promise<QueryR
     })
   })
 }
+
 export function fetchExamRegistrationProgramAndSemester( program:string ,semester:number) :Promise<QueryResult<any>> {
   return new Promise ((resolve, reject) => {
     pool.query(fetchExamRegistrationByProgramAndSemester, [program ,semester], (error, results)=> {
@@ -220,4 +221,42 @@ export function fetchExamRegistrationProgramAndSemester( program:string ,semeste
       }
     })
   })
+}
+
+export function insertUsers(users: Array<{ rollno: string, name: string, password: string }>): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    const query = `
+      INSERT INTO users (rollno, name, password)
+      VALUES ${users.map(user => {
+        return `('${user.rollno}', '${user.name}', '${user.password}')`;
+      }).join(', ')}
+    `;
+    pool.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+
+export function insertExamRegisterations(registeration: { rollno: string, course_code: Array<string>}): Promise<QueryResult<any>> {
+  return new Promise((resolve, reject) => {
+    const last_modified: string = new Date().toString();
+    const query = `
+      INSERT INTO exam_registeration (rollno, course_code, last_modified)
+      VALUES ${registeration.course_code.map(courseCode => {
+        return `('${registeration.rollno}', '${courseCode}', '${last_modified}')`;
+      }).join(', ')}
+    `;
+    pool.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
 }
