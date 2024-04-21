@@ -36,11 +36,11 @@ export default function Header({ username }: Props) {
             <div>{username}</div>
           </div>
           <div
-            className={`absolute p-1 right-0  top-14 w-36 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none" ${
+            className={`absolute p-1 right-0  z-50 top-14 w-36 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none" ${
               open ? "" : "hidden"
             }`}
           >
-            <div className="hover:bg-black hover:text-white cursor-pointer  text-gray-900 group flex w-full items-center rounded-md px-2 py-2 text-sm">
+            <div onClick={()=>{router.push("/profile")}} className="hover:bg-black hover:text-white cursor-pointer  text-gray-900 group flex w-full items-center rounded-md px-2 py-2 text-sm">
               {" "}
               <PersonIcon className="scale-90" />
               &nbsp; Profile

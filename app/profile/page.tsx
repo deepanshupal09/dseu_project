@@ -1,5 +1,5 @@
 "use client";
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import Navbar from '../dashboard/Navbar'; 
 import Header from '../dashboard/Header';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
@@ -18,6 +18,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
+import { getAuth } from '../actions/cookie';
+import { parseJwt } from '../actions/utils';
 
 interface PersonalDetails {
   name: string;
@@ -25,6 +27,8 @@ interface PersonalDetails {
   fathersNameInput: string;
   mothersName: string;
   mothersNameInput: string;
+  guardianName: string, 
+  guardianNameInput: string,
   gender: string;
   genderInput: string;
   category: string;
@@ -42,12 +46,15 @@ interface PersonalDetails {
 export default function Home() {
   const [editMode, setEditMode] = useState(false);
   const [tempPersonalDetails, setTempPersonalDetails] = useState<PersonalDetails | null>(null);
+  const [user, setUser] = useState();
   const [personalDetails, setPersonalDetails] = useState<PersonalDetails>({
     name: "Abhinav Mangalore",
     fathersName: "Name Name", 
     fathersNameInput: "Name Name", 
     mothersName: "NAME NAME", 
     mothersNameInput: "NAME NAME", 
+    guardianName: "Name Name",
+    guardianNameInput: "NAME NAME",
     gender: "Male", 
     genderInput: "Male", 
     category: "General", 
@@ -61,6 +68,39 @@ export default function Home() {
     address: "E-12 Rk Puram New Delhi, 110012", 
     addressInput: "E-12 Rk Puram New Delhi, 110012", 
   });
+
+  useEffect(()=>{
+    setPersonalDetails({
+      name: user?.name,
+      fathersName: user?.father,
+      fathersNameInput: user?.father, 
+      mothersName: user?.mother, 
+      mothersNameInput: user?.mother,
+      guardianName: user?.guardian, 
+      guardianNameInput: user?.guardian,
+      gender: user?.gender, 
+      genderInput: user?.gender, 
+      category: "General", 
+      categoryInput: "General", 
+      mobileNumber: user?.phone,  
+      mobileNumberInput: user?.phone,
+      email: user?.emailid,
+      emailInput: user?.emailid,
+      aadharCard: "********1234", 
+      aadharCardInput: "********1234", 
+      address: "E-12 Rk Puram New Delhi, 110012", 
+      addressInput: "E-12 Rk Puram New Delhi, 110012", 
+  })
+  },[user])
+
+  useEffect(() => {
+    
+    getAuth().then((auth:any) => {
+     const temp = parseJwt(auth?.value);
+     setUser(temp.user);
+     console.log(temp.user);      
+    })
+ },[])
 
   const handleEditPersonalDetails = () => {
     setEditMode(true);
@@ -267,7 +307,7 @@ export default function Home() {
   return (
     <>
       <div className=" bg-[#dfdede] ">
-        <Header username={"Abhinav M"} />
+        <Header username={user?.name} />
         <Navbar />
       </div>
 
@@ -275,13 +315,13 @@ export default function Home() {
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white ">
           <AccountBoxRoundedIcon className=' ml-10'/>
           <div>
-            <h1 className="text-xle font-bold">Abhinav Mangalore<span>'s profile</span></h1>
+            <h1 className="text-xle font-bold">{user?.name}<span>'s profile</span></h1>
           </div>
           <div className="text-right">
             <p className="font-bold">Roll Number:</p>
-            <p>41521001</p>
+            <p>{user?.rollno}</p>
             <p className="font-bold">Semester: </p>
-            <p>6</p>
+            <p>{user?.semester}</p>
           </div>
         </div>
       </div>
@@ -292,14 +332,15 @@ export default function Home() {
           <div className="w-full sm:w-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
               {renderField("name", "Name")}
-              {renderField("fathersName", "Father's Name")}
-              {renderField("mothersName", "Mother's Name")}
-              {renderGenderField()}
-              {renderCategoryField()}
+              {personalDetails.fathersName && renderField("fathersName", "Father's Name")}
+              {personalDetails.mothersName && renderField("mothersName", "Mother's Name")}
+              {personalDetails.guardianName && renderField("guardianName", "Guardian's Name")}
+              {/* {renderGenderField()} */}
+              {/* {renderCategoryField()} */}
               {renderField("mobileNumber", "Mobile Number")}
               {renderField("email", "Email")}
-              {renderField("aadharCard", "Aadhar Card")}
-              {renderField("address", "Address")}
+              {/* {renderField("aadharCard", "Aadhar Card")} */}
+              {/* {renderField("address", "Address")} */}
             </div>
             {editMode ? (
             <div className='flex items-end mr-6'>
@@ -325,35 +366,35 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex items-center mb-2">
                 <SchoolIcon className="mr-2"/>
-                <p><span className="font-bold">Campus Name:</span><br /> GB Pant Okhla - 1</p>
+                <p><span className="font-bold">Campus Name:</span><br /> {user?.campus}</p>
               </div>
               <div className="flex items-center mb-2">
                 <BookIcon className="mr-2"/>
-                <p><span className="font-bold">Program Type:</span><br /> UnderGraduation</p>
+                <p><span className="font-bold">Program Type:</span><br /> {user?.program_type}</p>
               </div>
               <div className="flex items-center mb-2">
                 <ClassIcon className="mr-2"/>
-                <p><span className="font-bold">Course Name:</span><br /> B.Tech CSE</p>
+                <p><span className="font-bold">Course Name:</span><br /> {user?.program}</p>
               </div>
               <div className="flex items-center mb-2">
                 <PersonIcon className="mr-2"/>
-                <p><span className="font-bold">Roll Number:</span><br /> 41521001</p>
+                <p><span className="font-bold">Roll Number:</span><br /> {user?.rollno}</p>
               </div>
               <div className="flex items-center mb-2">
                 <CalendarTodayIcon className="mr-2"/>
-                <p><span className="font-bold">Semester:</span><br /> 6</p>
+                <p><span className="font-bold">Semester:</span><br /> {user?.semester}</p>
               </div>
-              <div className="flex items-center mb-2">
+              {/* <div className="flex items-center mb-2">
                 <CalendarTodayIcon className="mr-2"/>
-                <p><span className="font-bold">Graduation Year:</span><br /> 2025</p>
-              </div>
+                 <p><span className="font-bold">Graduation Year:</span><br />  </p> 
+              </div> */}
               <div className="flex items-center mb-2">
                 <VpnKeyIcon className="mr-2"/>
-                <p><span className="font-bold">abc_id:</span><br /> ********1234</p>
+                <p><span className="font-bold">abc_id:</span><br /> {user?.abc_id}</p>
               </div>
               <div className="flex items-center mb-2">
                 <PersonIcon className="mr-2"/>
-                <p><span className="font-bold">Role:</span><br /> student</p>
+                <p><span className="font-bold">Role:</span><br /> Student</p>
               </div>
             </div>
             <div className='flex items-end mr-6'>
