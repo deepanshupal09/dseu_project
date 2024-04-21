@@ -1,23 +1,26 @@
-import pool from "./db";
-import {
-  getUserByRollno as getUserByRollnoQuery,
-  getPasswordByRollno as getPasswordByRollnoQuery,
-  updateDetailsByRollno as updateDetailsByRollnoQuery,
-} from "./queries";
 import { Request, Response } from "express";
-import { handleLogin, updateDetails } from "./service";
+import { 
+  handleLogin, 
+  updateDetails, 
+  fetchUserByRollno, 
+  addInExamRegisteration, 
+  fetchTheCourses, 
+  fetchTheCoursesRollNo,
+  fetchTheExamRegistration,
+  fetchTheExamRegistrationCourse,
+  fetchTheExamRegistrationProgramAndSemester
+} from "./service";
 
 const getUserByRollno = (req: Request, res: Response): void => {
   try {
-    const rollno = req.headers.rollno;
+    const rollno: string = req.headers.rollno as string;
     if (rollno) {
-      pool.query(getUserByRollnoQuery, [rollno], (error, results) => {
-        if (error) throw error;
-
-        res.status(200).json(results.rows);
-      });
-    } else {
-      res.status(400).send("RollNo Is required!");
+      fetchUserByRollno(rollno).then((results)=> {
+        res.status(200).send(results);
+      }) 
+      .catch ((error)=> {
+        res.status(500).send("internal server error");
+      })
     }
   } catch (error) {
     res.status(400).send("There is some error encountered!");
@@ -67,6 +70,7 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       father,
       mother,
       guardian,
+      program_type,
       rollno,
       password
     } = req.body;
@@ -109,9 +113,103 @@ function signup(req: Request, res: Response):void {
   }
 }
 
+const addExamRegisterationByRollNo = (req: Request, res: Response):void => {
+  try {
+    const {rollno, course_code} =req.body;
+    addInExamRegisteration(rollno, course_code). then((results) =>{
+      res.status(200).send("succesfully inserted!");
+    }).catch((error) => {
+      res.status(500).send("internal server");
+    })
+  }
+  catch(error) {
+    res.send("internal server error");
+  }
+}
+
+const fetchCoursesBySemester = (req: Request, res: Response):void => {
+  try{
+    const semester: number = parseInt(req.headers.semester as string);
+    const program: string = req.headers.program as string;
+    console.log("semester , course_code :", semester, program);
+    fetchTheCourses(semester, program).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server 2");
+    })
+  }
+  catch(error) {
+    res.send("Internal server error 3");
+  }
+}
+
+const fetchCoursesByRollNo = (req: Request, res: Response):void => {
+  try{
+    const rollno: string = req.headers.rollno as string;
+    console.log("rolllno: ",rollno);
+    fetchTheCoursesRollNo(rollno). then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server error roll 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error roll 3");
+  }
+}
+
+const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
+  try{
+    const rollno: string = req.headers.rollno as string;
+    fetchTheExamRegistration(rollno).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("internal server error exam registeration 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error exam registeration 3");
+  }
+}
+
+const fetchExamRegistrationByCourseCode = (req: Request, res: Response):void => {
+  try{
+    const course_code:string =req.headers.course_code as string;
+    fetchTheExamRegistrationCourse(course_code).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("Internal server error fetch exam registeration course 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error fetch exam registeration course 3");
+  }
+}
+
+const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):void => {
+  try{
+    const semester: number = parseInt(req.headers.semester as string);
+    const program: string = req.headers.program as string;
+    fetchTheExamRegistrationProgramAndSemester(program, semester).then((results) => {
+      res.status(200).send(results);
+    }).catch((error) => {
+      res.status(500).send("Internal server error fetch exam registeration program and semester 2");
+    })
+  }
+  catch(error){
+    res.send("Internal server error fetch exam registeration program and semester 3");
+  }
+}
+
 export {
   getUserByRollno,
   login,
   updateDetailsByRollno,
-  signup
+  signup,
+  addExamRegisterationByRollNo,
+  fetchCoursesBySemester,
+  fetchCoursesByRollNo,
+  fetchExamRegistrationByRollNo,
+  fetchExamRegistrationByCourseCode,
+  fetchExamRegistrationByProgramAndSemester
 };

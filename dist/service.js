@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyTokenByRollNo = exports.updateDetails = exports.handleLogin = void 0;
+exports.fetchTheExamRegistrationProgramAndSemester = exports.fetchTheExamRegistrationCourse = exports.fetchTheExamRegistration = exports.fetchTheCoursesRollNo = exports.fetchTheCourses = exports.addInExamRegisteration = exports.fetchUserByRollno = exports.verifyTokenByRollNo = exports.updateDetails = exports.handleLogin = void 0;
 const model_1 = require("./model");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function generateToken() {
@@ -105,3 +105,82 @@ function verifyTokenByRollNo(rollno) {
     });
 }
 exports.verifyTokenByRollNo = verifyTokenByRollNo;
+function fetchUserByRollno(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchUser)(rollno).then((results) => {
+            resolve(results.rows);
+        })
+            .catch((error) => {
+            console.log("Service error: ", error);
+            reject("internal server error");
+        });
+    });
+}
+exports.fetchUserByRollno = fetchUserByRollno;
+function addInExamRegisteration(rollno, course_code) {
+    return new Promise((resolve, reject) => {
+        const last_modified = new Date().toString();
+        (0, model_1.addExamRegisteration)(rollno, course_code, last_modified).then((results) => {
+            resolve("Successfully inserted in Exam Registeration!");
+        }).catch((error) => {
+            console.log("Exam registeration service error: ", error);
+            reject("Internal server error");
+        });
+    });
+}
+exports.addInExamRegisteration = addInExamRegisteration;
+function fetchTheCourses(semester, program) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchCourses)(semester, program).then((results) => {
+            resolve(results.rows);
+        }).catch((error) => {
+            console.log("error in fetching courses: ", error);
+            reject("Internal server error 1");
+        });
+    });
+}
+exports.fetchTheCourses = fetchTheCourses;
+function fetchTheCoursesRollNo(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchCoursesRollNo)(rollno).then((results) => {
+            resolve(results.rows);
+        }).catch((error) => {
+            console.log("error in fetching courses by rollno: ", error);
+            reject("Internal server error roll 1");
+        });
+    });
+}
+exports.fetchTheCoursesRollNo = fetchTheCoursesRollNo;
+function fetchTheExamRegistration(rollno) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistration)(rollno).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration: ", error);
+            reject("Internal server error fetch exam registeration 1");
+        });
+    });
+}
+exports.fetchTheExamRegistration = fetchTheExamRegistration;
+function fetchTheExamRegistrationCourse(course_code) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistrationCourse)(course_code).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration by course: ", error);
+            reject("Internal server error fetch exam registeration course 1");
+        });
+    });
+}
+exports.fetchTheExamRegistrationCourse = fetchTheExamRegistrationCourse;
+function fetchTheExamRegistrationProgramAndSemester(program, semester) {
+    return new Promise((resolve, reject) => {
+        (0, model_1.fetchExamRegistrationProgramAndSemester)(program, semester).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("error in fetching exam registeration by program and course: ", error);
+            reject("Internal server error fetch exam registeration progrtam and semester 1");
+        });
+    });
+}
+exports.fetchTheExamRegistrationProgramAndSemester = fetchTheExamRegistrationProgramAndSemester;

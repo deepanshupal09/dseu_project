@@ -8,6 +8,13 @@ import {
   fetchTokenByRollNo,
   putDetailsByRollno,
   updateToken,
+  fetchUser,
+  addExamRegisteration,
+  fetchCourses,
+  fetchCoursesRollNo,
+  fetchExamRegistration,
+  fetchExamRegistrationCourse,
+  fetchExamRegistrationProgramAndSemester
 } from "./model";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs';
@@ -129,4 +136,85 @@ export async function verifyTokenByRollNo(rollno: string) {
   } catch (error) {
     throw new Error('Error verifying token');
   }
+}
+
+
+export function fetchUserByRollno ( rollno:string ) : Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchUser(rollno) .then((results) => {
+      resolve(results.rows);
+    })
+    .catch((error) => {
+      console.log("Service error: ", error);
+      reject("internal server error");
+    })
+  })
+}
+
+export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
+  return new Promise((resolve, reject) => {
+    const last_modified: string = new Date().toString();
+    addExamRegisteration(rollno, course_code, last_modified).then((results) => {
+      resolve("Successfully inserted in Exam Registeration!");
+    }).catch((error) => {
+      console.log("Exam registeration service error: ",error);
+      reject("Internal server error");
+    })
+  })
+}
+
+
+export function fetchTheCourses ( semester:number, program:string ): Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchCourses(semester,program). then((results) => {
+      resolve(results.rows);
+    }).catch((error) => {
+      console.log("error in fetching courses: ",error);
+      reject("Internal server error 1");
+    })
+  })
+}
+
+export function fetchTheCoursesRollNo ( rollno:string ) : Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchCoursesRollNo(rollno). then((results) => {
+      resolve(results.rows);
+    }).catch ((error) => {
+      console.log("error in fetching courses by rollno: ",error);
+      reject("Internal server error roll 1");
+    })
+  })
+}
+
+export function fetchTheExamRegistration ( rollno:string ) :Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchExamRegistration(rollno). then((result) => {
+      resolve(result.rows);
+    }).catch((error) => {
+      console.log("error in fetching exam registeration: ",error);
+      reject("Internal server error fetch exam registeration 1");
+    })
+  })
+}
+
+export function fetchTheExamRegistrationCourse (course_code:string) :Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchExamRegistrationCourse(course_code). then((result) => {
+      resolve(result.rows);
+    }).catch((error) => {
+      console.log("error in fetching exam registeration by course: ",error);
+      reject("Internal server error fetch exam registeration course 1");
+    })
+  })
+}
+
+export function fetchTheExamRegistrationProgramAndSemester (program:string ,semester:number) :Promise<any> {
+  return new Promise((resolve, reject) => {
+    fetchExamRegistrationProgramAndSemester(program ,semester). then((result) => {
+      resolve(result.rows);
+    }).catch((error) => {
+      console.log("error in fetching exam registeration by program and course: ",error);
+      reject("Internal server error fetch exam registeration progrtam and semester 1");
+    })
+  })
 }
