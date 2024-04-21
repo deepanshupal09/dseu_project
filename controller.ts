@@ -17,10 +17,10 @@ const getUserByRollno = (req: Request, res: Response): void => {
         res.status(200).json(results.rows);
       });
     } else {
-      res.status(400).send("RollNo Is required!");
+      res.status(400).send({message:"RollNo Is required!"});
     }
   } catch (error) {
-    res.status(400).send("There is some error encountered!");
+    res.status(400).send({message: "There is some error encountered!"});
     console.log("error: ", error);
   }
 };
@@ -41,16 +41,16 @@ const login = (
         })
         .catch((error: string) => {
           if (error === "internal server error")
-            res.status(500).send("Internal Server Error!");
+            res.status(500).send({message: "Internal Server Error!"});
           else if (error === "incorrect password")
-            res.status(400).send("Incorrect Password");
-          else res.status(404).send("RollNo not found!");
+            res.status(400).send({message: "Incorrect Password"});
+          else res.status(404).send({message: "RollNo not found!"});
         });
-    } else {
-      res.status(404).send("RollNo not found!");
-    }
-  } catch (error) {
-    res.status(500).send("Internal Server Error!");
+      } else {
+        res.status(404).send({message: "RollNo not found!"});
+      }
+    } catch (error) {
+    res.status(500).send({message: "Internal Server Error!"});
   }
 };
 
@@ -100,12 +100,12 @@ function signup(req: Request, res: Response):void {
     } = req.body;
     console.log(101,req.body)
     updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
-        res.status(200).send("successfully updated!")
+        res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
-        res.status(500).send("internal server error");
+        res.status(500).send({message: "internal server error"});
     })
 } catch (error) {
-      res.send("internal server error");    
+      res.send({message: "internal server error"});    
   }
 }
 

@@ -13,10 +13,10 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-// app.use(express.json());
+app.use(express.json());
 app.use(cors());
 // app.use(bodyParser.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 
 app.use('/api/data/',verifyToken, routes);

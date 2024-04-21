@@ -18,11 +18,11 @@ const getUserByRollno = (req, res) => {
             });
         }
         else {
-            res.status(400).send("RollNo Is required!");
+            res.status(400).send({ message: "RollNo Is required!" });
         }
     }
     catch (error) {
-        res.status(400).send("There is some error encountered!");
+        res.status(400).send({ message: "There is some error encountered!" });
         console.log("error: ", error);
     }
 };
@@ -39,19 +39,19 @@ const login = (req, res) => {
             })
                 .catch((error) => {
                 if (error === "internal server error")
-                    res.status(500).send("Internal Server Error!");
+                    res.status(500).send({ message: "Internal Server Error!" });
                 else if (error === "incorrect password")
-                    res.status(400).send("Incorrect Password");
+                    res.status(400).send({ message: "Incorrect Password" });
                 else
-                    res.status(404).send("RollNo not found!");
+                    res.status(404).send({ message: "RollNo not found!" });
             });
         }
         else {
-            res.status(404).send("RollNo not found!");
+            res.status(404).send({ message: "RollNo not found!" });
         }
     }
     catch (error) {
-        res.status(500).send("Internal Server Error!");
+        res.status(500).send({ message: "Internal Server Error!" });
     }
 };
 exports.login = login;
@@ -76,13 +76,13 @@ function signup(req, res) {
         const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, rollno, password } = req.body;
         console.log(101, req.body);
         (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, password).then((results) => {
-            res.status(200).send("successfully updated!");
+            res.status(200).send({ message: "successfully updated!" });
         }).catch((error) => {
-            res.status(500).send("internal server error");
+            res.status(500).send({ message: "internal server error" });
         });
     }
     catch (error) {
-        res.send("internal server error");
+        res.send({ message: "internal server error" });
     }
 }
 exports.signup = signup;

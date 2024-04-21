@@ -9,60 +9,51 @@ import {
   putDetailsByRollno,
   updateToken,
 } from "./model";
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-function generateToken() {
-  const tokenLength = 20; // Adjust the length of the random part of the token as needed
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const randomPartLength = 20; // 13 characters are for the timestamp
-
-  // Generate random part of the token
-  let randomPart = "";
-  for (let i = 0; i < randomPartLength; i++) {
-    randomPart += characters.charAt(
-      Math.floor(Math.random() * characters.length)
-    );
-  }
-
-  const timestamp = new Date().getTime().toString().substr(-5);
-  const token = randomPart + timestamp;
-  return token;
-}
-
-export function handleLogin(rollno: string, password: string): Promise<{token: string, defaultPass: boolean}> {
+export function handleLogin(
+  rollno: string,
+  password: string
+): Promise<{ token: string; defaultPass: boolean }> {
   return new Promise((resolve, reject) => {
     fetchPasswordByRollNo(rollno)
       .then((results: QueryResult<any>) => {
         if (results.rows.length > 0) {
           const dbPassword = results.rows[0].password;
-          if (dbPassword === password) {
-            // const token: string = generateToken();
-            // const last_modified: string = new Date().toString();
-            // const currentDate = new Date();
-            // currentDate.setHours(currentDate.getHours() + 2);
-            // const expiry: string = currentDate.toString();
-            const token = jwt.sign(results.rows[0], 'chotahathi',{ expiresIn: '2h' });
-            const default_pass = (results.rows[0].name + '0000').substring(0, 4) + rollno;
- 
-            const result = {
-              token: token,
-              defaultPass: password === default_pass
-            };
-            resolve(result);
+          bcrypt.compare(password, dbPassword).then(function (result) {
+            bcrypt.hash("anan41521005", 10).then(function(hash) {
+              console.log(hash)
+          });
+            if (result) {
+              const token = jwt.sign({ user: results.rows[0] }, "chotahathi", {
+                expiresIn: "2h",
+              });
+              const default_pass =
+                (results.rows[0].name + "0000").substring(0, 4) + rollno;
 
+              const result = {
+                token: token,
+                defaultPass: password === default_pass,
+              };
+              resolve(result);
+            } else {
+              reject("incorrect password");
+            }
+          });
+          // const token: string = generateToken();
+          // const last_modified: string = new Date().toString();
+          // const currentDate = new Date();
+          // currentDate.setHours(currentDate.getHours() + 2);
+          // const expiry: string = currentDate.toString();
 
-            // updateToken(token, rollno, last_modified, expiry)
-            //   .then((results: QueryResult<any>) => {
-            //     resolve(token);
-            //   })
-            //   .catch((error) => {
-            //     reject("internal server error");
-            //   });
-          } else {
-            reject("incorrect password");
-          }
+          // updateToken(token, rollno, last_modified, expiry)
+          //   .then((results: QueryResult<any>) => {
+          //     resolve(token);
+          //   })
+          //   .catch((error) => {
+          //     reject("internal server error");
+          //   });
         } else {
           reject("roll no. doesn't exist");
         }
@@ -89,36 +80,39 @@ export function updateDetails(
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const last_modified: string = new Date().toString();
-    console.log("rollno ",rollno)
+    console.log("rollno ", rollno);
     fetchPasswordByRollNo(rollno).then((result) => {
-      console.log("service ", result.rows)
+      console.log("service ", result.rows);
       if (result.rows.length > 0) {
-        putDetailsByRollno(
-          rollno,
-          program,
-          semester,
-          phone,
-          campus,
-          emailid,
-          gender,
-          alternate_phone,
-          father,
-          mother,
-          guardian,
-          last_modified,
-          password
-        )
-          .then((results) => {
-            resolve("successfully updated!");
-          })
-          .catch((error) => {
-            console.log(error);
-            reject("internal server error");
-          });
+        bcrypt.hash(password, 10).then(function (hash) {
+          // Store hash in your password DB.
+          putDetailsByRollno(
+            rollno,
+            program,
+            semester,
+            phone,
+            campus,
+            emailid,
+            gender,
+            alternate_phone,
+            father,
+            mother,
+            guardian,
+            last_modified,
+            hash
+          )
+            .then((results) => {
+              resolve("successfully updated!");
+            })
+            .catch((error) => {
+              console.log(error);
+              reject("internal server error");
+            });
+        });
       } else {
-        reject("rollno not found!")
+        reject("rollno not found!");
       }
-    })
+    });
   });
 }
 
@@ -127,6 +121,6 @@ export async function verifyTokenByRollNo(rollno: string) {
     const result = await fetchTokenByRollNo(rollno);
     return result.rows[0]; // Return token data or null if not found
   } catch (error) {
-    throw new Error('Error verifying token');
+    throw new Error("Error verifying token");
   }
 }
