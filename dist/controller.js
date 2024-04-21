@@ -89,7 +89,7 @@ const addExamRegisterationByRollNo = (req, res) => {
         });
     }
     catch (error) {
-        res.send("internal server error");
+        res.send({ message: "internal server error" });
     }
 };
 exports.addExamRegisterationByRollNo = addExamRegisterationByRollNo;
