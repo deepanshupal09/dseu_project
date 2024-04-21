@@ -31,8 +31,6 @@ interface PersonalDetails {
   guardianNameInput: string;
   gender: string;
   genderInput: string;
-  category: string;
-  categoryInput: string;
   mobileNumber: string;
   mobileNumberInput: string;
   email: string;
