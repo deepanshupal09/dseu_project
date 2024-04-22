@@ -1,11 +1,15 @@
 "use client";
 
-import { MenuItem, Select, TextField } from "@mui/material";
-import Input from "@mui/joy/Input";
+import { Backdrop, CircularProgress, TextField } from "@mui/material";
 import { useState } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import logo from "./images/logo.png";
 import Image from "next/image";
+import logo from "./images/logo.png";
+import { useRouter } from "next/navigation";
+import { login } from "./actions/api";
+import { getAuth, setAuth, setSignupCookie } from "./actions/cookie";
+import jwt_decode, { JwtPayload } from "jwt-decode"; // Import JwtPayload type
+import { parseJwt } from "./actions/utils";
 
 export default function Home() {
   const [RollNo, setRollNo] = useState<string>("");
@@ -13,7 +17,44 @@ export default function Home() {
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [gender, setGender] = useState("Male");
+  const router = useRouter();
+
+
+
+  async function handleLogin() {
+    try {
+      setLoading(true);
+      const response = await login({ rollno: RollNo, password: Password });
+      console.log("response: ", response);
+      if (response === 400) {
+        setError(true);
+        setHelperText("Incorrect password");
+      } else if (response === 404) {
+        setError(true);
+        setHelperText("Roll No. Not found");
+      } else if (response === 500) {
+        setError(true);
+        setHelperText("Internal Server Error");
+      } else {
+        if (response.defaultPass) {
+          await setSignupCookie();
+          router.push(`/getuserdetails/${RollNo}`)
+        } else {
+          await setAuth(response.token);
+          router.push("/dashboard")
+        }
+        // const token = await getAuth();
+        // console.log("user: ", parseJwt(token?.value as string));
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      // const errorData = await response.text();
+      setError(true);
+        setHelperText("Internal Server Error");
+      console.log("error: ", error);
+    }
+  }
 
   return (
     <>
@@ -30,8 +71,6 @@ export default function Home() {
             <div className="text-[32px] font-semibold  ">Student Portal</div>
             <div className="text-2xl w-full font-semibold ">Login</div>
             <div className="mt-1 w-[100%]">
-
-
               <TextField
                 required
                 onChange={(e) => {
