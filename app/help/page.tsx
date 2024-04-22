@@ -4,6 +4,7 @@ import Header from "../dashboard/Header";
 import Navbar from "../dashboard/Navbar";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { getAuth } from "../actions/cookie";
+import { parseJwt } from "../actions/utils";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);

@@ -10,16 +10,19 @@ interface Props{
   campusList: string [],
   programList: string [],
   semesterList: string [],
+  programTypeList: string[],
   setcollege: Function,
   setsemester: Function,
   setprogram: Function,
+  setprogramtype: Function,
 }
 
-export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campusList, programList, semesterList,setprogram,setcollege }:Props) {
+export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campusList, programList,programTypeList,setprogramtype, semesterList,setprogram,setcollege }:Props) {
   const [college, setCollege] = useState('');
   const [program, setProgram] = useState(null);
   const [semester, setSemester] = useState(null);
   const [helperText, setHelperText] = useState("");
+  const [programType,setProgramType ] = useState("");
   const [error, setError] = useState(false);
 
   const handleSubmit = (e) => {
@@ -30,6 +33,7 @@ export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campu
     setcollege(college)
     setsemester(semester)
     setprogram(program)
+    setprogramtype(programType);
     onNext(); // Call the onNext function passed from parent component
   };
 
@@ -56,6 +60,31 @@ export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campu
             <TextField
               {...params}
               label="Campus"
+              required
+              variant="outlined"
+              fullWidth
+              helperText={helperText}
+              error={error}
+              color="grey"
+            />
+          )}
+        />
+      </div>
+      <div className="w-[100%]">
+      <Autocomplete
+          options={programTypeList}
+          value={programType}
+          color="grey"
+
+          onChange={(event, newValue) => {
+            setProgramType(newValue);
+            setHelperText('');
+            setError(false);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Program Type"
               required
               variant="outlined"
               fullWidth
