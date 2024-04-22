@@ -12,12 +12,7 @@ interface User{
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
-  const options = [
-    "Dashboard",
-    "Profile",
-    "Exam Registration",
-    "Help",
-  ];
+  const options = ["Dashboard","Profile","Exam Registration","Help"];
   const [user, setUser] = useState();
 
   const recentChange = {
