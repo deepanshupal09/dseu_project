@@ -29,6 +29,7 @@ export default function Home() {
   const [motherName, setMotherName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [programType, setProgramType] = useState<string>("")
 
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
@@ -71,10 +72,12 @@ export default function Home() {
         campus: string;
         emailid: string;
         gender: string;
+        phone: string;
         alternate_phone: string | null;
         guardian: string | null;
         rollno: string;
         password: string;
+        program_type: string;
       }
       const body: BodyType = {
         program: program,
@@ -88,6 +91,8 @@ export default function Home() {
         guardian: guardian,
         rollno: rollno,
         password: newpass,
+        phone: phone,
+        program_type: programType,
       };
       // console.log(body)
       console.log(101, JSON.stringify(body));
@@ -96,7 +101,6 @@ export default function Home() {
       try {
         setLoading(true);
         const response:any= await signup(body);
-        const res = await login({rollno: rollno, password: newpass});
         setLoading(false);        
         console.log("response: ",response)    
         deleteSignupCookie();
@@ -169,6 +173,12 @@ export default function Home() {
     "Diploma in Computer Applications",
     "Diploma in Pharmacy",
   ];
+  const programTypeList = [
+    "Diploma",
+    "Undergraduate",
+    "Post Graduate",
+    "Doctorate"
+  ]
   const semesterList = ["Semester 2", "Semester 4", "Semester 6"];
 
   return (
@@ -202,6 +212,8 @@ export default function Home() {
             campusList={campusList}
             programList={programList}
             semesterList={semesterList}
+            programTypeList={programTypeList}
+            setprogramtype={setProgramType}
             setsemester={setSemester}
             setprogram={setProgram}
             setcollege={setCollege}
