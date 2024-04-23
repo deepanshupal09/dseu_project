@@ -10,10 +10,9 @@ import LinearProgress from "@mui/joy/LinearProgress";
 import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
-import axios from 'axios';
+import axios from "axios";
 import { login, signup } from "@/app/actions/api";
 import { deleteSignupCookie } from "@/app/actions/cookie";
-
 
 export default function Home() {
   const [step, setStep] = useState<number>(1);
@@ -31,7 +30,14 @@ export default function Home() {
   const [motherName, setMotherName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [programType, setProgramType] = useState<string>("")
+  const [programType, setProgramType] = useState<string>("");
+  const [dateOfBirth, setDateOfBirth] = useState<string>("");
+  const [aadharCard, setAadharCard] = useState<string>("");
+  const [abcId, setAbcId] = useState<string>("");
+  const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [pwbdCertificate, setPwbdCertificate] = useState<File | null>(null);
+  const [isPwbd, setIsPwbd] = useState<boolean>(false);
 
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
@@ -42,21 +48,12 @@ export default function Home() {
   const pathname = usePathname();
   const router = useRouter();
   const rollno = pathname.split("/")[2];
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [pwbdCertificateFile, setPwbdCertificateFile] =
-    useState<File | null>(null);
 
-  const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [aadharCard, setAadharCard] = useState<string>("");
-  const [abcId, setAbcId] = useState<string>("");
-  const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
-
-  
 
   const handleNext = async () => {
     if (step < 6) {
       setStep(step + 1);
-      console.log(step ,"step");
+      console.log(step, "step");
     } else {
       console.log("Father's Name:", fatherName);
       console.log("Mother's Name:", motherName);
@@ -77,6 +74,7 @@ export default function Home() {
         mother = motherName;
         // guardian=null;
       }
+      console.log("phto: ",photo)
       interface BodyType {
         program: string | null;
         semester: number;
@@ -91,8 +89,8 @@ export default function Home() {
         rollno: string;
         password: string;
         program_type: string;
-        photo: File | null,
-        pwbdCertificate: File | null,
+        photo: File | null;
+        pwbdCertificate: File | null;
         dateOfBirth: string;
         aadharCard: string;
         abcId: string;
@@ -112,32 +110,30 @@ export default function Home() {
         password: newpass,
         phone: phone,
         program_type: programType,
-        photo: photoFile,
-        pwbdCertificate: pwbdCertificateFile,
+        photo: photo,
+        pwbdCertificate: pwbdCertificate,
         dateOfBirth: dateOfBirth,
         aadharCard: aadharCard,
         abcId: abcId,
         yearOfAdmission: yearOfAdmission,
       };
-      // console.log(body)
-      console.log(101, JSON.stringify(body));
+      console.log(body)
+      // console.log(101, JSON.stringify(body));
       // const requestOptions =;
 
-      try {
-        setLoading(true);
-        const response:any= await signup(body);
-        setLoading(false);        
-        console.log("response: ",response)    
-        deleteSignupCookie();
-        router.push("/")
-
-        
-      } catch (error) {
-        console.log("error", error)
-        setLoading(false);
-        setOpen(true);
-        return;
-      }
+      // try {
+      //   setLoading(true);
+      //   const response: any = await signup(body);
+      //   console.log("response: ", response);
+      //   deleteSignupCookie();
+      //   setLoading(false);
+      //   router.push("/");
+      // } catch (error) {
+      //   console.log("error", error);
+      //   setLoading(false);
+      //   setOpen(true);
+      //   return;
+      // }
     }
   };
   const handlePrevious = () => {
@@ -202,8 +198,8 @@ export default function Home() {
     "Diploma",
     "Undergraduate",
     "Post Graduate",
-    "Doctorate"
-  ]
+    "Doctorate",
+  ];
   const semesterList = ["Semester 2", "Semester 4", "Semester 6"];
 
   return (
@@ -243,7 +239,7 @@ export default function Home() {
             setcollege={setCollege}
           />
         )}
-        {step === 4 && ( 
+        {step === 4 && (
           <FamilyDetails
             fathername={fatherName}
             mothername={motherName}
@@ -260,13 +256,28 @@ export default function Home() {
           />
         )}
         {step === 5 && (
-          <IDDetails onNext={handleNext} onPrevious={handlePrevious} 
+          <IDDetails
+            setAbcId={setAbcId}
+            dateofBirth={dateOfBirth}
+            setDateOfBirth={setDateOfBirth}
+            aadharCard={aadharCard}
+            setAadharCard={setAadharCard}
+            yearOfAdmission={yearOfAdmission}
+            setYearOfAdmission={setYearOfAdmission}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
           />
         )}
         {step === 6 && (
-          <UploadDetails 
+          <UploadDetails
             onNext={handleNext}
             onPrevious={handlePrevious}
+            photo={photo}
+            pwbdCertificate={pwbdCertificate}
+            isPwbd={isPwbd}
+            setPhoto={setPhoto}
+            setPwbdCertificate={setPwbdCertificate}
+            setIsPwbd={setIsPwbd}
           />
         )}
       </div>

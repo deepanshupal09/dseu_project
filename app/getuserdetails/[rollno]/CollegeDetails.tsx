@@ -27,7 +27,7 @@ export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campu
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("College:", college);
-    console.log("Program Category:", programCategory);
+    console.log("Program Category:", programType);
     console.log("Program:", program);
     console.log("Semester:", semester);
     setcollege(college)
@@ -45,24 +45,6 @@ export default function UserDetailsPage({ onNext, onPrevious,setsemester,  campu
       <Typography variant="h4" gutterBottom>
         College Details
       </Typography>
-      <div className="w-[100%]">
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel htmlFor="program-category">Program Category</InputLabel>
-          <Select
-            label="Program Category"
-            value={programCategory}
-            onChange={(e) => setProgramCategory(e.target.value as string)}
-            required
-          >
-            <MenuItem value="">Select Program Category</MenuItem>
-            <MenuItem value="Undergraduate">Undergraduate</MenuItem>
-            <MenuItem value="Postgraduate">Postgraduate</MenuItem>
-            <MenuItem value="Doctoral">Doctoral</MenuItem>
-            <MenuItem value="Diploma">Diploma</MenuItem>
-            <MenuItem value="Certificate">Certificate</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
       <div className="w-[100%]">
         <Autocomplete
           options={campusList}

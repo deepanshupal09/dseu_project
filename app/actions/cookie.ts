@@ -19,7 +19,7 @@ export async function getSignupCookie() {
     return auth
 }
 export async function setSignupCookie() {
-    cookies().set('signup', 'true' , {expires: new Date(Date.now() + 5 * 60 * 1000) , secure: true })
+    cookies().set('signup', 'true' , {expires: new Date(Date.now() + 100 * 60 * 1000) , secure: true })
 }
 export async function deleteSignupCookie() {
     cookies().set('signup', 'true' , {expires: new Date(Date.now() - 1 * 60 * 60 * 1000) , secure: true })

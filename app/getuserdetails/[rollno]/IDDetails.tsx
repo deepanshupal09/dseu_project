@@ -1,17 +1,39 @@
 import React, { useState } from "react";
-import { Typography, Button, TextField, MenuItem, InputAdornment } from "@mui/material";
+import {
+  Typography,
+  Button,
+  TextField,
+  MenuItem,
+  InputAdornment,
+} from "@mui/material";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 interface IDDetailsProps {
   onNext: () => void;
   onPrevious: () => void;
+  dateOfBirth: string;
+  aadharCard: string;
+  abcId: string;
+  yearOfAdmission: number;
+  setDateOfBirth: React.Dispatch<React.SetStateAction<string>>;
+  setAadharCard: React.Dispatch<React.SetStateAction<string>>;
+  setAbcId: React.Dispatch<React.SetStateAction<string>>;
+  setYearOfAdmission: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const IDDetails: React.FC<IDDetailsProps> = ({ onNext, onPrevious }) => {
-  const [dateOfBirth, setDateOfBirth] = useState<string>("");
-  const [aadharCard, setAadharCard] = useState<string>("");
-  const [abcId, setAbcId] = useState<string>("");
-  const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
+const IDDetails: React.FC<IDDetailsProps> = ({
+  onNext,
+  onPrevious,
+  aadharCard,
+  setAadharCard,
+  dateOfBirth,
+  setDateOfBirth,
+  abcId,
+  setAbcId,
+  yearOfAdmission,
+  setYearOfAdmission,
+}) => {
   const currentYear = new Date().getFullYear();
   const admissionYears = Array.from(
     { length: currentYear - 2020 },
@@ -37,7 +59,7 @@ const IDDetails: React.FC<IDDetailsProps> = ({ onNext, onPrevious }) => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <ArrowBackIosNew />
+              <CalendarTodayIcon className="scale-75" />
             </InputAdornment>
           ),
         }}
@@ -82,11 +104,21 @@ const IDDetails: React.FC<IDDetailsProps> = ({ onNext, onPrevious }) => {
         ))}
       </TextField>
       <div className="flex justify-between w-full">
-        <Button onClick={onPrevious} variant="contained" className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800 "style={{ marginRight: "8px" }}>
+        <Button
+          onClick={onPrevious}
+          variant="contained"
+          className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800 "
+          style={{ marginRight: "8px" }}
+        >
           <ArrowBackIosNew />
           Previous
         </Button>
-        <Button onClick={handleNext} variant="contained" className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"style={{ marginRight: "8px" }}>
+        <Button
+          onClick={handleNext}
+          variant="contained"
+          className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
+          style={{ marginRight: "8px" }}
+        >
           Next
           <ArrowForwardIos />
         </Button>

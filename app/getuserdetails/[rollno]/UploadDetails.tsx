@@ -1,20 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Checkbox, Button, TextField, InputAdornment } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
 interface UploadDetailsProps {
   onNext: () => void;
   onPrevious: () => void;
+  photo: File | null;
+  pwbdCertificate: File | null;
+  isPwbd: boolean;
+  setPhoto: React.Dispatch<React.SetStateAction<File | null>>;
+  setPwbdCertificate: React.Dispatch<React.SetStateAction<File | null>>;
+  setIsPwbd: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => {
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [pwbdCertificate, setPwbdCertificate] = useState<File | null>(null);
-  const [isPwbd, setIsPwbd] = useState<boolean>(false);
+const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious, photo, pwbdCertificate, isPwbd, setPhoto, setPwbdCertificate, setIsPwbd }) => {
+
+  useEffect(() => {
+    console.log("photo: ",photo)
+  },[photo])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      console.log("file: ", file)
       if (file.size <= 30000) {
         setPhoto(file);
       } else {
@@ -57,20 +65,20 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
       <Typography variant="h4" gutterBottom>
         Upload Details
       </Typography>
-      <TextField
+      <input
         id="photo"
         type="file"
         label="Upload Photo (Max 30kb)"
         inputProps={{ accept: "image/*" }}
         onChange={handlePhotoChange}
         required
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <ArrowBackIosNew />
-            </InputAdornment>
-          ),
-        }}
+        // InputProps={{
+        //   startAdornment: (
+        //     <InputAdornment position="start">
+        //       <ArrowBackIosNew />
+        //     </InputAdornment>
+        //   ),
+        // }}
         className="w-full"
       />
       <div>
@@ -83,7 +91,7 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
         </label>
       </div>
       {isPwbd && (
-        <TextField
+        <input
           id="pwbd-certificate"
           type="file"
           label="Upload PWBD Certificate (Max 30kb)"
