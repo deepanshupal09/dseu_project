@@ -85,8 +85,12 @@ export function updateDetails(
   father: string,
   mother: string,
   guardian: string,
-  password: string,
+  aadhar: string,
+  abc_id: string,
+  pwbd_certificate: string,
+  photo: string,
   program_type: string,
+  password: string
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const last_modified: string = new Date().toString();
@@ -108,6 +112,10 @@ export function updateDetails(
             father,
             mother,
             guardian,
+            aadhar,
+            abc_id,
+            pwbd_certificate,
+            photo,
             last_modified,
             program_type,
             hash

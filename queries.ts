@@ -12,10 +12,14 @@ export const updateDetailsByRollno: string = `
       father = COALESCE($8, father),
       mother = COALESCE($9, mother),
       guardian = COALESCE($10, guardian),
-      last_modified = COALESCE($11, last_modified),
-      program_type = $13,
-      password = $14
-  WHERE rollno = $12;
+      aadhar = COALESCE($11, aadhar),
+      abc_id = COALESCE($12, abc_id),
+      pwbd_certificate = COALESCE($13, pwbd_certificate),
+      photo = COALESCE($14, photo),
+      last_modified = COALESCE($15, last_modified),
+      program_type = $16,
+      password = $17
+  WHERE rollno = $18;
 `;
 
 export const putToken: string = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
@@ -63,3 +67,6 @@ export const fetchExamRegistrationByProgramAndSemester: string = `
   where u.program=$1 AND u.semester=$2;  
 `;
 
+// export const addDetailsInSemesterCourse: string =`
+//   INSERT INTO semester_course (program, semester, course_code, program_type, credit) VALUES ($1, $2, $3, $4, $5);
+// `
