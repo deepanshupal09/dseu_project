@@ -98,7 +98,12 @@ export function putDetailsByRollno(
   father: string,
   mother: string,
   guardian: string,
+  aadhar: string,
+  abc_id: string,
+  pwbd_certificate: string,
+  photo: string,
   last_modified: string,
+  program_type: string,
   password: string
 ): Promise<QueryResult<any>> {
   console.log("here");
@@ -116,9 +121,14 @@ export function putDetailsByRollno(
         father,
         mother,
         guardian,
+        aadhar,
+        abc_id,
+        pwbd_certificate,
+        photo,
         last_modified,
-        rollno,
-        password
+        program_type,
+        password,
+        rollno
       ],
       (error, results) => {
         if (error) {

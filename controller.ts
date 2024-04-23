@@ -72,12 +72,16 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       father,
       mother,
       guardian,
+      aadhar,
+      abc_id,
+      pwbd_certificate,
+      photo,
       program_type,
-      rollno,
-      password
+      password,
+      rollno
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -101,11 +105,16 @@ function signup(req: Request, res: Response):void {
       father,
       mother,
       guardian,
-      rollno,
-      password
+      aadhar,
+      abc_id,
+      pwbd_certificate,
+      photo,
+      program_type,
+      password,
+      rollno
     } = req.body;
     console.log(101,req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type,password).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});

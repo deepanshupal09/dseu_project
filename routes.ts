@@ -13,5 +13,6 @@ router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistration
 router.get("/fetchExamRegistrationByProgramAndSemester",controller.fetchExamRegistrationByProgramAndSemester);
 router.get("/fetchExamRegistrationByProgramAndSemester",controller.fetchExamRegistrationByProgramAndSemester);
 router.post("/addUsers",controller.addUsers);
+router.post("/addExamRegisterations",controller.addExamRegisterations);
 
 export default router;
