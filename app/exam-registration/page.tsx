@@ -21,6 +21,10 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../actions/cookie";
@@ -128,12 +132,10 @@ export default function Home() {
       );
 
       if (existingBacklogIndex !== -1) {
-        // Remove the backlog if it already exists
         return prevBacklogs.filter(
           (b, index) => index !== existingBacklogIndex
         );
       } else {
-        // Add the backlog
         return [...prevBacklogs, backlog];
       }
     });
@@ -175,6 +177,23 @@ export default function Home() {
   const handlePreview = () => {
     console.log("Selected Subjects:", getSelectedSubjects());
     console.log("Selected Backlogs:", selectedBacklogs);
+    setPreviewSelection(true);
+  };
+
+  const confirmSelection = () => {
+    // Logic to confirm selection
+    setPreviewSelection(false);
+    setConfirmSubmission(true);
+  };
+
+  const [confirmSubmission, setConfirmSubmission] = useState(false);
+
+  const submitDetails = () => {
+    console.log("Submitting details...");
+    console.log("Selected Subjects:", getSelectedSubjects().map(({ name, code }) => ({ name, code })));
+    console.log("Selected Backlogs:", selectedBacklogs.map(({ subject, subjectCode }) => ({ subject, subjectCode })));
+    // Perform submission logic here
+    setConfirmSubmission(false);
   };
 
   return (
@@ -323,11 +342,51 @@ export default function Home() {
           )}
         </div>
 
-        <div className="flex justify-center">
-          <Button onClick={handlePreview}>Preview Selection</Button>
+        <div className="flex justify-center mt-2 mb-5">
+          <Button onClick={handlePreview} style={{ backgroundColor: "#0066ff", color: "#ffffff" }}>Preview</Button>
         </div>
       </div>
-      
+
+      <Dialog open={previewSelection} onClose={() => setPreviewSelection(false)} fullWidth maxWidth="md">
+        <DialogTitle>Preview Selection</DialogTitle>
+        <DialogContent className="flex flex-col">
+          <div>
+            <Typography variant="h6">Selected Subjects:</Typography>
+            <ul>
+              {getSelectedSubjects().map((subject, index) => (
+                <li key={index}>
+                  {subject.name} - {subject.code}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <Typography variant="h6">Selected Backlogs:</Typography>
+            <ul>
+              {selectedBacklogs.map((backlog, index) => (
+                <li key={index}>
+                  {backlog.subject} - {backlog.subjectCode}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={confirmSelection} variant="contained" color="primary">Confirm</Button>
+          <Button onClick={() => setPreviewSelection(false)} variant="outlined" color="primary">Edit</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={confirmSubmission} onClose={() => setConfirmSubmission(false)}>
+        <DialogTitle>Confirm Submission</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">Are you sure you want to submit the details?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={submitDetails} color="primary">Submit</Button>
+          <Button onClick={() => setConfirmSubmission(false)} color="primary">Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

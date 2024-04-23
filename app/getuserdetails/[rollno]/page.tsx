@@ -50,11 +50,13 @@ export default function Home() {
   const [aadharCard, setAadharCard] = useState<string>("");
   const [abcId, setAbcId] = useState<string>("");
   const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
+
   
 
   const handleNext = async () => {
     if (step < 6) {
       setStep(step + 1);
+      console.log(step ,"step");
     } else {
       console.log("Father's Name:", fatherName);
       console.log("Mother's Name:", motherName);
@@ -207,7 +209,7 @@ export default function Home() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="absolute top-0 p-4 mb-4 w-full">
-        <LinearProgress determinate value={step * 25} />{" "}
+        <LinearProgress determinate value={step * 16.7} />{" "}
       </div>
       <div className="my-auto">
         {step === 1 && (
