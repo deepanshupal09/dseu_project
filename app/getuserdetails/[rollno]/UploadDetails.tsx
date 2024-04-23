@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Checkbox, Button } from "@mui/material";
+import { Typography, Checkbox, Button, TextField, InputAdornment } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
 interface UploadDetailsProps {
@@ -19,6 +19,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
         setPhoto(file);
       } else {
         alert("Please upload a photo under 30kb.");
+        // Reset the input field value to clear the selected file
+        e.target.value = "";
       }
     }
   };
@@ -32,11 +34,17 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
         setPwbdCertificate(file);
       } else {
         alert("Please upload a PwBD certificate under 30kb.");
+        // Reset the input field value to clear the selected file
+        e.target.value = "";
       }
     }
   };
 
   const handleNext = () => {
+    if (!photo) {
+      alert("Please upload your photograph.");
+      return;
+    }
     if (isPwbd && !pwbdCertificate) {
       alert("Please upload your PwBD certificate.");
       return;
@@ -45,19 +53,26 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
   };
 
   return (
-    <form className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100%] w-[460px] my-10">
+    <form className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 w-[460px] my-10">
       <Typography variant="h4" gutterBottom>
         Upload Details
       </Typography>
-      <div>
-        <label htmlFor="photo">Upload Photo (Max 30kb)</label>
-        <input
-          type="file"
-          accept="image/*"
-          id="photo"
-          onChange={handlePhotoChange}
-        />
-      </div>
+      <TextField
+        id="photo"
+        type="file"
+        label="Upload Photo (Max 30kb)"
+        inputProps={{ accept: "image/*" }}
+        onChange={handlePhotoChange}
+        required
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <ArrowBackIosNew />
+            </InputAdornment>
+          ),
+        }}
+        className="w-full"
+      />
       <div>
         <label>
           Are you a person with PwBD?{" "}
@@ -68,26 +83,30 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({ onNext, onPrevious }) => 
         </label>
       </div>
       {isPwbd && (
-        <div>
-          <label htmlFor="pwbd-certificate">
-            Upload PWBD Certificate (Max 30kb)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            id="pwbd-certificate"
-            onChange={handlePwbdCertificateChange}
-          />
-        </div>
+        <TextField
+          id="pwbd-certificate"
+          type="file"
+          label="Upload PWBD Certificate (Max 30kb)"
+          inputProps={{ accept: "image/*" }}
+          onChange={handlePwbdCertificateChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <ArrowBackIosNew />
+              </InputAdornment>
+            ),
+          }}
+          className="w-full"
+        />
       )}
       <div className="flex justify-between w-full">
-      <Button onClick={onPrevious} variant="contained" sx={{ backgroundColor: 'black', color: 'white' }}>
-        <ArrowBackIosNew />
-        Previous
-      </Button>
-      <Button onClick={handleNext} variant="contained" sx={{ backgroundColor: 'black', color: 'white' }}>
-        Next
-     </Button>
+        <Button onClick={onPrevious} className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800" style={{ marginRight: "8px" }}>
+          <ArrowBackIosNew />
+          Previous
+        </Button>
+        <Button onClick={handleNext} className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800">
+          Submit
+        </Button>
       </div>
     </form>
   );

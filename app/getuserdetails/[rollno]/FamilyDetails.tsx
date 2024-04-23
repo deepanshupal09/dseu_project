@@ -10,6 +10,7 @@ import {
   Radio,
   FormLabel,
 } from "@mui/material";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
 interface FamilyDetailsProps {
@@ -52,12 +53,12 @@ export default function FamilyDetails({
   const [singleParentGuardianName, setSingleParentGuardianName] = useState(
     spgname || ""
   );
-  useEffect(() => {
-    if (stateUpdated) {
-      onNext();
-      setStateUpdated(false); // Reset the stateUpdated flag
-    }
-  }, [stateUpdated, onNext]);
+  // useEffect(() => {
+  //   if (stateUpdated) {
+  //     onNext();
+  //     setStateUpdated(false); // Reset the stateUpdated flag
+  //   }
+  // }, [stateUpdated, onNext]);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -68,7 +69,7 @@ export default function FamilyDetails({
     setspg(singleParentGuardian);
     setparrel(parentRelation);
     setStateUpdated(true);
-    // No onNext function as this is the last page
+    onNext();
   };
 
   return (
@@ -186,10 +187,10 @@ export default function FamilyDetails({
         </button>
         <button
           type="submit"
-          onClick={handleSubmit}
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
         >
-          <div>Submit</div>
+          <div>Next</div>
+          <ArrowForwardIosIcon className="scale-75 -mr-4" />
         </button>
       </div>
     </form>
