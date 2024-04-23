@@ -13,6 +13,10 @@ export const updateDetailsByRollno: string = `
       mother = COALESCE($9, mother),
       guardian = COALESCE($10, guardian),
       last_modified = COALESCE($11, last_modified),
+      abc_id = COALESCE($12, abc_id),
+      aadhar = COALESCE($13, aadhar),
+      pwbd_certificate = COALESCE($14, pwbd_certificate),
+      
       password = $13
   WHERE rollno = $12;
 `;
