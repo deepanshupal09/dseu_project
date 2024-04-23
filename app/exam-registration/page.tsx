@@ -18,12 +18,17 @@ import {
   MenuItem,
   FormControl,
   Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
+import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
+  const [previewSelection, setPreviewSelection] = useState(false);
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
   const [user, setUser] = useState();
   const prof1 = {
@@ -82,7 +87,7 @@ export default function Home() {
     },
     {
       subject: "Digital Circuits and Electronics",
-      subjectCode: "BT-CS-ES601",
+      subjectCode: "BT-CS-ES602",
       examType: "Compulsory",
       semester: 3,
     },
@@ -116,11 +121,19 @@ export default function Home() {
 
   const handleSelectBacklog = (backlog: any) => {
     setSelectedBacklogs((prevBacklogs) => {
-      if (prevBacklogs.some((b) => b.subjectCode === backlog.subjectCode)) {
+      const existingBacklogIndex = prevBacklogs.findIndex(
+        (b) =>
+          b.subjectCode === backlog.subjectCode &&
+          b.semester === backlog.semester
+      );
+
+      if (existingBacklogIndex !== -1) {
+        // Remove the backlog if it already exists
         return prevBacklogs.filter(
-          (b) => b.subjectCode !== backlog.subjectCode
+          (b, index) => index !== existingBacklogIndex
         );
       } else {
+        // Add the backlog
         return [...prevBacklogs, backlog];
       }
     });
@@ -236,7 +249,9 @@ export default function Home() {
           </Table>
         </div>
         <div className="flex justify-center">
-          <Typography><b>Backlogs</b></Typography>
+          <Typography>
+            <b>Backlogs</b>
+          </Typography>
         </div>
         <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
           <FormGroup row>
@@ -249,59 +264,62 @@ export default function Home() {
               }
               label="Register for Backlog Exams?"
             />
-            {giveBacklogExams && (
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                <Select
-                  value={selectedSemester}
-                  onChange={handleChangeSemester}
-                  disabled={!giveBacklogExams}
-                >
-                  {/* <MenuItem value="all">All Semesters</MenuItem> */}
-                  {generateSemesters().map((semester) => (
-                    <MenuItem key={semester} value={semester}>
-                      Semester {semester}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
           </FormGroup>
           {giveBacklogExams && (
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Subject</TableCell>
-                  <TableCell>Subject Code</TableCell>
-                  <TableCell>Exam Type</TableCell>
-                  <TableCell>Semester</TableCell>
-                  <TableCell>Select</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredBacklogs.map((backlog, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Typography>{backlog.subject}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{backlog.subjectCode}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{backlog.examType}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography>{backlog.semester}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedBacklogs.includes(backlog)}
-                        onChange={() => handleSelectBacklog(backlog)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="w-full">
+              {generateSemesters().map((semester) => (
+                <Accordion key={semester}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="subtitle1">
+                      Semester {semester}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }}>
+                            <Typography>Subject</Typography>
+                          </TableCell>
+                          <TableCell style={{ width: "25%" }}>
+                            <Typography>Subject Code</Typography>
+                          </TableCell>
+                          <TableCell style={{ width: "25%" }}>
+                            <Typography>Select</Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {backlogsData
+                          .filter(
+                            (backlog) => backlog.semester === parseInt(semester)
+                          )
+                          .map((backlog, index) => (
+                            <TableRow key={index}>
+                              <TableCell style={{ width: "50%" }}>
+                                <Typography>{backlog.subject}</Typography>
+                              </TableCell>
+                              <TableCell style={{ width: "25%" }}>
+                                <Typography>{backlog.subjectCode}</Typography>
+                              </TableCell>
+                              <TableCell style={{ width: "25%" }}>
+                                <Checkbox
+                                  checked={selectedBacklogs.some(
+                                    (b) =>
+                                      b.subjectCode === backlog.subjectCode &&
+                                      b.semester === parseInt(semester)
+                                  )}
+                                  onChange={() => handleSelectBacklog(backlog)}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </div>
           )}
         </div>
 
@@ -309,6 +327,7 @@ export default function Home() {
           <Button onClick={handlePreview}>Preview Selection</Button>
         </div>
       </div>
+      
     </>
   );
 }
