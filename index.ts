@@ -27,6 +27,7 @@ app.get("/login", controller.login);
 app.post("/signup", controller.signup);
 
 app.post("/addUsers",controller.addUsers);
+app.get("/getUserByRollno", controller.getUserByRollno);
 
 app.listen(port, ()=> {
     console.log(`listening to port ${port}`)
