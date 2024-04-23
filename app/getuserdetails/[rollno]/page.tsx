@@ -4,6 +4,8 @@ import ChangePassword from "./ChangePassword";
 import GeneralDetails from "./GeneralDetails";
 import CollegeDetails from "./CollegeDetails";
 import FamilyDetails from "./FamilyDetails";
+import UploadDetails from "./UploadDetails";
+import IDDetails from "./IDDetails";
 import LinearProgress from "@mui/joy/LinearProgress";
 import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
@@ -40,9 +42,18 @@ export default function Home() {
   const pathname = usePathname();
   const router = useRouter();
   const rollno = pathname.split("/")[2];
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [pwbdCertificateFile, setPwbdCertificateFile] =
+    useState<File | null>(null);
+
+  const [dateOfBirth, setDateOfBirth] = useState<string>("");
+  const [aadharCard, setAadharCard] = useState<string>("");
+  const [abcId, setAbcId] = useState<string>("");
+  const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
+  
 
   const handleNext = async () => {
-    if (step < 4) {
+    if (step < 6) {
       setStep(step + 1);
     } else {
       console.log("Father's Name:", fatherName);
@@ -78,6 +89,12 @@ export default function Home() {
         rollno: string;
         password: string;
         program_type: string;
+        photo: File | null,
+        pwbdCertificate: File | null,
+        dateOfBirth: string;
+        aadharCard: string;
+        abcId: string;
+        yearOfAdmission: number;
       }
       const body: BodyType = {
         program: program,
@@ -93,6 +110,12 @@ export default function Home() {
         password: newpass,
         phone: phone,
         program_type: programType,
+        photo: photoFile,
+        pwbdCertificate: pwbdCertificateFile,
+        dateOfBirth: dateOfBirth,
+        aadharCard: aadharCard,
+        abcId: abcId,
+        yearOfAdmission: yearOfAdmission,
       };
       // console.log(body)
       console.log(101, JSON.stringify(body));
@@ -185,7 +208,6 @@ export default function Home() {
     <div className="flex flex-col justify-center items-center min-h-screen">
       <div className="absolute top-0 p-4 mb-4 w-full">
         <LinearProgress determinate value={step * 25} />{" "}
-        {/* Adjust the progress based on the number of pages */}
       </div>
       <div className="my-auto">
         {step === 1 && (
@@ -219,7 +241,7 @@ export default function Home() {
             setcollege={setCollege}
           />
         )}
-        {step === 4 && ( // Add this condition for the new FamilyDetails component
+        {step === 4 && ( 
           <FamilyDetails
             fathername={fatherName}
             mothername={motherName}
@@ -233,6 +255,16 @@ export default function Home() {
             setspgname={setSingleParentGuardianName}
             onPrevious={handlePrevious}
             onNext={handleNext}
+          />
+        )}
+        {step === 5 && (
+          <IDDetails onNext={handleNext} onPrevious={handlePrevious} 
+          />
+        )}
+        {step === 6 && (
+          <UploadDetails 
+            onNext={handleNext}
+            onPrevious={handlePrevious}
           />
         )}
       </div>
