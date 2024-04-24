@@ -72,25 +72,26 @@ export default function Home() {
   const [giveBacklogExams, setGiveBacklogExams] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState("");
   const [chosen, setChosen] = useState(true);
+  const [selectedSub, setSelectedSub] = useState([]);
 
-  const selectedSub = [
-    { name: "Universal Human Values", code: "BT-HS601", type: "CC" },
-    { name: "Computer Networks", code: "BT-CS-ES601", type: "CC" },
-    { name: "Machine Learning", code: "BT-CS-ES602", type: "CC" },
-    { name: "Web Engineering", code: "BT-CS-ES603", type: "CC" },
-    { name: "Web Development", code: "BT-CS-PE602", type: "PE" },
-    { name: "Spanish", code: "BT-OE601", type: "OE" },
-    {
-      code: "BT-CS-BS401",
-      name: "Probability and Statistics",
-      type: "CC",
-    },
-    {
-      code: "BT-BS202",
-      name: "Applied Physics",
-      type: "CC",
-    },
-  ];
+  // const selectedSub = [
+  //   { name: "Universal Human Values", code: "BT-HS601", type: "CC" },
+  //   { name: "Computer Networks", code: "BT-CS-ES601", type: "CC" },
+  //   { name: "Machine Learning", code: "BT-CS-ES602", type: "CC" },
+  //   { name: "Web Engineering", code: "BT-CS-ES603", type: "CC" },
+  //   { name: "Web Development", code: "BT-CS-PE602", type: "PE" },
+  //   { name: "Spanish", code: "BT-OE601", type: "OE" },
+  //   {
+  //     code: "BT-CS-BS401",
+  //     name: "Probability and Statistics",
+  //     type: "CC",
+  //   },
+  //   {
+  //     code: "BT-BS202",
+  //     name: "Applied Physics",
+  //     type: "CC",
+  //   },
+  // ];
 
   useEffect(() => {
     if (user) {
@@ -99,6 +100,11 @@ export default function Home() {
         .then((res) => {
           console.log("response: ", res);
           if (res.length > 0) {
+            const temp=[];
+            res.forEach((subject) => {
+            temp.push({name: subject.course_name, code: subject.course_code, type: subject.course_type});
+            })
+            setSelectedSub(temp);
             setChosen(true);
           } else {
             setChosen(false);
