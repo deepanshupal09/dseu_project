@@ -121,20 +121,20 @@ export default function Home() {
       // console.log(101, JSON.stringify(body));
       // const requestOptions =;
 
-      try {
-        setLoading(true);
-        console.log("here")
-        const response: any = await signup(body);
-        console.log("response: ", response);
-        deleteSignupCookie();
-        setLoading(false);
-        // router.push("/");
-      } catch (error) {
-        console.log("error", error);
-        setLoading(false);
-        setOpen(true);
-        return;
-      }
+      // try {
+      //   setLoading(true);
+      //   console.log("here")
+      //   const response: any = await signup(body);
+      //   console.log("response: ", response);
+      //   deleteSignupCookie();
+      //   setLoading(false);
+      //   // router.push("/");
+      // } catch (error) {
+      //   console.log("error", error);
+      //   setLoading(false);
+      //   setOpen(true);
+      //   return;
+      // }
     }
   };
   const handlePrevious = () => {
@@ -258,8 +258,9 @@ export default function Home() {
         )}
         {step === 5 && (
           <IDDetails
+          abcId={abcId}
             setAbcId={setAbcId}
-            dateofBirth={dateOfBirth}
+            dateOfBirth={dateOfBirth}
             setDateOfBirth={setDateOfBirth}
             aadharCard={aadharCard}
             setAadharCard={setAadharCard}
@@ -279,6 +280,7 @@ export default function Home() {
             setPhoto={setPhoto}
             setPwbdCertificate={setPwbdCertificate}
             setIsPwbd={setIsPwbd}
+            rollno={rollno}
           />
         )}
       </div>

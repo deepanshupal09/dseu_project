@@ -24,7 +24,6 @@ interface UserDetailsProps {
   onNext: () => void;
 }
 
-
 export default function UserDetailsPage({
   emailid,
   gen,
@@ -36,7 +35,7 @@ export default function UserDetailsPage({
   setphone,
   setaltphone,
   onPrevious,
-}:UserDetailsProps) {
+}: UserDetailsProps) {
   const [email, setEmail] = useState(emailid || "");
   const [gender, setGender] = useState(gen || "");
   const [phone, setPhone] = useState(phoneno || "");
@@ -56,6 +55,12 @@ export default function UserDetailsPage({
     setphone(phone);
     onNext(); // Call the onNext function passed from parent component
   };
+  const handleEmailChange = (e) => {
+    const inputEmail = e.target.value;
+    setEmail(inputEmail);
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setError(!regex.test(inputEmail));
+  };
 
   return (
     <form
@@ -66,39 +71,32 @@ export default function UserDetailsPage({
         User General Details
       </Typography>
       <div className="w-[100%]">
-        <TextField
-          label="Email address"
-          required
-          type="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setHelperText("");
-            setError(false);
-          }}
-          helperText={helperText}
-          error={error}
-          id="email"
-          variant="outlined"
-          color="primary"
-          fullWidth
-          sx={{
-          
-            ".MuiInputBase-input": {
-              borderRadius: "10px",
-
-            },
-            "&:before, &:after": {
-              borderRadius: "10px",
-            },
-          }}
-          InputProps={{
-            style: {
-              borderRadius: "10px",
-            },
-          }}
-          color="grey"
-        />
+      <TextField
+      label="Email address"
+      required
+      type="email"
+      value={email}
+      onChange={handleEmailChange}
+      error={error}
+      helperText={error ? 'Please enter a valid email address' : ''}
+      id="email"
+      variant="outlined"
+      color="primary"
+      fullWidth
+      sx={{
+        ".MuiInputBase-input": {
+          borderRadius: "10px",
+        },
+        "&:before, &:after": {
+          borderRadius: "10px",
+        },
+      }}
+      InputProps={{
+        style: {
+          borderRadius: "10px",
+        },
+      }}
+    />
       </div>
       <div className="w-[100%]">
         <FormControl variant="outlined" fullWidth>
@@ -110,13 +108,19 @@ export default function UserDetailsPage({
             onChange={(e) => setGender(e.target.value)}
             label="Gender"
             fullWidth
+            required
             color="grey"
-            sx={{borderRadius: "10px",}}
-            
+            sx={{ borderRadius: "10px" }}
           >
-            <MenuItem color="grey" value="male">Male</MenuItem>
-            <MenuItem color="grey" value="female">Female</MenuItem>
-            <MenuItem color="grey" value="other">Other</MenuItem>
+            <MenuItem color="grey" value="male">
+              Male
+            </MenuItem>
+            <MenuItem color="grey" value="female">
+              Female
+            </MenuItem>
+            <MenuItem color="grey" value="other">
+              Other
+            </MenuItem>
           </Select>
         </FormControl>
       </div>
@@ -138,28 +142,9 @@ export default function UserDetailsPage({
           error={error}
           fullWidth
           sx={{
-            "& .MuiInputBase-root": {
-              //   color: "#ece9e9",
-            },
-            "& .MuiFormLabel-root": {
-              //   color: "#ece9e9",
-            },
-            "& .MuiFormLabel-root.Mui-focused": {
-              //   color: "#ece9e9",
-            },
             ".MuiInputBase-input": {
-              //   background: "#130f22",
               borderRadius: "10px",
-              "&:-webkit-autofill": {
-                // WebkitBoxShadow: "0 0 0px 1000px #130f22 inset",
-                // WebkitTextFillColor: "#ece9e9",
-              },
-            },
-            ".MuiTextField-root": {
-              //   background: "#130f22",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              // borderColor: "#fff",
+              "&:-webkit-autofill": {},
             },
             "&:before, &:after": {
               borderRadius: "10px",
@@ -169,6 +154,9 @@ export default function UserDetailsPage({
             style: {
               borderRadius: "10px",
             },
+          }}
+          inputProps={{
+            pattern: "\\d{10}",
           }}
           color="grey"
         />
@@ -222,6 +210,9 @@ export default function UserDetailsPage({
               borderRadius: "10px",
             },
           }}
+          inputProps={{
+            pattern: "\\d{10}",
+          }}
           color="grey"
         />
       </div>
@@ -229,7 +220,9 @@ export default function UserDetailsPage({
         <button
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           onClick={onPrevious}
-        ><ArrowBackIosNew className="scale-75 -ml-4" />Previous
+        >
+          <ArrowBackIosNew className="scale-75 -ml-4" />
+          Previous
         </button>
         <button
           type="submit"
