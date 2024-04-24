@@ -5,9 +5,11 @@ import Navbar from "./Navbar";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
+import { fetchExamRegisterations } from "../actions/api";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
+  const [token, setToken] = useState<string>("")
   const options = [
     "Dashboard",
     "Profile",
@@ -26,10 +28,30 @@ export default function Home() {
   useEffect(() => {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
+      setToken(auth.value);
       setUser(temp.user);
       console.log(temp.user);
     });
   }, []);
+  useEffect(() => {
+    if(user) {
+      const rollno = user.rollno;
+      fetchExamRegisterations(rollno, token).then((res) => {
+        console.log("response: ", res);
+        if (res.length > 0) {
+          recentChange.details = "Current Semesters subjects were chosen and submitted for the exam.";
+          recentChange.timestamp = res.last_modified;
+        } else {
+          recentChange.details = "Choose Current Semesters subjects for the exam.";
+          recentChange.timestamp = res.last_modified;
+        }
+      }).catch((error)=>{
+        console.log("Error fetching exam registration: ",error)
+      })
+    }
+
+  },[user])
+
 
   // useEffect(() => {
   //   console.log("1",user.user)

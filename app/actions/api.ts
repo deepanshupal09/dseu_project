@@ -39,6 +39,29 @@ export async function addExamRegisterations(body: any,token: string) {
     });
 }
 
+export async function fetchCoursesByRollNo(rollno: string, token: string) {
+  try {
+    const res = await fetch("http://localhost:8000/api/data/fetchCoursesByRollNo", {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
+
+    const data = await res.json();
+    console.log("API Response:", data); // Log the response
+    return data;
+  } catch (error) {
+    console.log("Error fetching courses:", error); // Log any errors
+    throw error;
+  }
+}
+
+
 export async function login(headers: {}) {
   try {
     const response = await fetch("http://localhost:8000/login", {
@@ -58,6 +81,29 @@ export async function login(headers: {}) {
     const data = await response.json(); // Parse the JSON response
     return data;
   } catch (error) {
+    throw error;
+  }
+}
+
+export async function fetchExamRegisterations(rollno: string,token: string) {
+  try {
+    const response = await fetch("http://localhost:8000/api/data/fetchExamRegistrationByRollNo", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        token: token
+      },
+    })
+
+    if (!response.ok) {
+      return response.status;
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch(error) {
     throw error;
   }
 }

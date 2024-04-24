@@ -29,7 +29,7 @@ import {
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
-import { addExamRegisterations } from "../actions/api";
+import { addExamRegisterations, fetchCoursesByRollNo, fetchExamRegisterations } from "../actions/api";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -38,94 +38,179 @@ export default function Home() {
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
   const [user, setUser] = useState();
   const prof1 = {
-    username: "Abhinav Mangalore",
-    rollNumber: 41521001,
-    semester: 5,
-    campusName: "GB Pant Okhla - 1",
-    programName: "B.Tech CSE",
+    username: user?.name,
+    rollNumber: user?.rollno,
+    semester: user?.semester,
+    campusName: user?.campus,
+    programName: user?.program,
   };
   const [token, setToken] = useState("");
   useEffect(() => {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
-      setToken(auth.value);
+      setToken(auth?.value);
       setUser(temp.user);
+      console.log("user: ", auth?.value);
       console.log(temp.user);
     });
   }, []);
-  
 
-  const subjectsData = [
-    { name: "Universal Human Values", code: "BT-HS601", type: "Compulsory" },
-    { name: "Computer Networks", code: "BT-CS-ES601", type: "Compulsory" },
-    { name: "Machine Learning", code: "BT-CS-ES602", type: "Compulsory" },
-    { name: "Web Engineering", code: "BT-CS-ES603", type: "Compulsory" },
-    {
-      name: "Introduction to scripting languages",
-      code: "BT-CS-PE601",
-      type: "Program Elective",
-    },
-    { name: "Web Development", code: "BT-CS-PE602", type: "Program Elective" },
-    { name: "Spanish", code: "BT-OE601", type: "Open Elective" },
-    { name: "German", code: "BT-OE602", type: "Open Elective" },
-    { name: "French", code: "BT-OE603", type: "Open Elective" },
-    { name: "Russian", code: "BT-OE604", type: "Open Elective" },
-    { name: "Japanese", code: "BT-OE605", type: "Open Elective" },
-    { name: "Seminar", code: "BT-SM601", type: "Compulsory" },
-    { name: "Health and Well Being*", code: "BT-AU601", type: "Compulsory" },
-  ];
-
-  const backlogsData = [
-    {
-      subject: "Engg Mechanics",
-      subjectCode: "BT-CS-ES103",
-      examType: "Compulsory",
-      semester: 1,
-    },
-    {
-      subject: "DBMS",
-      subjectCode: "BT-CS-ES601",
-      examType: "Compulsory",
-      semester: 3,
-    },
-    {
-      subject: "Applied Physics",
-      subjectCode: "BT-CS-ES601",
-      examType: "Compulsory",
-      semester: 2,
-    },
-    {
-      subject: "Digital Circuits and Electronics",
-      subjectCode: "BT-CS-ES602",
-      examType: "Compulsory",
-      semester: 3,
-    },
-    {
-      subject: "Electronics Prac",
-      subjectCode: "BT-CS-ES109",
-      examType: "Program Elective",
-      semester: 1,
-    },
-    {
-      subject: "Web Engineering",
-      subjectCode: "BT-CS-ES603",
-      examType: "Compulsory",
-      semester: 4,
-    },
-  ];
-
-  const [selectedSubjects, setSelectedSubjects] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [selectedBacklogs, setSelectedBacklogs] = useState<any[]>([]);
+  const [subjectsData, setSubjectsData] = useState([]);
+  const [backlogsData, setBacklogsData] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState(() => {
+    const initialSelection = {};
+    subjectsData.forEach((subject) => {
+      if (subject.type === "CC") {
+        initialSelection[subject.code] = true; // CC subjects are initially selected
+      } else {
+        initialSelection[subject.code] = false;
+      }
+    });
+    return initialSelection;
+  });
+  const [selectedBacklogs, setSelectedBacklogs] = useState([]);
   const [giveBacklogExams, setGiveBacklogExams] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState<string>("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [chosen, setChosen] = useState(true);
 
-  const handleSelectSubject = (subject: { code: string }) => {
-    setSelectedSubjects((prevSelected) => ({
-      ...prevSelected,
-      [subject.code]: !prevSelected[subject.code],
-    }));
+  const selectedSub = [
+    { name: "Universal Human Values", code: "BT-HS601", type: "CC" },
+    { name: "Computer Networks", code: "BT-CS-ES601", type: "CC" },
+    { name: "Machine Learning", code: "BT-CS-ES602", type: "CC" },
+    { name: "Web Engineering", code: "BT-CS-ES603", type: "CC" },
+    { name: "Web Development", code: "BT-CS-PE602", type: "PE" },
+    { name: "Spanish", code: "BT-OE601", type: "OE" },
+    {
+      code: "BT-CS-BS401",
+      name: "Probability and Statistics",
+      type: "CC",
+    },
+    {
+      code: "BT-BS202",
+      name: "Applied Physics",
+      type: "CC",
+    },
+  ];
+
+  useEffect(() => {
+    if (user) {
+      const rollno = user.rollno;
+      fetchExamRegisterations(rollno, token)
+        .then((res) => {
+          console.log("response: ", res);
+          if (res.length > 0) {
+            setChosen(true);
+          } else {
+            setChosen(false);
+          }
+        })
+        .catch((error) => {
+          console.log("Error fetching exam registration: ", error);
+        });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const rollno = user.rollno;
+        console.log("rollno: ", rollno);
+        try {
+          const courses = await fetchCoursesByRollNo(rollno, token);
+          const userSemester = user.semester;
+          let subDataTemp = [],
+            backlogDataTemp = [];
+
+          courses.forEach((course) => {
+            if (course.semester < user.semester)
+              backlogDataTemp.push({
+                subject: course.course_name,
+                subjectCode: course.course_code,
+                examType: course.course_type,
+                semester: course.semester,
+              });
+            else
+              subDataTemp.push({
+                name: course.course_name,
+                code: course.course_code,
+                type: course.course_type,
+              });
+          });
+          const temp = [];
+          subDataTemp.forEach((subject) => {
+            if (subject.type === "CC") {
+              temp.push(subject.code);
+            }
+          });
+
+          setSelectedSubjects((prevSelected) => {
+            const updatedSelection = { ...prevSelected };
+            temp.forEach((code) => {
+              if (!(code in updatedSelection)) {
+                updatedSelection[code] = false;
+              }
+            });
+            return updatedSelection;
+          });
+
+          setSubjectsData(subDataTemp);
+          setBacklogsData(backlogDataTemp);
+
+          console.log(backlogDataTemp);
+          console.log("courses: ", courses);
+        } catch (error) {
+          console.log("Error fetching courses:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [user]);
+
+  const handleSelectSubject = (subject) => {
+    if (subject.type === "CC") {
+      // CC subjects cannot be deselected
+      return;
+    }
+
+    // Check if the subject is already selected
+    const alreadySelected = selectedSubjects[subject.code];
+
+    // Deselect any previously selected elective of the same type
+    const deselectPreviousElective = (type) => {
+      const previousElective = Object.keys(selectedSubjects).find(
+        (key) =>
+          subjectsData.find((subject) => subject.code === key)?.type === type &&
+          selectedSubjects[key]
+      );
+      if (previousElective) {
+        setSelectedSubjects((prevSelected) => ({
+          ...prevSelected,
+          [previousElective]: false,
+        }));
+      }
+    };
+
+    // If the subject is already selected, deselect it
+    if (alreadySelected) {
+      setSelectedSubjects((prevSelected) => ({
+        ...prevSelected,
+        [subject.code]: false,
+      }));
+    } else {
+      // Deselect any previously selected elective of the same type
+      if (subject.type === "PE") {
+        deselectPreviousElective("PE");
+      } else if (subject.type === "OE") {
+        deselectPreviousElective("OE");
+      }
+
+      // Toggle the selection of the subject
+      setSelectedSubjects((prevSelected) => ({
+        ...prevSelected,
+        [subject.code]: true,
+      }));
+    }
   };
 
   const handleSelectBacklog = (backlog: any) => {
@@ -165,13 +250,14 @@ export default function Home() {
         }
       }
     }
+    console.log(prof1.semester);
     return semesters;
   };
 
   const filteredBacklogs = backlogsData.filter((backlog) => {
     if (!giveBacklogExams) return false;
     else {
-      return backlog.semester.toString() === selectedSemester;
+      return backlog.semester === selectedSemester;
     }
   });
 
@@ -194,51 +280,50 @@ export default function Home() {
 
   const [confirmSubmission, setConfirmSubmission] = useState(false);
 
+  const submitDetails = async () => {
+    console.log("Submitting details...");
+    const selectedSubjectCodes = getSelectedSubjects().map(({ code }) => code);
+    const backlogSubjectCodes = selectedBacklogs.map(
+      ({ subjectCode }) => subjectCode
+    );
 
-    // console.log("Submitting details...");
-    // console.log("Selected Subjects:", getSelectedSubjects().map(({ name, code }) => ({ name, code })));
-    // console.log("Selected Backlogs:", selectedBacklogs.map(({ subject, subjectCode }) => ({ subject, subjectCode })));
-    const  submitDetails = async () => {
-      console.log("Submitting details...");
-      
-      // Extracting subject codes from selected subjects
-      const selectedSubjectCodes = getSelectedSubjects().map(({ code }) => code);
-    
-      // Extracting subject codes from selected backlogs
-      const backlogSubjectCodes = selectedBacklogs.map(({ subjectCode }) => subjectCode);
-    
-      // Combine both lists of subject codes
-      const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
-    
-      // console.log("Selected Subjects:", selectedSubjectCodes);
-      // console.log("Selected Backlogs:", backlogSubjectCodes);
-      console.log("All Subject Codes:", allSubjectCodes);
-      try {
-        const body = {rollno: user?.rollno, course_code: allSubjectCodes};
-        const res = await addExamRegisterations(body, token);
-        router.push("/dashboard")
-        if (res === 500) {
-          alert("Internal server error!")
-        }
-      } catch(error) {
-        alert("Internal server error!")
-      }    
-      // Perform submission logic here
-      setConfirmSubmission(false);
-    };
+    const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
+    console.log("all subjects ", allSubjectCodes);
+    console.log("All Subject Codes:", allSubjectCodes);
+
+    subjectsData.forEach((subject) => {
+      if (subject.type === "CC") {
+        allSubjectCodes.push(subject.code);
+      }
+    })
     
 
+    try {
+      const body = { rollno: user?.rollno, course_code: allSubjectCodes };
+      const res = await addExamRegisterations(body, token);
+      console.log("body: ", body);
+      router.push("/dashboard");
+      if (res === 500) {
+        alert("Internal server error!");
+      }
+    } catch (error) {
+      alert("Internal server error!");
+    }
+    // Perform submission logic here
+    setConfirmSubmission(false);
+  };
 
   return (
     <>
       <Header username={user?.name} />
       <Navbar />
+
       <div className="relative md:ml-60 mt-28 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto mt-16 mb-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item xs={12} sm={6} md={7} lg={8}>
               <div className="flex items-center">
-                <Avatar>{prof1.username[0]}</Avatar>
+                <Avatar>{prof1.photo}</Avatar>
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">
                     {prof1.username}
@@ -265,122 +350,194 @@ export default function Home() {
           </Grid>
         </div>
 
-        <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
-          <Table sx={{ "& td, & th": { padding: "8px" } }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant="subtitle1">Subject</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle1">Subject Code</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="subtitle1">Select</Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {subjectsData.map((subject, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Typography>{subject.name}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{subject.code}</Typography>
-                  </TableCell>
-                  <TableCell>
+        {!chosen && (
+          <>
+            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
+              <Table sx={{ "& td, & th": { padding: "8px" } }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <Typography variant="subtitle1">Subject</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">Subject Code</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">Program Type</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">Select</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {subjectsData.map((subject, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Typography>{subject.name}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{subject.code}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{subject.type}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        {subject.type === "CC" ? (
+                          <Checkbox checked disabled />
+                        ) : (
+                          <Checkbox
+                            checked={selectedSubjects[subject.code] || false}
+                            onChange={() => handleSelectSubject(subject)}
+                          />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex justify-center">
+              <Typography>
+                <b>Backlogs</b>
+              </Typography>
+            </div>
+            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
+              <FormGroup row>
+                <FormControlLabel
+                  control={
                     <Checkbox
-                      checked={selectedSubjects[subject.code] || false}
-                      onChange={() => handleSelectSubject(subject)}
+                      checked={giveBacklogExams}
+                      onChange={() => {
+                        setGiveBacklogExams(!giveBacklogExams);
+                      }}
                     />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <div className="flex justify-center">
-          <Typography>
-            <b>Backlogs</b>
-          </Typography>
-        </div>
-        <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
-          <FormGroup row>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={giveBacklogExams}
-                  onChange={() => setGiveBacklogExams(!giveBacklogExams)}
+                  }
+                  label="Register for Backlog Exams?"
                 />
-              }
-              label="Register for Backlog Exams?"
-            />
-          </FormGroup>
-          {giveBacklogExams && (
-            <div className="w-full">
-              {generateSemesters().map((semester) => (
-                <Accordion key={semester}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="subtitle1">
-                      Semester {semester}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell style={{ width: "50%" }}>
-                            <Typography>Subject</Typography>
-                          </TableCell>
-                          <TableCell style={{ width: "25%" }}>
-                            <Typography>Subject Code</Typography>
-                          </TableCell>
-                          <TableCell style={{ width: "25%" }}>
-                            <Typography>Select</Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {backlogsData
-                          .filter(
-                            (backlog) => backlog.semester === parseInt(semester)
-                          )
-                          .map((backlog, index) => (
-                            <TableRow key={index}>
+              </FormGroup>
+              {giveBacklogExams && (
+                <div className="w-full">
+                  {generateSemesters().map((semester) => (
+                    <Accordion key={semester}>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography variant="subtitle1">
+                          Semester {semester}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
                               <TableCell style={{ width: "50%" }}>
-                                <Typography>{backlog.subject}</Typography>
+                                <Typography>Subject</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
-                                <Typography>{backlog.subjectCode}</Typography>
+                                <Typography>Subject Code</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
-                                <Checkbox
-                                  checked={selectedBacklogs.some(
-                                    (b) =>
-                                      b.subjectCode === backlog.subjectCode &&
-                                      b.semester === parseInt(semester)
-                                  )}
-                                  onChange={() => handleSelectBacklog(backlog)}
-                                />
+                                <Typography>Select</Typography>
                               </TableCell>
                             </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                          </TableHead>
+                          <TableBody>
+                            {backlogsData
+                              .filter(
+                                (backlog) =>
+                                  backlog.semester === parseInt(semester)
+                              )
+                              .map((backlog, index) => (
+                                <TableRow key={index}>
+                                  <TableCell style={{ width: "50%" }}>
+                                    <Typography>{backlog.subject}</Typography>
+                                  </TableCell>
+                                  <TableCell style={{ width: "25%" }}>
+                                    <Typography>
+                                      {backlog.subjectCode}
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell style={{ width: "25%" }}>
+                                    <Checkbox
+                                      checked={selectedBacklogs.some(
+                                        (b) =>
+                                          b.subjectCode ===
+                                            backlog.subjectCode &&
+                                          b.semester === parseInt(semester)
+                                      )}
+                                      onChange={() =>
+                                        handleSelectBacklog(backlog)
+                                      }
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+            <div className="flex justify-center mt-2 mb-5">
+              <Button
+                onClick={handlePreview}
+                style={{ backgroundColor: "#0066ff", color: "#ffffff" }}
+              >
+                Preview
+              </Button>
+            </div>
+          </>
+        )}
 
-        <div className="flex justify-center mt-2 mb-5">
-          <Button onClick={handlePreview} style={{ backgroundColor: "#0066ff", color: "#ffffff" }}>Preview</Button>
-        </div>
+        {chosen && (
+          <>
+            <Typography className="ml-60 text-xl p-2 ">
+              {" "}
+              Selected Subjects
+            </Typography>
+            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
+              <Table sx={{ "& td, & th": { padding: "20px" } }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <Typography variant="subtitle1">Subject</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">Subject Code</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">Program Type</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {selectedSub.map((subject, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Typography>{subject.name}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{subject.code}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography>{subject.type}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
+        )}
       </div>
 
-      <Dialog open={previewSelection} onClose={() => setPreviewSelection(false)} fullWidth maxWidth="md">
+      <Dialog
+        open={previewSelection}
+        onClose={() => setPreviewSelection(false)}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>Preview Selection</DialogTitle>
         <DialogContent className="flex flex-col">
           <div>
@@ -405,19 +562,40 @@ export default function Home() {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={confirmSelection} variant="contained" color="primary">Confirm</Button>
-          <Button onClick={() => setPreviewSelection(false)} variant="outlined" color="primary">Edit</Button>
+          <Button
+            onClick={confirmSelection}
+            variant="contained"
+            color="primary"
+          >
+            Confirm
+          </Button>
+          <Button
+            onClick={() => setPreviewSelection(false)}
+            variant="outlined"
+            color="primary"
+          >
+            Edit
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={confirmSubmission} onClose={() => setConfirmSubmission(false)}>
+      <Dialog
+        open={confirmSubmission}
+        onClose={() => setConfirmSubmission(false)}
+      >
         <DialogTitle>Confirm Submission</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">Are you sure you want to submit the details?</Typography>
+          <Typography variant="body1">
+            Are you sure you want to submit the details?
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={submitDetails} color="primary">Submit</Button>
-          <Button onClick={() => setConfirmSubmission(false)} color="primary">Cancel</Button>
+          <Button onClick={submitDetails} color="primary">
+            Submit
+          </Button>
+          <Button onClick={() => setConfirmSubmission(false)} color="primary">
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </>
