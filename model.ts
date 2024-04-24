@@ -100,8 +100,8 @@ export function putDetailsByRollno(
   guardian: string,
   aadhar: string,
   abc_id: string,
-  pwbd_certificate: string,
-  photo: string,
+  pwbd_certificate: string|null,
+  photo: string|null,
   last_modified: string,
   program_type: string,
   password: string

@@ -12,7 +12,7 @@ import axios from "axios"; // Import Axios for making HTTP requests
 dotenv.config();
 
 const app = express();
-const port = 8003;
+const port = 8000;
 
 // Define Multer storage for handling file uploads
 const storage = multer.diskStorage({
@@ -36,101 +36,18 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/data/", verifyToken, routes);
 
-// Upload endpoint
 app.post(
     "/upload",
-    upload.fields([
-        { name: "photo", maxCount: 1 },
-        { name: "pwbdCertificate", maxCount: 1 },
-    ]),
-    async (req: Request & { files: any }, res: Response) => {
-        const {
-            program,
-            semester,
-            father,
-            mother,
-            campus,
-            emailid,
-            gender,
-            phone,
-            alternate_phone,
-            guardian,
-            rollno,
-            password,
-            program_type,
-            dateOfBirth,
-            aadharCard,
-            abcId,
-            yearOfAdmission,
-        } = req.body;
-
-        // Check if files were uploaded
-        if (
-            !req.files ||
-            !req.files["photo"] ||
-            !req.files["pwbdCertificate"]
-        ) {
-            return res.status(400).send("Files not uploaded.");
+    upload.single("image"),
+    (req: Request, res: Response) => {
+        if (!req.file) {
+            console.log("error")
+            return res.status(400).send({message: "No file uploaded."});
         }
-
-        // Get the paths of the uploaded files
-        const photoPath = req.files["photo"][0].path;
-        const pwbdCertificatePath = req.files["pwbdCertificate"][0].path;
-
-        // Replace the photo and pwbdCertificate fields with their paths
-        const updatedBody = {
-            program,
-            semester,
-            father,
-            mother,
-            campus,
-            emailid,
-            gender,
-            phone,
-            alternate_phone,
-            guardian,
-            rollno,
-            password,
-            program_type,
-            dateOfBirth,
-            aadharCard,
-            abcId,
-            yearOfAdmission,
-            photo: photoPath,
-            pwbdCertificate: pwbdCertificatePath,
-        };
-
-        // Log the uploaded files paths
-        console.log("Uploaded photo path:", photoPath);
-        console.log("Uploaded pwbdCertificate path:", pwbdCertificatePath);
-
-        try {
-            // Get the token from the request headers
-            const token = req.headers.token;
-
-            // Call the updateDetailsByRollno API with token in headers
-            const updateResponse = await axios.post(
-                "http://localhost:8003/api/data/updateDetailsByRollno",
-                updatedBody,
-                {
-                    headers: {
-                        token: token, // Pass token as authorization header
-                    },
-                }
-            );
-
-            // Log the response from the updateDetailsByRollno API
-            console.log(
-                "Response from updateDetailsByRollno:",
-                updateResponse.data
-            );
-
-            // Respond with success message
-            res.send("Files successfully uploaded and details updated.");
-        } catch (error) {
-            console.error("Error updating details:", error);
-            res.status(500).send("Error updating details.");
-        }
+        
+        const uploadedImagePath = path.resolve(req.file.path);
+        console.log("Uploaded image path:", uploadedImagePath);
+        res.send(uploadedImagePath);
     }
 );
 

@@ -73,7 +73,23 @@ export function handleLogin(
   });
 }
 
-export function updateDetails(
+async function uploadFile(file: File): Promise<string> {
+  try {
+    // const formData = new FormData();
+    // formData.append("file", file);
+    const response = await fetch("http://localhost:8000/upload", {
+      method: "POST",
+      body: file,
+    });
+    const data = await response.json();
+    return data.link; // Assuming the API returns the link of the uploaded file
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw new Error("Error uploading file");
+  }
+}
+
+export async function updateDetails(
   rollno: string,
   program: string,
   semester: number,
@@ -87,52 +103,53 @@ export function updateDetails(
   guardian: string,
   aadhar: string,
   abc_id: string,
-  pwbd_certificate: string,
-  photo: string,
+  pwbd_certificate: File|null,
+  photo: File | null,
   program_type: string,
   password: string
 ): Promise<string> {
-  return new Promise((resolve, reject) => {
+  try {
     const last_modified: string = new Date().toString();
     console.log("rollno ", rollno);
-    fetchPasswordByRollNo(rollno).then((result) => {
-      console.log("service ", result.rows);
-      if (result.rows.length > 0) {
-        bcrypt.hash(password, 10).then(function (hash) {
-          // Store hash in your password DB.
-          putDetailsByRollno(
-            rollno,
-            program,
-            semester,
-            phone,
-            campus,
-            emailid,
-            gender,
-            alternate_phone,
-            father,
-            mother,
-            guardian,
-            aadhar,
-            abc_id,
-            pwbd_certificate,
-            photo,
-            last_modified,
-            program_type,
-            hash
-          )
-            .then((results) => {
-              resolve("successfully updated!");
-            })
-            .catch((error) => {
-              console.log(error);
-              reject("internal server error");
-            });
-        });
-      } else {
-        reject("rollno not found!");
-      }
-    });
-  });
+    
+    const passwordResult = await fetchPasswordByRollNo(rollno);
+    console.log("service ", passwordResult.rows);
+
+    if (passwordResult.rows.length > 0) {
+      const hash = await bcrypt.hash(password, 10);
+      
+      let photoLink = photo ? await uploadFile(photo) : null;
+      let pwbdCertificateLink = pwbd_certificate ? await uploadFile(pwbd_certificate) : null;
+
+      // Store hash in your password DB.
+      const results = await putDetailsByRollno(
+        rollno,
+        program,
+        semester,
+        phone,
+        campus,
+        emailid,
+        gender,
+        alternate_phone,
+        father,
+        mother,
+        guardian,
+        aadhar,
+        abc_id,
+        pwbdCertificateLink, // Use the uploaded link if available, otherwise use the original value
+        photoLink, // Use the uploaded link if available, otherwise use the original value
+        last_modified,
+        program_type,
+        hash
+      );
+      return "successfully updated!";
+    } else {
+      throw new Error("rollno not found!");
+    }
+  } catch (error) {
+    console.log(error);
+    throw new Error("internal server error");
+  }
 }
 
 export async function verifyTokenByRollNo(rollno: string) {
