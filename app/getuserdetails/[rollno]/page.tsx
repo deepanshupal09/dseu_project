@@ -117,23 +117,24 @@ export default function Home() {
         abcId: abcId,
         yearOfAdmission: yearOfAdmission,
       };
-      console.log(body)
+      console.log(123,body)
       // console.log(101, JSON.stringify(body));
       // const requestOptions =;
 
-      // try {
-      //   setLoading(true);
-      //   const response: any = await signup(body);
-      //   console.log("response: ", response);
-      //   deleteSignupCookie();
-      //   setLoading(false);
-      //   router.push("/");
-      // } catch (error) {
-      //   console.log("error", error);
-      //   setLoading(false);
-      //   setOpen(true);
-      //   return;
-      // }
+      try {
+        setLoading(true);
+        console.log("here")
+        const response: any = await signup(body);
+        console.log("response: ", response);
+        deleteSignupCookie();
+        setLoading(false);
+        // router.push("/");
+      } catch (error) {
+        console.log("error", error);
+        setLoading(false);
+        setOpen(true);
+        return;
+      }
     }
   };
   const handlePrevious = () => {

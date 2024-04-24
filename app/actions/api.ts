@@ -1,6 +1,7 @@
-"use server";
+// "use server";
 
 export async function signup(body: any) {
+    console.log("here")
   const res = await fetch("http://localhost:8000/signup", {
     method: "POST",
     mode: "cors",

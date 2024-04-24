@@ -231,7 +231,7 @@ export default function Home() {
 
   return (
     <>
-      <Header username={"Abhinav M"} />
+      <Header username={user?.name} />
       <Navbar />
       <div className="relative md:ml-60 mt-28 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto mt-16 mb-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
