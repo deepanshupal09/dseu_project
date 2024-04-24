@@ -78,10 +78,11 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       photo,
       program_type,
       password,
-      rollno
+      rollno,
+      year_of_admission
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password,year_of_admission).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -111,10 +112,11 @@ function signup(req: Request, res: Response):void {
       photo,
       program_type,
       password,
-      rollno
+      rollno,
+      year_of_admission
     } = req.body;
     console.log(101,req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type,password).then((results)=>{
+    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type,password,year_of_admission).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});
@@ -173,6 +175,7 @@ const fetchCoursesByRollNo = (req: Request, res: Response):void => {
 const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
   try{
     const rollno: string = req.headers.rollno as string;
+    console.log("exam registration: ", rollno)
     fetchTheExamRegistration(rollno).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {

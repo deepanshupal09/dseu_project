@@ -1,5 +1,6 @@
 export const getUserByRollno: string = "SELECT * FROM users WHERE rollno=$1";
-export const getPasswordByRollno: string = "SELECT * FROM users WHERE rollno=$1";
+export const getPasswordByRollno: string =
+  "SELECT * FROM users WHERE rollno=$1";
 export const updateDetailsByRollno: string = `
   UPDATE users 
   SET program = COALESCE($1, program),
@@ -18,13 +19,17 @@ export const updateDetailsByRollno: string = `
       photo = COALESCE($14, photo),
       last_modified = COALESCE($15, last_modified),
       program_type = $16,
-      password = $17
+      password = $17,
+      year_of_admission = $19
   WHERE rollno = $18;
 `;
 
-export const putToken: string = "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
-export const fetchToken: string = "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
-export const pushTokenQuery: string = "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
+export const putToken: string =
+  "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
+export const fetchToken: string =
+  "SELECT token,expiry FROM user_tokens WHERE rollno=$1";
+export const pushTokenQuery: string =
+  "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
 // export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
 
 export const fetchCoursesBySemester: string = `
@@ -35,24 +40,30 @@ export const fetchCoursesBySemester: string = `
 
 export const fetchCoursesByRollNo: string = `
   WITH user_info AS (
-    SELECT program, semester
+    SELECT program, semester, campus
     FROM users
     WHERE rollno = $1
   ), semester_courses AS (
-    SELECT sc.course_code, c.course_name, sc.semester
+    SELECT sc.course_code, c.course_name, sc.semester, sc.course_type
     FROM semester_course sc
     JOIN courses c ON sc.course_code = c.course_code, user_info ui
-    WHERE sc.program = ui.program AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2
+    WHERE sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2
   )
-  SELECT sc.course_name, sc.course_code, sc.semester
+  SELECT sc.course_name, sc.course_code, sc.semester, sc.course_type
   FROM semester_courses sc;
 `;
 
+// export const fetchExamRegistrationByRollNo: string = `
+//   SELECT er.rollno, u.semester ,c.course_name, er.course_code FROM exam_registeration er
+//   JOIN courses c ON er.course_code = c.course_code
+//   JOIN users u ON er.rollno = u.rollno
+//   WHERE er.rollno=$1;
+// `;
 export const fetchExamRegistrationByRollNo: string = `
-  SELECT er.rollno, u.semester ,c.course_name, er.course_code FROM exam_registeration er
-  JOIN courses c ON er.course_code = c.course_code
-  JOIN users u ON er.rollno = u.rollno
-  WHERE er.rollno=$1;
+    SELECT er.course_code, c.course_name, er.last_modified
+    FROM exam_registeration er 
+    INNER JOIN courses c ON er.course_code = c.course_code 
+    WHERE er.rollno=$1;
 `;
 
 export const fetchExamRegistrationByCourseCode: string = `
