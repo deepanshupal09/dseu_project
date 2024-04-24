@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/data/", verifyToken, routes);
 
 app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
+    console.log("yasu",req.file)
     if (!req.file) {
         console.log("error");
         return res.status(400).send({ message: "No file uploaded." });
@@ -52,7 +53,7 @@ app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
     );
     fs.renameSync(req.file.path, newFilePath);
     res.setHeader("New-File-Name", newFileName);
-    res.send(newFilePath);
+    res.send({path: newFilePath});
 });
 
 // Other routes
