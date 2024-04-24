@@ -60,7 +60,7 @@ app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
 app.get("/login", controller.login);
 app.post("/signup", controller.signup);
 app.post("/addUsers", controller.addUsers);
-app.get("/getUserByRollno", controller.getUserByRollno);
+// app.get("/getUserByRollno", controller.getUserByRollno);
 app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
 
 // Start the server

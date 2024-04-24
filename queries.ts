@@ -60,11 +60,15 @@ export const fetchCoursesByRollNo: string = `
 //   WHERE er.rollno=$1;
 // `;
 export const fetchExamRegistrationByRollNo: string = `
-    SELECT er.course_code, c.course_name, er.last_modified
+    SELECT er.course_code, c.course_name, er.last_modified, sc.course_type
     FROM exam_registeration er 
     INNER JOIN courses c ON er.course_code = c.course_code 
+    INNER JOIN users u ON er.rollno = u.rollno
+    INNER JOIN semester_course sc ON er.course_code = sc.course_code AND u.program = sc.program AND u.semester = sc.semester AND u.campus = sc.campus
     WHERE er.rollno=$1;
 `;
+
+
 
 export const fetchExamRegistrationByCourseCode: string = `
   SELECT u.name, er.rollno, u.program, u.semester FROM exam_registeration er
