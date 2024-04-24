@@ -112,7 +112,8 @@ export async function updateDetails(
     pwbd_certificate: string,
     photo: string,
     program_type: string,
-    password: string
+    password: string,
+    year_of_admission: string,
 ): Promise<string> {
     try {
         const last_modified: string = new Date().toString();
@@ -142,7 +143,8 @@ export async function updateDetails(
                 photo, // Use the uploaded link if available, otherwise use the original value
                 last_modified,
                 program_type,
-                hash
+                hash,
+                year_of_admission
             );
             return "successfully updated!";
         } else {
