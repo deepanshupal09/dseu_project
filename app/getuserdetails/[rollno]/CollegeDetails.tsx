@@ -45,20 +45,15 @@ export default function UserDetailsPage({
     setprogram,
     setcollege,
 }: Props) {
-    // const [college, setCollege] = useState('');
-    // const [program, setProgram] = useState(null);
-    // const [semester, setSemester] = useState(null);
     const [helperText, setHelperText] = useState("");
-    // const [programType,setProgramType ] = useState("");
     const [error, setError] = useState(false);
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setcollege(college);
         setsemester(semester);
         setprogram(program);
         setprogramtype(programtype);
-        onNext(); // Call the onNext function passed from parent component
+        onNext();
     };
 
     return (
