@@ -24,7 +24,7 @@ export default function Home() {
     const [phone, setPhone] = useState<string>("");
     const [alternatePhone, setAlternatePhone] = useState<string>("");
     const [college, setCollege] = useState<string>("");
-    const [program, setProgram] = useState(null);
+    const [program, setProgram] = useState("");
     const [semester, setSemester] = useState("Semester 1");
     const [fatherName, setFatherName] = useState<string>("");
     const [motherName, setMotherName] = useState<string>("");
@@ -125,20 +125,20 @@ export default function Home() {
             // console.log(101, JSON.stringify(body));
             // const requestOptions =;
 
-            // try {
-            //   setLoading(true);
-            //   console.log("here")
-            //   const response: any = await signup(body);
-            //   console.log("response: ", response);
-            //   deleteSignupCookie();
-            //   setLoading(false);
-            //   // router.push("/");
-            // } catch (error) {
-            //   console.log("error", error);
-            //   setLoading(false);
-            //   setOpen(true);
-            //   return;
-            // }
+            try {
+                setLoading(true);
+                console.log("here");
+                const response: any = await signup(body);
+                console.log("response: ", response);
+                deleteSignupCookie();
+                setLoading(false);
+                router.push("/");
+            } catch (error) {
+                console.log("error", error);
+                setLoading(false);
+                setOpen(true);
+                return;
+            }
         }
     };
     const handlePrevious = () => {
@@ -283,6 +283,10 @@ export default function Home() {
                 )}
                 {step === 3 && (
                     <CollegeDetails
+                        semester={semester}
+                        college={college}
+                        programtype={programType}
+                        program={program}
                         onNext={handleNext}
                         onPrevious={handlePrevious}
                         campusList={campusList}
