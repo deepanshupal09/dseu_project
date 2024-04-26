@@ -13,6 +13,7 @@ export default function ChangePassword({setnewpassword, onNext }: ChangePassword
   const [confirmPassword, setConfirmPassword] = useState('');
   const [helperText, setHelperText] = useState('');
   const [error, setError] = useState(false);
+  const spaceRegex = /\s/;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,6 +28,12 @@ export default function ChangePassword({setnewpassword, onNext }: ChangePassword
       return;
 
     }
+    if (spaceRegex.test(newPassword) || spaceRegex.test(confirmPassword)) {
+      setHelperText("Password cannot contain spaces");
+      setError(true);
+      return;
+    }
+    
     console.log('New Password:', newPassword);
     console.log('Confirm Password:', confirmPassword);
     setnewpassword(newPassword);

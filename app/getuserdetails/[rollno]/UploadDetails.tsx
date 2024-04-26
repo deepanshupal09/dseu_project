@@ -136,7 +136,7 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
             </div>
             <div>
                 <label>
-                    Are you a person with PwBD?{" "}
+                Select, if you are a Persons with Benchmark Disabilities (PwBD){" "}{" "}
                     <Checkbox
                         checked={isPwbd}
                         onChange={(e) => setIsPwbd(e.target.checked)}
