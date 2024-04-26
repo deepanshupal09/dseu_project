@@ -337,7 +337,6 @@ const updatePasswordByOtp = (req: Request, res: Response)=>{
   catch(error){
     res.status(500).send("Internal server error in password updation 2");
   }
-  
 }
 
 const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
