@@ -14,9 +14,15 @@ import {
     fetchExamRegistrationProgramAndSemester,
     insertUsers,
     insertExamRegisterations,
+    fetchProgram,
+    fetchEmailId,
+    otpUpdateModel,
+    otpVerifyModel,
+    updatePassword
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import generateOTP from "./otp_generator"
 
 export function handleLogin(
     rollno: string,
@@ -280,9 +286,10 @@ export function insertTheUsers(users: any): Promise<any> {
         // Use Promise.all to wait for all bcrypt hash operations to complete
         Promise.all(
             users.map((user: any) => {
-                const password =
-                    (user.name.toUpperCase() + "0000").substring(0, 4) +
-                    user.rollno;
+                let subpass = (user.name.toUpperCase()).substring(0, 4);
+                subpass = subpass.split(" ")[0];
+                const password = subpass +user.rollno;
+                console.log(password);
                 return new Promise((resolve, reject) => {
                     bcrypt.hash(password, 10, function (err, hash) {
                         data.push({ ...user, password: hash });
@@ -323,3 +330,59 @@ export function insertTheExamRegisterations(registeration: any): Promise<any> {
             });
     });
 }
+
+export function fetchTheProgram(program_type: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchProgram(program_type).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in fetching programs: ",error);
+            reject("Internal server error in insertExamRegisterations");
+        })
+    })
+}
+
+export function fetchTheEmailId(rollno: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchEmailId(rollno).then((result) => {
+            // console.log(result.rows[0].emailid);
+            resolve(result.rows[0].emailid);
+        }).catch((error) => {
+            console.log("Error in fetching email: ",error);
+            reject("Internal server error in fetchingEmailid");
+        })
+    })
+}
+
+export function otpUpdateService(otp:string, rollno: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        otpUpdateModel(otp, rollno).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in otp udation: ",error);
+            reject("Internal server error in otp updation");
+        })
+    })
+}
+export function otpVerifyService( rollno: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        otpVerifyModel(rollno).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in otp validation: ",error);
+            reject("Internal server error in otp validation");
+        })
+    })
+}
+
+export function updateThePassword(password:string, rollno: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        updatePassword(password, rollno).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in password updation: ",error);
+            reject("Internal server error in password updation");
+        })
+    })
+}
+

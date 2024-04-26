@@ -10,8 +10,20 @@ import {
   fetchTheExamRegistrationCourse,
   fetchTheExamRegistrationProgramAndSemester,
   insertTheUsers,
-  insertTheExamRegisterations
+  insertTheExamRegisterations,
+  fetchTheProgram,
+  fetchTheEmailId,
+  otpUpdateService,
+  otpVerifyService,
+  updateThePassword
 } from "./service";
+import generateOTP from "./otp_generator"
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import asyncHandler from "express-async-handler";
+dotenv.config();
+
+
 
 const getUserByRollno = (req: Request, res: Response): void => {
   try {
@@ -242,6 +254,110 @@ const addExamRegisterations = (req: Request, res: Response): void => {
   }
 }
 
+const fetchProgramByProgramType = (req: Request, res: Response): void => {
+  try{
+    const program_type:string = req.headers.program_type as string;
+    fetchTheProgram(program_type).then((results)=> {
+      res.status(200).send(results);
+    }).catch((error)=>{
+      res.status(500).send("Internal server error in fetchProgramByProgramType");
+    })
+  }
+  catch(error){
+    res.send("Internal server error in fetchProgram controller");
+  }
+}
+
+const fetchEmailIdByRollno = (req: Request, res: Response): void => {
+  try{
+    const rollno: string = req.headers.rollno as string;
+    fetchTheEmailId(rollno).then((results)=> {
+      res.status(200).send(results);
+    }).catch((error)=>{
+      res.status(500).send("Internal server error in fetchemailid");
+    })
+  }
+  catch(error){
+    res.send("Internal server error in fetchProgram controller");
+  }
+}
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_MAIL, // generated ethereal user
+    pass: process.env.SMTP_PASSWORD, // generated ethereal password
+  },
+});
+
+const sendEmail = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const rollno: string = req.headers.rollno as string;
+    const otp = generateOTP(); 
+
+    await otpUpdateService(otp,rollno);
+    const email = await fetchTheEmailId(rollno);
+    
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: email,
+      subject: 'OTP for password change',
+      text: `This is the OTP: ${otp}`, 
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send({ message: 'Internal Server Error!' });
+      } else {
+        console.log('Email sent successfully!');
+        res.status(200).send('Email sent successfully!');
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching email:', error);
+    res.status(500).send('Internal server error in sendEmail');
+  }
+});
+
+const updatePasswordByOtp = (req: Request, res: Response)=>{
+  try{
+    const {rollno, password} = req.body;
+    updateThePassword(password, rollno).then((results)=> {
+      res.status(200).send("Password updated successfully!");
+    }).catch((error)=>{
+      res.status(500).send("Internal server error in password updation 1");
+    })
+  }
+  catch(error){
+    res.status(500).send("Internal server error in password updation 2");
+  }
+  
+}
+
+const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
+  try{
+    const{rollno, otp} = req.body; 
+    console.log(otp);
+    const storedOTPResult = await otpVerifyService(rollno);
+    const storedOTP: string = storedOTPResult.rows[0]?.otp;
+    console.log(storedOTP);
+
+    if(otp === storedOTP ){
+      res.status(200).send("OTP verified successfully!");
+    } else{
+      res.status(400).send("Invalid OTP");
+    }
+  }
+  catch(error){
+    res.status(500).send('Internal server error in verifying otp and password!');
+  }
+})
+
+
 export {
   getUserByRollno,
   login,
@@ -254,5 +370,10 @@ export {
   fetchExamRegistrationByCourseCode,
   fetchExamRegistrationByProgramAndSemester,
   addUsers,
-  addExamRegisterations
+  addExamRegisterations,
+  fetchProgramByProgramType,
+  fetchEmailIdByRollno,
+  sendEmail,
+  verifyOtpAndPassword,
+  updatePasswordByOtp
 };

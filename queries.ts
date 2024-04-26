@@ -1,3 +1,5 @@
+import generateOTP from "./otp_generator"
+
 export const getUserByRollno: string = "SELECT * FROM users WHERE rollno=$1";
 export const getPasswordByRollno: string =
   "SELECT * FROM users WHERE rollno=$1";
@@ -78,6 +80,23 @@ export const fetchExamRegistrationByProgramAndSemester: string = `
   where u.program=$1 AND u.semester=$2;  
 `;
 
-// export const addDetailsInSemesterCourse: string =`
-//   INSERT INTO semester_course (program, semester, course_code, program_type, credit) VALUES ($1, $2, $3, $4, $5);
-// `
+
+export const fetchProgramByProgramType: string = `
+  SELECT program FROM program_programtype WHERE program_type = $1;
+`;
+
+export const fetchEmailIdByRollno: string = `
+  SELECT emailid FROM users WHERE rollno = $1;
+`;
+
+export const updateOTP: string = `
+  UPDATE users SET otp = $1 WHERE rollno = $2;
+`;
+
+export const verifyOTP: string = `
+  SELECT otp FROM users WHERE rollno = $1; 
+`;
+
+export const updatePasswordByOtp: string = `
+  UPDATE users SET password = $1 WHERE rollno = $2;
+`;

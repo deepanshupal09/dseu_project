@@ -62,6 +62,11 @@ app.post("/signup", controller.signup);
 app.post("/addUsers", controller.addUsers);
 app.get("/getUserByRollno", controller.getUserByRollno);
 app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
+app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
+app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
+app.get("/sendEmail", controller.sendEmail);
+app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
+app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 
 // Start the server
 app.listen(port, () => {

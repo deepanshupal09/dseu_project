@@ -15,6 +15,11 @@ import {
     fetchExamRegistrationByRollNo,
     fetchExamRegistrationByCourseCode,
     fetchExamRegistrationByProgramAndSemester,
+    fetchProgramByProgramType,
+    fetchEmailIdByRollno,
+    updateOTP,
+    verifyOTP,
+    updatePasswordByOtp
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -321,4 +326,64 @@ export function insertExamRegisterations(registeration: {
             }
         });
     });
+}
+
+export function fetchProgram( program_type: string) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchProgramByProgramType,[program_type],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchEmailId( rollno: string) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchEmailIdByRollno,[rollno],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function otpUpdateModel(  otp: string , rollno: string,) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(updateOTP,[ otp , rollno ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function otpVerifyModel( rollno: string) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(verifyOTP,[ rollno ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function updatePassword( password: string, rollno: string ) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(updatePasswordByOtp,[ password, rollno ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
 }
