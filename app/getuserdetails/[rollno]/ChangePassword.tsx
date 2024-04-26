@@ -21,6 +21,11 @@ export default function ChangePassword({setnewpassword, onNext }: ChangePassword
       setError(true);
       return;
     }
+    if (/\s/.test(newPassword)) {
+      setHelperText("Password cannot contain spaces");
+      setError(true);
+      return;
+    }
     if (newPassword.length < 8) {
       setHelperText("Password must contain 8 characters");
       setError(true);

@@ -175,22 +175,15 @@ export default function Home() {
     }
   });
 
-  return [...selectedCompulsorySubjects, ...compulsorySubjectsNotSelected];
-};
-
   const getSelectedSubjects = () => {
-    const selectedCompulsorySubjects = subjectsData.filter(subject => 
-      selectedSubjects[subject.code] && subject.type === "Compulsory"
-    );
-    const compulsorySubjectsNotSelected = subjectsData.filter(subject => 
-      !selectedSubjects[subject.code] && subject.type === "Compulsory"
-    );
+    return subjectsData.filter((subject) => selectedSubjects[subject.code]);
+  };
 
-    const handlePreview = () => {
-      console.log("Selected Subjects:", getSelectedSubjects());
-      console.log("Selected Backlogs:", selectedBacklogs);
-      setPreviewSelection(true);
-    };
+  const handlePreview = () => {
+    console.log("Selected Subjects:", getSelectedSubjects());
+    console.log("Selected Backlogs:", selectedBacklogs);
+    setPreviewSelection(true);
+  };
 
   const confirmSelection = () => {
     // Logic to confirm selection
