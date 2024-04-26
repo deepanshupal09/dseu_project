@@ -172,8 +172,9 @@ const fetchCoursesBySemester = (req: Request, res: Response):void => {
 const fetchCoursesByRollNo = (req: Request, res: Response):void => {
   try{
     const rollno: string = req.headers.rollno as string;
-    console.log("rolllno: ",rollno);
+    console.log("rolllno courses: ",rollno);
     fetchTheCoursesRollNo(rollno). then((results) => {
+      console.log("results: ", results)
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server error roll 2");
@@ -189,6 +190,7 @@ const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
     const rollno: string = req.headers.rollno as string;
     console.log("exam registration: ", rollno)
     fetchTheExamRegistration(rollno).then((results) => {
+      
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server error exam registeration 2");
