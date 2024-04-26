@@ -44,6 +44,8 @@ const IDDetails: React.FC<IDDetailsProps> = ({
     onNext();
   };
 
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(()=>{
     console.log("dateofBirth: ", dateOfBirth)
   },[dateOfBirth])
@@ -74,6 +76,9 @@ const IDDetails: React.FC<IDDetailsProps> = ({
           ),
         }}
         className="w-full"
+        inputProps={{
+          max:today,
+        }}
       />
       <TextField
         required
