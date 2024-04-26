@@ -19,6 +19,26 @@ export async function signup(body:any) {
    
 }
 
+export async function addExamRegisterations(body: any,token: string) {
+    const res = await fetch("http://localhost:8000/api/data/addExamRegisterations", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+  
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => {
+        return res;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
+
 export async function login(headers: {}) {
     try {
         const response = await fetch("http://localhost:8000/login", {

@@ -28,10 +28,10 @@ export default function UserDetailsPage({ onNext, onPrevious, setsemester, campu
     console.log("Program Category:", programCategory);
     console.log("Program:", program);
     console.log("Semester:", semester);
-    setcollege(college || ''); // Ensure that college is not null
-    setsemester(semester || ''); // Ensure that semester is not null
-    setprogram(program || ''); // Ensure that program is not null
-    onNext(e); // Call the onNext function passed from parent component
+    setcollege(college || ''); 
+    setsemester(semester || ''); 
+    setprogram(program || ''); 
+    onNext(e); 
   };
 
   return (

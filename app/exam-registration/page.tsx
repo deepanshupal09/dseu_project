@@ -29,6 +29,8 @@ import {
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
+import { addExamRegisterations } from "../actions/api";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
@@ -42,13 +44,16 @@ export default function Home() {
     campusName: "GB Pant Okhla - 1",
     programName: "B.Tech CSE",
   };
+  const [token, setToken] = useState("");
   useEffect(() => {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
+      setToken(auth.value);
       setUser(temp.user);
       console.log(temp.user);
     });
   }, []);
+  
 
   const subjectsData = [
     { name: "Universal Human Values", code: "BT-HS601", type: "Compulsory" },
@@ -170,37 +175,72 @@ export default function Home() {
     }
   });
 
-  const getSelectedSubjects = () => {
-    return subjectsData.filter((subject) => selectedSubjects[subject.code]);
-  };
+  return [...selectedCompulsorySubjects, ...compulsorySubjectsNotSelected];
+};
 
-  const handlePreview = () => {
-    console.log("Selected Subjects:", getSelectedSubjects());
-    console.log("Selected Backlogs:", selectedBacklogs);
-    setPreviewSelection(true);
-  };
+  const getSelectedSubjects = () => {
+    const selectedCompulsorySubjects = subjectsData.filter(subject => 
+      selectedSubjects[subject.code] && subject.type === "Compulsory"
+    );
+    const compulsorySubjectsNotSelected = subjectsData.filter(subject => 
+      !selectedSubjects[subject.code] && subject.type === "Compulsory"
+    );
+
+    const handlePreview = () => {
+      console.log("Selected Subjects:", getSelectedSubjects());
+      console.log("Selected Backlogs:", selectedBacklogs);
+      setPreviewSelection(true);
+    };
 
   const confirmSelection = () => {
     // Logic to confirm selection
     setPreviewSelection(false);
     setConfirmSubmission(true);
   };
+  const router = useRouter();
 
   const [confirmSubmission, setConfirmSubmission] = useState(false);
 
-  const submitDetails = () => {
-    console.log("Submitting details...");
-    console.log("Selected Subjects:", getSelectedSubjects().map(({ name, code }) => ({ name, code })));
-    console.log("Selected Backlogs:", selectedBacklogs.map(({ subject, subjectCode }) => ({ subject, subjectCode })));
-    // Perform submission logic here
-    setConfirmSubmission(false);
-  };
+
+    // console.log("Submitting details...");
+    // console.log("Selected Subjects:", getSelectedSubjects().map(({ name, code }) => ({ name, code })));
+    // console.log("Selected Backlogs:", selectedBacklogs.map(({ subject, subjectCode }) => ({ subject, subjectCode })));
+    const  submitDetails = async () => {
+      console.log("Submitting details...");
+      
+      // Extracting subject codes from selected subjects
+      const selectedSubjectCodes = getSelectedSubjects().map(({ code }) => code);
+    
+      // Extracting subject codes from selected backlogs
+      const backlogSubjectCodes = selectedBacklogs.map(({ subjectCode }) => subjectCode);
+    
+      // Combine both lists of subject codes
+      const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
+    
+      // console.log("Selected Subjects:", selectedSubjectCodes);
+      // console.log("Selected Backlogs:", backlogSubjectCodes);
+      console.log("All Subject Codes:", allSubjectCodes);
+      try {
+        const body = {rollno: user?.rollno, course_code: allSubjectCodes};
+        const res = await addExamRegisterations(body, token);
+        router.push("/dashboard")
+        if (res === 500) {
+          alert("Internal server error!")
+        }
+      } catch(error) {
+        alert("Internal server error!")
+      }    
+      // Perform submission logic here
+      setConfirmSubmission(false);
+    };
+    
+
 
   return (
     <>
-      <Header username={"Abhinav M"} />
+      <Header username={user?.name} />
       <Navbar />
-      <div className="relative md:ml-60 mt-6 md:w-auto">
+      <div className="relative md:ml-60 mt-28 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto mt-16 mb-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item xs={12} sm={6} md={7} lg={8}>

@@ -6,13 +6,17 @@ import CollegeDetails from "./CollegeDetails";
 import FamilyDetails from "./FamilyDetails";
 import UploadDetails from "./UploadDetails";
 import IDDetails from "./IDDetails";
+import Preview from "./Preview";
 import LinearProgress from "@mui/joy/LinearProgress";
 import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
+import Final from "./Final";
 import { login, signup } from "@/app/actions/api";
 import { deleteSignupCookie } from "@/app/actions/cookie";
+import { getAuth } from "../actions/cookie";
+import { parseJwt } from "../actions/utils";
 
 
 export default function Home() {
@@ -31,6 +35,7 @@ export default function Home() {
   const [motherName, setMotherName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [isPhotoUploaded, setIsPhotoUploaded] = useState<boolean>(false);
 
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
@@ -53,7 +58,7 @@ export default function Home() {
   
 
   const handleNext = async () => {
-    if (step < 6) {
+    if (step < 8) {
       setStep(step + 1);
       console.log(step ,"step");
     } else {
@@ -195,6 +200,14 @@ export default function Home() {
     "Diploma in Pharmacy",
   ];
   const semesterList = ["Semester 2", "Semester 4", "Semester 6"];
+  const handleBackToLogin = () => {
+    router.push("/");
+  };
+  const handlePhotoUpload = (file: File | null) => {
+    setPhotoFile(file);
+    setIsPhotoUploaded(true);
+  };
+
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
@@ -202,6 +215,7 @@ export default function Home() {
         <LinearProgress determinate value={step * 16.7} />{" "}
       </div>
       <div className="my-auto">
+      
         {step === 1 && (
           <ChangePassword setnewpassword={setNewpass} onNext={handleNext} />
         )}
@@ -253,10 +267,39 @@ export default function Home() {
         )}
         {step === 6 && (
           <UploadDetails 
+
             onNext={handleNext}
             onPrevious={handlePrevious}
+            onPhotoUpload={handlePhotoUpload}
           />
         )}
+  {step === 7 && (
+  <Preview
+    
+    rollNo="123456"
+    email={emailid}
+    gender={gender}
+    phone={phone}
+    altPhone={alternatePhone}
+    programCategory="Engineering"
+    campus="Campus A"
+    program="Computer Science"
+    semester="Semester 1"
+    fatherName={fatherName}
+    motherName={motherName}
+    singleParentGuardian={singleParentGuardian}
+    parentRelation={parentRelation}
+    dateOfBirth="01/01/1990"
+    aadharCard="1234 5678 9012"
+    abcId="ABC123"
+    yearOfAdmission={2021}
+    photo={photoFile}
+    pwbdCertificate={pwbdCertificateFile}
+    onPrevious={handlePrevious}
+    onSubmit={handleNext}
+  />
+)}
+        {step === 8 && <Final onBackToLogin={handleBackToLogin} />}
       </div>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
