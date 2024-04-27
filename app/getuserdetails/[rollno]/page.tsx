@@ -207,7 +207,6 @@ export default function Home() {
     "Diploma in Civil Engineering - Part Time",
     "B.A. in Aesthetics & Beauty Therapy",
     "B.Sc. in Aesthetics & Beauty Therapy",
-    "B.A. in Aesthetics & Beauty Therapy",
     "Bachelor of Computer Application",
     "BBA in Banking, Financial Services and Insurance",
     "B.Com. in Bussiness Process Management",

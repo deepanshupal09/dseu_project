@@ -2,7 +2,7 @@
 
 export async function signup(body: any) {
     console.log("here")
-  const res = await fetch("http://localhost:8000/signup", {
+  const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -20,7 +20,7 @@ export async function signup(body: any) {
 }
 
 export async function addExamRegisterations(body: any,token: string) {
-  const res = await fetch("http://localhost:8000/api/data/addExamRegisterations", {
+  const res = await fetch("https://admin-exam.dseu.ac.in/api/data/addExamRegisterations", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -41,7 +41,7 @@ export async function addExamRegisterations(body: any,token: string) {
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
   try {
-    const res = await fetch("http://localhost:8000/api/data/fetchCoursesByRollNo", {
+    const res = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo", {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
@@ -64,7 +64,7 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
 
 export async function login(headers: {}) {
   try {
-    const response = await fetch("http://localhost:8000/login", {
+    const response = await fetch("https://admin-exam.dseu.ac.in/login", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -87,7 +87,7 @@ export async function login(headers: {}) {
 
 export async function fetchExamRegisterations(rollno: string,token: string) {
   try {
-    const response = await fetch("http://localhost:8000/api/data/fetchExamRegistrationByRollNo", {
+    const response = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -116,7 +116,7 @@ export async function uploadFile(file: File, fileName: string) {
 
     // No need to set Content-Type header manually when using FormData
 
-    const response = await fetch('http://localhost:8000/upload', {
+    const response = await fetch('https://admin-exam.dseu.ac.in/upload', {
       method: 'POST',
       body: formData,
       mode: "cors",
