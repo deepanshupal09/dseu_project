@@ -18,6 +18,10 @@ interface UploadDetailsProps {
   setPhoto: React.Dispatch<React.SetStateAction<string>>;
   setPwbdCertificate: React.Dispatch<React.SetStateAction<string>>;
   setIsPwbd: React.Dispatch<React.SetStateAction<boolean>>;
+  photoObject: File | null;
+  setPhotoObject: React.Dispatch<React.SetStateAction<File|null>>;
+  certificateObject: File | null;
+  setCertificateObject: React.Dispatch<React.SetStateAction<File|null>>;
   rollno: string;
 }
 
@@ -30,14 +34,20 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
   setPhoto,
   setPwbdCertificate,
   setIsPwbd,
+  photoObject,
+  setPhotoObject,
+  certificateObject,
+  setCertificateObject,
   rollno,
 }) => {
-  useEffect(() => {
-    // console.log("photo: ", photo);
-    // alert
-  }, [photo]);
-  const [photoObject, setPhotoObject] = useState<File | null>();
-  const [certificateObject, setCertificateObject] = useState<File | null>();
+
+    useEffect(() => {
+        setPhoto("");
+    },[photoObject])
+
+    useEffect(() => {
+        setPwbdCertificate("");
+    },[certificateObject])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -101,7 +111,7 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
           <input
             id="photo"
             type="file"
-            label="Upload Photo (Max 30kb)"
+            // label="Upload Photo (Max 30kb)"
             accept="image/jpeg, image/png"
             onChange={handlePhotoChange}
             required
@@ -115,8 +125,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
                   const res = await uploadFile(photoObject, rollno + "_photo");
                   setPhoto(res.path);
                   alert("File uploaded successfully");
-                } catch (error) {
-                  alert("Photo not uploaded, ERROR: ", error);
+                } catch (error:any) {
+                  alert("Photo not uploaded, ERROR: "+ error);
                 }
               } else {
                 alert("Please select a photo to upload!");
@@ -146,16 +156,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
             <input
               id="pwbd-certificate"
               type="file"
-              label="Upload PWBD Certificate (Max 30kb)"
               accept="image/jpeg, image/png"
               onChange={handlePwbdCertificateChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <ArrowBackIosNew />
-                  </InputAdornment>
-                ),
-              }}
               className="w-full"
             />
             <button
@@ -169,8 +171,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
                     );
                     setPwbdCertificate(res.path);
                     alert("File uploaded successfully");
-                  } catch (error) {
-                    alert("Photo not uploaded, ERROR: ", error);
+                  } catch (error:any) {
+                    alert("Photo not uploaded, ERROR: "+ error);
                   }
                 } else {
                   alert("Please select a photo to upload!");

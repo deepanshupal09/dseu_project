@@ -101,11 +101,11 @@ export default function PreviewPage({
   
 
   return (
-    <div className="p-10 w-full ml-60 mr-60 bg-white shadow-md rounded-lg lg:w-full mx-auto">
-      <h2 className="text-2xl font-bold mb-12 mt-12 text-left ml-4">
+    <div className="p-10 w-[80vw] max-md:w-[100vw]  bg-white shadow-md rounded-lg mx-auto">
+      <h2 className="text-2xl w-full font-bold mb-12 mt-12 text-left m-4">
         Preview Your Information
       </h2>
-      <table className="w-full mt-2  table-auto mr-6">
+      <table className="w-full mt-2   table-auto ">
         <tbody className="divide-y divide-gray-200">
           <tr>
             <td className="px-6 py-4 font-semibold">Roll Number:</td>
