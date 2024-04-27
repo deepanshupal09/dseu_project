@@ -17,7 +17,7 @@ import Final from "./Final";
 import PreviewPage from "./Preview";
 
 export default function Home() {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(7);
   const [newpass, setNewpass] = useState<string>("");
   const [confirm, setConfirm] = useState<string>("");
   const [emailid, setEmailid] = useState<string>("");
@@ -326,7 +326,7 @@ export default function Home() {
   const programTypeList = [
     "Diploma",
     "Undergraduate",
-    "Post Graduate",
+    "PostGraduate",
     "Doctorate",
     "Certificate",
   ];

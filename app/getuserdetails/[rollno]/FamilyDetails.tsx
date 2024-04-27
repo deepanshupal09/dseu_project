@@ -141,7 +141,8 @@ export default function FamilyDetails({
           <div className="w-[100%]">
             <TextField
               label="Parent/Guardian Name"
-              required
+              required={true}
+              // disabled={parentRelation===""}
               value={singleParentGuardianName}
               onChange={handleNameChange(setSingleParentGuardianName)}
               variant="outlined"
@@ -164,22 +165,24 @@ export default function FamilyDetails({
               color="grey"
               onChange={(e) => setParentRelation(e.target.value)}
             >
+                {/* <input  type="hidden" required /> */}
+
               <FormControlLabel
                 color="grey"
                 value="mother"
-                control={<Radio />}
+                control={<Radio required />}
                 label="Mother"
               />
               <FormControlLabel
                 color="grey"
                 value="father"
-                control={<Radio />}
+                control={<Radio required />}
                 label="Father"
               />
               <FormControlLabel
                 color="grey"
                 value="guardian"
-                control={<Radio />}
+                control={<Radio required />}
                 label="Guardian"
               />
             </RadioGroup>
@@ -188,6 +191,7 @@ export default function FamilyDetails({
       )}
       <div className="flex  gap-x-2 w-full">
         <button
+        type="button"
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           onClick={onPrevious}
         >
