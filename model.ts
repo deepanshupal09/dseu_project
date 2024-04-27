@@ -30,6 +30,7 @@ export function fetchPasswordByRollNo(
             if (error) {
                 reject(error);
             } else {
+                // console.log("error mode: ",results)
                 resolve(results);
             }
         });

@@ -49,7 +49,7 @@ const login = (
   try {
     const rollno: string = req.headers.rollno as string;
     const password: string = req.headers.password as string;
-    console.log("rollno", password)
+    console.log("rollno",  rollno)
 
     if (rollno && password) {
       handleLogin(rollno, password)
