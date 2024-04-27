@@ -93,14 +93,15 @@ export default function PreviewPage({
   };
 
   const handleConfirmClick = () => {
-    const allChecked = Object.values(checkboxes).every(checkbox => checkbox === true);
+    const anyUnchecked = Object.values(checkboxes).every(checkbox => !checkbox);
     
-    setConfirmSubmission(true);
-    // if (allChecked) {
-    // } else {
-    //   alert("Please check all fields before confirming.");
-    // }
+    if (anyUnchecked) {
+      alert("Please check all fields before confirming.");
+    } else {
+      setConfirmSubmission(true);
+    }
   };
+  
 
   return (
     <div className="p-10 w-full ml-60 mr-60 bg-white shadow-md rounded-lg lg:w-full mx-auto">
@@ -113,91 +114,129 @@ export default function PreviewPage({
             <td className="px-6 py-4 font-semibold">Name:</td>
             <td className="px-6 py-4">{name}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+              checked={checkboxes.name} 
+              onChange={() => handleCheckboxChange('name')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Roll Number:</td>
             <td className="px-6 py-4">{rollNo}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+              checked={checkboxes.rollNo} 
+              onChange={() => handleCheckboxChange('rollNo')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Email: </td>
             <td className="px-6 py-4">{email}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.email}
+               onChange={() => handleCheckboxChange('email')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Gender: </td>
             <td className="px-6 py-4">{gender}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.gender}
+               onChange={() => handleCheckboxChange('gender')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Phone: </td>
             <td className="px-6 py-4">{phone}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.phone}
+               onChange={() => handleCheckboxChange('phone')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Alternate Phone: </td>
             <td className="px-6 py-4">{altPhone}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.altPhone}
+               onChange={() => handleCheckboxChange('altPhone')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Program Category: </td>
             <td className="px-6 py-4">{programCategory}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.programCategory}
+               onChange={() => handleCheckboxChange('programCategory')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Campus: </td>
             <td className="px-6 py-4">{campus}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.campus}
+               onChange={() => handleCheckboxChange('campus')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Program: </td>
             <td className="px-6 py-4">{program}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.program}
+               onChange={() => handleCheckboxChange('program')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Semester: </td>
             <td className="px-6 py-4">{semester}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.semester}
+               onChange={() => handleCheckboxChange('semester')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Father's Name: </td>
             <td className="px-6 py-4">{fatherName}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.fatherName}
+               onChange={() => handleCheckboxChange('fatherName')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Mother's Name: </td>
             <td className="px-6 py-4">{motherName}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.motherName}
+               onChange={() => handleCheckboxChange('motherName')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Single Parent/Guardian:</td>
             <td className="px-6 py-4">{singleParentGuardian ? "Yes" : "No"}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.singleParentGuardian}
+               onChange={() => handleCheckboxChange('singleParentGuardian')}/>
             </td>
           </tr>
           {singleParentGuardian && (
@@ -205,7 +244,10 @@ export default function PreviewPage({
               <td className="px-6 py-4 font-semibold">Parent's Relation:</td>
               <td className="px-6 py-4">{parentRelation}</td>
               <td className="px-2 py-4 scale-200">
-                <input type="checkbox" style={{ cursor: "pointer" }} />
+                <input type="checkbox" style={{ cursor: "pointer" }} 
+                 checked={checkboxes.parentRelation}
+                 onChange={() => handleCheckboxChange('parentRelation')}
+                />
               </td>
             </tr>
           )}
@@ -213,28 +255,39 @@ export default function PreviewPage({
             <td className="px-6 py-4 font-semibold">Date of Birth: </td>
             <td className="px-6 py-4">{dateOfBirth}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.dateOfBirth}
+               onChange={() => handleCheckboxChange('dateOfBirth')}/>
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Aadhar Card: </td>
             <td className="px-6 py-4">{aadharCard}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.aadharCard}
+               onChange={() => handleCheckboxChange('aadharCard')}
+               />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">ABC ID: </td>
             <td className="px-6 py-4">{abcId}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.abcId}
+               onChange={() => handleCheckboxChange('abcId')}
+              />
             </td>
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Year of Admission: </td>
             <td className="px-6 py-4">{yearOfAdmission}</td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.yearOfAdmission}
+               onChange={() => handleCheckboxChange('yearOfAdmission')}
+              />
             </td>
           </tr>
           <tr>
@@ -249,7 +302,10 @@ export default function PreviewPage({
               )}
             </td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.photo}
+               onChange={() => handleCheckboxChange('photo')}
+              />
             </td>
           </tr>
           <tr>
@@ -264,7 +320,10 @@ export default function PreviewPage({
               )}
             </td>
             <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
+              <input type="checkbox" style={{ cursor: "pointer" }} 
+               checked={checkboxes.pwbdCertificate}
+               onChange={() => handleCheckboxChange('pwbdCertificate')}
+              />
             </td>
           </tr>
         </tbody>
@@ -281,7 +340,7 @@ export default function PreviewPage({
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           style={{ marginRight: "8px" }}
           onClick={handleConfirmClick}
-          disabled={!allClear}
+          disabled={!Object.values(checkboxes).every(v => v)}
         >
           Confirm
         </button>
