@@ -71,6 +71,15 @@ export default function FamilyDetails({
     setStateUpdated(true);
     onNext();
   };
+  const handleNameChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let input = e.target.value;
+    input = input.trimStart();
+    input = input.replace(/\s+/g, ' ');
+    setter(input);
+  };
+  
 
   return (
     <form
@@ -96,7 +105,7 @@ export default function FamilyDetails({
               label="Father's Name"
               required
               value={fatherName}
-              onChange={(e) => setFatherName(e.target.value)}
+              onChange={handleNameChange(setFatherName)}
               variant="outlined"
               color="grey"
               InputProps={{
@@ -113,7 +122,7 @@ export default function FamilyDetails({
               label="Mother's Name"
               required
               value={motherName}
-              onChange={(e) => setMotherName(e.target.value)}
+              onChange={handleNameChange(setMotherName)}
               variant="outlined"
               fullWidth
               InputProps={{
@@ -134,7 +143,7 @@ export default function FamilyDetails({
               label="Parent/Guardian Name"
               required
               value={singleParentGuardianName}
-              onChange={(e) => setSingleParentGuardianName(e.target.value)}
+              onChange={handleNameChange(setSingleParentGuardianName)}
               variant="outlined"
               InputProps={{
                 style: {
