@@ -28,7 +28,9 @@ export function handleLogin(
     rollno: string,
     password: string
 ): Promise<{ token: string; defaultPass: boolean }> {
+    console.log("service")
     return new Promise((resolve, reject) => {
+
         fetchPasswordByRollNo(rollno)
             .then((results: QueryResult<any>) => {
                 if (results.rows.length > 0) {
