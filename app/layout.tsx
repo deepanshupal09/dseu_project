@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import favicon from "../public/favicon.ico"
+
 
 
 export const metadata: Metadata = {
@@ -13,7 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">      
+    <html lang="en"> 
+      <head>
+      <link
+            rel="icon"
+            href={favicon.src}
+        />
+        </head>     
       <body>{children}</body>      
     </html>
   );
