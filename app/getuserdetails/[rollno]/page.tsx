@@ -27,7 +27,7 @@ export default function Home() {
   const [alternatePhone, setAlternatePhone] = useState<string>("");
   const [college, setCollege] = useState<string>("");
   const [program, setProgram] = useState("");
-  const [semester, setSemester] = useState("Semester 1");
+  const [semester, setSemester] = useState("");
   const [fatherName, setFatherName] = useState<string>("");
   const [motherName, setMotherName] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   const handleNext = async () => {
-    if (step <= 7) {
+    if (step <= 8) {
       setStep(step + 1);
       console.log(step, "step");
     } else {
@@ -418,7 +418,6 @@ export default function Home() {
         )}
         {step === 7 && (
           <PreviewPage
-            name="Abhinav"
             rollNo={rollno}
             email={emailid}
             gender={gender}
@@ -442,6 +441,9 @@ export default function Home() {
             onSubmit={handleNext}
           />
         )}
+        {step===8 && (
+          <Final onBackToLogin={handleNext} />
+  )}
       </div>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
