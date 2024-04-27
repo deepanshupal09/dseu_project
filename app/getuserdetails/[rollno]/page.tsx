@@ -39,7 +39,9 @@ export default function Home() {
   const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
   const [photo, setPhoto] = useState<string>("");
   const [pwbdCertificate, setPwbdCertificate] = useState<string>("");
-  const [isPwbd, setIsPwbd] = useState<boolean>(false);
+  const [isPwbd, setIsPwbd] = useState<boolean>(false);  
+  const [photoObject, setPhotoObject] = useState<File | null>();
+  const [certificateObject, setCertificateObject] = useState<File | null>();
 
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
@@ -57,7 +59,7 @@ export default function Home() {
   };
 
   const handleNext = async () => {
-    if (step < 7) {
+    if (step <= 7) {
       setStep(step + 1);
       console.log(step, "step");
     } else {
