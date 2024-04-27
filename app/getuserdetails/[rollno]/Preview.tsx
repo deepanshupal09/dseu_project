@@ -226,7 +226,7 @@ export default function PreviewPage({
                onChange={() => handleCheckboxChange('singleParentGuardian')}/>
             </td>
           </tr>
-          {singleParentGuardian && (
+          {/* {singleParentGuardian && ( */}
             <tr>
               <td className="px-6 py-4 font-semibold">{"Parent's Relation: "}</td>
               <td className="px-6 py-4">{parentRelation}</td>
@@ -237,7 +237,7 @@ export default function PreviewPage({
                 />
               </td>
             </tr>
-          )}
+          {/* // )} */}
           <tr>
             <td className="px-6 py-4 font-semibold">Date of Birth: </td>
             <td className="px-6 py-4">{dateOfBirth}</td>

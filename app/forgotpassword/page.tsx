@@ -4,7 +4,7 @@ import React from 'react'
 function Home() {
   return (
     <>
-        <Image width={50} height={50}  src='/images/profile.jpeg' />
+        {/* <Image width={50} height={50} alt=""  src='/images/profile.jpeg' /> */}
     </>
   )
 }

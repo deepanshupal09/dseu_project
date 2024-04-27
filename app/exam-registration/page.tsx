@@ -31,12 +31,13 @@ import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 import { addExamRegisterations, fetchCoursesByRollNo, fetchExamRegisterations } from "../actions/api";
 import { useRouter } from "next/navigation";
+import { StudentDetails } from "../help/page";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
   const [previewSelection, setPreviewSelection] = useState(false);
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<StudentDetails|null>(null);
   const prof1 = {
     username: user?.name,
     rollNumber: user?.rollno,
