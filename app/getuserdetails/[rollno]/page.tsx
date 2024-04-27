@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   const handleNext = async () => {
-    if (step <= 8) {
+    if (step < 8) {
       setStep(step + 1);
       console.log(step, "step");
     } else {
@@ -326,7 +326,7 @@ export default function Home() {
   const programTypeList = [
     "Diploma",
     "Undergraduate",
-    "Post Graduate",
+    "PostGraduate",
     "Doctorate",
     "Certificate",
   ];

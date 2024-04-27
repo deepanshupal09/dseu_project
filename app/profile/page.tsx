@@ -21,7 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 
-interface StudentDetails {
+export interface StudentDetails {
   name: string;
   rollno: string;
   program: string;

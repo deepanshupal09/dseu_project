@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Button,
@@ -69,7 +69,7 @@ export default function PreviewPage({
     fatherName: false,
     motherName: false,
     singleParentGuardian: false,
-    parentRelation: false,
+    // parentRelation: false,
     dateOfBirth: false,
     aadharCard: false,
     abcId: false,
@@ -89,15 +89,20 @@ export default function PreviewPage({
     });
   };
 
+  useEffect(()=>{
+    console.log("checkboxs: ", checkboxes)
+  },[checkboxes])
+
   const handleConfirmClick = () => {
-    const anyUnchecked = Object.values(checkboxes).every(checkbox => !checkbox);
-    
-    if (anyUnchecked) {
-      alert("Please check all fields before confirming.");
-    } else {
+    const allChecked = Object.values(checkboxes).every((isChecked) => isChecked);
+  
+    if (allChecked) {
       setConfirmSubmission(true);
+    } else {
+      alert("Please tick all checkboxes before confirming.");
     }
   };
+  
   
 
   return (
@@ -317,6 +322,8 @@ export default function PreviewPage({
       </table>
       <div className="flex justify-between w-full mt-6">
         <button
+                type="button"
+
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           style={{ marginRight: "8px" }}
           onClick={onPrevious}
@@ -327,7 +334,6 @@ export default function PreviewPage({
           className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
           style={{ marginRight: "8px" }}
           onClick={handleConfirmClick}
-          disabled={!Object.values(checkboxes).every(v => v)}
         >
           Confirm
         </button>

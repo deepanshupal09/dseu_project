@@ -132,6 +132,8 @@ const IDDetails: React.FC<IDDetailsProps> = ({
             </TextField>
             <div className="flex justify-between w-full">
                 <button
+                        type="button"
+
                     onClick={onPrevious}
                     // variant="contained"
                     className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800 "

@@ -5,34 +5,12 @@ import Navbar from "../dashboard/Navbar";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
-
-export interface StudentDetails {
-  name: string;
-  rollno: string;
-  program: string;
-  semester: number;
-  phone: string;
-  aadhar?: string; // Optional field
-  abc_id?: string; // Optional field
-  alternate_phone?: string | null; // Optional field which can be null
-  campus: string;
-  emailid: string;
-  father: string;
-  gender: string;
-  guardian: string | null; // Optional field which can be null
-  last_modified: string;
-  mother: string;
-  password: string;
-  photo: string;
-  program_type: string;
-  pwbd_certificate: string;
-  year_of_admission: string;
-}
+import { StudentDetails } from "../profile/page";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
-  const [user, setUser] = useState<StudentDetails | null>();
+  const [user, setUser] = useState<StudentDetails|null>(null);
 
   useEffect(() => {
     getAuth().then((auth: any) => {
@@ -41,7 +19,6 @@ export default function Home() {
       console.log(temp.user);
     });
   }, []);
-  
 
   return (
     <>
