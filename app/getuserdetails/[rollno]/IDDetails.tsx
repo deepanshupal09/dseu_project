@@ -105,6 +105,10 @@ const IDDetails: React.FC<IDDetailsProps> = ({
                 label="ABC ID"
                 type="text"
                 value={abcId}
+                inputProps={{
+                    maxLength: 12, // Set maximum length to 12
+                    pattern: "\\d{12}", // Pattern for exactly 12 digits
+                }}
                 onChange={(e) => setAbcId(e.target.value)}
                 className="w-full"
             />

@@ -62,7 +62,7 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
         setCertificateObject(file);
       } else {
         alert("Please upload a PwBD certificate under 30kb.");
-        setCertificateObject(null)
+        setCertificateObject(null);
         // Reset the input field value to clear the selected file
         e.target.value = "";
       }
@@ -81,133 +81,129 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
     onNext();
   };
 
-    return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                handleNext();
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleNext();
+      }}
+      className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 w-[460px] my-10"
+    >
+      <Typography variant="h4" gutterBottom>
+        Upload Details
+      </Typography>
+      <div className=" w-full space-y-5 ">
+        {" "}
+        <Typography className="w-full text-lg  ">
+          Upload Passport size image(max 30KB)
+        </Typography>
+        <div className="flex justify-between">
+          <input
+            id="photo"
+            type="file"
+            label="Upload Photo (Max 30kb)"
+            accept="image/jpeg, image/png"
+            onChange={handlePhotoChange}
+            required
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <ArrowBackIosNew />
+            //     </InputAdornment>
+            //   ),
+            // }}
+            className="w-full"
+          />
+          <button
+            type="button"
+            onClick={async () => {
+              if (photoObject) {
+                try {
+                  const res = await uploadFile(photoObject, rollno + "_photo");
+                  setPhoto(res.path);
+                  alert("File uploaded successfully");
+                } catch (error) {
+                  alert("Photo not uploaded, ERROR: ", error);
+                }
+              }
             }}
-            className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 w-[460px] my-10"
-        >
-            <Typography variant="h4" gutterBottom>
-                Upload Details
-            </Typography>
-            <div className=" w-full space-y-5 ">
-                {" "}
-                <Typography className="w-full text-lg  ">
-                    Upload Passport size image(max 30KB)
-                </Typography>
-                <div className="flex justify-between">
-                    <input
-                        id="photo"
-                        type="file"
-                        label="Upload Photo (Max 30kb)"
-                        inputProps={{ accept: "image/*" }}
-                        onChange={handlePhotoChange}
-                        required
-                        // InputProps={{
-                        //   startAdornment: (
-                        //     <InputAdornment position="start">
-                        //       <ArrowBackIosNew />
-                        //     </InputAdornment>
-                        //   ),
-                        // }}
-                        className="w-full"
-                    />
-                    <button
-                        onClick={async () => {
-                            if (photoObject) {
-                                try {
-                                    const res = await uploadFile(
-                                        photoObject,
-                                        rollno + "_photo"
-                                    );
-                                    setPhoto(res.path);
-                                    alert("File uploaded successfully");
-                                } catch (error) {
-                                    alert("Photo not uploaded, ERROR: ", error);
-                                }
-                            }
-                        }}
-                        className="bg-black  flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
-                    >
-                        Upload
-                    </button>
-                </div>
-            </div>
-            <div>
-                <label>
-                Select, if you are a Persons with Benchmark Disabilities (PwBD){" "}{" "}
-                    <Checkbox
-                        checked={isPwbd}
-                        onChange={(e) => setIsPwbd(e.target.checked)}
-                    />
-                </label>
-            </div>
-            {isPwbd && (
-                <div className="w-full space-y-5 ">
-                    <Typography className="text-lg ">
-                        Upload PwBD Certificate(max 30KB)
-                    </Typography>
-                    <div className="flex justify-between">
-                        <input
-                            id="pwbd-certificate"
-                            type="file"
-                            label="Upload PWBD Certificate (Max 30kb)"
-                            inputProps={{ accept: "image/*" }}
-                            onChange={handlePwbdCertificateChange}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <ArrowBackIosNew />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            className="w-full"
-                        />
-                        <button
-                            onClick={async () => {
-                                if (certificateObject) {
-                                    try {
-                                        const res = await uploadFile(
-                                            certificateObject,
-                                            rollno + "_certificate"
-                                        );
-                                        setPwbdCertificate(res.path);
-                                        alert("File uploaded successfully");
-                                    } catch (error) {
-                                        alert(
-                                            "Photo not uploaded, ERROR: ",
-                                            error
-                                        );
-                                    }
-                                }
-                            }}
-                            className="bg-black flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
-                        >
-                            Upload
-                        </button>
-                    </div>
-                </div>
-            )}
-            <div className="flex justify-between w-full">
-                <Button
-                    onClick={onPrevious}
-                    className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
-                    style={{ marginRight: "8px" }}
-                >
+            className="bg-black  flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
+          >
+            Upload
+          </button>
+        </div>
+      </div>
+      <div>
+        <label>
+          Select, if you are a Persons with Benchmark Disabilities (PwBD){" "}
+          <Checkbox
+            checked={isPwbd}
+            onChange={(e) => setIsPwbd(e.target.checked)}
+          />
+        </label>
+      </div>
+      {isPwbd && (
+        <div className="w-full space-y-5 ">
+          <Typography className="text-lg ">
+            Upload PwBD Certificate(max 30KB)
+          </Typography>
+          <div className="flex justify-between">
+            <input
+              id="pwbd-certificate"
+              type="file"
+              label="Upload PWBD Certificate (Max 30kb)"
+              accept="image/jpeg, image/png"
+              onChange={handlePwbdCertificateChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
                     <ArrowBackIosNew />
-                    Previous
-                </Button>
-                <Button
-                    type="submit"
-                    className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
-                >
-                    Submit
-                </Button>
-            </div>
-        </form>
-    );
+                  </InputAdornment>
+                ),
+              }}
+              className="w-full"
+            />
+            <button
+              type="button"
+              onClick={async () => {
+                if (certificateObject) {
+                  try {
+                    const res = await uploadFile(
+                      certificateObject,
+                      rollno + "_certificate"
+                    );
+                    setPwbdCertificate(res.path);
+                    alert("File uploaded successfully");
+                  } catch (error) {
+                    alert("Photo not uploaded, ERROR: ", error);
+                  }
+                }
+              }}
+              className="bg-black flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
+            >
+              Upload
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="flex justify-between w-full">
+        <Button
+          onClick={onPrevious}
+          className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
+          style={{ marginRight: "8px" }}
+        >
+          <ArrowBackIosNew />
+          Previous
+        </Button>
+        <Button
+          type="submit"
+          className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
+        >
+          Submit
+        </Button>
+      </div>
+    </form>
+  );
 };
 
 export default UploadDetails;
