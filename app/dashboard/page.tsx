@@ -6,6 +6,7 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 import { fetchExamRegisterations } from "../actions/api";
+import { StudentDetails } from "../help/page";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
@@ -16,7 +17,7 @@ export default function Home() {
     "Exam Registration",
     "Course Details",
   ];
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<StudentDetails | null>(null);
 
   const recentChange = {
     title: "Exam Registerations",
@@ -35,7 +36,7 @@ export default function Home() {
   }, []);
   useEffect(() => {
     if(user) {
-      const rollno = user.rollno;
+      const rollno = user?.rollno;
       fetchExamRegisterations(rollno, token).then((res) => {
         console.log("response: ", res);
         if (res.length > 0) {
@@ -65,7 +66,7 @@ export default function Home() {
 
   return (
     <div className="sm:flex">
-      <Header username={user?.name} />
+      <Header username={user?.name as string} />
       <Navbar />
 
       <div className="sm:pl-[300px] sm:mt-[100px] space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">

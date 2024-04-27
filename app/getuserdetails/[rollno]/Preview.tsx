@@ -198,7 +198,7 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Father's Name: </td>
+            <td className="px-6 py-4 font-semibold">{"Father's Name: "} </td>
             <td className="px-6 py-4">{fatherName}</td>
             <td className="px-2 py-4 scale-200">
               <input type="checkbox" style={{ cursor: "pointer" }} 
@@ -208,7 +208,7 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Mother's Name: </td>
+            <td className="px-6 py-4 font-semibold">{"Mother's Name: "}</td>
             <td className="px-6 py-4">{motherName}</td>
             <td className="px-2 py-4 scale-200">
               <input type="checkbox" style={{ cursor: "pointer" }} 
@@ -228,7 +228,7 @@ export default function PreviewPage({
           </tr>
           {singleParentGuardian && (
             <tr>
-              <td className="px-6 py-4 font-semibold">Parent's Relation:</td>
+              <td className="px-6 py-4 font-semibold">{"Parent's Relation: "}</td>
               <td className="px-6 py-4">{parentRelation}</td>
               <td className="px-2 py-4 scale-200">
                 <input type="checkbox" style={{ cursor: "pointer" }} 

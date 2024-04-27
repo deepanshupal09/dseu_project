@@ -70,7 +70,7 @@ export default function Home() {
           <div>
             <h1 className="text-xl font-bold">
               {user?.name}
-              <span>'s profile</span>
+              <span>{"'s"} profile</span>
             </h1>
           </div>
           <div className="text-center sm:text-right">
@@ -97,14 +97,14 @@ export default function Home() {
               <div className="flex items-center mb-2">
                 <PersonIcon className="mr-2" />
                 <p>
-                  <span className="font-bold">Father's Name:</span>
+                  <span className="font-bold">{"Father's Name:"}</span>
                   <br /> {user?.father}
                 </p>
               </div>
               <div className="flex items-center mb-2">
                 <PersonIcon className="mr-2" />
                 <p>
-                  <span className="font-bold">Mother's Name:</span>
+                  <span className="font-bold">{"Mother's Name:"}</span>
                   <br /> {user?.mother}
                 </p>
               </div>

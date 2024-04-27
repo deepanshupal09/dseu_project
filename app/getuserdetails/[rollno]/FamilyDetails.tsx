@@ -155,7 +155,7 @@ export default function FamilyDetails({
           </div>
           <FormControl className="w-full" component="fieldset">
             <FormLabel component="legend">
-              Parent's Relation
+              {"Parent's Relation"}
             </FormLabel>
             <RadioGroup
               aria-label="parent-relation"
