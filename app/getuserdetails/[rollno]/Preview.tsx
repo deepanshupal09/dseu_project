@@ -93,13 +93,13 @@ export default function PreviewPage({
   };
 
   const handleConfirmClick = () => {
-    const allChecked = Object.values(checkboxes).every((checked) => checked);
-
-    if (allChecked) {
-      setConfirmSubmission(true);
-    } else {
-      alert("Please check all fields before confirming.");
-    }
+    const allChecked = Object.values(checkboxes).every(checkbox => checkbox === true);
+    
+    setConfirmSubmission(true);
+    // if (allChecked) {
+    // } else {
+    //   alert("Please check all fields before confirming.");
+    // }
   };
 
   return (
@@ -243,7 +243,7 @@ export default function PreviewPage({
               {photo && (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={"file://"+photo}
+                  src={photo}
                   alt="User"
                 />
               )}
@@ -255,10 +255,10 @@ export default function PreviewPage({
           <tr>
             <td className="px-6 py-4 font-semibold">PwBD Certificate:</td>
             <td className="px-6 py-4">
-              {pwbdCertificate && (
+              {pwbdCertificate!=="" && (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={"file://"+pwbdCertificate}
+                  src={pwbdCertificate}
                   alt="User"
                 />
               )}

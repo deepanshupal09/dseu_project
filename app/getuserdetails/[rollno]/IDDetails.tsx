@@ -78,6 +78,9 @@ const IDDetails: React.FC<IDDetailsProps> = ({
                         </InputAdornment>
                     ),
                 }}
+                inputProps={{
+                    max: today
+                }}
                 className="w-full"
             />
             <TextField

@@ -102,6 +102,7 @@ export default function UserDetailsPage({
           color="grey"
           onChange={(event, newValue) => {
             setprogramtype(newValue);
+            setprogram("");
             setHelperText("");
             setError(false);
           }}

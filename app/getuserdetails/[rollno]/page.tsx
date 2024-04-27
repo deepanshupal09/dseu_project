@@ -418,7 +418,7 @@ export default function Home() {
           <PreviewPage
             name="Abhinav"
             rollNo={rollno}
-            email={email}
+            email={emailid}
             gender={gender}
             phone={phone}
             altPhone={alternatePhone}

@@ -105,13 +105,6 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
             accept="image/jpeg, image/png"
             onChange={handlePhotoChange}
             required
-            // InputProps={{
-            //   startAdornment: (
-            //     <InputAdornment position="start">
-            //       <ArrowBackIosNew />
-            //     </InputAdornment>
-            //   ),
-            // }}
             className="w-full"
           />
           <button
@@ -125,6 +118,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
                 } catch (error) {
                   alert("Photo not uploaded, ERROR: ", error);
                 }
+              } else {
+                alert("Please select a photo to upload!");
               }
             }}
             className="bg-black  flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
@@ -177,6 +172,8 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
                   } catch (error) {
                     alert("Photo not uploaded, ERROR: ", error);
                   }
+                } else {
+                  alert("Please select a photo to upload!");
                 }
               }}
               className="bg-black flex justify-center items-center transition-all duration-150 text-white px-4 py-1 rounded-lg font-semibold hover:bg-gray-800 focus:bg-gray-800"
