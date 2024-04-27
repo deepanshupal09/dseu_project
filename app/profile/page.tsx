@@ -21,12 +21,38 @@ import IconButton from "@mui/material/IconButton";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 
+interface StudentDetails {
+  name: string;
+  rollno: string;
+  program: string;
+  semester: number;
+  phone: string;
+  aadhar?: string; // Optional field
+  abc_id?: string; // Optional field
+  alternate_phone?: string | null; // Optional field which can be null
+  campus: string;
+  emailid: string;
+  father: string;
+  gender: string;
+  guardian: string | null; // Optional field which can be null
+  last_modified: string;
+  mother: string;
+  password: string;
+  photo: string;
+  program_type: string;
+  pwbd_certificate: string;
+  year_of_admission: string;
+}
+
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<StudentDetails|null>(null);
+
+  
 
   useEffect(() => {
     getAuth().then((auth) => {
-      const temp = parseJwt(auth?.value);
+      const temp = parseJwt(auth?.value as string);
+      console.log("user: ", temp.user)
       setUser(temp.user);
     });
   }, []);
@@ -34,7 +60,7 @@ export default function Home() {
   return (
     <div className="max-sm:mt-[120px] mt-[120px]">
       <div className=" bg-[#dfdede] ">
-        <Header username={user?.name} />
+        <Header username={user?.name as string} />
         <Navbar />
       </div>
 
@@ -120,49 +146,49 @@ export default function Home() {
           <h2 className="text-xl font-bold mb-4 w-1/2">University Details</h2>
           <div className="w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <SchoolIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Campus Name:</span>
                   <br /> {user?.campus}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <BookIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Program Type:</span>
                   <br /> {user?.program_type}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <ClassIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Program Name:</span>
                   <br /> {user?.program}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <PersonIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Roll Number:</span>
                   <br /> {user?.rollno}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <CalendarTodayIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Semester:</span>
                   <br /> {user?.semester}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <VpnKeyIcon className="mr-2" />
                 <p>
                   <span className="font-bold">abc_id:</span>
                   <br /> {user?.abc_id}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
+              <div className="flex  mb-2">
                 <PersonIcon className="mr-2" />
                 <p>
                   <span className="font-bold">Role:</span>

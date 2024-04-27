@@ -60,7 +60,7 @@ export default function FamilyDetails({
   //   }
   // }, [stateUpdated, onNext]);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
 
     setfathername(fatherName);
@@ -154,7 +154,7 @@ export default function FamilyDetails({
             />
           </div>
           <FormControl className="w-full" component="fieldset">
-            <FormLabel color="grey" component="legend">
+            <FormLabel component="legend">
               Parent's Relation
             </FormLabel>
             <RadioGroup

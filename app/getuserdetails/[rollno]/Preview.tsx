@@ -27,7 +27,7 @@ interface PreviewProps {
   abcId: string;
   yearOfAdmission: Number;
   photo: string;
-  pwbdCertificate: string | null;
+  pwbdCertificate: string;
   onPrevious: () => void;
   onSubmit: () => void;
 }
@@ -269,7 +269,7 @@ export default function PreviewPage({
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Year of Admission: </td>
-            <td className="px-6 py-4">{yearOfAdmission}</td>
+            <td className="px-6 py-4">{yearOfAdmission.toString()}</td>
             <td className="px-2 py-4 scale-200">
               <input type="checkbox" style={{ cursor: "pointer" }} 
                checked={checkboxes.yearOfAdmission}

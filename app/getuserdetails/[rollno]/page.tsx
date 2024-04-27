@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   const handleNext = async () => {
-    if (step < 8) {
+    if (step <= 8) {
       setStep(step + 1);
       console.log(step, "step");
     } else {
@@ -303,7 +303,7 @@ export default function Home() {
       "B.Tech. in Tool Engineering",
       "B.Tech. in Mechatronics Engineering",
     ],
-    "Post Graduate": [
+    PostGraduate: [
       "Masters in Computer Application",
       "M.Tech. in Mechanical Engineering",
       "M.Tech. in Mechanical Engineering with Specialization in Thermal/ Production/ Design",

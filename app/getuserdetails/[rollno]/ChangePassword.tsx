@@ -15,7 +15,7 @@ export default function ChangePassword({setnewpassword, onNext }: ChangePassword
   const [error, setError] = useState(false);
   const spaceRegex = /\s/;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       setHelperText("Passwords don't match");
