@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 
 interface PreviewProps {
-  name: string;
   rollNo: string;
   email: string;
   gender: string;
@@ -34,7 +33,6 @@ interface PreviewProps {
 }
 
 export default function PreviewPage({
-  name,
   rollNo,
   email,
   gender,
@@ -59,7 +57,6 @@ export default function PreviewPage({
 }: PreviewProps) {
   const [confirmSubmission, setConfirmSubmission] = useState(false);
   const [checkboxes, setCheckboxes] = useState({
-    name: false,
     rollNo: false,
     email: false,
     gender: false,
@@ -109,13 +106,6 @@ export default function PreviewPage({
       </h2>
       <table className="w-full mt-2  table-auto mr-6">
         <tbody className="divide-y divide-gray-200">
-          <tr className="">
-            <td className="px-6 py-4 font-semibold">Name:</td>
-            <td className="px-6 py-4">{name}</td>
-            <td className="px-2 py-4 scale-200">
-              <input type="checkbox" style={{ cursor: "pointer" }} />
-            </td>
-          </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Roll Number:</td>
             <td className="px-6 py-4">{rollNo}</td>
