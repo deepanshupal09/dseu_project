@@ -233,13 +233,14 @@ const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):
 const addUsers = (req: Request, res: Response): void => {
   try {
     const users = req.body;
+    console.log("users: ", users)
     insertTheUsers(users).then((results) => {
-      res.status(200).send("succesfully inserted!");
+      res.status(200).send({message: "succesfully inserted!"});
     }).catch((error) => {
-      res.status(500).send("Internal server error insert in users 2");
+      res.status(500).send({messge: "Internal server error insert in users 2"});
     })
   } catch (error) {
-    res.send("Internal server error insert in users 3");
+    res.send({message: "Internal server error insert in users 3"});
   }
 }
 
