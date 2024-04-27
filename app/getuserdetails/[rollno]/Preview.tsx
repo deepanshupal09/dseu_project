@@ -243,7 +243,7 @@ export default function PreviewPage({
               {photo && (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={photo}
+                  src={"file://"+photo}
                   alt="User"
                 />
               )}
@@ -258,7 +258,7 @@ export default function PreviewPage({
               {pwbdCertificate && (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={pwbdCertificate}
+                  src={"file://"+pwbdCertificate}
                   alt="User"
                 />
               )}
