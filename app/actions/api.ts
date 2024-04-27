@@ -2,7 +2,7 @@
 
 export async function signup(body: any) {
     console.log("here")
-  const res = await fetch("http://localhost:8000/signup", {
+  const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -20,7 +20,7 @@ export async function signup(body: any) {
 }
 
 export async function addExamRegisterations(body: any,token: string) {
-  const res = await fetch("http://localhost:8000/api/data/addExamRegisterations", {
+  const res = await fetch("https://admin-exam.dseu.ac.in/api/data/addExamRegisterations", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -39,9 +39,32 @@ export async function addExamRegisterations(body: any,token: string) {
     });
 }
 
+export async function fetchCoursesByRollNo(rollno: string, token: string) {
+  try {
+    const res = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo", {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
+
+    const data = await res.json();
+    console.log("API Response:", data); // Log the response
+    return data;
+  } catch (error) {
+    console.log("Error fetching courses:", error); // Log any errors
+    throw error;
+  }
+}
+
+
 export async function login(headers: {}) {
   try {
-    const response = await fetch("http://localhost:8000/login", {
+    const response = await fetch("https://admin-exam.dseu.ac.in/login", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -62,6 +85,29 @@ export async function login(headers: {}) {
   }
 }
 
+export async function fetchExamRegisterations(rollno: string,token: string) {
+  try {
+    const response = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        token: token
+      },
+    })
+
+    if (!response.ok) {
+      return response.status;
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch(error) {
+    throw error;
+  }
+}
+
 export async function uploadFile(file: File, fileName: string) {
   try {
     const formData = new FormData();
@@ -70,7 +116,7 @@ export async function uploadFile(file: File, fileName: string) {
 
     // No need to set Content-Type header manually when using FormData
 
-    const response = await fetch('http://localhost:8000/upload', {
+    const response = await fetch('https://admin-exam.dseu.ac.in/upload', {
       method: 'POST',
       body: formData,
       mode: "cors",
