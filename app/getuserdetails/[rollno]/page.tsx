@@ -39,9 +39,9 @@ export default function Home() {
   const [yearOfAdmission, setYearOfAdmission] = useState<number>(2021);
   const [photo, setPhoto] = useState<string>("");
   const [pwbdCertificate, setPwbdCertificate] = useState<string>("");
-  const [isPwbd, setIsPwbd] = useState<boolean>(false);  
-  const [photoObject, setPhotoObject] = useState<File | null>();
-  const [certificateObject, setCertificateObject] = useState<File | null>();
+  const [isPwbd, setIsPwbd] = useState<boolean>(false);
+  const [photoObject, setPhotoObject] = useState<File | null>(null);
+  const [certificateObject, setCertificateObject] = useState<File | null>(null);
 
   const [singleParentGuardian, setSingleParentGuardian] =
     useState<boolean>(false);
@@ -334,9 +334,12 @@ export default function Home() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <div className="absolute top-0 p-4 mb-4 w-full">
-        <LinearProgress determinate value={step * 16.7} />{" "}
-      </div>
+      {step < 7 && (
+        <div className="absolute top-0 p-4 mb-4 w-full">
+          <LinearProgress determinate value={step * 16.7} />
+        </div>
+      )}
+
       <div className="my-auto">
         {step === 1 && (
           <ChangePassword setnewpassword={setNewpass} onNext={handleNext} />
@@ -414,6 +417,10 @@ export default function Home() {
             setPwbdCertificate={setPwbdCertificate}
             setIsPwbd={setIsPwbd}
             rollno={rollno}
+            photoObject={photoObject}
+            setPhotoObject={setPhotoObject}
+            certificateObject={certificateObject}
+            setCertificateObject={setCertificateObject}
           />
         )}
         {step === 7 && (
@@ -441,9 +448,7 @@ export default function Home() {
             onSubmit={handleNext}
           />
         )}
-        {step===8 && (
-          <Final onBackToLogin={handleNext} />
-  )}
+        {step === 8 && <Final onBackToLogin={handleNext} />}
       </div>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert
