@@ -437,6 +437,7 @@ export default function Home() {
             fatherName={fatherName}
             motherName={motherName}
             singleParentGuardian={singleParentGuardian}
+            spgname={singleParentGuardianName}
             parentRelation={parentRelation}
             dateOfBirth={dateOfBirth}
             aadharCard={aadharCard}
