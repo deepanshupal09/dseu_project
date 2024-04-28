@@ -364,13 +364,13 @@ export default function Home() {
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <Typography variant="subtitle1">Subject</Typography>
+                      <Typography variant="subtitle1">Course Name</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle1">Subject Code</Typography>
+                      <Typography variant="subtitle1">Course Code</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle1">Program Type</Typography>
+                      <Typography variant="subtitle1">Course Type</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle1">Select</Typography>
@@ -437,10 +437,10 @@ export default function Home() {
                           <TableHead>
                             <TableRow>
                               <TableCell style={{ width: "50%" }}>
-                                <Typography>Subject</Typography>
+                                <Typography>Course Name</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
-                                <Typography>Subject Code</Typography>
+                                <Typography>Coruse Code</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
                                 <Typography>Select</Typography>
@@ -511,10 +511,10 @@ export default function Home() {
                       <Typography variant="subtitle1">Subject</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle1">Subject Code</Typography>
+                      <Typography variant="subtitle1">Course Code</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle1">Program Type</Typography>
+                      <Typography variant="subtitle1">Course Type</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>

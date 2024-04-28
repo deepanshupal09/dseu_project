@@ -66,7 +66,15 @@ export default function Home() {
 
     <div className="relative md:ml-60 mt-6 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
-          <AccountBoxRoundedIcon className="ml-10" />
+          {/* <AccountBoxRoundedIcon className="ml-10" /> */}
+          {console.log("photo: ", user?.photo)}
+          <img 
+  className="rounded-full object-cover"
+  style={{ width: 50, height: 50, borderRadius: '50%' }} 
+  alt="user" 
+  src={user?.photo} 
+/>
+
           <div>
             <h1 className="text-xl font-bold">
               {user?.name}
@@ -116,12 +124,13 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex items-center mb-2">
-                <MailIcon className="mr-2" />
+                <CreditCardRoundedIcon className="mr-2" />
                 <p>
-                  <span className="font-bold">Email:</span>
-                  <br /> {user?.emailid}
+                  <span className="font-bold">Aadhar Card:</span>
+                  <br /> {user?.aadhar}
                 </p>
               </div>
+
               <div className="flex items-center mb-2">
                 <Face6RoundedIcon className="mr-2" />
                 <p>
@@ -129,11 +138,19 @@ export default function Home() {
                   <br /> {user?.gender}
                 </p>
               </div>
-              <div className="flex items-center mb-2">
-                <CreditCardRoundedIcon className="mr-2" />
+              <div className="flex  mb-2">
+                <VpnKeyIcon className="mr-2" />
                 <p>
-                  <span className="font-bold">Aadhar Card:</span>
-                  <br /> {user?.aadhar}
+                  <span className="font-bold">abc_id:</span>
+                  <br /> {user?.abc_id}
+                </p>
+              </div>
+
+              <div className="flex items-center mb-2">
+                <MailIcon className="mr-2" />
+                <p>
+                  <span className="font-bold">Email:</span>
+                  <br /> {user?.emailid}
                 </p>
               </div>
             </div>
@@ -181,13 +198,7 @@ export default function Home() {
                   <br /> {user?.semester}
                 </p>
               </div>
-              <div className="flex  mb-2">
-                <VpnKeyIcon className="mr-2" />
-                <p>
-                  <span className="font-bold">abc_id:</span>
-                  <br /> {user?.abc_id}
-                </p>
-              </div>
+
               <div className="flex  mb-2">
                 <PersonIcon className="mr-2" />
                 <p>
