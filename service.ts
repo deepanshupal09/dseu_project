@@ -377,9 +377,10 @@ export function otpVerifyService( rollno: string) : Promise<any> {
     })
 }
 
-export function updateThePassword(password:string, rollno: string) : Promise<any> {
+export async function updateThePassword(password:string, rollno: string) : Promise<any> {
+    const hash = await bcrypt.hash(password, 10);
     return new Promise((resolve,reject) => {
-        updatePassword(password, rollno).then((result) => {
+        updatePassword(hash, rollno).then((result) => {
             resolve(result);
         }).catch((error) => {
             console.log("Error in password updation: ",error);

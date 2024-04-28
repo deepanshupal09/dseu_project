@@ -275,13 +275,13 @@ const fetchEmailIdByRollno = (req: Request, res: Response): void => {
   try{
     const rollno: string = req.headers.rollno as string;
     fetchTheEmailId(rollno).then((results)=> {
-      res.status(200).send(results);
+      res.status(200).send({email: results});
     }).catch((error)=>{
-      res.status(500).send("Internal server error in fetchemailid");
+      res.status(500).send({error: "Internal server error in fetchemailid"});
     })
   }
   catch(error){
-    res.send("Internal server error in fetchProgram controller");
+    res.send({error: "Internal server error in fetchProgram controller"});
   }
 }
 
@@ -306,8 +306,8 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
     const mailOptions = {
       from: process.env.SMTP_MAIL,
       to: email,
-      subject: 'OTP for password change',
-      text: `This is the OTP: ${otp}`, 
+      subject: 'OTP for Password Change',
+      text: `Your OTP for password change is ${otp}. Please ignore this email if you did not request a password change.`, 
     };
 
     // Send the email
@@ -317,45 +317,46 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
         res.status(500).send({ message: 'Internal Server Error!' });
       } else {
         console.log('Email sent successfully!');
-        res.status(200).send('Email sent successfully!');
+        res.status(200).send({message: 'Email sent successfully!'});
       }
     });
   } catch (error) {
     console.error('Error fetching email:', error);
-    res.status(500).send('Internal server error in sendEmail');
+    res.status(404).send({email: 'Email not found!'});
   }
 });
 
 const updatePasswordByOtp = (req: Request, res: Response)=>{
   try{
-    const {rollno, password} = req.body;
+    const {rollno, password} = req.headers;
+    console.log("rollno, ",rollno, "password: ",password)
     updateThePassword(password, rollno).then((results)=> {
-      res.status(200).send("Password updated successfully!");
+      res.status(200).send({message: "Password updated successfully!"});
     }).catch((error)=>{
-      res.status(500).send("Internal server error in password updation 1");
+      res.status(500).send({message: "Internal server error in password updation 1"});
     })
   }
   catch(error){
-    res.status(500).send("Internal server error in password updation 2");
+    res.status(500).send({message: "Internal server error in password updation 2"});
   }
 }
 
 const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
   try{
-    const{rollno, otp} = req.body; 
+    const{rollno, otp} = req.headers; 
     console.log(otp);
     const storedOTPResult = await otpVerifyService(rollno);
     const storedOTP: string = storedOTPResult.rows[0]?.otp;
     console.log(storedOTP);
 
     if(otp === storedOTP ){
-      res.status(200).send("OTP verified successfully!");
+      res.status(200).send({message: "OTP verified successfully!"});
     } else{
-      res.status(400).send("Invalid OTP");
+      res.status(400).send({message: "Invalid OTP"});
     }
   }
   catch(error){
-    res.status(500).send('Internal server error in verifying otp and password!');
+    res.status(500).send({message: 'Internal server error in verifying otp and password!'});
   }
 })
 
