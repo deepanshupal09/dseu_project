@@ -178,7 +178,7 @@ export default function PreviewPage({
           </tr>
           <tr>
             <td className="px-6 py-4 font-semibold">Alternate Phone:</td>
-            <td className="px-6 py-4">{altPhone}</td>
+            <td className="px-6 py-4">{altPhone===""?"N.A":altPhone}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.altPhone}
@@ -219,13 +219,13 @@ export default function PreviewPage({
           <tr>
             <td className="px-6 py-4 font-semibold">PwBD Certificate:</td>
             <td className="px-6 py-4">
-              {pwbdCertificate !== "" && (
+              {pwbdCertificate !== "" ? (
                 <img
                   className="w-24 h-24 object-cover"
                   src={pwbdCertificate}
                   alt="User"
                 />
-              )}
+              ):"N.A"}
             </td>
             <td className="px-2 py-4">
               <Switch

@@ -330,7 +330,13 @@ export default function Home() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item xs={12} sm={6} md={7} lg={8}>
               <div className="flex items-center">
-                <Avatar>{prof1.photo}</Avatar>
+                {/* <Avatar>{prof1.photo}</Avatar> */}
+                <img 
+  className="rounded-full object-cover"
+  style={{ width: 50, height: 50, borderRadius: '50%' }} 
+  alt="user" 
+  src={user?.photo} 
+/>
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">
                     {prof1.username}
