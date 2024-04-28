@@ -117,6 +117,7 @@ export default function PreviewPage({
       </h2>
       <table className="w-full mt-2 table-auto">
         <tbody className="divide-y divide-gray-200">
+          
           <tr>
             <td className="px-6 py-4 font-semibold">Photo:</td>
             <td className="px-6 py-4">
@@ -132,6 +133,16 @@ export default function PreviewPage({
               <Switch
                 checked={toggles.photo}
                 onChange={() => handleToggleChange("photo")}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td className="px-6 py-4 font-semibold">Roll Number:</td>
+            <td className="px-6 py-4">{rollNo}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.rollNo}
+                onChange={() => handleToggleChange("rollNo")}
               />
             </td>
           </tr>
@@ -223,66 +234,8 @@ export default function PreviewPage({
               />
             </td>
           </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Roll Number:</td>
-            <td className="px-6 py-4">{rollNo}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.rollNo}
-                onChange={() => handleToggleChange("rollNo")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Year of Admission:</td>
-            <td className="px-6 py-4">{yearOfAdmission.toString()}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.yearOfAdmission}
-                onChange={() => handleToggleChange("yearOfAdmission")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Semester:</td>
-            <td className="px-6 py-4">{semester}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.semester}
-                onChange={() => handleToggleChange("semester")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Program Category:</td>
-            <td className="px-6 py-4">{programCategory}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.programCategory}
-                onChange={() => handleToggleChange("programCategory")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Program:</td>
-            <td className="px-6 py-4">{program}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.program}
-                onChange={() => handleToggleChange("program")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="px-6 py-4 font-semibold">Campus:</td>
-            <td className="px-6 py-4">{campus}</td>
-            <td className="px-2 py-4">
-              <Switch
-                checked={toggles.campus}
-                onChange={() => handleToggleChange("campus")}
-              />
-            </td>
-          </tr>
+
+
           {!singleParentGuardian && (
             <>
               <tr>
@@ -347,6 +300,59 @@ export default function PreviewPage({
               </tr>
             </>
           )}
+                    <tr>
+            <td className="px-6 py-4 font-semibold">Campus:</td>
+            <td className="px-6 py-4">{campus}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.campus}
+                onChange={() => handleToggleChange("campus")}
+              />
+            </td>
+          </tr>
+                   
+          <tr>
+            <td className="px-6 py-4 font-semibold">Program Category:</td>
+            <td className="px-6 py-4">{programCategory}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.programCategory}
+                onChange={() => handleToggleChange("programCategory")}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td className="px-6 py-4 font-semibold">Program:</td>
+            <td className="px-6 py-4">{program}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.program}
+                onChange={() => handleToggleChange("program")}
+              />
+            </td>
+          </tr>
+
+          <tr>
+            <td className="px-6 py-4 font-semibold">Year of Admission:</td>
+            <td className="px-6 py-4">{yearOfAdmission.toString()}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.yearOfAdmission}
+                onChange={() => handleToggleChange("yearOfAdmission")}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td className="px-6 py-4 font-semibold">Semester:</td>
+            <td className="px-6 py-4">{semester}</td>
+            <td className="px-2 py-4">
+              <Switch
+                checked={toggles.semester}
+                onChange={() => handleToggleChange("semester")}
+              />
+            </td>
+          </tr>
+          
         </tbody>
       </table>
       <div className="flex justify-between w-full mt-6">

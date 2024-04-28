@@ -18,13 +18,14 @@ export default function Home() {
     "Course Details",
   ];
   const [user, setUser] = useState<StudentDetails | null>(null);
-
-  const recentChange = {
+  const [recentChange,setRecentChange] = useState({
     title: "Exam Registerations",
-    timestamp: "2024-04-19",
+    timestamp: "",
     details:
-      "Current Semesters subjects were chosen and submitted for the exam.",
-  };
+      "",
+  })
+
+
 
   useEffect(() => {
     getAuth().then((auth: any) => {
@@ -37,15 +38,18 @@ export default function Home() {
   useEffect(() => {
     if(user) {
       const rollno = user?.rollno;
+      const temp = recentChange
       fetchExamRegisterations(rollno, token).then((res) => {
         console.log("response: ", res);
         if (res.length > 0) {
-          recentChange.details = "Current Semesters subjects were chosen and submitted for the exam.";
-          recentChange.timestamp = res.last_modified;
+          temp.details = "Current Semesters subjects were chosen and submitted for the exams.";
+          // console.log("recent", res[0].last_modified )
+          temp.timestamp = res[0].last_modified;
         } else {
-          recentChange.details = "Choose Current Semesters subjects for the exam.";
-          recentChange.timestamp = res.last_modified;
+          temp.details = "Choose Current Semesters subjects for the exams.";
+          temp.timestamp = res[0].last_modified;
         }
+        setRecentChange(temp)
       }).catch((error)=>{
         console.log("Error fetching exam registration: ",error)
       })
