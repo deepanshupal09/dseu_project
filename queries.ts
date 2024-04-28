@@ -66,7 +66,7 @@ export const fetchExamRegistrationByRollNo: string = `
     FROM exam_registeration er 
     INNER JOIN courses c ON er.course_code = c.course_code 
     INNER JOIN users u ON er.rollno = u.rollno
-    INNER JOIN semester_course sc ON er.course_code = sc.course_code AND u.program = sc.program AND u.semester = sc.semester AND u.campus = sc.campus
+    INNER JOIN semester_course sc ON er.course_code = sc.course_code AND u.program = sc.program AND u.campus = sc.campus
     WHERE er.rollno=$1;
 `;
 
