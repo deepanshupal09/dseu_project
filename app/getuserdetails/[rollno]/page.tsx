@@ -10,7 +10,6 @@ import LinearProgress from "@mui/joy/LinearProgress";
 import { redirect, usePathname } from "next/navigation";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { login, signup } from "@/app/actions/api";
 import { deleteSignupCookie } from "@/app/actions/cookie";
 import Final from "./Final";
@@ -59,7 +58,7 @@ export default function Home() {
   };
 
   const handleNext = async () => {
-    if (step < 8) {
+    if (step < 7) {
       setStep(step + 1);
       console.log(step, "step");
     } else {
@@ -129,14 +128,17 @@ export default function Home() {
       console.log(101, JSON.stringify(body));
       // const requestOptions =;
 
+
+
       try {
         setLoading(true);
         console.log("here");
         const response: any = await signup(body);
         console.log("response: ", response);
-        deleteSignupCookie();
+        // deleteSignupCookie();
         setLoading(false);
-        router.push("/");
+        setStep(step+1);
+        // router.push("/");
       } catch (error) {
         console.log("error", error);
         setLoading(false);
@@ -437,7 +439,7 @@ export default function Home() {
             fatherName={fatherName}
             motherName={motherName}
             singleParentGuardian={singleParentGuardian}
-            spgname={singleParentGuardianName}
+            singleParentGuardianName={singleParentGuardianName}
             parentRelation={parentRelation}
             dateOfBirth={dateOfBirth}
             aadharCard={aadharCard}
@@ -449,7 +451,7 @@ export default function Home() {
             onSubmit={handleNext}
           />
         )}
-        {step === 8 && <Final onBackToLogin={handleNext} />}
+        {step === 8 && <Final onBackToLogin={handleBackToLogin} />}
       </div>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert

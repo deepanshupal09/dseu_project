@@ -1,7 +1,7 @@
 // "use server";
 
 export async function signup(body: any) {
-    console.log("here")
+  console.log("here");
   const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
     method: "POST",
     mode: "cors",
@@ -19,18 +19,21 @@ export async function signup(body: any) {
     });
 }
 
-export async function addExamRegisterations(body: any,token: string) {
-  const res = await fetch("https://admin-exam.dseu.ac.in/api/data/addExamRegisterations", {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
+export async function addExamRegisterations(body: any, token: string) {
+  const res = await fetch(
+    "https://admin-exam.dseu.ac.in/api/data/addExamRegisterations",
+    {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
 
-    headers: {
-      "Content-Type": "application/json",
-      token: token,
-    },
-    body: JSON.stringify(body),
-  })
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    }
+  )
     .then((res) => {
       return res;
     })
@@ -41,16 +44,19 @@ export async function addExamRegisterations(body: any,token: string) {
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
   try {
-    const res = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo", {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json",
-        token: token,
-        rollno: rollno,
-      },
-    });
+    const res = await fetch(
+      "https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo",
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+          rollno: rollno,
+        },
+      }
+    );
 
     const data = await res.json();
     console.log("API Response:", data); // Log the response
@@ -60,7 +66,6 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
     throw error;
   }
 }
-
 
 export async function login(headers: {}) {
   try {
@@ -85,17 +90,20 @@ export async function login(headers: {}) {
   }
 }
 
-export async function fetchExamRegisterations(rollno: string,token: string) {
+export async function fetchExamRegisterations(rollno: string, token: string) {
   try {
-    const response = await fetch("https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        rollno: rollno,
-        token: token
-      },
-    })
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          rollno: rollno,
+          token: token,
+        },
+      }
+    );
 
     if (!response.ok) {
       return response.status;
@@ -103,7 +111,7 @@ export async function fetchExamRegisterations(rollno: string,token: string) {
 
     const data = await response.json(); // Parse the JSON response
     return data;
-  } catch(error) {
+  } catch (error) {
     throw error;
   }
 }
@@ -111,16 +119,16 @@ export async function fetchExamRegisterations(rollno: string,token: string) {
 export async function uploadFile(file: File, fileName: string) {
   try {
     const formData = new FormData();
-    formData.append('image', file, fileName); // Append the file with its name to the FormData object
+    formData.append("image", file, fileName); // Append the file with its name to the FormData object
     console.log("formdata: ", formData);
 
     // No need to set Content-Type header manually when using FormData
 
-    const response = await fetch('https://admin-exam.dseu.ac.in/upload', {
-      method: 'POST',
+    const response = await fetch("https://admin-exam.dseu.ac.in/upload", {
+      method: "POST",
       body: formData,
       mode: "cors",
-      headers: {name: fileName}
+      headers: { name: fileName },
       // No need to set headers manually when using FormData
     });
 
@@ -130,13 +138,93 @@ export async function uploadFile(file: File, fileName: string) {
     }
 
     const responseData = await response.json();
-    console.log('Uploaded file path:', responseData);
+    console.log("Uploaded file path:", responseData);
     return responseData;
 
     // Do something with the uploaded file path, if needed
   } catch (error: any) {
-    console.error('Error uploading file:', error.message);
+    console.error("Error uploading file:", error.message);
     throw error;
   }
 }
+
+export async function sendEmail(rollno: string) {
+  try {
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/sendEmail",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          rollno: rollno,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function verifyOtpAndPassword(rollno: string, otp: string) {
+  try {
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/verifyOtpAndPassword",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          rollno: rollno,
+          otp: otp
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function updatePasswordByOtp(rollno: string, password: string) {
+  try {
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/updatePasswordByOtp",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          rollno: rollno,
+          password: password
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 

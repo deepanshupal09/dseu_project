@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Button,
@@ -73,7 +73,7 @@ export default function PreviewPage({
     motherName: false,
     singleParentGuardian: false,
     singleParentGuardianName: false,
-    // parentRelation: false,
+    parentRelation: false,
     dateOfBirth: false,
     aadharCard: false,
     abcId: false,
@@ -81,6 +81,17 @@ export default function PreviewPage({
     photo: false,
     pwbdCertificate: false,
   });
+  useEffect(() => {
+    if (!singleParentGuardian) {
+      setToggles({
+        ...toggles,singleParentGuardian: true, singleParentGuardianName: true, parentRelation: true
+      });
+    } else {
+      setToggles({
+        ...toggles,motherName: true, fatherName: true
+      });
+    }
+  }, []);
 
   const handleToggleChange = (field: keyof typeof toggles) => {
     setToggles({
@@ -91,7 +102,7 @@ export default function PreviewPage({
 
   const handleConfirmClick = () => {
     const allToggled = Object.values(toggles).every((isChecked) => isChecked);
-  
+
     if (allToggled) {
       setConfirmSubmission(true);
     } else {
@@ -275,7 +286,7 @@ export default function PreviewPage({
           {!singleParentGuardian && (
             <>
               <tr>
-                <td className="px-6 py-4 font-semibold">Father's Name:</td>
+                <td className="px-6 py-4 font-semibold">{"Father's Name: "}</td>
                 <td className="px-6 py-4">{fatherName}</td>
                 <td className="px-2 py-4">
                   <Switch
@@ -285,7 +296,7 @@ export default function PreviewPage({
                 </td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold">Mother's Name:</td>
+                <td className="px-6 py-4 font-semibold">{"Mother's Name: "}</td>
                 <td className="px-6 py-4">{motherName}</td>
                 <td className="px-2 py-4">
                   <Switch
@@ -300,7 +311,7 @@ export default function PreviewPage({
             <>
               <tr>
                 <td className="px-6 py-4 font-semibold">
-                  Parent/Guardian's Name:
+                  {"Parent/Guardian's Name: "}
                 </td>
                 <td className="px-6 py-4">{singleParentGuardianName}</td>
                 <td className="px-2 py-4">
@@ -314,29 +325,23 @@ export default function PreviewPage({
               </tr>
               <tr>
                 <td className="px-6 py-4 font-semibold">
-                  Single Parent/Guardian:
+                  {"Single Parent/Guardian: "}
                 </td>
                 <td className="px-6 py-4">Yes</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.singleParentGuardian}
-                    onChange={() =>
-                      handleToggleChange("singleParentGuardian")
-                    }
+                    onChange={() => handleToggleChange("singleParentGuardian")}
                   />
                 </td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold">
-                  Parent's Relation:
-                </td>
+                <td className="px-6 py-4 font-semibold">{"Parent's Relation: "}</td>
                 <td className="px-6 py-4">{parentRelation}</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.parentRelation}
-                    onChange={() =>
-                      handleToggleChange("parentRelation")
-                    }
+                    onChange={() => handleToggleChange("parentRelation")}
                   />
                 </td>
               </tr>

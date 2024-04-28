@@ -135,6 +135,7 @@ export default function Home() {
               <div> Sign In </div>{" "}
               <ArrowForwardIosIcon className="scale-75  " />
             </button>
+            <div onClick={()=>{router.push("/forgotpassword")}} className="w-full text-right cursor-pointer hover:underline -mt-[500px]">Forgot Password?</div>
           </form>
         </div>
       </div>
