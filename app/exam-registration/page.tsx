@@ -69,6 +69,19 @@ export default function Home() {
     });
     return initialSelection;
   });
+
+  useEffect(() => {
+    
+    const initialSelection = {};
+    subjectsData.forEach((subject) => {
+      if (subject.type === "CC") {
+        initialSelection[subject.code] = true; 
+      } else {
+        initialSelection[subject.code] = false;
+      }
+    });
+    setSelectedSubjects(initialSelection);
+  }, [subjectsData]);
   const [selectedBacklogs, setSelectedBacklogs] = useState([]);
   const [giveBacklogExams, setGiveBacklogExams] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState("");
@@ -362,7 +375,11 @@ export default function Home() {
             </Grid>
           </Grid>
         </div>
-
+        <div className="text-center">
+        <Typography variant="body1">
+          <b>Course Types: </b>CC - Compulsory Subject, PE - Program Elective, OE - Open Elective
+        </Typography>
+        </div>
         {!chosen && (
           <>
             <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
@@ -446,7 +463,7 @@ export default function Home() {
                                 <Typography>Course Name</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
-                                <Typography>Coruse Code</Typography>
+                                <Typography>Course Code</Typography>
                               </TableCell>
                               <TableCell style={{ width: "25%" }}>
                                 <Typography>Select</Typography>
