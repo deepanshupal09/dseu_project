@@ -68,7 +68,7 @@ export default function Home() {
             className="flex flex-col  bg-white  rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100%] w-[460px] ] "
           >
             <Image height={130} className="-mb-4" src={logo} alt="logo" />
-            <div className="text-[32px] font-semibold  ">Student Portal</div>
+            <div className="text-[32px] font-semibold  ">Exam Portal</div>
             <div className="text-2xl w-full font-semibold ">Login</div>
             <div className="mt-1 w-[100%]">
               <TextField
