@@ -1,12 +1,14 @@
 
 import bcrypt from 'bcryptjs';
 
-export function parseJwt(token: string) {
+export function parseJwt(token: string | undefined) {
     if (!token) { return; }
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
-    return JSON.parse(window.atob(base64));
+    const decodedData = Buffer.from(base64, 'base64').toString('utf-8');
+    return JSON.parse(decodedData);
 }
+
 
 export function hashPassword(password: string) {
     var salt = bcrypt.genSaltSync(10);

@@ -227,4 +227,31 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
   }
 }
 
+export async function loginAdmin(email: string, password: string) {
+  try {
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/loginByEmailId",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          emailid: email,
+          password: password
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 

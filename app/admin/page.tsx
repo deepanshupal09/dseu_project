@@ -6,19 +6,32 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
 import logo from "../images/logo.png"
 import { useRouter } from "next/navigation";
+import { loginAdmin } from "../actions/api";
+import { parseJwt } from "../actions/utils";
+import { setAuthAdmin } from "../actions/cookie";
 
 export default function Home() {
   const [email, setEmail] = useState<string>("");
-  const [Password, setPass] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
 
-
   async function handleLogin() {
-  
+    try {
+      setLoading(true);
+      const response = await loginAdmin(email, password);
+      console.log("response: ",response)
+      setAuthAdmin(response.token);
+      router.push("/admin/dashboard")
+      setLoading(false);
+      
+    } catch(error) {
+      setLoading(false);
+      console.error("error: ",error)
+    }
   }
 
   return (
@@ -71,12 +84,12 @@ export default function Home() {
               <TextField
                 required
                 onChange={(e) => {
-                  setPass(e.target.value);
+                  setPassword(e.target.value);
                   setHelperText("");
                   setError(false);
                 }}
                 type="password"
-                value={Password}
+                value={password}
                 helperText={helperText}
                 error={error}
                 sx={{
