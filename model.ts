@@ -27,11 +27,14 @@ import {
 export function fetchPasswordByRollNo(
     rollno: string
 ): Promise<QueryResult<any>> {
+    console.log("model rollno: ",rollno)
     return new Promise((resolve, reject) => {
         pool.query(getPasswordByRollno, [rollno], (error, results) => {
             if (error) {
+                console.log("eror: ", error)    
                 reject(error);
             } else {
+                // console.log("error mode: ",results)
                 resolve(results);
             }
         });
