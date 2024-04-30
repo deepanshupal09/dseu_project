@@ -19,7 +19,9 @@ import {
     fetchEmailIdByRollno,
     updateOTP,
     verifyOTP,
-    updatePasswordByOtp
+    updatePasswordByOtp,
+    fetchStudentByProgramAndSemester,
+    fetchStudentByCampusAndProgram
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -264,13 +266,15 @@ export function fetchExamRegistrationCourse(
 }
 
 export function fetchExamRegistrationProgramAndSemester(
+    campus: string,
+    program_type: string,
     program: string,
     semester: number
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(
             fetchExamRegistrationByProgramAndSemester,
-            [program, semester],
+            [campus, program_type, program, semester],
             (error, results) => {
                 if (error) {
                     reject(error);
@@ -379,6 +383,30 @@ export function otpVerifyModel( rollno: string) : Promise<QueryResult<any>> {
 export function updatePassword( password: string, rollno: string ) : Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
         pool.query(updatePasswordByOtp,[ password, rollno ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchStudent( program_type: string, program: string, semester: number ) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchStudentByProgramAndSemester,[ program_type, program, semester ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchStudentCampus( campus:string, program_type: string, program: string, semester: number ) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchStudentByCampusAndProgram,[ campus, program_type, program, semester ],(error, results) => {
             if(error){
                 reject(error);
             } else{

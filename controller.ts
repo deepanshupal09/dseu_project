@@ -15,7 +15,9 @@ import {
   fetchTheEmailId,
   otpUpdateService,
   otpVerifyService,
-  updateThePassword
+  updateThePassword,
+  fetchTheStudent,
+  fetchTheStudentCampus
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -219,7 +221,9 @@ const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):
   try{
     const semester: number = parseInt(req.headers.semester as string);
     const program: string = req.headers.program as string;
-    fetchTheExamRegistrationProgramAndSemester(program, semester).then((results) => {
+    const campus: string = req.headers.campus as string;
+    const program_type:string = req.headers.program_type as string;
+    fetchTheExamRegistrationProgramAndSemester(campus, program_type, program, semester).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("Internal server error fetch exam registeration program and semester 2");
@@ -358,6 +362,39 @@ const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
   }
 })
 
+const fetchStudentByProgramAndSemester = (async(req: Request, res: Response)=>{
+  try{
+    const program_type:string = req.headers.program_type as string;
+    const program:string = req.headers.program as string;
+    const semester: number = parseInt(req.headers.semester as string); 
+    fetchTheStudent(program_type, program, semester).then((results)=>{
+      res.status(200).send(results);
+    }).catch(()=>{
+      res.status(500).send("Internal server error fetch students program and semester 2")
+    })
+  }
+  catch(error){
+    res.status(500).send('Internal server error in fetch students 3');
+  }
+})
+
+const fetchStudentByCampusAndProgram = (async(req: Request, res: Response)=>{
+  try{
+    const campus:string = req.headers.campus as string;
+    const program_type:string = req.headers.program_type as string;
+    const program:string = req.headers.program as string;
+    const semester: number = parseInt(req.headers.semester as string); 
+    fetchTheStudentCampus(campus, program_type, program, semester).then((results)=>{
+      res.status(200).send(results);
+    }).catch(()=>{
+      res.status(500).send("Internal server error fetch students program and semester 2")
+    })
+  }
+  catch(error){
+    res.status(500).send('Internal server error in fetch students 3');
+  }
+})
+
 
 export {
   getUserByRollno,
@@ -376,5 +413,7 @@ export {
   fetchEmailIdByRollno,
   sendEmail,
   verifyOtpAndPassword,
-  updatePasswordByOtp
+  updatePasswordByOtp,
+  fetchStudentByProgramAndSemester,
+  fetchStudentByCampusAndProgram
 };

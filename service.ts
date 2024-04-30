@@ -18,7 +18,9 @@ import {
     fetchEmailId,
     otpUpdateModel,
     otpVerifyModel,
-    updatePassword
+    updatePassword,
+    fetchStudent,
+    fetchStudentCampus
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -259,13 +261,25 @@ export function fetchTheExamRegistrationCourse(
 }
 
 export function fetchTheExamRegistrationProgramAndSemester(
+    campus: string,
+    program_type: string,
     program: string,
     semester: number
 ): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchExamRegistrationProgramAndSemester(program, semester)
+        fetchExamRegistrationProgramAndSemester(campus, program_type ,program, semester)
             .then((result) => {
-                resolve(result.rows);
+                const data = result.rows;
+                let students:any = {};
+                data.forEach((student)=>{
+                    const {rollno, name, dob, photo, program, semester, course_code} = student;
+                    if(!students[rollno]){
+                        students[rollno]= {rollno, name, dob, photo, program, semester, course_codes: [course_code]};
+                    }else{
+                        students[rollno].course_codes.push(course_code);
+                    }
+                })
+                resolve(Object.values(students));
             })
             .catch((error) => {
                 console.log(
@@ -379,6 +393,28 @@ export function updateThePassword(password:string, rollno: string) : Promise<any
     return new Promise((resolve,reject) => {
         updatePassword(password, rollno).then((result) => {
             resolve(result);
+        }).catch((error) => {
+            console.log("Error in password updation: ",error);
+            reject("Internal server error in password updation");
+        })
+    })
+}
+
+export function fetchTheStudent(program_type: string, program: string, semester: number) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchStudent(program_type, program, semester).then((result) => {
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in password updation: ",error);
+            reject("Internal server error in password updation");
+        })
+    })
+}
+
+export function fetchTheStudentCampus(campus:string, program_type: string, program: string, semester: number) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchStudentCampus(campus, program_type, program, semester).then((result) => {
+            resolve(result.rows);
         }).catch((error) => {
             console.log("Error in password updation: ",error);
             reject("Internal server error in password updation");

@@ -67,6 +67,10 @@ app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 app.get("/sendEmail", controller.sendEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
+app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
+app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
+app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
+
 
 // Start the server
 app.listen(port, () => {

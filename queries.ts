@@ -79,9 +79,9 @@ export const fetchExamRegistrationByCourseCode: string = `
 `;
 
 export const fetchExamRegistrationByProgramAndSemester: string = `
-  SELECT u.name, er.rollno, u.program, u.semester ,er.course_code FROM exam_registeration er
+  SELECT u.photo, u.name, er.rollno, u.dob, u.program, u.semester, er.course_code FROM exam_registeration er
   JOIN users u ON er.rollno = u.rollno
-  where u.program=$1 AND u.semester=$2;  
+  where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4;  
 `;
 
 
@@ -103,4 +103,12 @@ export const verifyOTP: string = `
 
 export const updatePasswordByOtp: string = `
   UPDATE users SET password = $1 WHERE rollno = $2;
+`;
+
+export const fetchStudentByProgramAndSemester: string =`
+  SELECT rollno, name, semester FROM users WHERE program_type=$1 AND program=$2 AND semester=$3;
+`;
+
+export const fetchStudentByCampusAndProgram: string =`
+  SELECT rollno, name, semester FROM users WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4;
 `;
