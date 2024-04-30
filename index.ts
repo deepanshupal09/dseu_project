@@ -59,7 +59,7 @@ app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
 // Other routes
 app.get("/login", controller.login);
 app.post("/signup", controller.signup);
-app.post("/addUsers", controller.addUsers);
+// app.post("/addUsers", controller.addUsers);
 // app.get("/getUserByRollno", controller.getUserByRollno);
 app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
 app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
