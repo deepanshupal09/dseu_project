@@ -112,9 +112,13 @@ export default function PreviewPage({
 
   return (
     <div className="p-10 w-[80vw] max-md:w-[100vw] bg-white shadow-md rounded-lg mx-auto">
-      <h2 className="text-2xl w-full font-bold mb-12 mt-12 text-left m-4">
+      <h2 className="text-2xl w-full font-bold  mt-12 text-left m-4">
         Preview Your Information
       </h2>
+      <h2 className="text-sm w-full  mb-12 mt-2 text-left m-4">
+        Check all details and toggle all switches to continue
+      </h2>
+
       <table className="w-full mt-2 table-auto">
         <tbody className="divide-y divide-gray-200">
           
