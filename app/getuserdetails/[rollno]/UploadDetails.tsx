@@ -7,7 +7,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { ArrowBackIosNew } from "@mui/icons-material";
-import { uploadFile } from "@/app/actions/api";
+import { uploadFile } from "@/app/actions/uploadapi";
 
 interface UploadDetailsProps {
   onNext: () => void;

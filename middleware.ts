@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { useEffect } from "react";
 import { parseJwt } from "./app/actions/utils";
 
-const protectedRoutes = ["/dashboard", "/getuserdetails","/exam-registration"];
+const protectedRoutes = ["/dashboard", "/exam-registration"];
 const adminRoutes = ["/admin/dashboard","/admin/registration-chart","/admin/admit-card","/admin/query"] ;
 const publicRoutes = ["/"];
 
@@ -14,9 +14,7 @@ export default async function middleware(req: NextRequest) {
   const isAdminRoute = adminRoutes.includes(path);
   const cookie = await parseJwt(cookies().get("auth")?.value);
   const adminCookie = await parseJwt(cookies().get("admin")?.value);
-  const signUpCookie = await parseJwt(cookies().get("signup")?.value);
-
-
+  const signUpCookie =  (cookies().get("signup")?.value);
 
 
   if(isAdminRoute && !adminCookie) {
@@ -37,6 +35,7 @@ export default async function middleware(req: NextRequest) {
 
   
   if (path.startsWith("/getuserdetails") && !signUpCookie ) {
+    console.log("redirect f from here")
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
 

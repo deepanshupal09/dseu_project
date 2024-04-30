@@ -38,6 +38,7 @@ export default function Home() {
       } else {
         if (response.defaultPass) {
           await setSignupCookie();
+          console.log("here: ", )
           router.push(`/getuserdetails/${RollNo}`)
         } else {
           await setAuth(response.token);

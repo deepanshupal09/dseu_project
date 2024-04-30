@@ -4,7 +4,7 @@ import { Backdrop, CircularProgress, TextField } from "@mui/material";
 import { useState } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
-import logo from "../images/logo.png"
+import logo from "../images/logo.png";
 import { useRouter } from "next/navigation";
 import { loginAdmin } from "../actions/api";
 import { parseJwt } from "../actions/utils";
@@ -18,19 +18,19 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-
   async function handleLogin() {
     try {
       setLoading(true);
       const response = await loginAdmin(email, password);
-      console.log("response: ",response)
-      setAuthAdmin(response.token);
-      router.push("/admin/dashboard")
+      console.log("response: ", response);
+      await setAuthAdmin(response.token);
+      router.push("/admin/dashboard");
       setLoading(false);
-      
-    } catch(error) {
+    } catch (error: any) {
       setLoading(false);
-      console.error("error: ",error)
+      setError(true);
+      const message = JSON.parse(error.message);
+      setHelperText(message.message)
     }
   }
 
@@ -114,6 +114,8 @@ export default function Home() {
               <ArrowForwardIosIcon className="scale-75  " />
             </button>
             <div className="flex w-full justify-between">
+            <div onClick={()=>{router.push("/")}} className="w-full  cursor-pointer hover:underline">Are you a student?</div>
+
             </div>
           </form>
         </div>
