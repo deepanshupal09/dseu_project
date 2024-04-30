@@ -72,16 +72,18 @@ export function handleLogin(
             });
     });
 }
-export function handleLoginByEmailId(
+export async function handleLoginByEmailId(
     emailid: string,
     password: string
 ): Promise<{ token: string;}> {
     console.log("service")
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         fetchPasswordByEmailId(emailid)
-            .then((results: QueryResult<any>) => {
+            .then(async(results: QueryResult<any>) => {
                 if (results.rows.length > 0) {
                     const dbPassword = results.rows[0].password;
+                    // const hash = await bcrypt.hash("DSEU@12345", 10);
+                    // console.log("pass:",hash);
                     bcrypt
                         .compare(password, dbPassword)
                         .then(function (result) {
