@@ -70,6 +70,7 @@ app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
+app.get("/loginByEmailId", controller.loginByEmailId);
 
 
 // Start the server

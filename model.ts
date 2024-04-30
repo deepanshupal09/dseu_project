@@ -21,7 +21,8 @@ import {
     verifyOTP,
     updatePasswordByOtp,
     fetchStudentByProgramAndSemester,
-    fetchStudentByCampusAndProgram
+    fetchStudentByCampusAndProgram,
+    getPasswordByEmailId
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -30,6 +31,23 @@ export function fetchPasswordByRollNo(
     console.log("model rollno: ",rollno)
     return new Promise((resolve, reject) => {
         pool.query(getPasswordByRollno, [rollno], (error, results) => {
+            if (error) {
+                console.log("eror: ", error)    
+                reject(error);
+            } else {
+                // console.log("error mode: ",results)
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchPasswordByEmailId(
+    emailid: string
+): Promise<QueryResult<any>> {
+    console.log("model admin emailid: ", emailid)
+    return new Promise((resolve, reject) => {
+        pool.query(getPasswordByEmailId, [emailid], (error, results) => {
             if (error) {
                 console.log("eror: ", error)    
                 reject(error);

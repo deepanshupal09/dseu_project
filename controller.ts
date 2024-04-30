@@ -17,7 +17,8 @@ import {
   otpVerifyService,
   updateThePassword,
   fetchTheStudent,
-  fetchTheStudentCampus
+  fetchTheStudentCampus,
+  handleLoginByEmailId
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -67,6 +68,35 @@ const login = (
         });
       } else {
         res.status(404).send({message: "RollNo not found!"});
+      }
+    } catch (error) {
+    res.status(500).send({message: "Internal Server Error!"});
+  }
+};
+
+const loginByEmailId = (
+  req: Request,
+  res: Response
+): void => {
+  try {
+    const emailid: string = req.headers.emailid as string;
+    const password: string = req.headers.password as string;
+    console.log("email id",  emailid)
+
+    if (emailid && password) {
+      handleLoginByEmailId(emailid, password)
+        .then(({token}) => {
+          res.status(200).send({token});
+        })
+        .catch((error: string) => {
+          if (error === "internal server error")
+            res.status(500).send({message: "Internal Server Error!"});
+          else if (error === "incorrect password")
+            res.status(400).send({message: "Incorrect Password"});
+          else res.status(404).send({message: "admin email id not found!"});
+        });
+      } else {
+        res.status(404).send({message: "email id not found!"});
       }
     } catch (error) {
     res.status(500).send({message: "Internal Server Error!"});
@@ -417,5 +447,6 @@ export {
   verifyOtpAndPassword,
   updatePasswordByOtp,
   fetchStudentByProgramAndSemester,
-  fetchStudentByCampusAndProgram
+  fetchStudentByCampusAndProgram,
+  loginByEmailId
 };

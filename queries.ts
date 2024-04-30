@@ -112,3 +112,6 @@ export const fetchStudentByProgramAndSemester: string =`
 export const fetchStudentByCampusAndProgram: string =`
   SELECT rollno, name, semester FROM users WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4;
 `;
+
+export const getPasswordByEmailId: string =
+  "SELECT * FROM admin WHERE emailid=$1";

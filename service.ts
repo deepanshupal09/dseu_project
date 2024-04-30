@@ -20,7 +20,8 @@ import {
     otpVerifyModel,
     updatePassword,
     fetchStudent,
-    fetchStudentCampus
+    fetchStudentCampus,
+    fetchPasswordByEmailId
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -32,7 +33,6 @@ export function handleLogin(
 ): Promise<{ token: string; defaultPass: boolean }> {
     console.log("service")
     return new Promise((resolve, reject) => {
-
         fetchPasswordByRollNo(rollno)
             .then((results: QueryResult<any>) => {
                 if (results.rows.length > 0) {
@@ -40,9 +40,6 @@ export function handleLogin(
                     bcrypt
                         .compare(password, dbPassword)
                         .then(function (result) {
-                            //   bcrypt.hash("anan41521005", 10).then(function(hash) {
-                            //     console.log(hash)
-                            // });
                             if (result) {
                                 const token = jwt.sign(
                                     { user: results.rows[0] },
@@ -66,21 +63,52 @@ export function handleLogin(
                                 reject("incorrect password");
                             }
                         });
-                    // const token: string = generateToken();
-                    // const last_modified: string = new Date().toString();
-                    // const currentDate = new Date();
-                    // currentDate.setHours(currentDate.getHours() + 2);
-                    // const expiry: string = currentDate.toString();
-
-                    // updateToken(token, rollno, last_modified, expiry)
-                    //   .then((results: QueryResult<any>) => {
-                    //     resolve(token);
-                    //   })
-                    //   .catch((error) => {
-                    //     reject("internal server error");
-                    //   });
                 } else {
                     reject("roll no. doesn't exist");
+                }
+            })
+            .catch((error) => {
+                reject("internal server error");
+            });
+    });
+}
+export function handleLoginByEmailId(
+    emailid: string,
+    password: string
+): Promise<{ token: string;}> {
+    console.log("service")
+    return new Promise((resolve, reject) => {
+        fetchPasswordByEmailId(emailid)
+            .then((results: QueryResult<any>) => {
+                if (results.rows.length > 0) {
+                    const dbPassword = results.rows[0].password;
+                    bcrypt
+                        .compare(password, dbPassword)
+                        .then(function (result) {
+                            if (result) {
+                                const token = jwt.sign(
+                                    { user: results.rows[0] },
+                                    "chotahathi",
+                                    {
+                                        expiresIn: "2h",
+                                    }
+                                );
+                                // const default_pass =
+                                //     (results.rows[0].name + "0000").substring(
+                                //         0,
+                                //         4
+                                //     ) + rollno;
+
+                                const result = {
+                                    token: token
+                                };
+                                resolve(result);
+                            } else {
+                                reject("incorrect password");
+                            }
+                        });
+                } else {
+                    reject("email id doesn't exist");
                 }
             })
             .catch((error) => {
