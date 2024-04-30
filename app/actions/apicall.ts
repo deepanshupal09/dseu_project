@@ -2,9 +2,12 @@ const listOfLists = [[{"rollno": "10221001", "name": "ABHISHEK  SINGH"}, {"rolln
 ;
 
 export async function addUsers() {
+
+  console.log("got to function")
     listOfLists.forEach(async (list:any) => {
+      console.log(list);
         try {
-            const res = await fetch("http://admin-exam.dseu.ac.in/addUsers", {
+            const res = await fetch("http://localhost:8000/addUsers", {
               method: "POST",
               mode: "cors",
               cache: "no-cache",

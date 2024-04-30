@@ -311,13 +311,6 @@ export default function Home() {
     console.log("all subjects ", allSubjectCodes);
     console.log("All Subject Codes:", allSubjectCodes);
 
-    subjectsData.forEach((subject) => {
-      if (subject.type === "CC") {
-        allSubjectCodes.push(subject.code);
-      }
-    })
-    
-
     try {
       const body = { rollno: user?.rollno, course_code: allSubjectCodes };
       const res = await addExamRegisterations(body, token);
