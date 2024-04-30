@@ -308,10 +308,11 @@ export default function Home() {
     PostGraduate: [
       "Masters in Computer Application",
       "M.Tech. in Mechanical Engineering",
-      "M.Tech. in Mechanical Engineering with Specialization in Thermal/ Production/ Design",
       "M.Tech. in Tool Engineering",
-      "M.Tech. in Computer science Engineering with Specialization in Al & ML",
-      "M.Tech. in Electronic & Communication Engineering With Specialization in IOT",
+      "M.Tech. in Computer Science Engineering - AI & ML",
+      "M.Tech. in Electronics & Communication Engineering - IOT",
+      "M. Tech in Mechanical Engineering - THERMAL/PRODUCTION/DESIGN)",
+      
       "M.Sc. in Medical Laboratory Sciences",
     ],
     Doctorate: [

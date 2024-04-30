@@ -1,9 +1,6 @@
 "use client"
 import { Backdrop, CircularProgress, Step, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import Image from "next/image";
-import { sendEmail } from "../actions/api";
+import { useState, useEffect } from "react";;
 import SendOTP from "./SendOTP";
 import VerifyOTP from "./VerifyOTP";
 import ChangePassword from "./ChangePassword";
