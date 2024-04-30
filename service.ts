@@ -88,9 +88,10 @@ export async function handleLoginByEmailId(
                         .compare(password, dbPassword)
                         .then(function (result) {
                             if (result) {
+                                delete results.rows[0].password;
                                 const token = jwt.sign(
                                     { user: results.rows[0] },
-                                    "chotahathi",
+                                    "motahathi",
                                     {
                                         expiresIn: "2h",
                                     }

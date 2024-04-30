@@ -3,11 +3,12 @@ import routes from "./routes";
 import cors from "cors";
 import dotenv from "dotenv";
 import * as controller from "./controller";
-import { verifyToken } from "./middleware";
+import { verifyAdmin, verifyToken } from "./middleware";
 import bodyParser from "body-parser";
 import multer, { Multer } from "multer";
 import path from "path";
 import fs from "fs";
+import adminRoutes from "./adminRoutes"
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/data/", verifyToken, routes);
+app.use("/api/admin/",verifyAdmin,adminRoutes);
 
 app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
     console.log("yasu",req.file)
@@ -61,15 +63,15 @@ app.get("/login", controller.login);
 app.post("/signup", controller.signup);
 // app.post("/addUsers", controller.addUsers);
 // app.get("/getUserByRollno", controller.getUserByRollno);
-app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
-app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
+// app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
+// app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
 app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 app.get("/sendEmail", controller.sendEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
-app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
-app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
-app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
+// app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
+// app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
+// app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
 
 

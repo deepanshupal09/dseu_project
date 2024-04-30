@@ -67,4 +67,17 @@ export const verifyToken = (req: AuthenticatedRequest, res: Response, next: Next
       res.status(400).send('Invalid Token');
     }
   };
+
+  export const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.token as string;
+    if (!token) return res.status(401).send('Access Denied');
+
+    try {
+      const decoded: any = jwt.verify(token, 'motahathi');
+      next();
+    } catch (error) {
+      res.status(400).send('Invalid Token');
+    }
+
+  }
   
