@@ -6,7 +6,7 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
 import { fetchExamRegisterations } from "../actions/api";
-import { StudentDetails } from "../help/page";
+import { StudentDetails } from "../profile/page";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);

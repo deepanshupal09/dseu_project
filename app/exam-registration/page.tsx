@@ -29,95 +29,101 @@ import {
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../actions/cookie";
 import { parseJwt } from "../actions/utils";
-import { addExamRegisterations, fetchCoursesByRollNo, fetchExamRegisterations } from "../actions/api";
+import {
+  addExamRegisterations,
+  fetchCoursesByRollNo,
+  fetchExamRegisterations,
+} from "../actions/api";
 import { useRouter } from "next/navigation";
-import { StudentDetails } from "../help/page";
+import { StudentDetails } from "../profile/page";
+
+interface ProfDetails {
+  username: string;
+  rollNumber: string;
+  semester: number;
+  campusName: string;
+  programName: string;
+}
+
+interface Subject {
+  name: string;
+  code: string;
+  type: string;
+}
+
+interface SelectedSubjects {
+  [key: string]: boolean;
+}
+
+interface Backlog {
+  subject: string;
+  subjectCode: string;
+  semester: number;
+}
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
   const [previewSelection, setPreviewSelection] = useState(false);
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
-  const [user, setUser] = useState<StudentDetails|null>(null);
-  const prof1 = {
-    username: user?.name,
-    rollNumber: user?.rollno,
-    semester: user?.semester,
-    campusName: user?.campus,
-    programName: user?.program,
-  };
+  const [user, setUser] = useState<StudentDetails | null>(null);
+  const [profile, setProfile] = useState<ProfDetails|null>(null);
   const [token, setToken] = useState("");
   useEffect(() => {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
       setToken(auth?.value);
       setUser(temp.user);
-      console.log("user: ", auth?.value);
+      setProfile({
+        username: temp.user.name,
+        rollNumber: temp.user.rollno,
+        semester: temp.user.semester,
+        campusName: temp.user.campus,
+        programName: temp.user.program,
+      });
+      // console.log("user: ", auth?.value);
       console.log(temp.user);
     });
   }, []);
 
-  const [subjectsData, setSubjectsData] = useState([]);
-  const [backlogsData, setBacklogsData] = useState([]);
-  const [selectedSubjects, setSelectedSubjects] = useState(() => {
-    const initialSelection = {};
-    subjectsData.forEach((subject) => {
-      if (subject.type === "CC") {
-        initialSelection[subject.code] = true; // CC subjects are initially selected
-      } else {
-        initialSelection[subject.code] = false;
-      }
-    });
-    return initialSelection;
-  });
+  const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
+  const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
+
 
   useEffect(() => {
-    
-    const initialSelection = {};
+    const initialSelection: Record<string, boolean> = {};
     subjectsData.forEach((subject) => {
       if (subject.type === "CC") {
-        initialSelection[subject.code] = true; 
+        initialSelection[subject.code] = true;
       } else {
         initialSelection[subject.code] = false;
       }
     });
     setSelectedSubjects(initialSelection);
   }, [subjectsData]);
-  const [selectedBacklogs, setSelectedBacklogs] = useState([]);
+  
+  const [selectedBacklogs, setSelectedBacklogs] = useState<Backlog[]>([]);
   const [giveBacklogExams, setGiveBacklogExams] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState("");
   const [chosen, setChosen] = useState(true);
-  const [selectedSub, setSelectedSub] = useState([]);
+  const [selectedSub, setSelectedSub] = useState<Subject[]>([]);
 
-  // const selectedSub = [
-  //   { name: "Universal Human Values", code: "BT-HS601", type: "CC" },
-  //   { name: "Computer Networks", code: "BT-CS-ES601", type: "CC" },
-  //   { name: "Machine Learning", code: "BT-CS-ES602", type: "CC" },
-  //   { name: "Web Engineering", code: "BT-CS-ES603", type: "CC" },
-  //   { name: "Web Development", code: "BT-CS-PE602", type: "PE" },
-  //   { name: "Spanish", code: "BT-OE601", type: "OE" },
-  //   {
-  //     code: "BT-CS-BS401",
-  //     name: "Probability and Statistics",
-  //     type: "CC",
-  //   },
-  //   {
-  //     code: "BT-BS202",
-  //     name: "Applied Physics",
-  //     type: "CC",
-  //   },
-  // ];
 
   useEffect(() => {
     if (user) {
       const rollno = user.rollno;
       fetchExamRegisterations(rollno, token)
-        .then((res) => {
+        .then((res:any) => {
           console.log("response: ", res);
           if (res.length > 0) {
-            const temp=[];
-            res.forEach((subject) => {
-            temp.push({name: subject.course_name, code: subject.course_code, type: subject.course_type});
-            })
+            const temp:Subject[] = [];
+            res.forEach((subject:any) => {
+              temp.push({
+                name: subject.course_name,
+                code: subject.course_code,
+                type: subject.course_type,
+              });
+            });
             setSelectedSub(temp);
             setChosen(true);
           } else {
@@ -138,15 +144,14 @@ export default function Home() {
         try {
           const courses = await fetchCoursesByRollNo(rollno, token);
           const userSemester = user.semester;
-          let subDataTemp = [],
-            backlogDataTemp = [];
+          let subDataTemp:Subject[] = [],
+            backlogDataTemp:Backlog[] = [];
 
-          courses.forEach((course) => {
+          courses.forEach((course:any) => {
             if (course.semester < user.semester)
               backlogDataTemp.push({
                 subject: course.course_name,
                 subjectCode: course.course_code,
-                examType: course.course_type,
                 semester: course.semester,
               });
             else
@@ -156,7 +161,7 @@ export default function Home() {
                 type: course.course_type,
               });
           });
-          const temp = [];
+          const temp:string[] = [];
           subDataTemp.forEach((subject) => {
             if (subject.type === "CC") {
               temp.push(subject.code);
@@ -187,7 +192,7 @@ export default function Home() {
     fetchData();
   }, [user]);
 
-  const handleSelectSubject = (subject) => {
+  const handleSelectSubject = (subject:Subject) => {
     if (subject.type === "CC") {
       // CC subjects cannot be deselected
       return;
@@ -197,7 +202,7 @@ export default function Home() {
     const alreadySelected = selectedSubjects[subject.code];
 
     // Deselect any previously selected elective of the same type
-    const deselectPreviousElective = (type) => {
+    const deselectPreviousElective = (type:string) => {
       const previousElective = Object.keys(selectedSubjects).find(
         (key) =>
           subjectsData.find((subject) => subject.code === key)?.type === type &&
@@ -234,7 +239,7 @@ export default function Home() {
   };
 
   const handleSelectBacklog = (backlog: any) => {
-    setSelectedBacklogs((prevBacklogs) => {
+    setSelectedBacklogs((prevBacklogs:Backlog[]) => {
       const existingBacklogIndex = prevBacklogs.findIndex(
         (b) =>
           b.subjectCode === backlog.subjectCode &&
@@ -251,48 +256,36 @@ export default function Home() {
     });
   };
 
-  const handleChangeSemester = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setSelectedSemester(event.target.value as string);
-  };
 
   const generateSemesters = () => {
     const semesters: string[] = [];
-    for (let i = 1; i < prof1.semester; i++) {
-      if (prof1.semester % 2 === 0) {
-        if (i % 2 === 0) {
-          semesters.push(i.toString());
-        }
-      } else {
-        if (i % 2 !== 0) {
-          semesters.push(i.toString());
+    if (profile) {
+      for (let i = 1; i < profile.semester; i++) {
+        if (profile.semester % 2 === 0) {
+          if (i % 2 === 0) {
+            semesters.push(i.toString());
+          }
+        } else {
+          if (i % 2 !== 0) {
+            semesters.push(i.toString());
+          }
         }
       }
+      console.log(profile.semester);
     }
-    console.log(prof1.semester);
     return semesters;
   };
 
-  const filteredBacklogs = backlogsData.filter((backlog) => {
-    if (!giveBacklogExams) return false;
-    else {
-      return backlog.semester === selectedSemester;
-    }
-  });
 
   const getSelectedSubjects = () => {
     return subjectsData.filter((subject) => selectedSubjects[subject.code]);
   };
 
   const handlePreview = () => {
-    console.log("Selected Subjects:", getSelectedSubjects());
-    console.log("Selected Backlogs:", selectedBacklogs);
     setPreviewSelection(true);
   };
 
   const confirmSelection = () => {
-    // Logic to confirm selection
     setPreviewSelection(false);
     setConfirmSubmission(true);
   };
@@ -306,29 +299,28 @@ export default function Home() {
     const backlogSubjectCodes = selectedBacklogs.map(
       ({ subjectCode }) => subjectCode
     );
-
     const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
-    console.log("all subjects ", allSubjectCodes);
-    console.log("All Subject Codes:", allSubjectCodes);
-
+  
     try {
       const body = { rollno: user?.rollno, course_code: allSubjectCodes };
       const res = await addExamRegisterations(body, token);
-      console.log("body: ", body);
       router.push("/dashboard");
-      if (res === 500) {
+      if (typeof res !== 'number') {
+        console.error("Unexpected response from server:", res);
+      } else if (res === 500) {
         alert("Internal server error!");
       }
     } catch (error) {
+      console.error("Error submitting details:", error);
       alert("Internal server error!");
     }
-    // Perform submission logic here
     setConfirmSubmission(false);
   };
+  
 
   return (
     <>
-      <Header username={user?.name} />
+      <Header username={user?.name as string} />
       <Navbar />
 
       <div className="relative md:ml-60 mt-28 md:w-auto">
@@ -337,21 +329,21 @@ export default function Home() {
             <Grid item xs={12} sm={6} md={7} lg={8}>
               <div className="flex items-center">
                 {/* <Avatar>{prof1.photo}</Avatar> */}
-                <img 
-  className="rounded-full object-cover"
-  style={{ width: 50, height: 50, borderRadius: '50%' }} 
-  alt="user" 
-  src={user?.photo} 
-/>
+                <img
+                  className="rounded-full object-cover"
+                  style={{ width: 50, height: 50, borderRadius: "50%" }}
+                  alt="user"
+                  src={user?.photo}
+                />
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">
-                    {prof1.username}
+                    {profile?.username}
                   </Typography>
                   <Typography variant="body1" component="p">
-                    Roll Number: {prof1.rollNumber}
+                    Roll Number: {profile?.rollNumber}
                   </Typography>
                   <Typography variant="body1" component="p">
-                    Semester: {prof1.semester}
+                    Semester: {profile?.semester}
                   </Typography>
                 </div>
               </div>
@@ -359,19 +351,20 @@ export default function Home() {
             <Grid item xs={12} sm={6} md={5} lg={4}>
               <div className="text-right">
                 <Typography variant="body1" component="p">
-                  Campus: {prof1.campusName}
+                  Campus: {profile?.campusName}
                 </Typography>
                 <Typography variant="body1" component="p">
-                  Program: {prof1.programName}
+                  Program: {profile?.programName}
                 </Typography>
               </div>
             </Grid>
           </Grid>
         </div>
         <div className="text-center">
-        <Typography variant="body1">
-          <b>Course Types: </b>CC - Compulsory Subject, PE - Program Elective, OE - Open Elective
-        </Typography>
+          <Typography variant="body1">
+            <b>Course Types: </b>CC - Compulsory Subject, PE - Program Elective,
+            OE - Open Elective
+          </Typography>
         </div>
         {!chosen && (
           <>

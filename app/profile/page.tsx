@@ -45,14 +45,12 @@ export interface StudentDetails {
 }
 
 export default function Home() {
-  const [user, setUser] = useState<StudentDetails|null>(null);
-
-  
+  const [user, setUser] = useState<StudentDetails | null>(null);
 
   useEffect(() => {
     getAuth().then((auth) => {
       const temp = parseJwt(auth?.value as string);
-      console.log("user: ", temp.user)
+      console.log("user: ", temp.user);
       setUser(temp.user);
     });
   }, []);
@@ -64,16 +62,14 @@ export default function Home() {
         <Navbar />
       </div>
 
-    <div className="relative md:ml-60 mt-6 md:w-auto">
+      <div className="relative md:ml-60 mt-6 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
-          {/* <AccountBoxRoundedIcon className="ml-10" /> */}
-          {console.log("photo: ", user?.photo)}
-          <img 
-  className="rounded-full object-cover"
-  style={{ width: 50, height: 50, borderRadius: '50%' }} 
-  alt="user" 
-  src={user?.photo} 
-/>
+          <img
+            className="rounded-full object-cover"
+            style={{ width: 50, height: 50, borderRadius: "50%" }}
+            alt="user"
+            src={user?.photo}
+          />
 
           <div>
             <h1 className="text-xl font-bold">
@@ -90,7 +86,7 @@ export default function Home() {
         </div>
       </div>
 
-    <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
+      <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
         <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
           <h2 className="text-xl font-bold mb-4 w-1/2">Personal Details</h2>
           <div className="w-full">
@@ -158,7 +154,7 @@ export default function Home() {
         </div>
       </div>
 
-    <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
+      <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
         <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
           <h2 className="text-xl font-bold mb-4 w-1/2">University Details</h2>
           <div className="w-full">

@@ -100,7 +100,7 @@ export default function SendOTP({RollNo, setRollNo, setStep}:{RollNo: string, se
               disabled={resendDisabled}
               className="bg-black disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center  transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold"
             >
-              <div> SEND OTP </div>{" "}
+              <div> SEND OTP ON EMAIL </div>{" "}
               {resendDisabled && (
                 <div className="">
                   ({Math.floor(remainingTime / 60)}:
