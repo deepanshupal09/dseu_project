@@ -517,7 +517,7 @@ export default function Home() {
                 <TableHead>
                   <TableRow>
                     <TableCell>
-                      <Typography variant="subtitle1">Subject</Typography>
+                      <Typography variant="subtitle1">Course</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle1">Course Code</Typography>
@@ -557,7 +557,7 @@ export default function Home() {
         <DialogTitle>Preview Selection</DialogTitle>
         <DialogContent className="flex flex-col">
           <div>
-            <Typography variant="h6">Selected Subjects:</Typography>
+            <Typography variant="h6">Selected Courses:</Typography>
             <ul>
               {getSelectedSubjects().map((subject, index) => (
                 <li key={index}>
