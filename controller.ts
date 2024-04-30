@@ -330,7 +330,7 @@ const updatePasswordByOtp = (req: Request, res: Response)=>{
   try{
     const {rollno, password} = req.headers;
     console.log("rollno, ",rollno, "password: ",password)
-    updateThePassword(password, rollno).then((results)=> {
+    updateThePassword(password as string, rollno as string).then((results)=> {
       res.status(200).send({message: "Password updated successfully!"});
     }).catch((error)=>{
       res.status(500).send({message: "Internal server error in password updation 1"});
@@ -345,7 +345,7 @@ const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
   try{
     const{rollno, otp} = req.headers; 
     console.log(otp);
-    const storedOTPResult = await otpVerifyService(rollno);
+    const storedOTPResult = await otpVerifyService(rollno as string);
     const storedOTP: string = storedOTPResult.rows[0]?.otp;
     console.log(storedOTP);
 
