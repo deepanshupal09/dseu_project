@@ -68,7 +68,7 @@ export default function UserDetailsPage({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100vw] max-[450px]:h-[100vh]   md:my-10"
+      className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 w-[450px] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100vw] max-[450px]:h-[100vh]   md:my-10"
     >
       <Typography variant="h4" gutterBottom>
         College Details
