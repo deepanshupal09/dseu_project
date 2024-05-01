@@ -11,7 +11,6 @@ router.get("/fetchCoursesByRollNo",controller.fetchCoursesByRollNo);
 router.get("/fetchExamRegistrationByRollNo",controller.fetchExamRegistrationByRollNo);
 router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistrationByCourseCode);
 router.get("/fetchExamRegistrationByProgramAndSemester",controller.fetchExamRegistrationByProgramAndSemester);
-router.get("/fetchExamRegistrationByProgramAndSemester",controller.fetchExamRegistrationByProgramAndSemester);
 router.post("/addUsers",controller.addUsers);
 router.post("/addExamRegisterations",controller.addExamRegisterations);
 

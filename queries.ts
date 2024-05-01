@@ -5,25 +5,26 @@ export const getPasswordByRollno: string =
   "SELECT * FROM users WHERE rollno=$1";
 export const updateDetailsByRollno: string = `
   UPDATE users 
-  SET program = COALESCE($1, program),
-      semester = COALESCE($2, semester),
-      phone = COALESCE($3, phone),
-      campus = COALESCE($4, campus),
-      emailid = COALESCE($5, emailid),
-      gender = COALESCE($6, gender),
-      alternate_phone = COALESCE($7, alternate_phone),
-      father = COALESCE($8, father),
-      mother = COALESCE($9, mother),
-      guardian = COALESCE($10, guardian),
-      aadhar = COALESCE($11, aadhar),
-      abc_id = COALESCE($12, abc_id),
-      pwbd_certificate = COALESCE($13, pwbd_certificate),
-      photo = COALESCE($14, photo),
-      last_modified = COALESCE($15, last_modified),
-      program_type = $16,
-      password = $17,
-      year_of_admission = $19
-  WHERE rollno = $18;
+  SET program = COALESCE($2, program),
+      semester = COALESCE($3, semester),
+      phone = COALESCE($5, phone),
+      campus = COALESCE($6, campus),
+      emailid = COALESCE($7, emailid),
+      gender = COALESCE($8, gender),
+      alternate_phone = COALESCE($9, alternate_phone),
+      father = COALESCE($10, father),
+      mother = COALESCE($11, mother),
+      guardian = COALESCE($12, guardian),
+      aadhar = COALESCE($13, aadhar),
+      abc_id = COALESCE($14, abc_id),
+      pwbd_certificate = COALESCE($15, pwbd_certificate),
+      photo = COALESCE($16, photo),
+      last_modified = COALESCE($20, last_modified),
+      program_type = $17,
+      password = $18,
+      year_of_admission = $19,
+      dob=$4
+  WHERE rollno = $1;
 `;
 
 export const putToken: string =
@@ -78,13 +79,11 @@ export const fetchExamRegistrationByProgramAndSemester: string = `
   JOIN users u ON er.rollno = u.rollno
   where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4;  
 `;
-
-// export const fetchCourseByProgramAndSemester: string =`
-//   SELECT c.course_name FROM courses c
-//   JOIN semester_course sc ON sc.course_code = c.course_code
-//   where sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
+// export const fetchExamRegistrationByProgramAndSemester: string = `
+//    SELECT u.photo, u.name, er.rollno, u.dob, u.program, u.semester, er.course_code FROM exam_registeration er
+//    JOIN users u ON er.rollno = u.rollno
+//    where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4;  
 // `;
-
 
 export const fetchProgramByProgramType: string = `
   SELECT program FROM program_programtype WHERE program_type = $1;

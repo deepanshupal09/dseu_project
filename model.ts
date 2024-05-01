@@ -118,6 +118,7 @@ export function putDetailsByRollno(
     rollno: string,
     program: string,
     semester: number,
+    date_of_birth: string,
     phone: string,
     campus: string,
     emailid: string,
@@ -130,10 +131,10 @@ export function putDetailsByRollno(
     abc_id: string,
     pwbd_certificate: string,
     photo: string,
-    last_modified: string,
     program_type: string,
     password: string,
     year_of_admission: string,
+    last_modified: string,
 ): Promise<QueryResult<any>> {
     console.log("here");
     return new Promise((resolve, reject) => {
@@ -159,8 +160,10 @@ export function putDetailsByRollno(
         pool.query(
             updateDetailsByRollno,
             [
+                rollno,
                 program,
                 semester,
+                date_of_birth,
                 phone,
                 campus,
                 emailid,
@@ -173,11 +176,10 @@ export function putDetailsByRollno(
                 abc_id,
                 pwbd_certificate,
                 photo,
-                last_modified,
                 program_type,
                 password,
-                rollno,
-                year_of_admission
+                year_of_admission,
+                last_modified,
             ],
             (error, results) => {
                 if (error) {

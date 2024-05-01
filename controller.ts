@@ -123,10 +123,11 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       program_type,
       password,
       rollno,
-      year_of_admission
+      year_of_admission,
+      date_of_birth
     } = req.body;
     console.log(req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password,year_of_admission).then((results)=>{
+    updateDetails(date_of_birth,rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password,year_of_admission).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -152,6 +153,7 @@ function signup(req: Request, res: Response):void {
       guardian,
       aadhar,
       abc_id,
+      date_of_birth,
       pwbd_certificate,
       photo,
       program_type,
@@ -160,7 +162,7 @@ function signup(req: Request, res: Response):void {
       year_of_admission
     } = req.body;
     console.log(101,req.body)
-    updateDetails(rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type,password,year_of_admission).then((results)=>{
+    updateDetails(rollno, program, semester,date_of_birth, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type,password,year_of_admission).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});
@@ -207,7 +209,7 @@ const fetchCoursesByRollNo = (req: Request, res: Response):void => {
     const rollno: string = req.headers.rollno as string;
     console.log("rolllno courses: ",rollno);
     fetchTheCoursesRollNo(rollno). then((results) => {
-      console.log("results: ", results)
+      // console.log("results: ", results)
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server error roll 2");
@@ -221,7 +223,7 @@ const fetchCoursesByRollNo = (req: Request, res: Response):void => {
 const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
   try{
     const rollno: string = req.headers.rollno as string;
-    console.log("exam registration: ", rollno)
+    // console.log("exam registration: ", rollno)
     fetchTheExamRegistration(rollno).then((results) => {
       
       res.status(200).send(results);
@@ -253,8 +255,10 @@ const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):
     const semester: number = parseInt(req.headers.semester as string);
     const program: string = req.headers.program as string;
     const campus: string = req.headers.campus as string;
-    const program_type:string = req.headers.program_type as string;
-    fetchTheExamRegistrationProgramAndSemester(campus, program_type, program, semester).then((results) => {
+    const programtype:string = req.headers.programtype as string;
+
+    console.log("program_type: ", req.headers)
+    fetchTheExamRegistrationProgramAndSemester(campus, programtype, program, semester).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("Internal server error fetch exam registeration program and semester 2");
@@ -282,6 +286,7 @@ const addUsers = (req: Request, res: Response): void => {
 const addExamRegisterations = (req: Request, res: Response): void => {
   try {
     const registeration = req.body;
+    console.log("registration: ", req.body)
     insertTheExamRegisterations(registeration).then((results) => {
       res.status(200).send("Successfully inserted!");
     }).catch((error) => {
