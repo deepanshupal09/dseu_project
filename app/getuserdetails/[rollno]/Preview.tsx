@@ -63,6 +63,7 @@ export default function PreviewPage({
   const [key, setKey] = useState(Date.now()); // Key to force re-render of Image component
   const [confirmSubmission, setConfirmSubmission] = useState(false);
   const [photoPath, setPhotoPath] = useState(photo+'?'+Date.now()); // Default photo path in state
+  const [certificatePath, setCertificatePath] = useState(pwbdCertificate+'?'+Date.now());
   // const handleImageUpdate = () => {
   //   setPhotoPath(path + '?' + Date.now());
   // };
@@ -242,8 +243,9 @@ export default function PreviewPage({
               {pwbdCertificate !== "" ? (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={pwbdCertificate}
+                  src={certificatePath}
                   alt="User"
+                  key={key}
                 />
               ):"N.A"}
             </td>
