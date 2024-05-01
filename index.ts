@@ -50,12 +50,12 @@ app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
     }
     const newFileName = req.headers.name as string;
     const newFilePath = path.resolve(
-        __dirname,
-        `../../../dseu_project/public/uploads/${newFileName}.jpg`
+        '/home/dseu/Desktop/uploads/',
+        `${newFileName}.jpg`
     );
     fs.renameSync(req.file.path, newFilePath);
     res.setHeader("New-File-Name", newFileName);
-    res.send({path: `/uploads/${newFileName}.jpg`});
+    res.send({path: `/image/${newFileName}.jpg`});
 });
 
 // Other routes
