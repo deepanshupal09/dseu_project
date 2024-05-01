@@ -62,6 +62,7 @@ app.post("/signup", controller.signup);
 app.post("/addUsers", controller.addUsers);
 // app.get("/getUserByRollno", controller.getUserByRollno);
 app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
+app.get("/fetchCoursesBySemester", controller.fetchCoursesBySemester);
 app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
 app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 app.get("/sendEmail", controller.sendEmail);

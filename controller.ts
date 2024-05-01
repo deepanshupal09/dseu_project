@@ -189,8 +189,9 @@ const fetchCoursesBySemester = (req: Request, res: Response):void => {
   try{
     const semester: number = parseInt(req.headers.semester as string);
     const program: string = req.headers.program as string;
+    const campus: string = req.headers.campus as string;
     console.log("semester , course_code :", semester, program);
-    fetchTheCourses(semester, program).then((results) => {
+    fetchTheCourses(campus, program, semester).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server 2");

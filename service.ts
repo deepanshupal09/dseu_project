@@ -231,11 +231,12 @@ export function fetchUserByRollno(rollno: string): Promise<any> {
 // }
 
 export function fetchTheCourses(
-    semester: number,
-    program: string
+    campus: string,
+    program: string,
+    semester: number
 ): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchCourses(semester, program)
+        fetchCourses(campus, program, semester)
             .then((results) => {
                 resolve(results.rows);
             })

@@ -22,7 +22,7 @@ import {
     updatePasswordByOtp,
     fetchStudentByProgramAndSemester,
     fetchStudentByCampusAndProgram,
-    getPasswordByEmailId
+    getPasswordByEmailId,
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -218,13 +218,14 @@ export function fetchUser(rollno: string): Promise<QueryResult<any>> {
 // }
 
 export function fetchCourses(
-    semester: number,
-    program: string
+    campus: string,
+    program: string,
+    semester: number
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(
             fetchCoursesBySemester,
-            [semester, program],
+            [campus, program, semester],
             (error, results) => {
                 if (error) {
                     console.log("fetch courses error: ", error);
@@ -236,6 +237,8 @@ export function fetchCourses(
         );
     });
 }
+
+
 
 export function fetchCoursesRollNo(rollno: string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {

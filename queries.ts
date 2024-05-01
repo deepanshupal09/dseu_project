@@ -35,9 +35,9 @@ export const pushTokenQuery: string =
 // export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
 
 export const fetchCoursesBySemester: string = `
-  SELECT sc.course_code, sc.program, c.course_name, sc.semester FROM semester_course sc
+  SELECT c.course_name FROM semester_course sc
   JOIN courses c ON sc.course_code = c.course_code
-  WHERE sc.semester=$1 AND sc.program=$2;
+  WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
 `;
 
 export const fetchCoursesByRollNo: string = `
@@ -78,6 +78,12 @@ export const fetchExamRegistrationByProgramAndSemester: string = `
   JOIN users u ON er.rollno = u.rollno
   where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4;  
 `;
+
+// export const fetchCourseByProgramAndSemester: string =`
+//   SELECT c.course_name FROM courses c
+//   JOIN semester_course sc ON sc.course_code = c.course_code
+//   where sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
+// `;
 
 
 export const fetchProgramByProgramType: string = `
