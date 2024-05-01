@@ -14,8 +14,9 @@ import { login, signup } from "@/app/actions/api";
 import { deleteSignupCookie } from "@/app/actions/cookie";
 import Final from "./Final";
 import PreviewPage from "./Preview";
+import { useParams } from "next/navigation";
 
-export default function Home() {
+export default function Home({params}:{params: {rollno: string}}) {
   const [step, setStep] = useState<number>(1);
   const [newpass, setNewpass] = useState<string>("");
   const [confirm, setConfirm] = useState<string>("");
@@ -48,9 +49,12 @@ export default function Home() {
   const [singleParentGuardianName, setSingleParentGuardianName] =
     useState<string>("");
 
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const router = useRouter();
-  const rollno = pathname.split("/")[2];
+  const rollno = params.rollno;
+  // const rollno = pathname.split("/")[2];
+  // const params = useParams();
+  // const rollno = params.rollno;
 
   const handleBackToLogin = () => {
     deleteSignupCookie();
@@ -98,7 +102,7 @@ export default function Home() {
         program_type: string;
         photo: string;
         pwbd_certificate: string;
-        dateOfBirth: string;
+        date_of_birth: string;
         aadhar: string;
         abc_id: string;
         year_of_admission: number;
@@ -119,7 +123,7 @@ export default function Home() {
         program_type: programType,
         photo: photo,
         pwbd_certificate: pwbdCertificate,
-        dateOfBirth: dateOfBirth,
+        date_of_birth: dateOfBirth,
         aadhar: aadharCard,
         abc_id: abcId,
         year_of_admission: yearOfAdmission,
@@ -277,54 +281,54 @@ export default function Home() {
       "Diploma in Civil Engineering - Part Time",
     ],
     Undergraduate: [
-      "B.A. in Aesthetics & Beauty Therapy",
-      "B.Sc. in Aesthetics & Beauty Therapy",
-      "Bachelor of Computer Application",
-      "BBA in Banking, Financial Services and Insurance",
-      "B.Com. in Bussiness Process Management",
-      "BBA in Operation & Bussiness Process Management",
-      "B.Sc. in Data Analytics",
-      "B.A. in Digital Media and Design",
-      "BMS in E-Commerce Operations",
-      "BBA in Facilities and Hygiene Management",
-      "BMS in Land Transportation",
-      "B.Sc. in Medical Laboratory Technology",
-      "BBA in Retail Management",
-      "B.A. in Spanish",
-      "BBA in Automotive Retail Management",
-      "BBA in Hospital Management",
-      "BBA in Innovation and Entrepreneurship",
-      "Bachelors in Optometry",
-      "Bachelors in Library Science",
-      "B.Sc. in Dialysis Technology",
-      "B.Sc. in Emergency Medical Technology",
-      "B.Tech. in Mechanical and Automation Engineering",
-      "B.Tech. in Electronics & Communication Engineering",
-      "B.Tech. in Computer Science Engineering",
-      "B.Tech. in Mechanical Engineering",
-      "B.Tech. in Tool Engineering",
-      "B.Tech. in Mechatronics Engineering",
+      "Bachelor of Arts (Aesthetics & Beauty Therapy)",
+      "Bachelor of Science (Aesthetics & Beauty Therapy)",
+      "Bachelor of Computer Applications",
+      "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
+      "Bachelor of Commerce (Business Process Management)",
+      "Bachelor of Business Administration (Operation & Business Process Management)",
+      "Bachelor of Science (Data Analytics)",
+      "Bachelor of Arts (Digital Media and Design)",
+      "Bachelor of Management Studies (E-Commerce Operations)",
+      "Bachelor of Business Administration (Facilities and Hygiene Management)",
+      "Bachelor of Management Studies (Land Transportation)",
+      "Bachelor of Science (Medical Laboratory Technology)",
+      "Bachelor of Business Administration (Retail Management)",
+      "Bachelor of Arts (Spanish)",
+      "Bachelor of Business Administration (Automotive Retail Management)",
+      "Bachelor of Business Administration (Hospital Management)",
+      "Bachelor of Business Administration (Innovation and Entrepreneurship)",
+      "Bachelor of Optometry",
+      "Bachelor in Library Sciences",
+      "Bachelor of Science (Dialysis Technology)",
+      "Bachelor of Science (Emergency Medical Technology)",
+      "Bachelor of Technology (Mechanical and Automation Engineering)",
+      "Bachelor of Technology (Electronics & Communication Engineering)",
+      "Bachelor of Technology (Computer Science Engineering)",
+      "Bachelor of Technology (Mechanical Engineering)",
+      "Bachelor of Technology (Tool Engineering)",
+      "Bachelor of Technology (Mechatronics Engineering)",
     ],
     PostGraduate: [
-      "Masters in Computer Application",
-      "M.Tech. in Mechanical Engineering",
-      "M.Tech. in Tool Engineering",
-      "M.Tech. in Computer Science Engineering - AI & ML",
-      "M.Tech. in Electronics & Communication Engineering - IOT",
-      "M. Tech in Mechanical Engineering - THERMAL/PRODUCTION/DESIGN)",
-      
-      "M.Sc. in Medical Laboratory Sciences",
+      "Master of Computer Applications",
+      "Master of Technology (Mechanical Engineering)",
+      "Master of Technology (Tool Engineering)",
+      "Master of Technology (Computer Science Engineering - AI & ML)",
+      "Master of Technology (Electronics & Communication Engineering - IOT)",
+      "Master of Technology (Mechanical Engineering - Thermal/Production/Design)",
+      "Master of Science (Medical Laboratory Sciences)",
     ],
     Doctorate: [
-      "Ph. D. in Computer Science and Engineering",
-      "Ph. D. in Computer Application",
-      "Ph. D. in Mechanical Engineering/ Allied Branches",
-      "Ph. D. in Electronics and Communication Engineering/ Allied Branches",
+      "Doctor of Philosophy (Computer Science and Engineering)",
+      "Doctor of Philosophy (Computer Application)",
+      "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
+      "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
     ],
     Certificate: [
-      "Certificate Course in Modern Offcie Management & Secreterial Practice",
+      "Certificate Course in Modern Office Management & Secretarial Practice",
     ],
   };
+  
 
   const programTypeList = [
     "Diploma",

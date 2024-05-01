@@ -12,8 +12,6 @@ interface User {
   campus: string;
 }
 
-
-
 export default function Home() {
   const [selected, setSelected] = useState(0);
   const options = ["Dashboard", "Registration Chart", "Admit Card", "Query"];
