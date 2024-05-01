@@ -8,18 +8,99 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
 
+interface ProgramList {
+    [key: string]: string[];
+  }
+  
 
 export default function Registration () {
     const [selected, setSelected] = useState(0);
     const options = ["Dashboard", "Registration Chart", "Admit Card", "Query"];
-  
-    const [selectedProgramCategory, setSelectedProgramCategory] = useState("All");
-    const [selectedProgram, setSelectedProgram] = useState("All");
-    const [selectedSemester, setSelectedSemester] = useState("All");
 
-    const programCategories = ["UG", "PG", "Diploma", "All"];
-    const programs = ["Btech in CSE", "Btech in MAE", "Btech in ECE", "All"];
-    const semesters = ["2", "4", "6", "All"];
+  
+    const [selectedProgramCategory, setSelectedProgramCategory] = useState<string>("Undergraduate");
+    const [selectedProgram, setSelectedProgram] = useState<string>("");
+    const [selectedSemester, setSelectedSemester] = useState<string>("");
+    const programListByType:ProgramList = {
+        Diploma: [
+          "Diploma in Applied Arts",
+          "Diploma in Architecture",
+          "Diploma in Automobile Engineering",
+          "Diploma in Chemical Engineering",
+          "Diploma in Civil Engineering",
+          "Diploma in Computer Engineering",
+          "Diploma in Cosmetology & Health",
+          "Diploma in Electrical Engineering",
+          "Diploma in Electronic Engineering",
+          "Diploma in Fashion Design",
+          "Diploma in Fashion Design and Garment Technology",
+          "Diploma in Interior Design",
+          "Diploma in Mechanical Engineering",
+          "Diploma in Pharamacy",
+          "Diploma in Printing Technology",
+          "Diploma in Tool and Die Making",
+          "Diploma in Artificial Intelligence and Machine Learning",
+          "Diploma in Robotic and Process Automation",
+          "Diploma in Electical Engineering - Part Time",
+          "Diploma in Mechanical Engineering - Part Time",
+          "Diploma in Automobile Engineering - Part Time",
+          "Diploma in Civil Engineering - Part Time",
+        ],
+        Undergraduate: [
+          "Bachelor of Arts (Aesthetics & Beauty Therapy)",
+          "Bachelor of Science (Aesthetics & Beauty Therapy)",
+          "Bachelor of Computer Applications",
+          "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
+          "Bachelor of Commerce (Business Process Management)",
+          "Bachelor of Business Administration (Operation & Business Process Management)",
+          "Bachelor of Science (Data Analytics)",
+          "Bachelor of Arts (Digital Media and Design)",
+          "Bachelor of Management Studies (E-Commerce Operations)",
+          "Bachelor of Business Administration (Facilities and Hygiene Management)",
+          "Bachelor of Management Studies (Land Transportation)",
+          "Bachelor of Science (Medical Laboratory Technology)",
+          "Bachelor of Business Administration (Retail Management)",
+          "Bachelor of Arts (Spanish)",
+          "Bachelor of Business Administration (Automotive Retail Management)",
+          "Bachelor of Business Administration (Hospital Management)",
+          "Bachelor of Business Administration (Innovation and Entrepreneurship)",
+          "Bachelor of Optometry",
+          "Bachelor in Library Sciences",
+          "Bachelor of Science (Dialysis Technology)",
+          "Bachelor of Science (Emergency Medical Technology)",
+          "Bachelor of Technology (Mechanical and Automation Engineering)",
+          "Bachelor of Technology (Electronics & Communication Engineering)",
+          "Bachelor of Technology (Computer Science Engineering)",
+          "Bachelor of Technology (Mechanical Engineering)",
+          "Bachelor of Technology (Tool Engineering)",
+          "Bachelor of Technology (Mechatronics Engineering)",
+        ],
+        PostGraduate: [
+          "Master of Computer Applications",
+          "Master of Technology (Mechanical Engineering)",
+          "Master of Technology (Tool Engineering)",
+          "Master of Technology (Computer Science Engineering - AI & ML)",
+          "Master of Technology (Electronics & Communication Engineering - IOT)",
+          "Master of Technology (Mechanical Engineering - Thermal/Production/Design)",
+          "Master of Science (Medical Laboratory Sciences)",
+        ],
+        Doctorate: [
+          "Doctor of Philosophy (Computer Science and Engineering)",
+          "Doctor of Philosophy (Computer Application)",
+          "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
+          "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
+        ],
+        Certificate: [
+          "Certificate Course in Modern Office Management & Secretarial Practice",
+        ],
+      };
+
+      
+      
+
+    const programCategories = ["Undergraduate", "PostGraduate", "Diploma", "Doctorate","Certificate"];
+    // const programs = ["Btech in CSE", "Btech in MAE", "Btech in ECE"];
+    const semesters = ["2", "4", "6"];
 
     const handleApplyFilters = () => {
     };
@@ -71,13 +152,27 @@ export default function Registration () {
                             label="Select Program"
                             onChange={handleChangeProgram}
                         >
-                            {programs.map((program, index) => (
+                            {programListByType[selectedProgramCategory].map((program, index) => (
                                 <MenuItem key={index} value={program}>{program}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                     <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
                         <InputLabel id="semester-label">Semester</InputLabel>
+                        <Select
+                            labelId="semester-label"
+                            id="semester"
+                            value={selectedSemester}
+                            label="Semester"
+                            onChange={handleChangeSemester}
+                        >
+                            {semesters.map((semester, index) => (
+                                <MenuItem key={index} value={semester}>{semester}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
+                        <InputLabel id="semester-label">Course</InputLabel>
                         <Select
                             labelId="semester-label"
                             id="semester"

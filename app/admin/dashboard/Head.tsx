@@ -24,7 +24,7 @@ export default function Head({ username }: Props) {
   }
   return (
     <>
-      <div className="bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2 w-full absolute top-0 shadow-2xl shadow-slate-200 ">
+      <div className="fixed left-0 top-0  bg-white z-50 h-[60px] py-2 px-4 flex justify-between border-2 w-full  shadow-2xl shadow-slate-200 ">
         <div className="flex items-center space-x-2">
          {" "}<span className="text-xl">DSEU Exam Portal </span>
         </div>

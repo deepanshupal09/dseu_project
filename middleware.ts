@@ -22,8 +22,11 @@ export default async function middleware(req: NextRequest) {
   }
 
 
-  if ((path === "/admin" || path==="/") && (adminCookie||cookie)) {
+  if ((path === "/admin" || path === "/") && adminCookie) {
     return NextResponse.redirect(new URL("/admin/dashboard",req.nextUrl)) 
+  }
+  if ((path === "/" || path==="/admin")&& cookie) {
+    return NextResponse.redirect(new URL("/dashboard", req.nextUrl))
   }
 
   if (isProtectedRoute && !cookie) {
