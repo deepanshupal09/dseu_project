@@ -46,12 +46,15 @@ export interface StudentDetails {
 
 export default function Home() {
   const [user, setUser] = useState<StudentDetails | null>(null);
+  const [photoPath, setPhotoPath] = useState(""); // Default photo path in state
+
 
   useEffect(() => {
     getAuth().then((auth) => {
       const temp = parseJwt(auth?.value as string);
       console.log("user: ", temp.user);
       setUser(temp.user);
+      setPhotoPath(temp.user.photo+'?'+Date.now())
     });
   }, []);
 
@@ -69,6 +72,7 @@ export default function Home() {
             style={{ width: 50, height: 50, borderRadius: "50%" }}
             alt="user"
             src={user?.photo}
+            key={user?.rollno}
           />
 
           <div>
