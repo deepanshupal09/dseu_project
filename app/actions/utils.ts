@@ -1,6 +1,7 @@
 
 import bcrypt from 'bcryptjs';
 
+
 export function parseJwt(token: string | undefined) {
     if (!token || token === undefined || token.split('.').length<2 ) { return; }
     const base64Url = token.split('.')[1];
@@ -15,3 +16,4 @@ export function hashPassword(password: string) {
     var hash = bcrypt.hashSync(password, salt);;
     return hash;
 }
+

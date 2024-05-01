@@ -225,3 +225,35 @@ export async function loginAdmin(email: string, password: string) {
 }
 
 
+export async function fetchExamRegistrationByProgramAndSemester(token:string ,campus: string, program_type: string, program:string, semester:string) {
+  try {
+    console.log("campus ",program_type);
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+          campus: campus,
+          programType: program_type,
+          program: program,
+          semester: semester
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
