@@ -55,12 +55,7 @@ export const fetchCoursesByRollNo: string = `
   FROM semester_courses sc;
 `;
 
-// export const fetchExamRegistrationByRollNo: string = `
-//   SELECT er.rollno, u.semester ,c.course_name, er.course_code FROM exam_registeration er
-//   JOIN courses c ON er.course_code = c.course_code
-//   JOIN users u ON er.rollno = u.rollno
-//   WHERE er.rollno=$1;
-// `;
+
 export const fetchExamRegistrationByRollNo: string = `
     SELECT er.course_code, c.course_name, er.last_modified, sc.course_type
     FROM exam_registeration er 
