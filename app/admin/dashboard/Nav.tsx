@@ -32,7 +32,7 @@ export default function Nav() {
               {true && ( 
                 <div className="flex flex-row items-center space-x-7 bg-white p-4 shadow-lg  ">
                   {options.map((option, index) => {
-                    const path = `/${option.toLowerCase().replace(/\s+/g, '-')}`;
+                    const path = `/admin/${option.toLowerCase().replace(/\s+/g, '-')}`;
                     return (
                       <a
                         key={index}
