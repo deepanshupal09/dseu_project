@@ -126,7 +126,7 @@ export default function PreviewPage({
   };
 
   return (
-    <div className="p-10 w-[80vw] max-md:w-[100vw] bg-white shadow-md rounded-lg mx-auto">
+    <div className="md:p-10 w-[80vw] max-md:w-[100vw] bg-white md:shadow-md md:rounded-lg md:mx-auto">
       <h2 className="text-2xl w-full font-bold  mt-12 text-left m-4">
         Preview Your Information
       </h2>
@@ -138,13 +138,13 @@ export default function PreviewPage({
         <tbody className="divide-y divide-gray-200">
           
           <tr>
-            <td className="px-6 py-4 font-semibold">Photo:</td>
-            <td className="px-6 py-4">
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Photo:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">
               {photo && (
                 <img
                   src={photoPath}
                   // width={96}
-                  className="w-24 h-24 object-cover"
+                  className="w-24 max-md:w-12 max-md:h-12 h-24 object-cover"
                   alt="User"
                   key={key}
                 />
@@ -158,8 +158,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Roll Number:</td>
-            <td className="px-6 py-4">{rollNo}</td>
+            <td className="md:px-6 max-md:pl-2 py-4  font-semibold">Roll Number:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{rollNo}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.rollNo}
@@ -168,8 +168,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Email:</td>
-            <td className="px-6 py-4">{email}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Email:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{email}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.email}
@@ -178,8 +178,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Gender:</td>
-            <td className="px-6 py-4">{gender}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Gender:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{gender}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.gender}
@@ -188,8 +188,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Phone:</td>
-            <td className="px-6 py-4">{phone}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Phone:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{phone}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.phone}
@@ -198,8 +198,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Alternate Phone:</td>
-            <td className="px-6 py-4">{altPhone===""?"N.A":altPhone}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Alternate Phone:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{altPhone===""?"N.A":altPhone}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.altPhone}
@@ -208,8 +208,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Date of Birth:</td>
-            <td className="px-6 py-4">{dateOfBirth}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Date of Birth:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{dateOfBirth}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.dateOfBirth}
@@ -218,8 +218,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Aadhar Card:</td>
-            <td className="px-6 py-4">{aadharCard}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Aadhar Card:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{aadharCard}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.aadharCard}
@@ -228,8 +228,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">ABC ID:</td>
-            <td className="px-6 py-4">{abcId}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">ABC ID:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{abcId}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.abcId}
@@ -238,8 +238,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">PwBD Certificate:</td>
-            <td className="px-6 py-4">
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">PwBD Certificate:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">
               {pwbdCertificate !== "" ? (
                 <img
                   className="w-24 h-24 object-cover"
@@ -261,8 +261,8 @@ export default function PreviewPage({
           {!singleParentGuardian && (
             <>
               <tr>
-                <td className="px-6 py-4 font-semibold">{"Father's Name: "}</td>
-                <td className="px-6 py-4">{fatherName}</td>
+                <td className="md:px-6 max-md:pl-2 py-4 font-semibold">{"Father's Name: "}</td>
+                <td className="md:px-6 max-md:pl-2 py-4">{fatherName}</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.fatherName}
@@ -271,8 +271,8 @@ export default function PreviewPage({
                 </td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold">{"Mother's Name: "}</td>
-                <td className="px-6 py-4">{motherName}</td>
+                <td className="md:px-6 max-md:pl-2 py-4 font-semibold">{"Mother's Name: "}</td>
+                <td className="md:px-6 max-md:pl-2 py-4">{motherName}</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.motherName}
@@ -285,10 +285,10 @@ export default function PreviewPage({
           {singleParentGuardian && (
             <>
               <tr>
-                <td className="px-6 py-4 font-semibold">
+                <td className="md:px-6 max-md:pl-2 py-4 font-semibold">
                   {"Parent/Guardian's Name: "}
                 </td>
-                <td className="px-6 py-4">{singleParentGuardianName}</td>
+                <td className="md:px-6 max-md:pl-2 py-4">{singleParentGuardianName}</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.singleParentGuardianName}
@@ -299,10 +299,10 @@ export default function PreviewPage({
                 </td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold">
+                <td className="md:px-6 max-md:pl-2 py-4 font-semibold">
                   {"Single Parent/Guardian: "}
                 </td>
-                <td className="px-6 py-4">Yes</td>
+                <td className="md:px-6 max-md:pl-2 py-4">Yes</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.singleParentGuardian}
@@ -311,8 +311,8 @@ export default function PreviewPage({
                 </td>
               </tr>
               <tr>
-                <td className="px-6 py-4 font-semibold">{"Parent's Relation: "}</td>
-                <td className="px-6 py-4">{parentRelation}</td>
+                <td className="md:px-6 max-md:pl-2 py-4 font-semibold">{"Parent's Relation: "}</td>
+                <td className="md:px-6 max-md:pl-2 py-4">{parentRelation}</td>
                 <td className="px-2 py-4">
                   <Switch
                     checked={toggles.parentRelation}
@@ -323,8 +323,8 @@ export default function PreviewPage({
             </>
           )}
                     <tr>
-            <td className="px-6 py-4 font-semibold">Campus:</td>
-            <td className="px-6 py-4">{campus}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Campus:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{campus}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.campus}
@@ -334,8 +334,8 @@ export default function PreviewPage({
           </tr>
                    
           <tr>
-            <td className="px-6 py-4 font-semibold">Program Category:</td>
-            <td className="px-6 py-4">{programCategory}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Program Category:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{programCategory}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.programCategory}
@@ -344,8 +344,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Program:</td>
-            <td className="px-6 py-4">{program}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Program:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{program}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.program}
@@ -355,8 +355,8 @@ export default function PreviewPage({
           </tr>
 
           <tr>
-            <td className="px-6 py-4 font-semibold">Year of Admission:</td>
-            <td className="px-6 py-4">{yearOfAdmission.toString()}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Year of Admission:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{yearOfAdmission.toString()}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.yearOfAdmission}
@@ -365,8 +365,8 @@ export default function PreviewPage({
             </td>
           </tr>
           <tr>
-            <td className="px-6 py-4 font-semibold">Semester:</td>
-            <td className="px-6 py-4">{semester}</td>
+            <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Semester:</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{semester}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.semester}

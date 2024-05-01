@@ -56,7 +56,7 @@ const IDDetails: React.FC<IDDetailsProps> = ({
                 e.preventDefault();
                 handleNext();
             }}
-            className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px] max-[450px] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 w-[460px] my-10"
+            className="flex flex-col bg-white rounded-3xl shadow-2xl max-[450px]:w-[100vw] max-[450px]:h-[100vh] p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:backdrop-blur-0 max-[450px]:rounded-none  my-10"
         >
             <Typography variant="h4" gutterBottom>
                 ID Details

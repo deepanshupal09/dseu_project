@@ -30,8 +30,8 @@ export default function Home() {
         <h1 className="text-3xl flex items-center space-x-4 text-white font-bold mt-4"><CampaignIcon className="scale-150" /> <div>Facing issue ??</div> </h1>
         <ul className="text-white font-normal">
             <li  className="my-6">Contact authorities and tell your problems.</li>
-            <li className="my-6">Email: abcd@dseu.ac.in</li>
-            <li className="my-6">Contact: +912323232323</li>
+            <li className="my-6">Email: dseu-exam@dseu.ac.in</li>
+            <li className="my-6">Contact: +919540167797</li>
           </ul>
       </div>
     </>
