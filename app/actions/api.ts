@@ -97,6 +97,7 @@ export async function fetchExamRegisterations(rollno: string, token: string) {
       {
         method: "GET",
         mode: "cors",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           rollno: rollno,
@@ -125,6 +126,7 @@ export async function sendEmail(rollno: string) {
       {
         method: "GET",
         mode: "cors",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           rollno: rollno,
@@ -151,6 +153,7 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
       {
         method: "GET",
         mode: "cors",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           rollno: rollno,
@@ -177,6 +180,7 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
       {
         method: "GET",
         mode: "cors",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           rollno: rollno,
@@ -204,6 +208,7 @@ export async function loginAdmin(email: string, password: string) {
       {
         method: "GET",
         mode: "cors",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           emailid: email,

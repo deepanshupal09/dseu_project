@@ -34,12 +34,11 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
   setPhoto,
   setPwbdCertificate,
   setIsPwbd,
-  photoObject,
-  setPhotoObject,
-  certificateObject,
-  setCertificateObject,
   rollno,
 }) => {
+
+  const [photoObject, setPhotoObject] = useState<File | null>(null);
+  const [certificateObject, setCertificateObject] = useState<File | null>(null);
 
     useEffect(() => {
         setPhoto("");

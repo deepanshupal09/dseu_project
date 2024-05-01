@@ -8,6 +8,7 @@ import {
   DialogActions,
   Switch,
 } from "@mui/material";
+import dynamic from "next/dynamic";
 
 interface PreviewProps {
   rollNo: string;
@@ -58,7 +59,14 @@ export default function PreviewPage({
   onPrevious,
   onSubmit,
 }: PreviewProps) {
+  // const [date,setDate] = useState((new Date()).getTime());
+  const [key, setKey] = useState(Date.now()); // Key to force re-render of Image component
   const [confirmSubmission, setConfirmSubmission] = useState(false);
+  const [photoPath, setPhotoPath] = useState(photo+'?'+Date.now()); // Default photo path in state
+  const [certificatePath, setCertificatePath] = useState(pwbdCertificate+'?'+Date.now());
+  // const handleImageUpdate = () => {
+  //   setPhotoPath(path + '?' + Date.now());
+  // };
   const [toggles, setToggles] = useState({
     rollNo: false,
     email: false,
@@ -81,6 +89,13 @@ export default function PreviewPage({
     photo: false,
     pwbdCertificate: false,
   });
+  const Image = dynamic(() => import('next/image'));
+
+  // useEffect(()=>{
+  //   setHelp(help+1);
+  //   console.log("date: ", date);
+  //   setDate((new Date()).getTime())
+  // },[help])
   useEffect(() => {
     if (!singleParentGuardian) {
       setToggles({
@@ -127,9 +142,11 @@ export default function PreviewPage({
             <td className="px-6 py-4">
               {photo && (
                 <img
+                  src={photoPath}
+                  // width={96}
                   className="w-24 h-24 object-cover"
-                  src={photo}
                   alt="User"
+                  key={key}
                 />
               )}
             </td>
@@ -226,8 +243,9 @@ export default function PreviewPage({
               {pwbdCertificate !== "" ? (
                 <img
                   className="w-24 h-24 object-cover"
-                  src={pwbdCertificate}
+                  src={certificatePath}
                   alt="User"
+                  key={key}
                 />
               ):"N.A"}
             </td>
