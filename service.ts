@@ -140,6 +140,7 @@ export async function updateDetails(
     rollno: string,
     program: string,
     semester: number,
+    date_of_birth: string,
     phone: string,
     campus: string,
     emailid: string,
@@ -165,11 +166,12 @@ export async function updateDetails(
 
         if (passwordResult.rows.length > 0) {
             const hash = await bcrypt.hash(password, 10);
-
+            
             const results = await putDetailsByRollno(
                 rollno,
                 program,
                 semester,
+                date_of_birth,
                 phone,
                 campus,
                 emailid,
@@ -182,10 +184,10 @@ export async function updateDetails(
                 abc_id,
                 pwbd_certificate, // Use the uploaded link if available, otherwise use the original value
                 photo, // Use the uploaded link if available, otherwise use the original value
-                last_modified,
                 program_type,
                 hash,
-                year_of_admission
+                year_of_admission,
+                last_modified,
             );
             return "successfully updated!";
         } else {
@@ -303,6 +305,7 @@ export function fetchTheExamRegistrationProgramAndSemester(
         fetchExamRegistrationProgramAndSemester(campus, program_type ,program, semester)
             .then((result) => {
                 const data = result.rows;
+                // console.log("data: ", data)
                 let students:any = {};
                 data.forEach((student)=>{
                     const {rollno, name, dob, photo, program, semester, course_code} = student;
