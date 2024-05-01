@@ -10,6 +10,7 @@ export async function uploadFile(file: File, fileName: string) {
         method: "POST",
         body: formData,
         mode: "cors",
+        cache: "no-store",
         headers: { name: fileName },
         // No need to set headers manually when using FormData
       });
