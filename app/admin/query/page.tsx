@@ -18,10 +18,8 @@ import {
   GridColDef,
   GridCsvExportMenuItem,
   GridCsvExportOptions,
-  GridPrintExportMenuItem,
   GridToolbarContainer,
   GridToolbarContainerProps,
-  GridToolbarExport,
   GridToolbarExportContainer,
 } from "@mui/x-data-grid";
 
@@ -62,11 +60,7 @@ export default function Registration() {
       </GridToolbarContainer>
     );
   }
-  //   const GridToolbarExport = ({ csvOptions }) => (
-  //     <GridToolbarExportContainer >
-  //       <GridCsvExportMenuItem options={csvOptions} />
-  //     </GridToolbarExportContainer>
-  //   );
+
 
   const [selectedProgramCategory, setSelectedProgramCategory] =
     useState<string>("Undergraduate");
