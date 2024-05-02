@@ -14,9 +14,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {fetchExamRegistrationByProgramAndSemester} from '../../actions/api';
+
 import {getAuthAdmin} from '../../actions/cookie';
 import { parseJwt } from "@/app/actions/utils";
+import { fetchExamRegistrationByProgramAndSemester } from "@/app/actions/api";
+
+interface ProgramList {
+    [key: string]: string[];
+  }
 
 export interface Token{
     name:string,
@@ -34,6 +39,89 @@ interface Student {
     course_codes: string[];
 }
 
+const programListByType:ProgramList = {
+  Diploma: [
+    "Diploma in Applied Arts",
+    "Diploma in Architecture",
+    "Diploma in Automobile Engineering",
+    "Diploma in Chemical Engineering",
+    "Diploma in Civil Engineering",
+    "Diploma in Computer Engineering",
+    "Diploma in Cosmetology & Health",
+    "Diploma in Electrical Engineering",
+    "Diploma in Electronic Engineering",
+    "Diploma in Fashion Design",
+    "Diploma in Fashion Design and Garment Technology",
+    "Diploma in Interior Design",
+    "Diploma in Mechanical Engineering",
+    "Diploma in Pharamacy",
+    "Diploma in Printing Technology",
+    "Diploma in Tool and Die Making",
+    "Diploma in Artificial Intelligence and Machine Learning",
+    "Diploma in Robotic and Process Automation",
+    "Diploma in Electical Engineering - Part Time",
+    "Diploma in Mechanical Engineering - Part Time",
+    "Diploma in Automobile Engineering - Part Time",
+    "Diploma in Civil Engineering - Part Time",
+  ],
+  Undergraduate: [
+    "Bachelor of Arts (Aesthetics & Beauty Therapy)",
+    "Bachelor of Science (Aesthetics & Beauty Therapy)",
+    "Bachelor of Computer Applications",
+    "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
+    "Bachelor of Commerce (Business Process Management)",
+    "Bachelor of Business Administration (Operation & Business Process Management)",
+    "Bachelor of Science (Data Analytics)",
+    "Bachelor of Arts (Digital Media and Design)",
+    "Bachelor of Management Studies (E-Commerce Operations)",
+    "Bachelor of Business Administration (Facilities and Hygiene Management)",
+    "Bachelor of Management Studies (Land Transportation)",
+    "Bachelor of Science (Medical Laboratory Technology)",
+    "Bachelor of Business Administration (Retail Management)",
+    "Bachelor of Arts (Spanish)",
+    "Bachelor of Business Administration (Automotive Retail Management)",
+    "Bachelor of Business Administration (Hospital Management)",
+    "Bachelor of Business Administration (Innovation and Entrepreneurship)",
+    "Bachelor of Optometry",
+    "Bachelor in Library Sciences",
+    "Bachelor of Science (Dialysis Technology)",
+    "Bachelor of Science (Emergency Medical Technology)",
+    "Bachelor of Technology (Mechanical and Automation Engineering)",
+    "Bachelor of Technology (Electronics & Communication Engineering)",
+    "Bachelor of Technology (Computer Science Engineering)",
+    "Bachelor of Technology (Mechanical Engineering)",
+    "Bachelor of Technology (Tool Engineering)",
+    "Bachelor of Technology (Mechatronics Engineering)",
+  ],
+  PostGraduate: [
+    "Master of Computer Applications",
+    "Master of Technology (Mechanical Engineering)",
+    "Master of Technology (Tool Engineering)",
+    "Master of Technology (Computer Science Engineering - AI & ML)",
+    "Master of Technology (Electronics & Communication Engineering - IOT)",
+    "Master of Technology (Mechanical Engineering - Thermal/Production/Design)",
+    "Master of Science (Medical Laboratory Sciences)",
+  ],
+  Doctorate: [
+    "Doctor of Philosophy (Computer Science and Engineering)",
+    "Doctor of Philosophy (Computer Application)",
+    "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
+    "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
+  ],
+  Certificate: [
+    "Certificate Course in Modern Office Management & Secretarial Practice",
+  ],
+};
+
+const programTypeList = [
+  "Diploma",
+  "Undergraduate",
+  "PostGraduate",
+  "Doctorate",
+  "Certificate",
+];
+
+const semesterList = ["2", "4", "6"];
 
 export default function Registration() {
     const [selected, setSelected] = useState(0);
@@ -42,17 +130,9 @@ export default function Registration() {
     const [selectedProgram, setSelectedProgram] = useState("");
     const [selectedSemester, setSelectedSemester] = useState("");
     const [showTable, setShowTable] = useState(false);
-
     const [studentsData, setStudentsData] = useState<Student[]>([]); // State to store fetched student data
-    // const [courseCodes, setCourseCodes] = useState([]);
-
-    const programCategories = ["Undergraduate", "PG", "Diploma"];
-    const programs = ["B.Tech. in Computer Science Engineering", "Btech in MAE", "Btech in ECE"];
-    const semesters = ["2", "4", "6"];
     const [campus, setCampus] = useState("");
     const [token, setToken] = useState("");
-    
-
     
     useEffect(()=>{
         getAuthAdmin().then(async(t:any)=>{
@@ -80,23 +160,16 @@ export default function Registration() {
 
     const handleData = async () => {
         try {
+            console.log(campus,selectedProgram,selectedProgramCategory,selectedSemester);
             if(token){
-                const data = await fetchExamRegistrationByProgramAndSemester(token as string, campus, selectedProgramCategory, selectedProgram, selectedSemester);
+                const data:any = await fetchExamRegistrationByProgramAndSemester(token as string, campus, selectedProgramCategory, selectedProgram, selectedSemester);
                 setStudentsData(data); 
-                // console.log(studentsData);
                 console.log("campus:", campus);
             }
-            
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
-
-
-    // const [courseCodes, setCourseCodes] = useState([
-    //     "BT-HS301", "BT-CS-ES601", "BT-CS-ES602", "BT-CS-ES603", "BT-CS-PE606", "BT-CS-PE607","BT-OE604","BT-SM601","BT-AU601",
-    // ]);
-    
 
     const handleApplyFilters = () => {
         setShowTable(true);
@@ -135,7 +208,7 @@ export default function Registration() {
                             label="Program category"
                             onChange={handleChangeProgramCategory}
                         >
-                            {programCategories.map((category, index) => (
+                            {programTypeList.map((category, index) => (
                                 <MenuItem key={index} value={category}>{category}</MenuItem>
                             ))}
                         </Select>
@@ -149,7 +222,7 @@ export default function Registration() {
                             label="Select Program"
                             onChange={handleChangeProgram}
                         >
-                            {programs.map((program, index) => (
+                            {programListByType[selectedProgramCategory]?.map((program, index) => (
                                 <MenuItem key={index} value={program}>{program}</MenuItem>
                             ))}
                         </Select>
@@ -163,7 +236,7 @@ export default function Registration() {
                             label="Semester"
                             onChange={handleChangeSemester}
                         >
-                            {semesters.map((semester, index) => (
+                            {semesterList.map((semester, index) => (
                                 <MenuItem key={index} value={semester}>{semester}</MenuItem>
                             ))}
                         </Select>
@@ -196,9 +269,7 @@ export default function Registration() {
                                 {studentsData.map((student, index) => (
                                     <TableRow key={index} sx={{ }}>
                                         <TableCell align='center' component="th" scope="row" style={{ border: '1px solid black' }}>{index + 1}</TableCell>
-                                        {/* Fill name and roll number in Details column */}
                                         <TableCell align='center' style={{ border: '1px solid black' }}>{student.name}<br />{student.rollno}</TableCell>
-                                        {/* Add cells for course codes */}
                                         <TableCell style={{ border: '1px solid black' }}>
                                             <div className="flex flex-wrap p-2">
                                                 {student.course_codes.slice(0, 7).map((code, codeIndex) => (
@@ -215,7 +286,6 @@ export default function Registration() {
                                                 ))}
                                             </div>
                                         </TableCell>
-                                        {/* Add cell for signature */}
                                         <TableCell style={{ border: '1px solid black' }}></TableCell>
                                     </TableRow>
                                 ))}
@@ -228,5 +298,4 @@ export default function Registration() {
         </>
     );
 }
-
 
