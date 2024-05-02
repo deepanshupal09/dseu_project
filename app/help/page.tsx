@@ -28,11 +28,11 @@ export default function Home() {
       </div>
       <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[120px] max-sm:top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-4 sm:mx-12">
         <h1 className="text-3xl flex items-center space-x-4 text-white font-bold mt-4"><CampaignIcon className="scale-150" /> <div>Facing issue ??</div> </h1>
-        <ul className="text-white font-normal">
-            <li  className="my-6">Contact authorities and tell your problems.</li>
-            <li className="my-6">Email: dseu-exam@dseu.ac.in</li>
-            <li className="my-6">Contact: +919540167797</li>
-          </ul>
+        <ol className="text-white font-normal">
+            <li  className="my-6"> If {"there's"} any information that needs to be changed, kindly send an email to the campus director, who might then forward it to the COE.</li>
+            <li className="my-6">For any technical difficulties, please reach out to the following email: dseu-exam@dseu.ac.in </li>
+            {/* <li className="my-6">Contact: +919540167797</li> */}
+          </ol>
       </div>
     </>
   );

@@ -429,7 +429,7 @@ export default function Home() {
                       }}
                     />
                   }
-                  label="Register for Backlog Exams?"
+                  label="Register for Reappear Exams?"
                 />
               </FormGroup>
               {giveBacklogExams && (
@@ -567,7 +567,7 @@ export default function Home() {
             </ul>
           </div>
           <div>
-            <Typography variant="h6">Selected Backlogs:</Typography>
+            <Typography variant="h6">Selected Reappear Exams:</Typography>
             <ul>
               {selectedBacklogs.map((backlog, index) => (
                 <li key={index}>

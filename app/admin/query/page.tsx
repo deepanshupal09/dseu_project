@@ -426,7 +426,7 @@ export default function Registration() {
             rows={studentList}
             columns={columns}
             // pageSize={10}
-            // checkboxSelection
+            checkboxSelection
             // disableSelectionOnClick
             // headerClassName="header-center-align"
 
