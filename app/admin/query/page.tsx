@@ -210,6 +210,16 @@ export default function Registration() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(()=>{
+
+    if(selectedCourse) {
+      handleApplyFilters()
+    } else {
+      setStudentList([]);
+    }
+
+  },[selectedCourse])
+
   const handleApplyFilters = async () => {
     if (selectedCourse !== "") {
       const course_code = courseCodes.find(
@@ -339,15 +349,6 @@ export default function Registration() {
               ))}
             </Select>
           </FormControl>
-        </div>
-        <div className="flex justify-center">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleApplyFilters}
-          >
-            Apply
-          </Button>
         </div>
         <div></div>
         {/* Table */}
