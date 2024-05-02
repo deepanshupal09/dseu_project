@@ -5,9 +5,9 @@ export async function addUsers() {
 
   console.log("got to function")
     listOfLists.forEach(async (list:any) => {
-      console.log(list);
+      console.log(list[0]);
         try {
-            const res = await fetch("http://localhost:8000/addUsers", {
+            const res:any = await fetch("http://localhost:8001/addUsers", {
               method: "POST",
               mode: "cors",
               cache: "no-cache",
@@ -17,7 +17,7 @@ export async function addUsers() {
             },
             });
         
-            const data = await res.json();
+            const data:any = await res.json();
             console.log("response:", data); // Log the response
             return data;
           } catch (error) {
@@ -26,4 +26,5 @@ export async function addUsers() {
           }
     });
 }
+
 
