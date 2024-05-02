@@ -261,4 +261,61 @@ export async function fetchExamRegistrationByProgramAndSemester(token:string ,ca
   }
 }
 
+export async function fetchCoursesBySemester(token:string ,campus: string, program:string, semester:string) {
+  try {
+    // console.log("campus ",program_type);
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/admin/fetchCoursesBySemester",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+          campus: campus,
+          program: program,
+          semester: semester
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function fetchExamRegistrationByCourseCode(token:string ,course_code: string) {
+  try {
+    // console.log("campus ",program_type);
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+          coursecode: course_code
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 
