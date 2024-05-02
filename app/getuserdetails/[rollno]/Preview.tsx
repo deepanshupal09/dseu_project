@@ -9,6 +9,7 @@ import {
   Switch,
 } from "@mui/material";
 import dynamic from "next/dynamic";
+import { Checkbox } from "@mui/material";
 
 interface PreviewProps {
   rollNo: string;
@@ -64,6 +65,13 @@ export default function PreviewPage({
   const [confirmSubmission, setConfirmSubmission] = useState(false);
   const [photoPath, setPhotoPath] = useState(photo+'?'+Date.now()); // Default photo path in state
   const [certificatePath, setCertificatePath] = useState(pwbdCertificate+'?'+Date.now());
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheckboxChecked(event.target.checked);
+  };
+  const isSubmitDisabled = !isCheckboxChecked;
+
+
   // const handleImageUpdate = () => {
   //   setPhotoPath(path + '?' + Date.now());
   // };
@@ -395,23 +403,33 @@ export default function PreviewPage({
         </button>
       </div>
       <Dialog
-        open={confirmSubmission}
-        onClose={() => setConfirmSubmission(false)}
-      >
-        <DialogTitle>Confirm Submission</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">
-            Are you sure you want to submit the details?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onSubmit} color="primary">
-            Submit
-          </Button>
-          <Button onClick={() => setConfirmSubmission(false)} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
+  open={confirmSubmission}
+  onClose={() => setConfirmSubmission(false)}
+>
+    <DialogTitle>Confirm Submission</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">
+              Are you sure you want to submit the details?
+            </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+              <Checkbox
+                checked={isCheckboxChecked}
+                onChange={handleCheckboxChange}
+                color="primary"
+              />
+              <Typography variant="body2">
+                I hereby undertake that all information I provide is accurate to the best of my knowledge. I accept the responsibility for any inaccuracies that may occur later on.
+              </Typography>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onSubmit} color="primary" disabled={isSubmitDisabled}>
+              Submit
+            </Button>
+            <Button onClick={() => setConfirmSubmission(false)} color="primary">
+              Cancel
+            </Button>
+          </DialogActions>
       </Dialog>
     </div>
   );
