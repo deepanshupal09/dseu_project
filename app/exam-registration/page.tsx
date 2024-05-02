@@ -415,7 +415,7 @@ export default function Home() {
             </div>
             <div className="flex justify-center">
               <Typography>
-                <b>Backlogs</b>
+                {/* <b>Backlogs</b> */}
               </Typography>
             </div>
             <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
