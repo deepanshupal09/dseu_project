@@ -190,24 +190,19 @@ export default function Registration() {
           setCourseList(temp);
         })
         .catch((error) => {
-          console.log("Error fetching courses: ", error);
         });
     }
   }, [selectedProgram, selectedSemester]);
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
-      console.log("t:", t);
       if (t) {
         setToken(t.value);
         const data = await parseJwt(t.value);
-        console.log("data:", data);
         setUser(data.user);
-        console.log("user: ", data.user)
         if (data.user.role === 'admin') {
             setSelectedCampus(data.user.campus);
         }
-        console.log(data.user.campus);
       }
     });
   }, []);
@@ -227,7 +222,7 @@ export default function Registration() {
     const handleResize = () => {
       const containerWidth =
         document.getElementById("datagrid-container")?.offsetWidth || 0;
-      const numberOfColumns = 5; // Assuming 5 columns including S.No
+      const numberOfColumns = 5; 
 
       const columnWidth = (containerWidth - 10) / numberOfColumns;
 
@@ -261,24 +256,17 @@ export default function Registration() {
       const course_code = courseCodes.find(
         (course) => course.course_name === selectedCourse
       )?.course_code;
-      console.log("course_code: ", course_code);
-
-      //   console.log("", selectedProgram, user.campus, selectedSemester);
       if (course_code) {
-        // console.log("here")
         try {
           const res = await fetchExamRegistrationByCourseCode(
             token,
             course_code
           );
-          // console.log("res: ", res)
-          // setStudentList(res);
           const formattedStudentList = res.map(
             (student: Student, index: number) => ({ ...student, id: index + 1 })
           );
           setStudentList(formattedStudentList);
         } catch (error) {
-          console.log("error fetching registration: ", error);
         }
       }
     }

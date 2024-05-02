@@ -16,7 +16,7 @@ export default function Home() {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
       setUser(temp.user);
-      console.log(temp.user);
+
     });
   }, []);
 

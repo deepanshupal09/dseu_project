@@ -45,10 +45,6 @@ export default function UserDetailsPage({
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log("Email:", email);
-        console.log("Gender:", gender);
-        console.log("Phone:", phone);
-        console.log("Alternate Phone:", alternatePhone);
         setaltphone(alternatePhone);
         setgender(gender);
         setemailid(email);

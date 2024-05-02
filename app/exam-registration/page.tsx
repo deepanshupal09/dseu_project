@@ -80,8 +80,6 @@ export default function Home() {
         campusName: temp.user.campus,
         programName: temp.user.program,
       });
-      // console.log("user: ", auth?.value);
-      console.log(temp.user);
     });
   }, []);
 
@@ -114,7 +112,6 @@ export default function Home() {
       const rollno = user.rollno;
       fetchExamRegisterations(rollno, token)
         .then((res:any) => {
-          console.log("response: ", res);
           if (res.length > 0) {
             const temp:Subject[] = [];
             res.forEach((subject:any) => {
@@ -131,7 +128,6 @@ export default function Home() {
           }
         })
         .catch((error) => {
-          console.log("Error fetching exam registration: ", error);
         });
     }
   }, [user]);
@@ -140,7 +136,6 @@ export default function Home() {
     const fetchData = async () => {
       if (user) {
         const rollno = user.rollno;
-        console.log("rollno: ", rollno);
         try {
           const courses = await fetchCoursesByRollNo(rollno, token);
           const userSemester = user.semester;
@@ -180,11 +175,7 @@ export default function Home() {
 
           setSubjectsData(subDataTemp);
           setBacklogsData(backlogDataTemp);
-
-          console.log(backlogDataTemp);
-          console.log("courses: ", courses);
         } catch (error) {
-          console.log("Error fetching courses:", error);
         }
       }
     };
@@ -271,7 +262,6 @@ export default function Home() {
           }
         }
       }
-      console.log(profile.semester);
     }
     return semesters;
   };
@@ -294,7 +284,6 @@ export default function Home() {
   const [confirmSubmission, setConfirmSubmission] = useState(false);
 
   const submitDetails = async () => {
-    console.log("Submitting details...");
     const selectedSubjectCodes = getSelectedSubjects().map(({ code }) => code);
     const backlogSubjectCodes = selectedBacklogs.map(
       ({ subjectCode }) => subjectCode

@@ -137,13 +137,13 @@ export default function Registration() {
     
     useEffect(()=>{
         getAuthAdmin().then(async(t:any)=>{
-            console.log("t:",t)
+
             if(t){
                 setToken(t.value);
                 const data = await parseJwt(t.value);
-                console.log("data:",data);
+
                 setCampus(data.user.campus);
-                console.log(data.user.campus);
+
             }
         
         })
@@ -156,16 +156,13 @@ export default function Registration() {
         else{
             setShowTable(false);
         }
-        console.log("data", studentsData);
     },[studentsData]);
 
     const handleData = async () => {
         try {
-            console.log(campus,selectedProgram,selectedProgramCategory,selectedSemester);
             if(token){
                 const data:any = await fetchExamRegistrationByProgramAndSemester(token as string, campus, selectedProgramCategory, selectedProgram, selectedSemester);
                 setStudentsData(data); 
-                console.log("campus:", campus);
             }
         } catch (error) {
             console.error("Error fetching data:", error);

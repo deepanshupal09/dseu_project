@@ -12,10 +12,10 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white fixed top-0 left-0 h-screen">
+      <div className="bg-white fixed top-0 left-0 h-screen max-md:w-full max-md:h-[15%]">
         <div className="container mx-auto">
           <div>
-            <div className="w-[250px] text-lg font-normal px-8 py-48 space-y-10 h-full shadow-2xl shadow-slate-200 bg-white absolute top-[60px] border-2 left-0 sm:block hidden">
+            <div className="w-[250px]  text-lg font-normal px-8 py-48 space-y-10 h-full shadow-2xl shadow-slate-200 bg-white absolute top-[60px] border-2 left-0 sm:block hidden">
               {options.map((option, index) => {
                 const path = `/${option.toLowerCase().replace(/\s+/g, '-')}`;
                 return (

@@ -46,9 +46,6 @@ const IDDetails: React.FC<IDDetailsProps> = ({
 
     const today = new Date().toISOString().split("T")[0];
 
-    useEffect(() => {
-        console.log("dateofBirth: ", dateOfBirth);
-    }, [dateOfBirth]);
 
     return (
         <form
@@ -68,7 +65,6 @@ const IDDetails: React.FC<IDDetailsProps> = ({
                 type="date"
                 value={dateOfBirth}
                 onChange={(e) => {
-                    console.log(typeof e.target.value);
                     setDateOfBirth(e.target.value);
                 }}
                 InputProps={{

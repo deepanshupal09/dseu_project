@@ -21,7 +21,6 @@ export default function Home() {
     getAuthAdmin().then(async cookie => {
       if (cookie) {
         const data = await parseJwt(cookie.value);
-        console.log("user: ", data.user)
         setUser(data.user);
       }
     })

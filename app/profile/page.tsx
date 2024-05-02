@@ -52,7 +52,7 @@ export default function Home() {
   useEffect(() => {
     getAuth().then((auth) => {
       const temp = parseJwt(auth?.value as string);
-      console.log("user: ", temp.user);
+
       setUser(temp.user);
       setPhotoPath(temp.user.photo+'?'+Date.now())
     });
@@ -78,7 +78,6 @@ export default function Home() {
           <div>
             <h1 className="text-xl font-bold">
               {user?.name}
-              <span>{"'s"} profile</span>
             </h1>
           </div>
           <div className="text-center sm:text-right">
