@@ -191,7 +191,7 @@ export default function Registration() {
     return (
         <>
             <div className="bg-[#dfdede] mt-2">
-                <Head username={"Campus Director"} />
+                <Head username={campus} />
                 <Nav />
             </div>
             <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[100px] sm:left-[250px] left-0 right-0 z-10 mx-12 mt-6">

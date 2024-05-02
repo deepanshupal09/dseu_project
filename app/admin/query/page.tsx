@@ -39,6 +39,12 @@ interface Student {
   semester: number;
 }
 
+interface User {
+  emailid: string;
+  role: string;
+  campus: string;
+}
+
 export default function Registration() {
   const [selected, setSelected] = useState(0);
   const options = ["Dashboard", "Registration Chart", "Admit Card", "Query"];
@@ -61,17 +67,40 @@ export default function Registration() {
     );
   }
 
-
   const [selectedProgramCategory, setSelectedProgramCategory] =
     useState<string>("Undergraduate");
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [token, setToken] = useState<string>("");
-  const [campus, setCampus] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null);
   const [courseList, setCourseList] = useState<string[]>([]);
   const [courseCodes, setCourseCodes] = useState<Course[]>([]);
   const [studentList, setStudentList] = useState<Student[]>([]);
+  const [selectedCampus, setSelectedCampus] = useState<string>("")
+  const campusList = [
+    "Arybhatt DSEU Ashok Vihar Campus",
+    "Ambedkar DSEU Shakarpur Campus-I",
+    "DSEU Okhla II Campus",
+    "G.B. Pant DSEU Okhla I Campus",
+    "Guru Nanak Dev DSEU Rohini Campus",
+    "DSEU Dwarka Campus",
+    "Kasturba DSEU Pitampura Campus",
+    "Meerabai DSEU Maharani Bagh Campus",
+    "DSEU Pusa Campus - I",
+    "DSEU Rajokri Campus",
+    "DSEU Sirifort Campus",
+    "DSEU Wazirpur-I Campus",
+    "Dr.H.J. Bhabha DSEU Mayur Vihar Campus",
+    "DSEU Ranhola Campus",
+    "G.B. Pant DSEU Okhla III Campus",
+    "DSEU Jaffarpur Campus",
+    "Bhai Parmanand DSEU Shakarpur II Campus",
+    "DSEU Pusa II Campus",
+    "DSEU Champs okhla II Campus",
+    "Sir C.V. Raman DSEU Dheerpur Campus",
+    "DSEU Vivek vihar Campus",
+  ];
   const programListByType: ProgramList = {
     Diploma: [
       "Diploma in Applied Arts",
@@ -147,8 +176,13 @@ export default function Registration() {
   };
 
   useEffect(() => {
-    if (selectedProgram !== "" && selectedSemester !== "") {
-      fetchCoursesBySemester(token, campus, selectedProgram, selectedSemester)
+    if (user && selectedProgram !== "" && selectedSemester !== "") {
+      fetchCoursesBySemester(
+        token,
+        selectedCampus,
+        selectedProgram,
+        selectedSemester
+      )
         .then((response: Course[]) => {
           const temp: string[] = [];
           setCourseCodes(response);
@@ -168,7 +202,11 @@ export default function Registration() {
         setToken(t.value);
         const data = await parseJwt(t.value);
         console.log("data:", data);
-        setCampus(data.user.campus);
+        setUser(data.user);
+        console.log("user: ", data.user)
+        if (data.user.role === 'admin') {
+            setSelectedCampus(data.user.campus);
+        }
         console.log(data.user.campus);
       }
     });
@@ -210,15 +248,13 @@ export default function Registration() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(()=>{
-
-    if(selectedCourse) {
-      handleApplyFilters()
+  useEffect(() => {
+    if (selectedCourse) {
+      handleApplyFilters();
     } else {
       setStudentList([]);
     }
-
-  },[selectedCourse])
+  }, [selectedCourse]);
 
   const handleApplyFilters = async () => {
     if (selectedCourse !== "") {
@@ -227,7 +263,7 @@ export default function Registration() {
       )?.course_code;
       console.log("course_code: ", course_code);
 
-      console.log("", selectedProgram, campus, selectedSemester);
+      //   console.log("", selectedProgram, user.campus, selectedSemester);
       if (course_code) {
         // console.log("here")
         try {
@@ -248,6 +284,12 @@ export default function Registration() {
     }
   };
 
+  const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
+    setSelectedCampus(event.target.value);
+    setSelectedCourse("");
+    setSelectedProgram("");
+    // setSelectedProgramCategory("");
+  };
   const handleChangeProgramCategory = (event: SelectChangeEvent) => {
     setSelectedProgramCategory(event.target.value);
     setSelectedCourse("");
@@ -270,7 +312,7 @@ export default function Registration() {
   return (
     <>
       <div className="bg-[#dfdede] mt-2">
-        <Head username={"Campus Director"} />
+        <Head username={user?.campus} />
         <Nav />
       </div>
       <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[100px] sm:left-[250px] left-0 right-0 z-10 mx-12 mt-6">
@@ -281,6 +323,27 @@ export default function Registration() {
           SELECT
         </h2>
         <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
+          {user?.role === "super" && (
+            <FormControl
+              size="small"
+              className="w-full md:w-1/3 sm:w-auto mt-5"
+            >
+              <InputLabel id="program-category-label">Campus</InputLabel>
+              <Select
+                labelId="program-category-label"
+                id="program-category"
+                value={selectedCampus}
+                label="Program category"
+                onChange={handleChangeSelectedCampus}
+              >
+                {campusList.map((campus, index) => (
+                  <MenuItem key={index} value={campus}>
+                    {campus}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
           <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
             <InputLabel id="program-category-label">
               Program category
