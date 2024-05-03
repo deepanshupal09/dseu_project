@@ -19,7 +19,7 @@ export default function Home() {
   ];
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [recentChange,setRecentChange] = useState({
-    title: "Exam Registerations",
+    title: "Exam Registrations",
     timestamp: "",
     details:
       "",
@@ -77,7 +77,7 @@ export default function Home() {
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            <li className="my-6">Exam registrations for B.Tech and M.Tech Cources is LIVE</li>
+            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses is LIVE</li>
             {/* <li  className="my-6">Examination Registrations about to close.</li>
             <li className="my-6">Course Details about to open.</li>
             <li className="my-6">Backlog exams for 2nd 4th semester.</li>
