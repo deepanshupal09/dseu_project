@@ -238,8 +238,9 @@ const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
 
 const fetchExamRegistrationByCourseCode = (req: Request, res: Response):void => {
   try{
-    const course_code:string =req.headers.course_code as string;
-    fetchTheExamRegistrationCourse(course_code).then((results) => {
+    const coursecode:string =req.headers.coursecode as string;
+    console.log("course: ", coursecode)
+    fetchTheExamRegistrationCourse(coursecode).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("Internal server error fetch exam registeration course 2");

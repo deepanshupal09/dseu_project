@@ -58,6 +58,8 @@ app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
     res.send({path: `/image/${newFileName}.jpg`});
 });
 
+
+
 // Other routes
 app.get("/login", controller.login);
 app.post("/signup", controller.signup);
