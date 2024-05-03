@@ -68,7 +68,7 @@ export default function UserDetailsPage({
             </Typography>
             <div className="w-[100%]">
                 <TextField
-                    label="Email address"
+                    label="Email address(preferably DSEU Email ID)"
                     required
                     type="email"
                     value={email}
