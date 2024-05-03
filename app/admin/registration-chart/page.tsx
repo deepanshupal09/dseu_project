@@ -97,9 +97,9 @@ const programListByType: ProgramList = {
       "Master of Computer Applications",
       "Master of Technology (Mechanical Engineering)",
       "Master of Technology (Tool Engineering)",
-      "Master of Technology (Computer Science Engineering - AI & ML)",
-      "Master of Technology (Electronics & Communication Engineering - IOT)",
-      "Master of Technology (Mechanical Engineering - Thermal/Production/Design)",
+      "Master of Technology (Computer Science Engineering with Specialization in Al & ML)",
+      "Master of Technology (Electronic & Communication Engineering With Specialization in IOT)",
+      "Master of Technology (Mechanical Engineering with Specialization in Thermal/Production/Design)",
       "Master of Science (Medical Laboratory Sciences)",
     ],
     Doctorate: [
