@@ -274,12 +274,13 @@ export function fetchExamRegistration(
 }
 
 export function fetchExamRegistrationCourse(
+    campus: string,
     course_code: string
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(
             fetchExamRegistrationByCourseCode,
-            [course_code],
+            [campus, course_code],
             (error, results) => {
                 if (error) {
                     reject(error);

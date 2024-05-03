@@ -277,10 +277,11 @@ export function fetchTheExamRegistration(rollno: string): Promise<any> {
 }
 
 export function fetchTheExamRegistrationCourse(
+    campus: string,
     course_code: string
 ): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchExamRegistrationCourse(course_code)
+        fetchExamRegistrationCourse(campus, course_code)
             .then((result) => {
                 resolve(result.rows);
             })
