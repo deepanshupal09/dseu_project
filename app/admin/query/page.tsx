@@ -27,19 +27,21 @@ interface ProgramList {
   [key: string]: string[];
 }
 
-interface Course {
+export interface Course {
   course_name: string;
   course_code: string;
+  course_type: string;
+  credit: number;
 }
 
-interface Student {
+export interface Student {
   name: string;
   rollno: string;
   program: string;
   semester: number;
 }
 
-interface User {
+export interface User {
   emailid: string;
   role: string;
   campus: string;
@@ -260,6 +262,7 @@ export default function Registration() {
         try {
           const res = await fetchExamRegistrationByCourseCode(
             token,
+            selectedCampus,
             course_code
           );
           const formattedStudentList = res.map(
