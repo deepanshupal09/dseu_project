@@ -19,7 +19,7 @@ export default function Home() {
   ];
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [recentChange,setRecentChange] = useState({
-    title: "Exam Registerations",
+    title: "Exam Registrations",
     timestamp: "",
     details:
       "",
@@ -32,7 +32,7 @@ export default function Home() {
       const temp = parseJwt(auth?.value);
       setToken(auth.value);
       setUser(temp.user);
-      console.log(temp.user);
+
     });
   }, []);
   useEffect(() => {
@@ -40,10 +40,8 @@ export default function Home() {
       const rollno = user?.rollno;
       const temp = recentChange
       fetchExamRegisterations(rollno, token).then((res) => {
-        console.log("response: ", res);
         if (res.length > 0) {
           temp.details = "Current Semesters subjects were chosen and submitted for the exams.";
-          // console.log("recent", res[0].last_modified )
           temp.timestamp = res[0].last_modified;
         } else {
           temp.details = "Choose Current Semesters subjects for the exams.";
@@ -51,16 +49,11 @@ export default function Home() {
         }
         setRecentChange(temp)
       }).catch((error)=>{
-        console.log("Error fetching exam registration: ",error)
       })
     }
 
   },[user])
 
-
-  // useEffect(() => {
-  //   console.log("1",user.user)
-  // },[user])
 
   const [expanded, setExpanded] = useState(false);
 
@@ -73,18 +66,18 @@ export default function Home() {
       <Header username={user?.name as string} />
       <Navbar />
 
-      <div className="sm:pl-[300px] sm:mt-[100px] space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">
-        <div className="welcome py-2 px-4 rounded   z-10  ">
+      <div className="sm:pl-[300px] sm:mt-[100px]  space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">
+        <div className="welcome py-2 px-4 rounded   z-20  ">
           <h1 className="text-2xl text-white-800 font-bold ">
             Welcome {user?.name}
           </h1>
         </div>
-        <div className="announcement bg-dseublue py-2   px-4 rounded shadow w-full">
+        <div className="announcement bg-dseublue py-2  px-4 rounded shadow w-full h-full">
           <h1 className="text-xl text-white font-bold">
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            <li className="my-6">No announcements yet</li>
+            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses is LIVE</li>
             {/* <li  className="my-6">Examination Registrations about to close.</li>
             <li className="my-6">Course Details about to open.</li>
             <li className="my-6">Backlog exams for 2nd 4th semester.</li>

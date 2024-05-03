@@ -33,9 +33,7 @@ export default function ChangePassword({setnewpassword, onNext }: ChangePassword
       setError(true);
       return;
     }
-    
-    console.log('New Password:', newPassword);
-    console.log('Confirm Password:', confirmPassword);
+
     setnewpassword(newPassword);
     setNewPassword('');
     setConfirmPassword('');

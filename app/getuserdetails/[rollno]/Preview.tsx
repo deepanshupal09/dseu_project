@@ -99,11 +99,7 @@ export default function PreviewPage({
   });
   const Image = dynamic(() => import('next/image'));
 
-  // useEffect(()=>{
-  //   setHelp(help+1);
-  //   console.log("date: ", date);
-  //   setDate((new Date()).getTime())
-  // },[help])
+
   useEffect(() => {
     if (!singleParentGuardian) {
       setToggles({
@@ -418,7 +414,7 @@ export default function PreviewPage({
                 color="primary"
               />
               <Typography variant="body2">
-                I hereby undertake that all information I provide is accurate to the best of my knowledge. I accept the responsibility for any inaccuracies that may occur later on.
+              I hereby undertake that all the information provided is/are correct and if any of the same is found incorrect, I will be responsible for the same.
               </Typography>
             </div>
           </DialogContent>

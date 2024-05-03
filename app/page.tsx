@@ -25,7 +25,6 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await login({ rollno: RollNo, password: Password });
-      console.log("response: ", response);
       if (response === 400) {
         setError(true);
         setHelperText("Incorrect password");
@@ -38,14 +37,11 @@ export default function Home() {
       } else {
         if (response.defaultPass) {
           await setSignupCookie();
-          console.log("here: ", )
           router.push(`/getuserdetails/${RollNo}`)
         } else {
           await setAuth(response.token);
           router.push("/dashboard")
         }
-        // const token = await getAuth();
-        // console.log("user: ", parseJwt(token?.value as string));
       }
       setLoading(false);
     } catch (error) {
@@ -53,7 +49,6 @@ export default function Home() {
       // const errorData = await response.text();
       setError(true);
         setHelperText("Internal Server Error");
-      console.log("error: ", error);
     }
   }
 

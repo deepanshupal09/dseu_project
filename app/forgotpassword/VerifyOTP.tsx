@@ -15,14 +15,12 @@ export default function VerifyOTP({rollno,setStep}:{ rollno: string, setStep: Fu
   async function handleVerifyOtp() {
     setLoading(true);
     verifyOtpAndPassword(rollno, otp).then((res) => {
-        console.log("res: ", res)
         setStep(3)
         setLoading(false)
     }).catch((error)=>{
         setLoading(false)
         setError(true);
-        setHelperText("Invalid OTP!")
-        console.log("error: ", error)        
+        setHelperText("Invalid OTP!")      
     })
   }
 

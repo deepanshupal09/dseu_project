@@ -21,9 +21,9 @@ export default function Header({ username }: Props) {
   }
   return (
     <>
-      <div className="bg-white z-50 fixed top-0 left-0 py-2 px-4 flex justify-between border-2 w-full   shadow-2xl shadow-slate-200 ">
+      <div className="bg-white z-50 max-md:w-[100vw] fixed top-0 left-0 py-2 px-4 flex justify-between border-2 w-full   shadow-2xl shadow-slate-200 ">
         <div className="flex items-center space-x-2">
-         {" "}<span className="text-lg">DSEU Exam Portal </span>
+         {" "}<span onClick={()=>{router.push("/dashboard")}} className="text-lg cursor-pointer">DSEU Exam Portal </span>
         </div>
         <div className="relative">
           <div
