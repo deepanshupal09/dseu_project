@@ -9,7 +9,8 @@ router.get("/",(req,res)=>{
 router.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 router.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 router.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
-
+router.get("/fetchCoursesBySemester",controller.fetchCoursesBySemester);
+router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistrationByCourseCode);
 
 
 
