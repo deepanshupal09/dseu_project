@@ -22,7 +22,6 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await loginAdmin(email, password);
-      console.log("response: ", response);
       await setAuthAdmin(response.token);
       router.push("/admin/dashboard");
       setLoading(false);

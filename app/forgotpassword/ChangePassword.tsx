@@ -38,13 +38,9 @@ export default function ChangePassword({
       return;
     }
 
-    console.log("New Password:", newPassword);
-    console.log("Confirm Password:", confirmPassword);
-
     setLoading(true);
     updatePasswordByOtp(rollno, newPassword)
       .then((res) => {
-        console.log("res: ", res);
         setStep(4)
         setLoading(false);
       })
@@ -52,7 +48,6 @@ export default function ChangePassword({
         setLoading(false);
         setError(true);
         setHelperText("Internal Server Error!");
-        console.log("error: ", error);
       });
   };
   return (

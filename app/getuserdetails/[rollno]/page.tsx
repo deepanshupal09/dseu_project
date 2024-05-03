@@ -64,15 +64,7 @@ export default function Home({params}:{params: {rollno: string}}) {
   const handleNext = async () => {
     if (step < 7) {
       setStep(step + 1);
-      console.log(step, "step");
     } else {
-      console.log("Father's Name:", fatherName);
-      console.log("Mother's Name:", motherName);
-      console.log("Single Parent/Guardian:", singleParentGuardian);
-      if (singleParentGuardian) {
-        console.log("Single Parent/Guardian Name:", singleParentGuardianName);
-        console.log("Parent's Relation:", parentRelation);
-      }
       let father = null,
         mother = null,
         guardian = null;
@@ -85,7 +77,6 @@ export default function Home({params}:{params: {rollno: string}}) {
         mother = motherName;
         // guardian=null;
       }
-      console.log("phto: ", photo);
       interface BodyType {
         program: string | null;
         semester: number;
@@ -128,23 +119,19 @@ export default function Home({params}:{params: {rollno: string}}) {
         abc_id: abcId,
         year_of_admission: yearOfAdmission,
       };
-      console.log(123, body);
-      console.log(101, JSON.stringify(body));
+
       // const requestOptions =;
 
 
 
       try {
         setLoading(true);
-        console.log("here");
         const response: any = await signup(body);
-        console.log("response: ", response);
         // deleteSignupCookie();
         setLoading(false);
         setStep(step+1);
         // router.push("/");
       } catch (error) {
-        console.log("error", error);
         setLoading(false);
         setOpen(true);
         return;

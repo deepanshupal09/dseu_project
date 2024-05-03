@@ -37,7 +37,6 @@ export default function SendOTP({RollNo, setRollNo, setStep}:{RollNo: string, se
     setLoading(true);
     sendEmail(RollNo)
       .then((res) => {
-        console.log("res: ", res);
         setLoading(false);
         setResendDisabled(true);
         setStep(2);
@@ -47,7 +46,7 @@ export default function SendOTP({RollNo, setRollNo, setStep}:{RollNo: string, se
         setLoading(false);
         setError(true);
         setHelperText("Something went wrong! Please try again later");
-        // console.log("error: ", error)
+
       });
   }
 

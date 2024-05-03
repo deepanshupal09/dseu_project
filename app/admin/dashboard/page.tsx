@@ -21,7 +21,6 @@ export default function Home() {
     getAuthAdmin().then(async cookie => {
       if (cookie) {
         const data = await parseJwt(cookie.value);
-        console.log("user: ", data.user)
         setUser(data.user);
       }
     })
@@ -34,7 +33,7 @@ export default function Home() {
         <Nav />
       </div>
       <div className="welcome py-2 px-4 rounded shadow absolute top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-12 ">
-        <h1 className="text-2xl text-white-800 font-bold ">Welcome Campus Director of {user?.campus}</h1>
+        <h1 className="text-2xl text-white-800 font-bold ">Welcome  {user?.campus}!</h1>
       </div>
       
 
