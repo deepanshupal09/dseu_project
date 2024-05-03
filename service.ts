@@ -48,11 +48,10 @@ export function handleLogin(
                                         expiresIn: "2h",
                                     }
                                 );
-                                const default_pass =
-                                    (results.rows[0].name + "0000").substring(
-                                        0,
-                                        4
-                                    ) + rollno;
+                                let subpass = (results.rows[0].name.toUpperCase()).substring(0, 4);
+                                subpass = subpass.split(" ")[0];
+                                const pass = subpass +rollno;
+                                const default_pass = pass;
 
                                 const result = {
                                     token: token,
