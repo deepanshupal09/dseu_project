@@ -76,6 +76,7 @@ app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
+app.post("/fetchCourseDetailsByCourseCode", controller.fetchCourseDetailsByCourseCode);
 
 
 // Start the server

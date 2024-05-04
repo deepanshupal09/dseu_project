@@ -442,3 +442,25 @@ export function fetchStudentCampus( campus:string, program_type: string, program
         })
     })
 }
+
+export function fetchCourseDetails( courseDetails:{
+    campus:string, program:string, coursecode: Array<string>}
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT sc.course_code, sc.course_type, sc.credit, c.course_name
+            FROM semester_course sc
+            JOIN courses c ON sc.course_code = c.course_code
+            WHERE sc.campus='${courseDetails.campus}' AND sc.program='${courseDetails.program}' AND sc.course_code IN (${courseDetails.coursecode.map(coursecode => `'${coursecode}'`).join(", ")})
+        `;
+        console.log("query:",query);
+        pool.query(query, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+

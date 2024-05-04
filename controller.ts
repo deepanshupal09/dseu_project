@@ -18,7 +18,8 @@ import {
   updateThePassword,
   fetchTheStudent,
   fetchTheStudentCampus,
-  handleLoginByEmailId
+  handleLoginByEmailId,
+  fetchTheCourseDetails
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -434,6 +435,20 @@ const fetchStudentByCampusAndProgram = (async(req: Request, res: Response)=>{
   }
 })
 
+const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
+  try{
+    const courseDetails = req.body;
+    fetchTheCourseDetails(courseDetails).then((results)=>{
+      res.status(200).send(results);
+    }).catch(()=>{
+      res.status(500).send("Internal server error fetch course details 2")
+    })
+  }
+  catch(error){
+    res.status(500).send('Internal server error in fetch course details 3');
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -455,5 +470,6 @@ export {
   updatePasswordByOtp,
   fetchStudentByProgramAndSemester,
   fetchStudentByCampusAndProgram,
-  loginByEmailId
+  loginByEmailId,
+  fetchCourseDetailsByCourseCode
 };

@@ -21,7 +21,8 @@ import {
     updatePassword,
     fetchStudent,
     fetchStudentCampus,
-    fetchPasswordByEmailId
+    fetchPasswordByEmailId,
+    fetchCourseDetails
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -461,3 +462,16 @@ export function fetchTheStudentCampus(campus:string, program_type: string, progr
     })
 }
 
+export function fetchTheCourseDetails(courseDetails:any): Promise<any> {
+    console.log("Fetching course details...");
+    return new Promise((resolve, reject) => {
+        fetchCourseDetails(courseDetails)
+            .then((result) => {
+                resolve(result.rows);
+            })
+            .catch((error) => {
+                console.log("Error in fetching course details: ", error);
+                reject("Internal server error in fetchCourseDetails");
+            });
+    });
+}
