@@ -36,7 +36,7 @@ export const pushTokenQuery: string =
 // export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
 
 export const fetchCoursesBySemester: string = `
-  SELECT c.course_name,c.course_code FROM semester_course sc
+  SELECT c.course_name,c.course_code, sc.credit,sc.course_type FROM semester_course sc
   JOIN courses c ON sc.course_code = c.course_code
   WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
 `;

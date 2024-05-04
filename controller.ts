@@ -239,8 +239,9 @@ const fetchExamRegistrationByRollNo = (req: Request, res: Response):void => {
 
 const fetchExamRegistrationByCourseCode = (req: Request, res: Response):void => {
   try{
-    const course_code:string =req.headers.course_code as string;
+    const course_code:string =req.headers.coursecode as string;
     const campus:string =req.headers.campus as string;
+    console.log("course: ",course_code, " ",campus)
     fetchTheExamRegistrationCourse(campus, course_code).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
