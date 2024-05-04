@@ -32,6 +32,8 @@ export interface Course {
   course_code: string;
   course_type: string;
   credit: number;
+  semester: number;
+
 }
 
 export interface Student {

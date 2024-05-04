@@ -19,6 +19,9 @@
     "@mui/joy": "^5.0.0-beta.32",
     "@mui/material": "^5.15.16",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@react-pdf/renderer": "^3.4.2",
+    "@types/react-native": "^0.63.2",
+    "@types/react-pdf": "^7.0.0",
     "axios": "^1.6.8",
     "bcrpyt": "^2.0.0",
     "bcrypt": "^5.1.1",
@@ -28,6 +31,7 @@
     "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-pdf": "^8.0.0",
     "react-to-print": "^2.15.1",
     "sharp": "^0.33.3",
     "styled-components": "^6.1.9"
