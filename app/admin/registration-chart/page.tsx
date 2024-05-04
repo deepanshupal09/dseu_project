@@ -23,6 +23,7 @@ import logo from "../../images/dseu.png";
 import { getAuthAdmin } from "../../actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import {
+  fetchCourseDetailsByCourseCode,
   fetchCoursesBySemester,
   fetchExamRegistrationByProgramAndSemester,
 } from "@/app/actions/api";
@@ -166,7 +167,6 @@ const campusList = [
   "DSEU Vivek vihar Campus",
 ];
 
-const semesterList = ["2", "4", "6"];
 
 export default function Registration() {
   const [selectedProgramCategory, setSelectedProgramCategory] = useState("");
@@ -187,12 +187,16 @@ export default function Registration() {
   const containerRef = useRef(null);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
+  const [courseCodes,setCourseCodes] = useState<string[]>([]);
+  const [semesterList, setSemesterList]=useState<string[]>(["2","4","6"]);
 
-  //   useEffect(() => {
-  //     const dummyData = [];
-
-  //     setIndexData(dummyData);
-  //   }, []);
+    useEffect(() => {
+      if(selectedProgramCategory==="PostGraduate") {
+        setSemesterList(["2","4"]);
+      } else {
+        setSemesterList(["2","4","6"]);
+      }
+    }, [selectedProgramCategory]);
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -210,21 +214,22 @@ export default function Registration() {
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
-      fetchCoursesBySemester(
+      fetchCourseDetailsByCourseCode(
         token,
-        selectedCampus,
-        selectedProgram,
-        selectedSemester
+        {coursecode: courseCodes,campus: selectedCampus,program: selectedProgram }
       ).then((response: Course[]) => {
         const temp: IndexDataRow[] = [];
         response.map((course: Course, index: number) => {
           temp.push({ sno: index + 1, ...course });
         });
+        console.log("course Details: ",temp)
         setIndexData(temp);
         console.log("response: ", response);
-      });
+      }).catch((error)=>{
+        console.log("error fetching course details: ",error);
+      })
     }
-  }, [selectedProgram, selectedSemester]);
+  }, [courseCodes]);
 
   useEffect(() => {
     if (studentsData.length > 0) {
@@ -246,6 +251,18 @@ export default function Registration() {
           selectedProgram,
           selectedSemester
         );
+        console.log(data);
+        let set = new Set<string>();
+        data.map((student: Student)=>{
+          student.course_codes.map((courseCode: string)=>{
+            set.add(courseCode);
+          })
+        })
+        const array = Array.from(set);
+        setCourseCodes(array);
+        console.log("course: ",array)
+
+
         setStudentsData(data);
       }
     } catch (error) {
@@ -629,7 +646,7 @@ export default function Registration() {
                                     className="cell"
                                     key={codeIndex}
                                     style={{
-                                      width: "16.66%",
+                                      width: `${100/student.course_codes.slice(0,6).length}%`,
                                       textAlign: "center",
                                     }}
                                   >
@@ -645,7 +662,7 @@ export default function Registration() {
                                     key={codeIndex}
                                     className="cell"
                                     style={{
-                                      width: "16.66%",
+                                      width: `${100/student.course_codes.slice(0,6).length}%`,
                                       textAlign: "center",
                                     }}
                                   >
