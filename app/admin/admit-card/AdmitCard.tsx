@@ -33,13 +33,13 @@ interface Paper {
   examType: string;
 }
 
-const dummyUser: User = {
+const dummyUser: User[] = [ {
   campus: "G.B. Pant DSEU Okhla I Campus",
   programName: "Computer Science",
   name: "John Doe",
   rollno: "CS001",
   dob: "1990-01-01",
-  photo: "https://exam.dseu.ac.in/image/41521070_photo.jpg",
+  photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
   papers: [
     {
       sno: 1,
@@ -113,7 +113,88 @@ const dummyUser: User = {
     },
     // Add more papers as needed
   ],
-};
+},
+{
+  campus: "G.B. Pant DSEU Okhla I Campus",
+  programName: "Computer Science",
+  name: "John Doe",
+  rollno: "CS001",
+  dob: "1990-01-01",
+  photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
+  papers: [
+    {
+      sno: 1,
+      paperCode: "CS101",
+      paperName: "Introduction to Computer Science",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 2,
+      paperCode: "CS102",
+      paperName: "Data Structures and Algorithms",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 3,
+      paperCode: "CS103",
+      paperName: "Database Management Systems",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 4,
+      paperCode: "CS104",
+      paperName: "Operating Systems",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 5,
+      paperCode: "CS105",
+      paperName: "Computer Networks",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 6,
+      paperCode: "CS106",
+      paperName: "Software Engineering",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 7,
+      paperCode: "CS107",
+      paperName: "Web Development",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 8,
+      paperCode: "CS108",
+      paperName: "Artificial Intelligence",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 9,
+      paperCode: "CS109",
+      paperName: "Machine Learning",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    {
+      sno: 10,
+      paperCode: "CS110",
+      paperName: "Computer Graphics",
+      semester: "Spring 2024",
+      examType: "Regular",
+    },
+    // Add more papers as needed
+  ],
+}]
 
 Font.register({
   family: "Roboto",
