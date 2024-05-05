@@ -11,6 +11,7 @@ router.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgram
 router.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 router.get("/fetchCoursesBySemester",controller.fetchCoursesBySemester);
 router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistrationByCourseCode);
+router.post("/fetchCourseDetailsByCourseCode", controller.fetchCourseDetailsByCourseCode);
 
 
 
