@@ -350,12 +350,12 @@ export default function Registration() {
         <Head username={user?.campus} />
         <Nav />
       </div>
-      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[100px] sm:left-[250px] left-0 right-0 mx-12 mt-6">
+      <div className="announcement  mx-2 bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0 sm:mx-12 mt-6">
         <h1 className="text-2xl text-white font-bold text-center">
           Admit Card
         </h1>
       </div>
-      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0 mx-12 mt-6">
+      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0 mx-2 sm:mx-12 mt-6">
         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
           SELECT
         </h2>

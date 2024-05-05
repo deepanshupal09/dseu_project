@@ -67,7 +67,7 @@ export default function Home() {
       <Navbar />
 
       <div className="sm:pl-[300px] sm:mt-[100px]  space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">
-        <div className="welcome py-2 px-4 rounded   z-20  ">
+        <div className="welcome py-2 px-4 rounded     ">
           <h1 className="text-2xl text-white-800 font-bold ">
             Welcome {user?.name}
           </h1>

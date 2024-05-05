@@ -32,12 +32,12 @@ export default function Home() {
         <Head username={user?.campus} />
         <Nav />
       </div>
-      <div className="welcome py-2 px-4 rounded shadow absolute top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-12 ">
+      <div className="welcome py-2 px-4 rounded shadow absolute top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-2 sm:mx-12 ">
         <h1 className="text-2xl text-white-800 font-bold ">Welcome  {user?.campus}!</h1>
       </div>
       
 
-      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[220px] sm:left-[250px] left-0 right-0 z-10 mx-12 mt-12">
+      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[220px] sm:left-[250px] left-0 right-0 z-10 mx-2 sm:mx-12 mt-12">
         <h1 className="text-xl text-white font-bold"><CampaignIcon/>Announcement</h1>
           <ul className="text-white">
             <li  className="my-6">No announcements.</li>

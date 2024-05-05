@@ -32,7 +32,7 @@ export default function Nav() {
                 );
               })}
             </div>
-            <div className="sm:hidden absolute top-[60px] w-full flex flex-col">
+            <div className="sm:hidden absolute top-[60px] bg-white w-full flex flex-col">
               {true && (
                 <div className="flex flex-row items-center space-x-7 bg-white p-4 shadow-lg  ">
                   {options.map((option, index) => {
