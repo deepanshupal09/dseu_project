@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import favicon from "../public/favicon.ico"
-
-
+import favicon from "../public/favicon.ico";
 
 export const metadata: Metadata = {
   title: "DSEU ERP",
@@ -15,14 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"> 
+    <html lang="en">
       <head>
-      <link
-            rel="icon"
-            href={favicon.src}
-        />
-        </head>     
-      <body>{children}</body>      
+        {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.6.3/umd/react.production.min.js" async ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.6.3/umd/react-dom.production.min.js" async ></script> */}
+        <link rel="icon" href={favicon.src} />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }

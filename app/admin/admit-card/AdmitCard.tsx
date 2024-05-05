@@ -8,12 +8,19 @@ import {
   Font,
   PDFViewer,
   Image,
+  PDFDownloadLink,
 } from "@react-pdf/renderer";
 import ReactPDF from "@react-pdf/renderer";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import logo from "./images/dseu_logo.png";
 import log from "./images/g22.png";
 import { StudentData } from "./page";
+import { BlobProvider } from '@react-pdf/renderer';
+import PdfExport from "./PdfExport";
+import { Button, CircularProgress } from "@mui/material";
+import { CloudDownload } from "@mui/icons-material";
+
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface User {
   campus: string;
@@ -33,168 +40,170 @@ interface Paper {
   examType: string;
 }
 
-const dummyUser: User[] = [ {
-  campus: "G.B. Pant DSEU Okhla I Campus",
-  programName: "Computer Science",
-  name: "John Doe",
-  rollno: "CS001",
-  dob: "1990-01-01",
-  photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
-  papers: [
-    {
-      sno: 1,
-      paperCode: "CS101",
-      paperName: "Introduction to Computer Science",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 2,
-      paperCode: "CS102",
-      paperName: "Data Structures and Algorithms",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 3,
-      paperCode: "CS103",
-      paperName: "Database Management Systems",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 4,
-      paperCode: "CS104",
-      paperName: "Operating Systems",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 5,
-      paperCode: "CS105",
-      paperName: "Computer Networks",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 6,
-      paperCode: "CS106",
-      paperName: "Software Engineering",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 7,
-      paperCode: "CS107",
-      paperName: "Web Development",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 8,
-      paperCode: "CS108",
-      paperName: "Artificial Intelligence",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 9,
-      paperCode: "CS109",
-      paperName: "Machine Learning",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 10,
-      paperCode: "CS110",
-      paperName: "Computer Graphics",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    // Add more papers as needed
-  ],
-},
-{
-  campus: "G.B. Pant DSEU Okhla I Campus",
-  programName: "Computer Science",
-  name: "John Doe",
-  rollno: "CS001",
-  dob: "1990-01-01",
-  photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
-  papers: [
-    {
-      sno: 1,
-      paperCode: "CS101",
-      paperName: "Introduction to Computer Science",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 2,
-      paperCode: "CS102",
-      paperName: "Data Structures and Algorithms",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 3,
-      paperCode: "CS103",
-      paperName: "Database Management Systems",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 4,
-      paperCode: "CS104",
-      paperName: "Operating Systems",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 5,
-      paperCode: "CS105",
-      paperName: "Computer Networks",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 6,
-      paperCode: "CS106",
-      paperName: "Software Engineering",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 7,
-      paperCode: "CS107",
-      paperName: "Web Development",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 8,
-      paperCode: "CS108",
-      paperName: "Artificial Intelligence",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 9,
-      paperCode: "CS109",
-      paperName: "Machine Learning",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    {
-      sno: 10,
-      paperCode: "CS110",
-      paperName: "Computer Graphics",
-      semester: "Spring 2024",
-      examType: "Regular",
-    },
-    // Add more papers as needed
-  ],
-}]
+const dummyUser: User[] = [
+  {
+    campus: "G.B. Pant DSEU Okhla I Campus",
+    programName: "Computer Science",
+    name: "John Doe",
+    rollno: "CS001",
+    dob: "1990-01-01",
+    photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
+    papers: [
+      {
+        sno: 1,
+        paperCode: "CS101",
+        paperName: "Introduction to Computer Science",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 2,
+        paperCode: "CS102",
+        paperName: "Data Structures and Algorithms",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 3,
+        paperCode: "CS103",
+        paperName: "Database Management Systems",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 4,
+        paperCode: "CS104",
+        paperName: "Operating Systems",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 5,
+        paperCode: "CS105",
+        paperName: "Computer Networks",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 6,
+        paperCode: "CS106",
+        paperName: "Software Engineering",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 7,
+        paperCode: "CS107",
+        paperName: "Web Development",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 8,
+        paperCode: "CS108",
+        paperName: "Artificial Intelligence",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 9,
+        paperCode: "CS109",
+        paperName: "Machine Learning",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 10,
+        paperCode: "CS110",
+        paperName: "Computer Graphics",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      // Add more papers as needed
+    ],
+  },
+  {
+    campus: "G.B. Pant DSEU Okhla I Campus",
+    programName: "Computer Science",
+    name: "John Doe",
+    rollno: "CS001",
+    dob: "1990-01-01",
+    photo: "https://exam.dseu.ac.in/image/41521001_photo.jpg",
+    papers: [
+      {
+        sno: 1,
+        paperCode: "CS101",
+        paperName: "Introduction to Computer Science",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 2,
+        paperCode: "CS102",
+        paperName: "Data Structures and Algorithms",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 3,
+        paperCode: "CS103",
+        paperName: "Database Management Systems",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 4,
+        paperCode: "CS104",
+        paperName: "Operating Systems",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 5,
+        paperCode: "CS105",
+        paperName: "Computer Networks",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 6,
+        paperCode: "CS106",
+        paperName: "Software Engineering",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 7,
+        paperCode: "CS107",
+        paperName: "Web Development",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 8,
+        paperCode: "CS108",
+        paperName: "Artificial Intelligence",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 9,
+        paperCode: "CS109",
+        paperName: "Machine Learning",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      {
+        sno: 10,
+        paperCode: "CS110",
+        paperName: "Computer Graphics",
+        semester: "Spring 2024",
+        examType: "Regular",
+      },
+      // Add more papers as needed
+    ],
+  },
+];
 
 Font.register({
   family: "Roboto",
@@ -420,10 +429,7 @@ const MyDocument = ({ users }: { users: StudentData[] }) => {
                   </Text>
                 </View>
                 <View style={styles.columnItem2}>
-        
-                  <Image
-                    src={user.photo}
-                  />
+                  <Image src={user.photo} />
                 </View>
               </View>
               <View style={styles.table2}>
@@ -617,22 +623,20 @@ const AdmitCard = ({ admitCardData }: { admitCardData: StudentData[] }) => {
   }, [iframeCurrent]);
   return (
     <>
-      {/* {console.log("admitCardData: ", admitCardData)} */}
-      {/* {isIFrameLoaded === false ?
-                    <div className="flex h-[81vh]">
-                        <div className="m-auto">
-                             Rendering PDF
-                        </div>
-                    </div>
-                    : null} */}
-      {/* <div className={`flex [&>*]:w-full ${isIFrameLoaded === true ? "h-[81vh]" : "h-0"}`}> */}
-      {/* <PDFViewer height={'100%'} width={'100%'} showToolbar={true} className="rounded-md" innerRef={iframeRef}>
-                        <MyDocument users={admitCardData} />
-                    </PDFViewer> */}
-      {/* </div> */}
-      <PDFViewer style={{ width: "100%", height: "100vh" }}>
-        <MyDocument users={admitCardData} />
-      </PDFViewer>
+{/* 
+      <div className="border-2 min-w-[50px] min-h-[50px]">
+        <PDFViewer style={{ width: "100%", height: "100vh" }}>
+          <MyDocument users={admitCardData} />
+        </PDFViewer>
+      </div> */}
+       <PDFDownloadLink
+              document={<MyDocument users={admitCardData} />}
+              fileName={`Admit Card ${admitCardData[0].campus} ${admitCardData[0].programName}.pdf`}
+            >
+              {({ loading }) =>
+                loading ? <CircularProgress />: <Button size="large" className="flex items-center" variant="contained"><CloudDownload   /> &nbsp;&nbsp;<span> Download PDF </span></Button>
+              }
+            </PDFDownloadLink>
     </>
   );
 };

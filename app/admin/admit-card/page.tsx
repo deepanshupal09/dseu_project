@@ -286,7 +286,7 @@ export default function Registration() {
             rollno: student.rollno,
             dob: student.dob,
             papers: mapCourseCodesToPapers(student.course_codes, courseData),
-            photo: "https://exam.dseu.ac.in"+student.photo+'?'+Date.now(),
+            photo: "https://exam.dseu.ac.in" + student.photo + "?" + Date.now(),
           }));
 
           console.log("users: ", users);
@@ -350,12 +350,12 @@ export default function Registration() {
         <Head username={user?.campus} />
         <Nav />
       </div>
-      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[100px] sm:left-[250px] left-0 right-0 z-10 mx-12 mt-6">
+      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[100px] sm:left-[250px] left-0 right-0 mx-12 mt-6">
         <h1 className="text-2xl text-white font-bold text-center">
           Admit Card
         </h1>
       </div>
-      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0 z-10 mx-12 mt-6">
+      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0 mx-12 mt-6">
         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
           SELECT
         </h2>
@@ -443,8 +443,8 @@ export default function Registration() {
             Apply
           </Button>
           {admitCardData.length > 0 && (
-            <div className="w-[90%] mx-auto my-5">
-              <AdmitCard admitCardData={admitCardData} />
+            <div className=" flex justify-center mx-auto my-5">
+                <AdmitCard admitCardData={admitCardData} />
             </div>
           )}
         </div>
