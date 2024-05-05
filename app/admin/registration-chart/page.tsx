@@ -332,14 +332,14 @@ export default function Registration() {
         <Head username={"Campus Director"} />
         <Nav />
       </div>
-      <div className="mt-[154px] max-sm:mt-[150px] px-4 sm:ml-[250px]">
+      <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         {/* abc */}
-        <div className="bg-dseublue py-2 px-4 sm:mx-8  rounded shadow mt-28  ">
+        <div className="bg-dseublue py-2 px-2 sm:mx-8  rounded shadow mt-28  ">
           <h1 className="text-2xl text-white font-bold  text-center">
             Registration Chart
           </h1>
         </div>
-        <div className="py-2 px-4 rounded shadow max-sm:w-full mt-5 sm:mx-8 ">
+        <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8 ">
           <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
             SELECT
           </h2>
@@ -445,7 +445,7 @@ export default function Registration() {
           </div> */}
         </div>
 
-        <div className="py-2 px-4 rounded shadow sm:mx-8 mt-6">
+        <div className="py-2 px-2 rounded shadow sm:mx-8 mt-6">
           <ReactToPrint
             trigger={() => (
               <Button variant="contained" color="primary">
@@ -456,7 +456,7 @@ export default function Registration() {
             // pageStyle="@page { size: landscape; }"
           />
           <div ref={containerRef} className=" h-auto">
-            {/* <div className="announcement  front-sheet bg-white py-2 px-4 rounded shadow  mx-12 mt-6 "> */}
+            {/* <div className="announcement  front-sheet bg-white py-2 px-2 rounded shadow  mx-12 mt-6 "> */}
             <div
               ref={frontSheetRef}
               className="front-sheet hidden overflow-y-auto h-auto"
@@ -587,7 +587,7 @@ export default function Registration() {
             </div>
             {/* </div> */}
             <div ref={detailSheetRef} className="detail-sheet">
-              <div className="announcement bg-white py-2 px-4 rounded shadow ">
+              <div className="announcement bg-white py-2 px-2 rounded shadow ">
                 <TableContainer component={Paper} className="mt-5 detail-sheet">
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
