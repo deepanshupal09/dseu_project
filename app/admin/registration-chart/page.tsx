@@ -614,7 +614,7 @@ export default function Registration() {
                           align="center"
                           style={{ border: "1px solid black" }}
                         >
-                          Signature
+                          Student Signature
                         </TableCell>
                       </TableRow>
                     </TableHead>
