@@ -3,7 +3,7 @@ import React from "react";
 const Final = ({ onBackToLogin }:{onBackToLogin:() => void}) => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Pesonal Details submitted successful</h1>
+      <h1 className="text-3xl font-bold mb-4">Personal Details submitted successfully</h1>
       <p className="text-lg mb-8">Login again to Register for Exams.</p>
       <button
         onClick={()=>{onBackToLogin()}}
