@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState, useEffect, useRef } from "react";
 import ReactToPrint from "react-to-print";
 import Head from "../dashboard/Head";
@@ -329,7 +328,7 @@ export default function Registration() {
   return (
     <>
       <div className="bg-[#dfdede]">
-        <Head username={"Campus Director"} />
+        <Head username={user?.campus} />
         <Nav />
       </div>
       <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
@@ -614,7 +613,9 @@ export default function Registration() {
                           align="center"
                           style={{ border: "1px solid black" }}
                         >
-                          Student Sign.
+                          Student
+                          <br />
+                           Sign.
                         </TableCell>
                       </TableRow>
                     </TableHead>

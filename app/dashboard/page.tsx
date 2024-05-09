@@ -24,6 +24,7 @@ export default function Home() {
     details:
       "",
   })
+  const [open ,setOpen] = useState<boolean>(true);
 
 
 
@@ -77,7 +78,9 @@ export default function Home() {
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses is LIVE</li>
+            {open?
+            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are live now!</li>:<li>Exam registrations for B.Tech and M.Tech Courses are closed now.</li>}
+            {/* <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are closed now.</li> */}
             {/* <li  className="my-6">Examination Registrations about to close.</li>
             <li className="my-6">Course Details about to open.</li>
             <li className="my-6">Backlog exams for 2nd 4th semester.</li>

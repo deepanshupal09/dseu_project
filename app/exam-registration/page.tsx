@@ -86,6 +86,7 @@ export default function Home() {
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
+  const [open, setOpen] = useState<Boolean>(true);
 
 
   useEffect(() => {
@@ -350,157 +351,178 @@ export default function Home() {
           </Grid>
         </div>
         <div className="text-center">
-          <Typography variant="body1">
-            <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective,
-            OE - Open Elective
-          </Typography>
+
         </div>
-        {!chosen && (
-          <>
-            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
-              <Table sx={{ "& td, & th": { padding: "8px" } }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="subtitle1">Course Name</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle1">Course Code</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle1">Course Type</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle1">Select</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {subjectsData.map((subject, index) => (
-                    <TableRow key={index}>
+        {/* Exam registration open */}
+        {open && (
+          <>           {!chosen && (
+            <>
+                        <Typography className="text-center" variant="body1">
+              <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective,
+              OE - Open Elective
+            </Typography>
+              <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
+                <Table sx={{ "& td, & th": { padding: "8px" } }}>
+                  <TableHead>
+                    <TableRow>
                       <TableCell>
-                        <Typography>{subject.name}</Typography>
+                        <Typography variant="subtitle1">Course Name</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography>{subject.code}</Typography>
+                        <Typography variant="subtitle1">Course Code</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography>{subject.type}</Typography>
+                        <Typography variant="subtitle1">Course Type</Typography>
                       </TableCell>
                       <TableCell>
-                        {subject.type === "CC" ? (
-                          <Checkbox checked disabled />
-                        ) : (
-                          <Checkbox
-                            checked={selectedSubjects[subject.code] || false}
-                            onChange={() => handleSelectSubject(subject)}
-                          />
-                        )}
+                        <Typography variant="subtitle1">Select</Typography>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-            <div className="flex justify-center">
-              <Typography>
-                {/* <b>Backlogs</b> */}
-              </Typography>
-            </div>
-            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
-              <FormGroup row>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={giveBacklogExams}
-                      onChange={() => {
-                        setGiveBacklogExams(!giveBacklogExams);
-                      }}
-                    />
-                  }
-                  label="Register for Reappear Exams?"
-                />
-              </FormGroup>
-              {giveBacklogExams && (
-                <div className="w-full">
-                  {generateSemesters().map((semester) => (
-                    <Accordion key={semester}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subtitle1">
-                          Semester {semester}
-                        </Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell style={{ width: "50%" }}>
-                                <Typography>Course Name</Typography>
-                              </TableCell>
-                              <TableCell style={{ width: "25%" }}>
-                                <Typography>Course Code</Typography>
-                              </TableCell>
-                              <TableCell style={{ width: "25%" }}>
-                                <Typography>Select</Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {backlogsData
-                              .filter(
-                                (backlog) =>
-                                  backlog.semester === parseInt(semester)
-                              )
-                              .map((backlog, index) => (
-                                <TableRow key={index}>
-                                  <TableCell style={{ width: "50%" }}>
-                                    <Typography>{backlog.subject}</Typography>
-                                  </TableCell>
-                                  <TableCell style={{ width: "25%" }}>
-                                    <Typography>
-                                      {backlog.subjectCode}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell style={{ width: "25%" }}>
-                                    <Checkbox
-                                      checked={selectedBacklogs.some(
-                                        (b) =>
-                                          b.subjectCode ===
-                                            backlog.subjectCode &&
-                                          b.semester === parseInt(semester)
-                                      )}
-                                      onChange={() =>
-                                        handleSelectBacklog(backlog)
-                                      }
-                                    />
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="flex justify-center mt-2 mb-5">
-              <Button
-                onClick={handlePreview}
-                style={{ backgroundColor: "#0066ff", color: "#ffffff" }}
-              >
-                Preview
-              </Button>
-            </div>
+                  </TableHead>
+                  <TableBody>
+                    {subjectsData.map((subject, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <Typography>{subject.name}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{subject.code}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{subject.type}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          {subject.type === "CC" ? (
+                            <Checkbox checked disabled />
+                          ) : (
+                            <Checkbox
+                              checked={selectedSubjects[subject.code] || false}
+                              onChange={() => handleSelectSubject(subject)}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="flex justify-center">
+                <Typography>
+                </Typography>
+              </div>
+              <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={giveBacklogExams}
+                        onChange={() => {
+                          setGiveBacklogExams(!giveBacklogExams);
+                        }}
+                      />
+                    }
+                    label="Register for Reappear Exams?"
+                  />
+                </FormGroup>
+                {giveBacklogExams && (
+                  <div className="w-full">
+                    {generateSemesters().map((semester) => (
+                      <Accordion key={semester}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant="subtitle1">
+                            Semester {semester}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell style={{ width: "50%" }}>
+                                  <Typography>Course Name</Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "25%" }}>
+                                  <Typography>Course Code</Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "25%" }}>
+                                  <Typography>Select</Typography>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {backlogsData
+                                .filter(
+                                  (backlog) =>
+                                    backlog.semester === parseInt(semester)
+                                )
+                                .map((backlog, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell style={{ width: "50%" }}>
+                                      <Typography>{backlog.subject}</Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "25%" }}>
+                                      <Typography>
+                                        {backlog.subjectCode}
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "25%" }}>
+                                      <Checkbox
+                                        checked={selectedBacklogs.some(
+                                          (b) =>
+                                            b.subjectCode ===
+                                              backlog.subjectCode &&
+                                            b.semester === parseInt(semester)
+                                        )}
+                                        onChange={() =>
+                                          handleSelectBacklog(backlog)
+                                        }
+                                      />
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-center mt-2 mb-5">
+                <Button
+                  onClick={handlePreview}
+                  style={{ backgroundColor: "#0066ff", color: "#ffffff" }}
+                >
+                  Preview
+                </Button>
+              </div>
+            </>
+          )} 
+</>
+
+        )}
+        {!open && (
+          <>
+        {!chosen && (
+                      <Typography className=" text-center text-xl p-2 ">
+                      {" "}
+                      Exam Registrations are closed now! 
+                    </Typography>
+        )}
           </>
         )}
+        {/* Exam registration closed */}
+
 
         {chosen && (
           <>
-            <Typography className="ml-60 text-xl p-2 ">
+            <Typography className=" text-xl text-center p-2 ">
               {" "}
               Selected Subjects
             </Typography>
+            <Typography className="text-center" variant="body1">
+            <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective,
+            OE - Open Elective
+          </Typography>
             <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
               <Table sx={{ "& td, & th": { padding: "20px" } }}>
                 <TableHead>
