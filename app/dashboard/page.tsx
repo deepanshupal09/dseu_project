@@ -24,7 +24,7 @@ export default function Home() {
     details:
       "",
   })
-  const [open ,setOpen] = useState<boolean>(true);
+  const [open ,setOpen] = useState<boolean>(false);
 
 
 

@@ -23,9 +23,9 @@ export default async function middleware(req: NextRequest) {
   // }
 
 
-  // if(path.startsWith("/getuserdetails")) {
-  //   return NextResponse.redirect(new URL("/admin", req.nextUrl));
-  // }
+  if(path.startsWith("/getuserdetails")) {
+    return NextResponse.redirect(new URL("/", req.nextUrl));
+  }
 
 
   if ((path === "/admin" || path === "/") && adminCookie) {

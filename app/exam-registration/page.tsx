@@ -86,7 +86,7 @@ export default function Home() {
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
-  const [open, setOpen] = useState<Boolean>(true);
+  const [open, setOpen] = useState<Boolean>(false);
 
 
   useEffect(() => {
