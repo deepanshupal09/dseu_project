@@ -90,6 +90,7 @@ const loginByEmailId = (
           res.status(200).send({token});
         })
         .catch((error: string) => {
+          console.log("login error: ", error)
           if (error === "internal server error")
             res.status(500).send({message: "Internal Server Error!"});
           else if (error === "incorrect password")

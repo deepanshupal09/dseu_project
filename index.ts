@@ -15,6 +15,7 @@ import { exec } from 'child_process';
 import pool from "./db";
 
 
+import bcrypt from "bcrypt";
 
 
 dotenv.config();
@@ -87,6 +88,14 @@ app.post("/upload", upload.single("image"), async (req: Request, res: Response) 
     res.send({ path: `/image/${newFileName}.png` });
 });
 
+// app.get("/generatePassword", async(req,res)=>{
+//     const password = req.body.password;
+//     const hash = await bcrypt.hash(password, 10);
+
+//     res.send({password: hash});
+
+// })
+
 
 
 // Other routes
@@ -106,26 +115,17 @@ app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
 
-const backupDir = path.resolve(__dirname, '../../backups');
+const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
 
-const backupJob = cron.schedule('50 7 2 * * *', async () => {
+const backupJob = cron.schedule('00 00 * * *', async () => {
     console.log("Backing up data....")
     try {
-        // Create the backup directory if it doesn't exist
         if (!fs.existsSync(backupDir)) {
             fs.mkdirSync(backupDir);
         }
-
-        // Generate a timestamp for the backup file name
         const timestamp = new Date().toISOString().replace(/:/g, '-');
-
-        // Define the backup file path
         const backupFilePath = path.resolve(backupDir, `backup-${timestamp}`);
-
-        // Construct the pg_dump command
         const pgDumpCommand = `pg_dump --dbname=postgresql://postgres:1234@localhost:5432/dseu_erp --format=c > ${backupFilePath}`;
-
-        // Execute the pg_dump command
         exec(pgDumpCommand, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error backing up database: ${error.message}`);
@@ -141,7 +141,7 @@ const backupJob = cron.schedule('50 7 2 * * *', async () => {
         console.error(`Error during backup: ${error.message}`);
     }
 }, {
-    timezone: "Asia/Kolkata" // Adjust timezone as per your server timezone
+    timezone: "Asia/Kolkata"
 });
 
 backupJob.start();
