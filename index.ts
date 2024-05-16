@@ -70,6 +70,7 @@ app.post("/signup", controller.signup);
 app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 // app.get("/fetchExamRegistrationByCourseCode", controller.fetchExamRegistrationByCourseCode);
 app.get("/sendEmail", controller.sendEmail);
+app.get("/sendUserDetailsEmail", controller.sendUserDetailsEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 // app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);

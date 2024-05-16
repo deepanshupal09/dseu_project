@@ -28,6 +28,13 @@ import asyncHandler from "express-async-handler";
 dotenv.config();
 
 
+interface Course {
+  course_code: string,
+  course_name: string,
+  last_modified: Date,
+  course_type: string
+}
+
 
 const getUserByRollno = (req: Request, res: Response): void => {
   try {
@@ -369,6 +376,75 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+const sendUserDetailsEmail = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const rollno: string = req.headers.rollno as string;
+    const userDetails = await fetchUserByRollno(rollno);
+    const examRegistrationDetails = await fetchTheExamRegistration(rollno);
+    console.log("userdetails: ",userDetails);
+    console.log("userdetails 2: ",examRegistrationDetails);
+    // Check if user details were found
+    if (userDetails.rowCount === 0) {
+      throw new Error('No user found with the provided roll number.');
+    }
+    if (examRegistrationDetails.rowCount === 0) {
+      throw new Error('User with the provided roll number has not registered for exam registration.');
+    }
+
+    const user = userDetails[0];
+    console.log("user: ",user);
+    const examUser = examRegistrationDetails;
+    console.log("examUser: ",examUser);
+
+    let coursesText = 'Here are the courses you registered in your exam for:\n';
+    examUser.forEach((course:Course) => {
+      coursesText += `${course.course_name}\n`;
+    });
+
+
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: user.emailid, // Assuming 'emailid' is the column name for email in the 'users' table
+      subject: 'Your Details',
+      text: `Here are your details Rollno: ${user.rollno} entered:\n\n` +
+            `Name: ${user.name}\n` +
+            `Program: ${user.program}\n` +
+            `Semester: ${user.semester}\n` +
+            `Phone: ${user.phone}\n` +
+            `Campus: ${user.campus}\n` +
+            `Email ID: ${user.emailid}\n` +
+            `Gender: ${user.gender}\n` +
+            `Alternate Phone: ${user.alternate_phone}\n` +
+            `Father's Name: ${user.father}\n` +
+            `Mother's Name: ${user.mother}\n` +
+            `Guardian's Name: ${user.guardian}\n` +
+            `ABC ID: ${user.abc_id}\n` +
+            `Aadhar Number: ${user.aadhar}\n` +
+            `PWBD Certificate: ${user.pwbd_certificate}\n` +
+            `Program Type: ${user.program_type}\n` +
+            `Year of Admission: ${user.year_of_admission}\n` +
+            `Date of Birth: ${user.dob}\n\n` +
+            coursesText + // Add the courses text here
+            `\nPlease verify your details.` 
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send({ message: 'Internal Server Error!' });
+      } else {
+        console.log('Email sent successfully!');
+        res.status(200).send({ message: 'Email sent successfully!' });
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(404).send({ message: 'User not found!' });
+  }
+});
+
+
 const updatePasswordByOtp = (req: Request, res: Response)=>{
   try{
     const {rollno, password} = req.headers;
@@ -451,6 +527,8 @@ const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
 }
 
 
+
+
 export {
   getUserByRollno,
   login,
@@ -472,5 +550,6 @@ export {
   fetchStudentByProgramAndSemester,
   fetchStudentByCampusAndProgram,
   loginByEmailId,
-  fetchCourseDetailsByCourseCode
+  fetchCourseDetailsByCourseCode,
+  sendUserDetailsEmail
 };
