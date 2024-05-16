@@ -97,6 +97,7 @@ const loginByEmailId = (
           res.status(200).send({token});
         })
         .catch((error: string) => {
+          console.log("login error: ", error)
           if (error === "internal server error")
             res.status(500).send({message: "Internal Server Error!"});
           else if (error === "incorrect password")
@@ -514,8 +515,9 @@ const fetchStudentByCampusAndProgram = (async(req: Request, res: Response)=>{
 
 const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
   try{
-    const courseDetails = req.body;
-    fetchTheCourseDetails(courseDetails).then((results)=>{
+    const coursedetails = req.body;
+    console.log("coursedetails: ",coursedetails)
+    fetchTheCourseDetails(coursedetails).then((results)=>{
       res.status(200).send(results);
     }).catch(()=>{
       res.status(500).send("Internal server error fetch course details 2")

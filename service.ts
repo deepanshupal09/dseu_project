@@ -56,7 +56,7 @@ export function handleLogin(
 
                                 const result = {
                                     token: token,
-                                    defaultPass: password === default_pass,
+                                    defaultPass: results.rows[0].campus === null,
                                 };
                                 resolve(result);
                             } else {
