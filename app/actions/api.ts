@@ -290,7 +290,7 @@ export async function fetchCoursesBySemester(token:string ,campus: string, progr
     throw error;
   }
 }
-export async function fetchExamRegistrationByCourseCode(token:string ,course_code: string) {
+export async function fetchExamRegistrationByCourseCode(token:string ,campus: string, course_code: string) {
   try {
     // console.log("campus ",program_type);
     const response = await fetch(
@@ -301,7 +301,8 @@ export async function fetchExamRegistrationByCourseCode(token:string ,course_cod
         headers: {
           "Content-Type": "application/json",
           token: token,
-          coursecode: course_code
+          coursecode: course_code,
+          campus: campus,
         },
       }
     );

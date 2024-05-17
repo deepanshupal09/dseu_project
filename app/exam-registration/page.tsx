@@ -351,7 +351,7 @@ export default function Home() {
         </div>
         <div className="text-center">
           <Typography variant="body1">
-            <b>Course Types: </b>CC - Compulsory Subject, PE - Program Elective,
+            <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective,
             OE - Open Elective
           </Typography>
         </div>

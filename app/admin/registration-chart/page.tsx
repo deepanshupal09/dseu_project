@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState, useEffect, useRef } from "react";
 import ReactToPrint from "react-to-print";
 import Head from "../dashboard/Head";
