@@ -19,7 +19,8 @@ import {
   fetchTheStudent,
   fetchTheStudentCampus,
   handleLoginByEmailId,
-  fetchTheCourseDetails
+  fetchTheCourseDetails,
+  updateMultipleUsersDetails
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -146,6 +147,26 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
   }
 };
 
+// const updateMultipleDetailsByRollno = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     // Extract the list of user details from the request body
+//     const userList: UserDetails[] = req.body;
+//     console.log(userList);
+
+//     // Call the updateSelectedDetails service function with the provided user list
+//     const updateResults = await updateSelectedDetails(userList);
+
+//     // Send back the results of the update operations
+//     res.status(200).json({
+//       message: "Update operations completed",
+//       results: updateResults
+//     });
+//   } catch (error) {
+//     console.error(`Error updating multiple user details: ${error}`);
+//     res.status(500).send("Internal server error");
+//   }
+// };
+
 function signup(req: Request, res: Response):void {
   console.log('singup')
   try {
@@ -195,6 +216,24 @@ function signup(req: Request, res: Response):void {
 //     res.send("internal server error");
 //   }
 // }
+const updateMultipleDetailsByRollno = (req: Request, res: Response): void => {
+  console.log('updateMultipleUsers');
+  try {
+      const users = req.body; // Assuming req.body is an array of user objects
+      console.log('Received users to update: ', users);
+
+      updateMultipleUsersDetails(users).then((message) => {
+          res.status(200).send({ message });
+      }).catch((error) => {
+          console.error('Error in updateMultipleUsers: ', error);
+          res.status(500).send({ message: "internal server error" });
+      });
+  } catch (error) {
+      console.error('Catch block error in updateMultipleUsers: ', error);
+      res.status(500).send({ message: "internal server error" });
+  }
+}
+
 
 const fetchCoursesBySemester = (req: Request, res: Response):void => {
   try{
@@ -553,5 +592,6 @@ export {
   fetchStudentByCampusAndProgram,
   loginByEmailId,
   fetchCourseDetailsByCourseCode,
-  sendUserDetailsEmail
+  sendUserDetailsEmail,
+  updateMultipleDetailsByRollno
 };

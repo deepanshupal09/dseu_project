@@ -22,7 +22,8 @@ import {
     fetchStudent,
     fetchStudentCampus,
     fetchPasswordByEmailId,
-    fetchCourseDetails
+    fetchCourseDetails,
+    updateMultipleDetails
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -199,6 +200,22 @@ export async function updateDetails(
     }
 }
 
+export async function updateMultipleUsersDetails(users: Array<{ rollno: string, father: string, mother: string, aadhar: string, abc_id: string }>): Promise<string> {
+    try {
+        for (const user of users) {
+            console.log("Updating details for rollno: ", user.rollno);
+            const results = await updateMultipleDetails(user.rollno, user.father, user.mother, user.aadhar, user.abc_id);
+            console.log("Update results: ", results);
+        }
+        return "All users successfully updated!";
+    } catch (error) {
+        console.error("Error updating multiple users: ", error);
+        throw new Error("internal server error");
+    }
+}
+
+  
+
 export async function verifyTokenByRollNo(rollno: string) {
     try {
         const result = await fetchTokenByRollNo(rollno);
@@ -221,17 +238,6 @@ export function fetchUserByRollno(rollno: string): Promise<any> {
     });
 }
 
-// export function addInExamRegisteration ( rollno:string, course_code:string) : Promise<string> {
-//   return new Promise((resolve, reject) => {
-//     const last_modified: string = new Date().toString();
-//     addExamRegisteration(rollno, course_code, last_modified).then((results) => {
-//       resolve("Successfully inserted in Exam Registeration!");
-//     }).catch((error) => {
-//       console.log("Exam registeration service error: ",error);
-//       reject("Internal server error");
-//     })
-//   })
-// }
 
 export function fetchTheCourses(
     campus: string,

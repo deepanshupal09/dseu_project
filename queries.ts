@@ -115,3 +115,6 @@ export const fetchStudentByCampusAndProgram: string =`
 
 export const getPasswordByEmailId: string =
   "SELECT * FROM admin WHERE emailid=$1";
+
+export const updateMultipleDetailsByRollno: string =
+`UPDATE users SET father = COALESCE($2, father), mother = COALESCE($3, mother), aadhar = COALESCE($4, aadhar), abc_id = COALESCE($5, abc_id) WHERE rollno = $1`;

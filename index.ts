@@ -111,6 +111,7 @@ app.get("/sendEmail", controller.sendEmail);
 app.get("/sendUserDetailsEmail", controller.sendUserDetailsEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
+app.get("/updateMultipleDetailsByRollno", controller.updateMultipleDetailsByRollno);
 // app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);

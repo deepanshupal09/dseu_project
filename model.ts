@@ -23,6 +23,7 @@ import {
     fetchStudentByProgramAndSemester,
     fetchStudentByCampusAndProgram,
     getPasswordByEmailId,
+    updateMultipleDetailsByRollno
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -464,3 +465,20 @@ export function fetchCourseDetails( courseDetails:{
     });
 }
 
+export function updateMultipleDetails (
+    rollno: string,
+    father: string,
+    mother: string,
+    aadhar: string,
+    abc_id: string
+):Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) => {
+        pool.query(updateMultipleDetailsByRollno, [rollno, father, mother, aadhar, abc_id], (error, results) =>{
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
