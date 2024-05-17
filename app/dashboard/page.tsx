@@ -24,6 +24,7 @@ export default function Home() {
     details:
       "",
   })
+  const [open ,setOpen] = useState<boolean>(false);
 
 
 
@@ -67,7 +68,7 @@ export default function Home() {
       <Navbar />
 
       <div className="sm:pl-[300px] sm:mt-[100px]  space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">
-        <div className="welcome py-2 px-4 rounded   z-20  ">
+        <div className="welcome py-2 px-4 rounded     ">
           <h1 className="text-2xl text-white-800 font-bold ">
             Welcome {user?.name}
           </h1>
@@ -77,7 +78,9 @@ export default function Home() {
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses is LIVE</li>
+            {open?
+            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are live now!</li>:<li>Exam registrations for B.Tech and M.Tech Courses are closed now.</li>}
+            {/* <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are closed now.</li> */}
             {/* <li  className="my-6">Examination Registrations about to close.</li>
             <li className="my-6">Course Details about to open.</li>
             <li className="my-6">Backlog exams for 2nd 4th semester.</li>

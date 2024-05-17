@@ -104,14 +104,14 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
       <div className=" w-full space-y-5 ">
         {" "}
         <Typography className="w-full text-lg  ">
-          Upload Passport size image(max 30KB, jpg or png format only)
+          Upload Passport size image(max 30KB, png format only)
         </Typography>
         <div className="flex justify-between">
           <input
             id="photo"
             type="file"
             // label="Upload Photo (Max 30kb)"
-            accept="image/jpeg, image/png"
+            accept="image/png"
             onChange={handlePhotoChange}
             required
             className="w-full"
@@ -149,13 +149,13 @@ const UploadDetails: React.FC<UploadDetailsProps> = ({
       {isPwbd && (
         <div className="w-full space-y-5 ">
           <Typography className="text-lg ">
-            Upload PwBD Certificate(max 30KB, jpg and png format only)
+            Upload PwBD Certificate(max 30KB, png format only)
           </Typography>
           <div className="flex justify-between">
             <input
               id="pwbd-certificate"
               type="file"
-              accept="image/jpeg, image/png"
+              accept="image/png"
               onChange={handlePwbdCertificateChange}
               className="w-full"
             />

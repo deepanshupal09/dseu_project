@@ -22,6 +22,7 @@ import logo from "../../images/dseu.png";
 import { getAuthAdmin } from "../../actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import {
+  fetchCourseDetailsByCourseCode,
   fetchCoursesBySemester,
   fetchExamRegistrationByProgramAndSemester,
 } from "@/app/actions/api";
@@ -165,7 +166,6 @@ const campusList = [
   "DSEU Vivek vihar Campus",
 ];
 
-const semesterList = ["2", "4", "6"];
 
 export default function Registration() {
   const [selectedProgramCategory, setSelectedProgramCategory] = useState("");
@@ -186,12 +186,16 @@ export default function Registration() {
   const containerRef = useRef(null);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
+  const [courseCodes,setCourseCodes] = useState<string[]>([]);
+  const [semesterList, setSemesterList]=useState<string[]>(["2","4","6"]);
 
-  //   useEffect(() => {
-  //     const dummyData = [];
-
-  //     setIndexData(dummyData);
-  //   }, []);
+    useEffect(() => {
+      if(selectedProgramCategory==="PostGraduate") {
+        setSemesterList(["2","4"]);
+      } else {
+        setSemesterList(["2","4","6"]);
+      }
+    }, [selectedProgramCategory]);
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -209,21 +213,22 @@ export default function Registration() {
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
-      fetchCoursesBySemester(
+      fetchCourseDetailsByCourseCode(
         token,
-        selectedCampus,
-        selectedProgram,
-        selectedSemester
+        {coursecode: courseCodes,campus: selectedCampus,program: selectedProgram }
       ).then((response: Course[]) => {
         const temp: IndexDataRow[] = [];
         response.map((course: Course, index: number) => {
           temp.push({ sno: index + 1, ...course });
         });
+        console.log("course Details: ",temp)
         setIndexData(temp);
         console.log("response: ", response);
-      });
+      }).catch((error)=>{
+        console.log("error fetching course details: ",error);
+      })
     }
-  }, [selectedProgram, selectedSemester]);
+  }, [courseCodes]);
 
   useEffect(() => {
     if (studentsData.length > 0) {
@@ -245,6 +250,18 @@ export default function Registration() {
           selectedProgram,
           selectedSemester
         );
+        console.log(data);
+        let set = new Set<string>();
+        data.map((student: Student)=>{
+          student.course_codes.map((courseCode: string)=>{
+            set.add(courseCode);
+          })
+        })
+        const array = Array.from(set);
+        setCourseCodes(array);
+        console.log("course: ",array)
+
+
         setStudentsData(data);
       }
     } catch (error) {
@@ -311,17 +328,17 @@ export default function Registration() {
   return (
     <>
       <div className="bg-[#dfdede]">
-        <Head username={"Campus Director"} />
+        <Head username={user?.campus} />
         <Nav />
       </div>
-      <div className="mt-[60px] max-sm:mt-[150px] px-4 sm:ml-[250px]">
+      <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         {/* abc */}
-        <div className="bg-dseublue py-2 px-4 sm:mx-12 w-full rounded shadow mt-28  ">
-          <h1 className="text-2xl text-white font-bold w-full text-center">
+        <div className="bg-dseublue py-2 px-2 sm:mx-8  rounded shadow mt-28  ">
+          <h1 className="text-2xl text-white font-bold  text-center">
             Registration Chart
           </h1>
         </div>
-        <div className="py-2 px-4 rounded shadow max-sm:w-full sm:mx-12 mt-20">
+        <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8 ">
           <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
             SELECT
           </h2>
@@ -427,7 +444,7 @@ export default function Registration() {
           </div> */}
         </div>
 
-        <div className="py-2 px-4 rounded shadow sm:mx-12 mt-6">
+        <div className="py-2 px-2 rounded shadow sm:mx-8 mt-6">
           <ReactToPrint
             trigger={() => (
               <Button variant="contained" color="primary">
@@ -438,7 +455,7 @@ export default function Registration() {
             // pageStyle="@page { size: landscape; }"
           />
           <div ref={containerRef} className=" h-auto">
-            {/* <div className="announcement  front-sheet bg-white py-2 px-4 rounded shadow  mx-12 mt-6 "> */}
+            {/* <div className="announcement  front-sheet bg-white py-2 px-2 rounded shadow  mx-12 mt-6 "> */}
             <div
               ref={frontSheetRef}
               className="front-sheet hidden overflow-y-auto h-auto"
@@ -569,7 +586,7 @@ export default function Registration() {
             </div>
             {/* </div> */}
             <div ref={detailSheetRef} className="detail-sheet">
-              <div className="announcement bg-white py-2 px-4 rounded shadow ">
+              <div className="announcement bg-white py-2 px-2 rounded shadow ">
                 <TableContainer component={Paper} className="mt-5 detail-sheet">
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -596,7 +613,9 @@ export default function Registration() {
                           align="center"
                           style={{ border: "1px solid black" }}
                         >
-                          Signature
+                          Student
+                          <br />
+                           Sign.
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -628,7 +647,7 @@ export default function Registration() {
                                     className="cell"
                                     key={codeIndex}
                                     style={{
-                                      width: "16.66%",
+                                      width: `${100/student.course_codes.slice(0,6).length}%`,
                                       textAlign: "center",
                                     }}
                                   >
@@ -644,7 +663,7 @@ export default function Registration() {
                                     key={codeIndex}
                                     className="cell"
                                     style={{
-                                      width: "16.66%",
+                                      width: `${100/student.course_codes.slice(0,6).length}%`,
                                       textAlign: "center",
                                     }}
                                   >

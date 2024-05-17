@@ -318,5 +318,32 @@ export async function fetchExamRegistrationByCourseCode(token:string ,campus: st
     throw error;
   }
 }
+export async function fetchCourseDetailsByCourseCode(token:string, coursedetails: {campus:string,program:string, coursecode: string[]}) {
+  try {
+    console.log("campus ",coursedetails);
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify(coursedetails)
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
 
