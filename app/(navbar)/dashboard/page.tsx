@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import Navbar from "./Navbar";
 import CampaignIcon from "@mui/icons-material/Campaign";
-import { getAuth } from "../actions/cookie";
-import { parseJwt } from "../actions/utils";
-import { fetchExamRegisterations } from "../actions/api";
+import { getAuth } from "../../actions/cookie";
+import { parseJwt } from "../../actions/utils";
+import { fetchExamRegisterations } from "../../actions/api";
 import { StudentDetails } from "../profile/page";
 
 export default function Home() {
@@ -64,8 +64,6 @@ export default function Home() {
 
   return (
     <div className="sm:flex">
-      <Header username={user?.name as string} />
-      <Navbar />
 
       <div className="sm:pl-[300px] sm:mt-[100px]  space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ">
         <div className="welcome py-2 px-4 rounded     ">

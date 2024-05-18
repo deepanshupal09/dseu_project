@@ -18,8 +18,8 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
-import { getAuth } from "../actions/cookie";
-import { parseJwt } from "../actions/utils";
+import { getAuth } from "../../actions/cookie";
+import { parseJwt } from "../../actions/utils";
 
 export interface StudentDetails {
   name: string;
@@ -61,8 +61,6 @@ export default function Home() {
   return (
     <div className="max-sm:mt-[120px] mt-[120px]">
       <div className=" bg-[#dfdede] ">
-        <Header username={user?.name as string} />
-        <Navbar />
       </div>
 
       <div className="relative md:ml-60 mt-6 md:w-auto">

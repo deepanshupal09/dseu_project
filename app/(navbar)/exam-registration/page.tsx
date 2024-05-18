@@ -27,13 +27,13 @@ import {
   DialogActions,
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
-import { getAuth } from "../actions/cookie";
-import { parseJwt } from "../actions/utils";
+import { getAuth } from "../../actions/cookie";
+import { parseJwt } from "../../actions/utils";
 import {
   addExamRegisterations,
   fetchCoursesByRollNo,
   fetchExamRegisterations,
-} from "../actions/api";
+} from "../../actions/api";
 import { useRouter } from "next/navigation";
 import { StudentDetails } from "../profile/page";
 
@@ -310,8 +310,6 @@ export default function Home() {
 
   return (
     <>
-      <Header username={user?.name as string} />
-      <Navbar />
 
       <div className="relative md:ml-60 mt-28 md:w-auto">
         <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto mt-16 mb-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
