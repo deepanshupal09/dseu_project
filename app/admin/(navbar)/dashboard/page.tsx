@@ -1,7 +1,7 @@
 "use client"; 
 import React, { useEffect, useState } from "react";
-import Head from "../dashboard/Head";
-import Nav from "../dashboard/Nav";
+import Head from "./Head";
+import Nav from "./Nav";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
@@ -29,8 +29,6 @@ export default function Home() {
   return (
     <>
       <div className="bg-[#dfdede] mt-2">
-        <Head username={user?.campus} />
-        <Nav />
       </div>
       <div className="welcome py-2 px-4 rounded shadow absolute top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-2 sm:mx-12 ">
         <h1 className="text-2xl text-white-800 font-bold ">Welcome  {user?.campus}!</h1>

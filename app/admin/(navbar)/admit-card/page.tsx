@@ -8,39 +8,45 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Button, { ButtonProps } from "@mui/material/Button";
 import {
+  fetchCourseDetailsByCourseCode,
   fetchCoursesBySemester,
   fetchExamRegistrationByCourseCode,
+  fetchExamRegistrationByProgramAndSemester,
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
-import {
-  DataGrid,
-  GridColDef,
-  GridCsvExportMenuItem,
-  GridCsvExportOptions,
-  GridToolbarContainer,
-  GridToolbarContainerProps,
-  GridToolbarExportContainer,
-} from "@mui/x-data-grid";
+import AdmitCard from "./AdmitCard";
+import Image from "next/image";
 
 interface ProgramList {
   [key: string]: string[];
 }
 
-export interface Course {
+interface Course {
   course_name: string;
   course_code: string;
   course_type: string;
   credit: number;
   semester: number;
-
+  exam_type: string;
 }
 
-export interface Student {
+interface CourseResponse {
+  course_name: string;
+  course_code: string;
+  course_type: string;
+  credit: number;
+  semester: number;
+}
+
+interface Student {
   name: string;
   rollno: string;
   program: string;
   semester: number;
+  photo: string;
+  dob: string;
+  course_codes: string[];
 }
 
 export interface User {
@@ -49,39 +55,43 @@ export interface User {
   campus: string;
 }
 
+export interface StudentData {
+  campus: string;
+  programName: string;
+  name: string;
+  rollno: string;
+  dob: string;
+  papers: Paper[];
+  photo: string;
+}
+
+interface Paper {
+  sno: number | null;
+  paperCode: string;
+  paperName: string;
+  semester: string;
+  examType: string;
+}
+
 export default function Registration() {
   const [selected, setSelected] = useState(0);
   const options = ["Dashboard", "Registration Chart", "Admit Card", "Query"];
 
-  const csvOptions: GridCsvExportOptions = { delimiter: "," };
-
-  function CustomExportButton(props: ButtonProps) {
-    return (
-      <GridToolbarExportContainer {...props}>
-        <GridCsvExportMenuItem options={csvOptions} />
-      </GridToolbarExportContainer>
-    );
-  }
-
-  function CustomToolbar(props: GridToolbarContainerProps) {
-    return (
-      <GridToolbarContainer {...props}>
-        <CustomExportButton />
-      </GridToolbarContainer>
-    );
-  }
+  const [isIFrameLoaded, setIsIFrameLoaded] = useState<boolean>(false);
 
   const [selectedProgramCategory, setSelectedProgramCategory] =
     useState<string>("Undergraduate");
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
-  const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [token, setToken] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
   const [courseList, setCourseList] = useState<string[]>([]);
-  const [courseCodes, setCourseCodes] = useState<Course[]>([]);
+  //   const [courseCodes, setCourseCodes] = useState<Course[]>([]);
   const [studentList, setStudentList] = useState<Student[]>([]);
-  const [selectedCampus, setSelectedCampus] = useState<string>("")
+  const [selectedCampus, setSelectedCampus] = useState<string>("");
+  const [courseCodes, setCourseCodes] = useState<string[]>([]);
+  const [admitCardData, setAdmitCardData] = useState<StudentData[]>([]);
+
   const campusList = [
     "Arybhatt DSEU Ashok Vihar Campus",
     "Ambedkar DSEU Shakarpur Campus-I",
@@ -180,32 +190,13 @@ export default function Registration() {
   };
 
   useEffect(() => {
-    if (user && selectedProgram !== "" && selectedSemester !== "") {
-      fetchCoursesBySemester(
-        token,
-        selectedCampus,
-        selectedProgram,
-        selectedSemester
-      )
-        .then((response: Course[]) => {
-          const temp: string[] = [];
-          setCourseCodes(response);
-          response.map((e) => temp.push(e.course_name));
-          setCourseList(temp);
-        })
-        .catch((error) => {
-        });
-    }
-  }, [selectedProgram, selectedSemester]);
-
-  useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
       if (t) {
         setToken(t.value);
         const data = await parseJwt(t.value);
         setUser(data.user);
-        if (data.user.role === 'admin') {
-            setSelectedCampus(data.user.campus);
+        if (data.user.role === "admin") {
+          setSelectedCampus(data.user.campus);
         }
       }
     });
@@ -219,99 +210,150 @@ export default function Registration() {
     "Certificate",
   ];
   const semesters = ["2", "4", "6"];
+  function mapCourseCodesToPapers(
+    courseCodes: string[],
+    courseData: Course[]
+  ): Paper[] {
+    const papers: Paper[] = courseCodes.map((code, index) => {
+      const course = courseData.find((course) => course.course_code === code);
+      if (course) {
+        return {
+          sno: index + 1,
+          paperCode: code,
+          paperName: course.course_name,
+          semester: course.semester.toString(),
+          examType: course.exam_type,
+        };
+      } else {
+        // Handle the case where course details are not found for a course code
+        return {
+          sno: index + 1,
+          paperCode: code,
+          paperName: "Course Name Not Found",
+          semester: "Semester Not Found",
+          examType: "Exam Type Not Found",
+        };
+      }
+    });
 
-  const [columns, setColumns] = useState<GridColDef[]>([]);
+    // Pad the papers array with empty papers if it has less than 10 papers
+    const paddedPapers: Paper[] = papers.concat(
+      Array.from({ length: Math.max(0, 10 - papers.length) }, () => ({
+        sno: null,
+        paperCode: "",
+        paperName: "",
+        semester: "",
+        examType: "",
+      }))
+    );
+
+    return paddedPapers;
+  }
+
+  // useEffect(() => {
+  //   if (selectedSemester) {
+  //     handleApplyFilters();
+  //   } else {
+  //     setStudentList([]);
+  //   }
+  // }, [selectedSemester]);
 
   useEffect(() => {
-    const handleResize = () => {
-      const containerWidth =
-        document.getElementById("datagrid-container")?.offsetWidth || 0;
-      const numberOfColumns = 5; 
+    if (user && selectedProgram !== "" && selectedSemester !== "") {
+      fetchCourseDetailsByCourseCode(token, {
+        coursecode: courseCodes,
+        campus: selectedCampus,
+        program: selectedProgram,
+      })
+        .then((response: CourseResponse[]) => {
+          const courseData: Course[] = [];
+          response.map((course: CourseResponse) => {
+            courseData.push({
+              exam_type:
+                course.semester < parseInt(selectedSemester)
+                  ? "Reappear"
+                  : "Regular",
+              ...course,
+            });
+          });
+          console.log("data: ", courseData);
+          console.log("student data: ", studentList);
 
-      const columnWidth = (containerWidth - 10) / numberOfColumns;
+          const users: StudentData[] = studentList.map((student) => ({
+            campus: selectedCampus, // Update with your campus name or fetch from student data if available
+            programName: student.program,
+            name: student.name,
+            rollno: student.rollno,
+            dob: student.dob,
+            papers: mapCourseCodesToPapers(student.course_codes, courseData),
+            photo: "https://exam.dseu.ac.in" + student.photo + "?" + Date.now(),
+          }));
 
-      const newColumns: GridColDef[] = [
-        { field: "id", headerName: "S.No", width: columnWidth },
-        { field: "rollno", headerName: "Roll No", width: columnWidth },
-        { field: "name", headerName: "Name", width: columnWidth },
-        { field: "program", headerName: "Program", width: columnWidth },
-        { field: "semester", headerName: "Semester", width: columnWidth },
-      ];
-
-      setColumns(newColumns);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (selectedCourse) {
-      handleApplyFilters();
-    } else {
-      setStudentList([]);
+          console.log("users: ", users);
+          setAdmitCardData(users);
+        })
+        .catch((error) => {
+          console.log("error fetching course details: ", error);
+        });
     }
-  }, [selectedCourse]);
+  }, [courseCodes]);
 
   const handleApplyFilters = async () => {
-    if (selectedCourse !== "") {
-      const course_code = courseCodes.find(
-        (course) => course.course_name === selectedCourse
-      )?.course_code;
-      if (course_code) {
-        try {
-          const res = await fetchExamRegistrationByCourseCode(
-            token,
-            selectedCampus,
-            course_code
-          );
-          const formattedStudentList = res.map(
-            (student: Student, index: number) => ({ ...student, id: index + 1 })
-          );
-          setStudentList(formattedStudentList);
-        } catch (error) {
-        }
-      }
-    }
+    setAdmitCardData([]);
+    fetchExamRegistrationByProgramAndSemester(
+      token,
+      selectedCampus,
+      selectedProgramCategory,
+      selectedProgram,
+      selectedSemester
+    )
+      .then((res) => {
+        console.log("response: ", res);
+        setStudentList(res);
+        let set = new Set<string>();
+        res.map((student: Student) => {
+          student.course_codes.map((courseCode: string) => {
+            set.add(courseCode);
+          });
+        });
+        const array = Array.from(set);
+        setCourseCodes(array);
+        setStudentList(res);
+        console.log("array: ", array);
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
   };
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
-    setSelectedCourse("");
     setSelectedProgram("");
     // setSelectedProgramCategory("");
   };
   const handleChangeProgramCategory = (event: SelectChangeEvent) => {
     setSelectedProgramCategory(event.target.value);
-    setSelectedCourse("");
     setSelectedProgram("");
   };
 
   const handleChangeProgram = (event: SelectChangeEvent) => {
     setSelectedProgram(event.target.value);
-    setSelectedCourse("");
   };
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value);
-    setSelectedCourse("");
-  };
-  const handleChangeCourse = (event: SelectChangeEvent) => {
-    setSelectedCourse(event.target.value);
   };
 
   return (
     <>
       <div className="bg-[#dfdede] mt-2">
-        <Head username={user?.campus} />
-        <Nav />
       </div>
-      <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
-        <h1 className="text-2xl text-white font-bold text-center">Queries</h1>
+      <div className="announcement  mx-2 bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0 sm:mx-12 mt-6">
+        <h1 className="text-2xl text-white font-bold text-center">
+          Admit Card
+        </h1>
       </div>
-      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
+      <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0 mx-2 sm:mx-12 mt-6">
         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
           SELECT
         </h2>
@@ -389,46 +431,24 @@ export default function Registration() {
               ))}
             </Select>
           </FormControl>
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id="course-label">Course</InputLabel>
-            <Select
-              labelId="course-label"
-              id="course"
-              value={selectedCourse}
-              label="Course"
-              onChange={handleChangeCourse}
-            >
-              {courseList.map((course, index) => (
-                <MenuItem key={index} value={course}>
-                  {course}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
         </div>
-        <div></div>
-        {/* Table */}
-
-        <div
-          className="my-10"
-          id="datagrid-container"
-          style={{ height: 670, width: "100%" }}
-        >
-          <DataGrid
-            slots={{ toolbar: CustomToolbar }}
-            rows={studentList}
-            columns={columns}
-            // pageSize={10}
-            checkboxSelection
-            // disableSelectionOnClick
-            // headerClassName="header-center-align"
-
-            pagination
-            autoPageSize
-            // hideFooterPagination
-            // hideFooter
-          />
+        <div>
+          <Button
+            onClick={handleApplyFilters}
+            variant="contained"
+            className="my-5"
+          >
+            Apply
+          </Button>
+          {admitCardData.length > 0 && (
+            <div className=" flex justify-center mx-auto my-5">
+                <AdmitCard admitCardData={admitCardData} />
+            </div>
+          )}
         </div>
+      </div>
+      <div className="">
+        {/* <img src="https://exam.dseu.ac.in/image/41521070_photo.jpg" /> */}
       </div>
     </>
   );

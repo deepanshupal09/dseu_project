@@ -17,9 +17,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import logo from "../../images/dseu.png";
+import logo from "../../../images/dseu.png";
 
-import { getAuthAdmin } from "../../actions/cookie";
+import { getAuthAdmin } from "../../../actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import {
   fetchCourseDetailsByCourseCode,
@@ -328,8 +328,6 @@ export default function Registration() {
   return (
     <>
       <div className="bg-[#dfdede]">
-        <Head username={user?.campus} />
-        <Nav />
       </div>
       <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         {/* abc */}

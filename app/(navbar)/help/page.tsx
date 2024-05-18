@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import Header from "../dashboard/Header";
 import Navbar from "../dashboard/Navbar";
 import CampaignIcon from '@mui/icons-material/Campaign';
-import { getAuth } from "../actions/cookie";
-import { parseJwt } from "../actions/utils";
+import { getAuth } from "../../actions/cookie";
+import { parseJwt } from "../../actions/utils";
 import { StudentDetails } from "../profile/page";
 
 export default function Home() {
@@ -23,8 +23,6 @@ export default function Home() {
   return (
     <>
       <div className="bg-[#dfdede] ">
-        <Header username={user?.name as string} />
-        <Navbar />
       </div>
       <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[120px] max-sm:top-[150px] sm:left-[250px] left-0 right-0 z-10 mx-4 sm:mx-12">
         <h1 className="text-3xl flex items-center space-x-4 text-white font-bold mt-4"><CampaignIcon className="scale-150" /> <div>Facing issue ??</div> </h1>
