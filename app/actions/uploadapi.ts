@@ -6,7 +6,7 @@ export async function uploadFile(file: File, fileName: string) {
   
       // No need to set Content-Type header manually when using FormData
   
-      const response = await fetch("http://localhost:8000/upload", {
+      const response = await fetch("https://admin-exam.dseu.ac.in/upload", {
         method: "POST",
         body: formData,
         mode: "cors",
