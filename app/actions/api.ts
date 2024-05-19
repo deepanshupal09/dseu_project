@@ -2,7 +2,7 @@
 
 export async function signup(body: any) {
   console.log("here");
-  const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
+  const res = await fetch("http://localhost:8000/signup", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -21,7 +21,7 @@ export async function signup(body: any) {
 
 export async function addExamRegisterations(body: any, token: string) {
   const res = await fetch(
-    "https://admin-exam.dseu.ac.in/api/data/addExamRegisterations",
+    "http://localhost:8000/api/data/addExamRegisterations",
     {
       method: "POST",
       mode: "cors",
@@ -45,7 +45,7 @@ export async function addExamRegisterations(body: any, token: string) {
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
   try {
     const res = await fetch(
-      "https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo",
+      "http://localhost:8000/api/data/fetchCoursesByRollNo",
       {
         method: "GET",
         mode: "cors",
@@ -69,7 +69,7 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
 
 export async function login(headers: {}) {
   try {
-    const response = await fetch("https://admin-exam.dseu.ac.in/login", {
+    const response = await fetch("http://localhost:8000/login", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -93,7 +93,7 @@ export async function login(headers: {}) {
 export async function fetchExamRegisterations(rollno: string, token: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo",
+      "http://localhost:8000/api/data/fetchExamRegistrationByRollNo",
       {
         method: "GET",
         mode: "cors",
@@ -122,7 +122,7 @@ export async function fetchExamRegisterations(rollno: string, token: string) {
 export async function sendEmail(rollno: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/sendEmail",
+      "http://localhost:8000/sendEmail",
       {
         method: "GET",
         mode: "cors",
@@ -149,7 +149,7 @@ export async function sendEmail(rollno: string) {
 export async function verifyOtpAndPassword(rollno: string, otp: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/verifyOtpAndPassword",
+      "http://localhost:8000/verifyOtpAndPassword",
       {
         method: "GET",
         mode: "cors",
@@ -176,7 +176,7 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
 export async function updatePasswordByOtp(rollno: string, password: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/updatePasswordByOtp",
+      "http://localhost:8000/updatePasswordByOtp",
       {
         method: "GET",
         mode: "cors",
@@ -204,7 +204,7 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
 export async function loginAdmin(email: string, password: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/loginByEmailId",
+      "http://localhost:8000/loginByEmailId",
       {
         method: "GET",
         mode: "cors",
@@ -234,7 +234,7 @@ export async function fetchExamRegistrationByProgramAndSemester(token:string ,ca
   try {
     console.log("campus ",program_type);
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester",
+      "http://localhost:8000/api/admin/fetchExamRegistrationByProgramAndSemester",
       {
         method: "GET",
         mode: "cors",
@@ -265,7 +265,7 @@ export async function fetchCoursesBySemester(token:string ,campus: string, progr
   try {
     // console.log("campus ",program_type);
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchCoursesBySemester",
+      "http://localhost:8000/api/admin/fetchCoursesBySemester",
       {
         method: "GET",
         mode: "cors",
@@ -294,7 +294,7 @@ export async function fetchExamRegistrationByCourseCode(token:string ,campus: st
   try {
     // console.log("campus ",program_type);
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode",
+      "http://localhost:8000/api/admin/fetchExamRegistrationByCourseCode",
       {
         method: "GET",
         mode: "cors",
@@ -322,7 +322,7 @@ export async function fetchCourseDetailsByCourseCode(token:string, coursedetails
   try {
     console.log("campus ",coursedetails);
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode",
+      "http://localhost:8000/api/admin/fetchCourseDetailsByCourseCode",
       {
         method: "POST",
         mode: "cors",
