@@ -1,23 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Navbar from "../dashboard/Navbar";
-import Header from "../dashboard/Header";
-import AccountBoxRoundedIcon from "@mui/icons-material/AccountBoxRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
-import HomeIcon from "@mui/icons-material/Home";
 import MailIcon from "@mui/icons-material/Mail";
 import Face6RoundedIcon from "@mui/icons-material/Face6Rounded";
-import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
-import FemaleRoundedIcon from "@mui/icons-material/FemaleRounded";
 import CreditCardRoundedIcon from "@mui/icons-material/CreditCardRounded";
 import SchoolIcon from "@mui/icons-material/School";
 import BookIcon from "@mui/icons-material/Book";
 import ClassIcon from "@mui/icons-material/Class";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
 

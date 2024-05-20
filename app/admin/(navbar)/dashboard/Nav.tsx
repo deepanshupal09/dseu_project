@@ -6,7 +6,7 @@ import { MenuOpen } from "@mui/icons-material";
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("");
-  const options = ["Dashboard", "Registration Chart", "Admit Card", "Query"];
+  const options = ["Dashboard", "Registration Chart", "Admit Card", "Edit Student Details","Query", ];
   useEffect(() => {
     setActiveLink(window.location.pathname);
   }, []);
