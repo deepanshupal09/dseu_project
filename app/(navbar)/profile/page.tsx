@@ -34,6 +34,7 @@ export interface StudentDetails {
   program_type: string;
   pwbd_certificate: string;
   year_of_admission: string;
+  date_of_birth: string;
 }
 
 export default function Home() {

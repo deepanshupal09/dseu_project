@@ -12,7 +12,7 @@ import {
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
-interface ProgramListByType {
+export interface ProgramListByType {
   [key: string]: string[];
   Diploma: string[];
   Undergraduate: string[];

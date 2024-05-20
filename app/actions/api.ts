@@ -1,5 +1,7 @@
 "use server";
 
+import { StudentDetails } from "../(navbar)/profile/page";
+
 export async function signup(body: any) {
   console.log("here");
   const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
@@ -358,6 +360,54 @@ export async function getUserByRollNo(rollno: string, token: string) {
           token: token,
           rollno: rollno,
         },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateDetails(user: StudentDetails, token: string) {
+  try {
+    const body = {
+      program: user.program,
+      semester: user.semester,
+      phone: user.phone,
+      campus: user.campus,
+      emailid: user.emailid,
+      gender: user.gender,
+      alternate_phone: user.alternate_phone,
+      father: user.father,
+      mother: user.mother,
+      guardian: user.guardian,
+      aadhar: user.aadhar,
+      abc_id: user.abc_id,
+      pwbd_certificate: user.pwbd_certificate,
+      photo: user.photo,
+      program_type: user.program_type,
+      password: "",
+      rollno: user.rollno,
+      year_of_admission: user.year_of_admission,
+      date_of_birth: user.date_of_birth,
+    }
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/admin/updateDetailsByRollno",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify(body)
       }
     );
 

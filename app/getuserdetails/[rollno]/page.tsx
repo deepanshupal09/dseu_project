@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ChangePassword from "./ChangePassword";
 import GeneralDetails from "./GeneralDetails";
-import CollegeDetails from "./CollegeDetails";
+import CollegeDetails, { ProgramListByType } from "./CollegeDetails";
 import FamilyDetails from "./FamilyDetails";
 import UploadDetails from "./UploadDetails";
 import IDDetails from "./IDDetails";
@@ -15,6 +15,112 @@ import { deleteSignupCookie } from "@/app/actions/cookie";
 import Final from "./Final";
 import PreviewPage from "./Preview";
 import { useParams } from "next/navigation";
+
+export const campusList = [
+  "Arybhatt DSEU Ashok Vihar Campus",
+  "Ambedkar DSEU Shakarpur Campus-I",
+  "DSEU Okhla II Campus",
+  "G.B. Pant DSEU Okhla I Campus",
+  "Guru Nanak Dev DSEU Rohini Campus",
+  "DSEU Dwarka Campus",
+  "Kasturba DSEU Pitampura Campus",
+  "Meerabai DSEU Maharani Bagh Campus",
+  "DSEU Pusa Campus - I",
+  "DSEU Rajokri Campus",
+  "DSEU Sirifort Campus",
+  "DSEU Wazirpur-I Campus",
+  "Dr.H.J. Bhabha DSEU Mayur Vihar Campus",
+  "DSEU Ranhola Campus",
+  "G.B. Pant DSEU Okhla III Campus",
+  "DSEU Jaffarpur Campus",
+  "Bhai Parmanand DSEU Shakarpur II Campus",
+  "DSEU Pusa II Campus",
+  "DSEU Champs okhla II Campus",
+  "Sir C.V. Raman DSEU Dheerpur Campus",
+  "DSEU Vivek vihar Campus",
+];
+
+export const programListByType:ProgramListByType = {
+  Diploma: [
+    "Diploma in Applied Arts",
+    "Diploma in Architecture",
+    "Diploma in Automobile Engineering",
+    "Diploma in Chemical Engineering",
+    "Diploma in Civil Engineering",
+    "Diploma in Computer Engineering",
+    "Diploma in Cosmetology & Health",
+    "Diploma in Electrical Engineering",
+    "Diploma in Electronic Engineering",
+    "Diploma in Fashion Design",
+    "Diploma in Fashion Design and Garment Technology",
+    "Diploma in Interior Design",
+    "Diploma in Mechanical Engineering",
+    "Diploma in Pharamacy",
+    "Diploma in Printing Technology",
+    "Diploma in Tool and Die Making",
+    "Diploma in Artificial Intelligence and Machine Learning",
+    "Diploma in Robotic and Process Automation",
+    "Diploma in Electical Engineering - Part Time",
+    "Diploma in Mechanical Engineering - Part Time",
+    "Diploma in Automobile Engineering - Part Time",
+    "Diploma in Civil Engineering - Part Time",
+  ],
+  Undergraduate: [
+    "Bachelor of Arts (Aesthetics & Beauty Therapy)",
+    "Bachelor of Science (Aesthetics & Beauty Therapy)",
+    "Bachelor of Computer Applications",
+    "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
+    "Bachelor of Commerce (Business Process Management)",
+    "Bachelor of Business Administration (Operation and Business Process Management)",
+    "Bachelor of Science (Data Analytics)",
+    "Bachelor of Arts (Digital Media and Design)",
+    "Bachelor of Management Studies (E-Commerce Operations)",
+    "Bachelor of Business Administration (Facilities and Hygiene Management)",
+    "Bachelor of Management Studies (Land Transportation)",
+    "Bachelor of Science (Medical Laboratory Technology)",
+    "Bachelor of Business Administration (Retail Management)",
+    "Bachelor of Arts (Spanish)",
+    "Bachelor of Business Administration (Automotive Retail Management)",
+    "Bachelor of Business Administration (Hospital Management)",
+    "Bachelor of Business Administration (Innovation and Entrepreneurship)",
+    "Bachelor of Optometry",
+    "Bachelor in Library Sciences",
+    "Bachelor of Science (Dialysis Technology)",
+    "Bachelor of Science (Emergency Medical Technology)",
+    "Bachelor of Technology (Mechanical and Automation Engineering)",
+    "Bachelor of Technology (Electronics and Communication Engineering)",
+    "Bachelor of Technology (Computer Science Engineering)",
+    "Bachelor of Technology (Mechanical Engineering)",
+    "Bachelor of Technology (Tool Engineering)",
+    "Bachelor of Technology (Mechatronics Engineering)",
+  ],
+  PostGraduate: [
+    "Master of Computer Applications",
+    "Master of Technology (Mechanical Engineering)",
+    "Master of Technology (Tool Engineering)",
+    "Master of Technology (Computer Science Engineering with Specialization in Al & ML)",
+    "Master of Technology (Electronic & Communication Engineering With Specialization in IOT)",
+    "Master of Technology (Mechanical Engineering with Specialization in Thermal/Production/Design)",
+    "Master of Science (Medical Laboratory Sciences)",
+  ],
+  Doctorate: [
+    "Doctor of Philosophy (Computer Science and Engineering)",
+    "Doctor of Philosophy (Computer Application)",
+    "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
+    "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
+  ],
+  Certificate: [
+    "Certificate Course in Modern Office Management & Secretarial Practice",
+  ],
+};
+
+export const programTypeList = [
+  "Diploma",
+  "Undergraduate",
+  "PostGraduate",
+  "Doctorate",
+  "Certificate",
+];
 
 export default function Home({params}:{params: {rollno: string}}) {
   const [step, setStep] = useState<number>(1);
@@ -155,29 +261,7 @@ export default function Home({params}:{params: {rollno: string}}) {
     setOpen(false);
   };
 
-  const campusList = [
-    "Arybhatt DSEU Ashok Vihar Campus",
-    "Ambedkar DSEU Shakarpur Campus-I",
-    "DSEU Okhla II Campus",
-    "G.B. Pant DSEU Okhla I Campus",
-    "Guru Nanak Dev DSEU Rohini Campus",
-    "DSEU Dwarka Campus",
-    "Kasturba DSEU Pitampura Campus",
-    "Meerabai DSEU Maharani Bagh Campus",
-    "DSEU Pusa Campus - I",
-    "DSEU Rajokri Campus",
-    "DSEU Sirifort Campus",
-    "DSEU Wazirpur-I Campus",
-    "Dr.H.J. Bhabha DSEU Mayur Vihar Campus",
-    "DSEU Ranhola Campus",
-    "G.B. Pant DSEU Okhla III Campus",
-    "DSEU Jaffarpur Campus",
-    "Bhai Parmanand DSEU Shakarpur II Campus",
-    "DSEU Pusa II Campus",
-    "DSEU Champs okhla II Campus",
-    "Sir C.V. Raman DSEU Dheerpur Campus",
-    "DSEU Vivek vihar Campus",
-  ];
+
   // const programList = [
   //   "Diploma in Applied Arts",
   //   "Diploma in Architecture",
@@ -242,88 +326,10 @@ export default function Home({params}:{params: {rollno: string}}) {
   //   "Certificate Course in Modern Offcie Management & Secreterial Practice",
   // ];
 
-  const programListByType = {
-    Diploma: [
-      "Diploma in Applied Arts",
-      "Diploma in Architecture",
-      "Diploma in Automobile Engineering",
-      "Diploma in Chemical Engineering",
-      "Diploma in Civil Engineering",
-      "Diploma in Computer Engineering",
-      "Diploma in Cosmetology & Health",
-      "Diploma in Electrical Engineering",
-      "Diploma in Electronic Engineering",
-      "Diploma in Fashion Design",
-      "Diploma in Fashion Design and Garment Technology",
-      "Diploma in Interior Design",
-      "Diploma in Mechanical Engineering",
-      "Diploma in Pharamacy",
-      "Diploma in Printing Technology",
-      "Diploma in Tool and Die Making",
-      "Diploma in Artificial Intelligence and Machine Learning",
-      "Diploma in Robotic and Process Automation",
-      "Diploma in Electical Engineering - Part Time",
-      "Diploma in Mechanical Engineering - Part Time",
-      "Diploma in Automobile Engineering - Part Time",
-      "Diploma in Civil Engineering - Part Time",
-    ],
-    Undergraduate: [
-      "Bachelor of Arts (Aesthetics & Beauty Therapy)",
-      "Bachelor of Science (Aesthetics & Beauty Therapy)",
-      "Bachelor of Computer Applications",
-      "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
-      "Bachelor of Commerce (Business Process Management)",
-      "Bachelor of Business Administration (Operation and Business Process Management)",
-      "Bachelor of Science (Data Analytics)",
-      "Bachelor of Arts (Digital Media and Design)",
-      "Bachelor of Management Studies (E-Commerce Operations)",
-      "Bachelor of Business Administration (Facilities and Hygiene Management)",
-      "Bachelor of Management Studies (Land Transportation)",
-      "Bachelor of Science (Medical Laboratory Technology)",
-      "Bachelor of Business Administration (Retail Management)",
-      "Bachelor of Arts (Spanish)",
-      "Bachelor of Business Administration (Automotive Retail Management)",
-      "Bachelor of Business Administration (Hospital Management)",
-      "Bachelor of Business Administration (Innovation and Entrepreneurship)",
-      "Bachelor of Optometry",
-      "Bachelor in Library Sciences",
-      "Bachelor of Science (Dialysis Technology)",
-      "Bachelor of Science (Emergency Medical Technology)",
-      "Bachelor of Technology (Mechanical and Automation Engineering)",
-      "Bachelor of Technology (Electronics and Communication Engineering)",
-      "Bachelor of Technology (Computer Science Engineering)",
-      "Bachelor of Technology (Mechanical Engineering)",
-      "Bachelor of Technology (Tool Engineering)",
-      "Bachelor of Technology (Mechatronics Engineering)",
-    ],
-    PostGraduate: [
-      "Master of Computer Applications",
-      "Master of Technology (Mechanical Engineering)",
-      "Master of Technology (Tool Engineering)",
-      "Master of Technology (Computer Science Engineering with Specialization in Al & ML)",
-      "Master of Technology (Electronic & Communication Engineering With Specialization in IOT)",
-      "Master of Technology (Mechanical Engineering with Specialization in Thermal/Production/Design)",
-      "Master of Science (Medical Laboratory Sciences)",
-    ],
-    Doctorate: [
-      "Doctor of Philosophy (Computer Science and Engineering)",
-      "Doctor of Philosophy (Computer Application)",
-      "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
-      "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
-    ],
-    Certificate: [
-      "Certificate Course in Modern Office Management & Secretarial Practice",
-    ],
-  };
+ 
   
 
-  const programTypeList = [
-    "Diploma",
-    "Undergraduate",
-    "PostGraduate",
-    "Doctorate",
-    "Certificate",
-  ];
+
   const semesterList = ["Semester 2", "Semester 4", "Semester 6"];
 
   return (

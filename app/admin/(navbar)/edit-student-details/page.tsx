@@ -13,13 +13,35 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { getAuth, getAuthAdmin } from "../../../actions/cookie";
 import { parseJwt } from "../../../actions/utils";
 import { StudentDetails } from "@/app/(navbar)/profile/page";
-import { Button, TextField, Typography } from "@mui/material";
-import { getUserByRollNo } from "@/app/actions/api";
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  MenuItem,
+  Select,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { getUserByRollNo, updateDetails } from "@/app/actions/api";
+import { SelectChangeEvent } from "@mui/material/Select";
+import {
+  campusList,
+  programListByType,
+  programTypeList,
+} from "@/app/getuserdetails/[rollno]/page";
 
 function Home() {
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [rollno, setRollno] = useState<string>("");
   const [token, setToken] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const [confirmSubmission, setConfirmSumbission] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((prevUser) => {
@@ -27,6 +49,50 @@ function Home() {
         return {
           ...prevUser,
           [name]: value,
+        };
+      }
+      return null;
+    });
+  };
+
+  async function handleUpdate() {
+    try {
+      if (user) {
+        const response = await updateDetails(user, token);
+        console.log("response: ", response);
+        setMessage("Successfully updated");
+        setOpen(true);
+        setConfirmSumbission(false);
+        setRollno("");
+        setUser(null);
+      }
+    } catch (error) {
+      setMessage("Something went wrong! Please try again later.");
+      console.log("error: ", error);
+    }
+  }
+
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+    setUser((prevUser) => {
+      if (prevUser) {
+        return {
+          ...prevUser,
+          [name]: value,
+        };
+      }
+      return null;
+    });
+  };
+
+  const handleNumericInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const sanitizedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+    setUser((prevUser) => {
+      if (prevUser) {
+        return {
+          ...prevUser,
+          [name]: sanitizedValue,
         };
       }
       return null;
@@ -55,31 +121,32 @@ function Home() {
   }
 
   return (
-    <div className="sm:pl-[300px] sm:mt-[100px]   mt-[140px] w-full px-2 sm:pr-10">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          searchRollNo();
-        }}
-        className="flex space-x-2 "
-      >
-        <TextField
-          size="small"
-          value={rollno}
-          onChange={(e) => {
-            setRollno(e.target.value);
+    <div className="sm:pl-[300px] sm:mt-[100px] flex items-center flex-col mt-[140px] w-full px-2 sm:pr-10">
+      <div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            searchRollNo();
           }}
-          label="Roll No"
-        />
-        <Button type="submit" variant="contained">
-          Search
-        </Button>
-      </form>
-
+          className="flex space-x-2 "
+        >
+          <TextField
+            size="small"
+            value={rollno}
+            onChange={(e) => {
+              setRollno(e.target.value);
+            }}
+            label="Roll No"
+          />
+          <Button type="submit" variant="contained">
+            Search
+          </Button>
+        </form>
+      </div>
       {user && (
-        <>
-          <div className="relative mt-6 md:w-auto">
-            <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
+        <div className="flex  w-[70vw] flex-col items-center ">
+          <div className=" mt-6 md:w-full">
+            <div className="bg-dseublue py-2 px-6 rounded shadow w-full  my-6 flex flex-col sm:flex-row items-center justify-between  text-white">
               <img
                 className="rounded-full object-cover"
                 style={{ width: 50, height: 50, borderRadius: "50%" }}
@@ -100,8 +167,8 @@ function Home() {
             </div>
           </div>
 
-          <div className="relative mt-8 w-full md:w-auto shadow-sm">
-            <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
+          <div className="relative mt-8 w-full md:w-full shadow-sm">
+            <div className="bg-white md:w-full py-2 px-6 rounded shadow my-6 flex flex-col sm:flex-row items-start justify-between  text-gray-700">
               <h2 className="text-xl font-bold mb-4 w-1/2">Personal Details</h2>
               <div className="w-full">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -166,17 +233,12 @@ function Home() {
                         variant="filled"
                         name="phone"
                         value={user.phone}
-                        onChange={handleChange}
-                        // typex`="number"
-                        InputProps={{
-                          inputProps: {
-                            maxlength: 10,
-                            inputMode: 'numeric',
-                            pattern: '[0-9]*',
-  
-                          }}
-                        }
-  
+                        onChange={handleNumericInputChange}
+                        type="text"
+                        inputProps={{
+                          maxLength: 10, // Set maximum length to 12
+                          pattern: "\\d{12}", // Pattern for exactly 12 digits
+                        }}
                       />
                     </p>
                   </div>
@@ -192,14 +254,13 @@ function Home() {
                         variant="filled"
                         name="aadhar"
                         value={user.aadhar}
-                        type="number"
-                        onChange={handleChange}
+                        type="text"
+                        onChange={handleNumericInputChange}
                         inputProps={{
                           maxLength: 12,
-                          inputMode: 'numeric',
-                          pattern: '[0-9]*'
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
                         }}
-                    
                       />
                     </p>
                   </div>
@@ -208,17 +269,22 @@ function Home() {
                     <p>
                       <span className="font-bold">Gender:</span>
                       <br />
-                      <TextField
+                      <Select
                         hiddenLabel
                         className="mt-2"
                         size="small"
-                        variant="filled"
-                        name="gender"
                         value={user.gender}
-                        onChange={handleChange}
-                      />
+                        onChange={handleSelectChange}
+                        name="gender"
+                        variant="filled"
+                      >
+                        <MenuItem value="male">male</MenuItem>
+                        <MenuItem value="female">female</MenuItem>
+                        <MenuItem value="other">other</MenuItem>
+                      </Select>
                     </p>
                   </div>
+
                   <div className="flex mb-2">
                     <VpnKeyIcon className="mr-2" />
                     <p>
@@ -231,14 +297,13 @@ function Home() {
                         variant="filled"
                         name="abc_id"
                         value={user.abc_id}
-                        onChange={handleChange}
+                        onChange={handleNumericInputChange}
                         inputProps={{
                           maxLength: 12,
-                          inputMode: 'numeric',
-                          pattern: '[0-9]*'
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
                         }}
-                        type="number"
-
+                        type="text"
                       />
                     </p>
                   </div>
@@ -255,7 +320,6 @@ function Home() {
                         name="emailid"
                         value={user.emailid}
                         onChange={handleChange}
-
                       />
                     </p>
                   </div>
@@ -263,8 +327,8 @@ function Home() {
               </div>
             </div>
 
-            <div className="relative mt-8 w-full md:w-auto shadow-sm">
-              <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
+            <div className="relative mt-8 w-full md:w-full shadow-sm">
+              <div className="bg-white md:w-full py-2 px-6 rounded shadow  my-6 flex flex-col sm:flex-row items-start justify-between text-gray-700">
                 <h2 className="text-xl font-bold mb-4 w-1/2">
                   University Details
                 </h2>
@@ -275,16 +339,23 @@ function Home() {
                       <p>
                         <span className="font-bold">Campus Name:</span>
                         <br />
-                        <TextField
+                        <Select
                           hiddenLabel
                           className="mt-2"
                           size="small"
-                          variant="filled"
-                          name="campus"
                           value={user.campus}
-                          onChange={handleChange}
-                          
-                        />
+                          onChange={handleSelectChange}
+                          name="campus"
+                          // sx={{ width: "74% !important" }}
+                          sx={{ width: 150 }}
+                          variant="filled"
+                        >
+                          {campusList.map((campus) => (
+                            <MenuItem key={campus} value={campus}>
+                              {campus}
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </p>
                     </div>
                     <div className="flex mb-2">
@@ -292,15 +363,23 @@ function Home() {
                       <p>
                         <span className="font-bold">Program Type:</span>
                         <br />
-                        <TextField
+                        <Select
                           hiddenLabel
                           className="mt-2"
                           size="small"
-                          variant="filled"
-                          name="program_type"
                           value={user.program_type}
-                          onChange={handleChange}
-                        />
+                          onChange={handleSelectChange}
+                          // sx={{ width: "100% !important" }}
+                          name="program_type"
+                          sx={{ width: 150 }}
+                          variant="filled"
+                        >
+                          {programTypeList.map((programType) => (
+                            <MenuItem key={programType} value={programType}>
+                              {programType}
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </p>
                     </div>
                     <div className="flex mb-2">
@@ -308,15 +387,26 @@ function Home() {
                       <p>
                         <span className="font-bold">Program Name:</span>
                         <br />
-                        <TextField
+                        <Select
                           hiddenLabel
                           className="mt-2"
                           size="small"
-                          variant="filled"
-                          name="program"
                           value={user.program}
-                          onChange={handleChange}
-                        />
+                          onChange={handleSelectChange}
+                          name="program"
+                          sx={{ width: 150 }}
+                          // sx={{maxWidth: "50%"}}
+                          // sx={{ maxWidth: 200, }} // Adjust the value as needed
+                          variant="filled"
+                        >
+                          {programListByType[user.program_type].map(
+                            (program: string) => (
+                              <MenuItem key={program} value={program}>
+                                {program}
+                              </MenuItem>
+                            )
+                          )}
+                        </Select>
                       </p>
                     </div>
                     <div className="flex mb-2">
@@ -348,12 +438,13 @@ function Home() {
                           variant="filled"
                           name="semester"
                           value={user.semester}
-                          onChange={handleChange}
-                          type="number"
-                          InputProps={{
-                            inputProps: { 
-                                max: 10, min: 1
-                            }}}
+                          onChange={handleNumericInputChange}
+                          type="text"
+                          inputProps={{
+                            maxLength: 1,
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                          }}
                         />
                       </p>
                     </div>
@@ -378,8 +469,15 @@ function Home() {
               </div>
             </div>
           </div>
-          <Button variant="contained" >Apply Changes</Button>
-        </>
+          <Button
+            onClick={() => {
+              setConfirmSumbission(true);
+            }}
+            variant="contained"
+          >
+            Apply Changes
+          </Button>
+        </div>
       )}
 
       {!user && (
@@ -387,6 +485,39 @@ function Home() {
           Roll No not found!
         </Typography>
       )}
+      <Dialog
+        open={confirmSubmission}
+        onClose={() => setConfirmSumbission(false)}
+      >
+        <DialogTitle> Are you sure you want to submit the details?</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+          <Typography component="span" variant="body1" fontWeight="bold">
+              NOTE:
+            </Typography>
+            
+            {" If Campus, Program or Semester is changed, then current exam registrations will be deleted."}
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleUpdate} color="primary">
+            Submit
+          </Button>
+          <Button onClick={() => setConfirmSumbission(false)} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={() => {
+          setOpen(false);
+        }}
+        message={message}
+      />
     </div>
   );
 }
