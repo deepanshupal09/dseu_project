@@ -23,7 +23,10 @@ import {
     fetchStudentCampus,
     fetchPasswordByEmailId,
     fetchCourseDetails,
-    updateMultipleDetails
+    updateMultipleDetails,
+    updateExam,
+    fetchCampus,
+    deleteExamRegisteration
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -137,6 +140,19 @@ async function uploadFile(file: File): Promise<string> {
     }
 }
 
+export function fetchUserByRollno(rollno: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetchUser(rollno)
+            .then((results) => {
+                resolve(results.rows);
+            })
+            .catch((error) => {
+                console.log("Service error: ", error);
+                reject("internal server error");
+            });
+    });
+}
+
 export async function updateDetails(
     rollno: string,
     program: string,
@@ -160,11 +176,25 @@ export async function updateDetails(
 ): Promise<string> {
     try {
         const last_modified: string = new Date().toString();
-        console.log("rollno ", rollno);
+        console.log("rollno 2 ", rollno);
 
         const passwordResult = await fetchPasswordByRollNo(rollno);
         console.log("service ", passwordResult.rows);
-
+        // const currentDetails = await fetchUserByRollno(rollno);
+        // console.log("service current ", currentDetails[0]);
+        
+        
+        // Check if campus, program, or semester has been updated
+        
+        const isCampusUpdated = passwordResult.rows[0].campus !== campus;
+        const isProgramUpdated = passwordResult.rows[0].program !== program;
+        const isSemesterUpdated = passwordResult.rows[0].semester !== semester;
+        
+        // If any of these fields have been updated, call deleteExamRegistration
+        if (isCampusUpdated || isProgramUpdated || isSemesterUpdated) {
+            await deleteExamRegisteration(rollno);
+        }
+        
         if (passwordResult.rows.length > 0) {
             const hash = await bcrypt.hash(password, 10);
             
@@ -190,7 +220,9 @@ export async function updateDetails(
                 year_of_admission,
                 last_modified,
             );
+
             return "successfully updated!";
+
         } else {
             throw new Error("rollno not found!");
         }
@@ -214,8 +246,6 @@ export async function updateMultipleUsersDetails(users: Array<{ rollno: string, 
     }
 }
 
-  
-
 export async function verifyTokenByRollNo(rollno: string) {
     try {
         const result = await fetchTokenByRollNo(rollno);
@@ -225,18 +255,6 @@ export async function verifyTokenByRollNo(rollno: string) {
     }
 }
 
-export function fetchUserByRollno(rollno: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        fetchUser(rollno)
-            .then((results) => {
-                resolve(results.rows);
-            })
-            .catch((error) => {
-                console.log("Service error: ", error);
-                reject("internal server error");
-            });
-    });
-}
 
 
 export function fetchTheCourses(
@@ -480,3 +498,29 @@ export function fetchTheCourseDetails(courseDetails:any): Promise<any> {
             });
     });
 }
+
+
+export async function updateTheExam(users: Array<{ campus:string, program:string, semester:number, exam_control: boolean}>): Promise<string> {
+    try {
+        for (const user of users) {
+            const results = await updateExam(user.campus, user.program, user.semester, user.exam_control);
+            console.log("Update results: ", results);
+        }
+        return "Exam control successfully updated!";
+    } catch (error) {
+        console.error("Error updating multiple users: ", error);
+        throw new Error("internal server error");
+    }
+}
+
+export function fetchTheCampus(): Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchCampus().then((result) =>{
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in fetching campus details: ", error);
+                reject("Internal server error in fetchCampusDetails");
+        })
+    })
+}
+

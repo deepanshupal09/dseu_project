@@ -20,7 +20,9 @@ import {
   fetchTheStudentCampus,
   handleLoginByEmailId,
   fetchTheCourseDetails,
-  updateMultipleUsersDetails
+  updateMultipleUsersDetails,
+  updateTheExam,
+  fetchTheCampus
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -137,7 +139,7 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
       date_of_birth
     } = req.body;
     console.log(req.body)
-    updateDetails(date_of_birth,rollno, program, semester, phone,campus,emailid, gender, alternate_phone, father, mother, guardian,aadhar,abc_id,pwbd_certificate, photo, program_type, password,year_of_admission).then((results)=>{
+    updateDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission).then((results)=>{
         res.status(200).send("successfully updated!")
     }).catch((error)=>{
         res.status(500).send("internal server error");
@@ -567,7 +569,33 @@ const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
   }
 }
 
+const updateExamControl = (req: Request, res: Response) => {
+  try{
+    const users =req.body;
+    updateTheExam(users).then((results)=>{
+      res.status(200).send("successfully updated!");
+    }).catch((error)=>{
+      console.error('Error in updateMultipleUsers: ', error);
+      res.status(500).send({message: "internal server error"});
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});    
+  }
+}
 
+const fetchCampusDetails = (req:Request, res:Response) => {
+  try{
+    fetchTheCampus().then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).send("Internal server error fetch campus details")
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
 
 
 export {
@@ -593,5 +621,7 @@ export {
   loginByEmailId,
   fetchCourseDetailsByCourseCode,
   sendUserDetailsEmail,
-  updateMultipleDetailsByRollno
+  updateMultipleDetailsByRollno,
+  updateExamControl,
+  fetchCampusDetails
 };

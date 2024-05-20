@@ -118,3 +118,15 @@ export const getPasswordByEmailId: string =
 
 export const updateMultipleDetailsByRollno: string =
 `UPDATE users SET father = COALESCE($2, father), mother = COALESCE($3, mother), aadhar = COALESCE($4, aadhar), abc_id = COALESCE($5, abc_id) WHERE rollno = $1`;
+
+export const updateExamControl: string = `
+  UPDATE semester_course SET exam_control=$4 WHERE campus=$1 AND program=$2 AND semester=$3;
+`;
+
+export const fetchCampusDetails: string =`
+  SELECT DISTINCT campus, program, semester FROM semester_course GROUP BY campus, program, semester;
+`;
+
+export const deleteExamRegisterationByRollno: string = `
+  DELETE FROM exam_registeration WHERE rollno=$1;
+`;

@@ -23,7 +23,10 @@ import {
     fetchStudentByProgramAndSemester,
     fetchStudentByCampusAndProgram,
     getPasswordByEmailId,
-    updateMultipleDetailsByRollno
+    updateMultipleDetailsByRollno,
+    updateExamControl,
+    fetchCampusDetails,
+    deleteExamRegisterationByRollno
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -475,6 +478,47 @@ export function updateMultipleDetails (
     return new Promise((resolve, reject) => {
         pool.query(updateMultipleDetailsByRollno, [rollno, father, mother, aadhar, abc_id], (error, results) =>{
             if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function updateExam (
+    campus: string,
+    program: string,
+    semester: number,
+    exam_control: boolean,
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(updateExamControl, [campus, program, semester, exam_control], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchCampus (): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchCampusDetails, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function deleteExamRegisteration(rollno: string): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(deleteExamRegisterationByRollno,[rollno], (error, results)=>{
+            if(error) {
                 reject(error);
             } else {
                 resolve(results);
