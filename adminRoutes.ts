@@ -12,6 +12,10 @@ router.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAnd
 router.get("/fetchCoursesBySemester",controller.fetchCoursesBySemester);
 router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistrationByCourseCode);
 router.post("/fetchCourseDetailsByCourseCode", controller.fetchCourseDetailsByCourseCode);
+router.get("/getUserByRollno", controller.getUserByRollno);
+router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
+
+
 
 
 
