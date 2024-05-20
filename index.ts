@@ -21,7 +21,7 @@ import bcrypt from "bcrypt";
 dotenv.config();
 
 const app = express();
-const port = 8000;
+const port = 6969;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

@@ -189,6 +189,9 @@ export async function updateDetails(
         const isCampusUpdated = passwordResult.rows[0].campus !== campus;
         const isProgramUpdated = passwordResult.rows[0].program !== program;
         const isSemesterUpdated = passwordResult.rows[0].semester !== semester;
+        const currentPassword = passwordResult.rows[0].password;
+        
+
         
         // If any of these fields have been updated, call deleteExamRegistration
         if (isCampusUpdated || isProgramUpdated || isSemesterUpdated) {
@@ -197,6 +200,8 @@ export async function updateDetails(
         
         if (passwordResult.rows.length > 0) {
             const hash = await bcrypt.hash(password, 10);
+            const pw = password === "" ? currentPassword:hash ;
+            
             
             const results = await putDetailsByRollno(
                 rollno,
@@ -216,7 +221,7 @@ export async function updateDetails(
                 pwbd_certificate, // Use the uploaded link if available, otherwise use the original value
                 photo, // Use the uploaded link if available, otherwise use the original value
                 program_type,
-                hash,
+                pw,
                 year_of_admission,
                 last_modified,
             );
