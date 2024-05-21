@@ -130,3 +130,7 @@ export const fetchCampusDetails: string =`
 export const deleteExamRegisterationByRollno: string = `
   DELETE FROM exam_registeration WHERE rollno=$1;
 `;
+
+export const fetchExamControl: string = `
+  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;
+`;

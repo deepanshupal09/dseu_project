@@ -22,7 +22,8 @@ import {
   fetchTheCourseDetails,
   updateMultipleUsersDetails,
   updateTheExam,
-  fetchTheCampus
+  fetchTheCampus,
+  fetchTheExamControl
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -584,6 +585,23 @@ const updateExamControl = (req: Request, res: Response) => {
   }
 }
 
+const fetchExamControl = (req: Request, res: Response) => {
+  try{
+    const campus:string = req.headers.campus as string;
+    const program:string = req.headers.program as string;
+    const semester: number = parseInt(req.headers.semester as string); 
+    fetchTheExamControl(campus, program, semester).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.error('Error in updateMultipleUsers: ', error);
+      res.status(500).send({message: "internal server error in fetch exam control"});
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});    
+  }
+}
+
 const fetchCampusDetails = (req:Request, res:Response) => {
   try{
     fetchTheCampus().then((results)=>{
@@ -623,5 +641,6 @@ export {
   sendUserDetailsEmail,
   updateMultipleDetailsByRollno,
   updateExamControl,
-  fetchCampusDetails
+  fetchCampusDetails,
+  fetchExamControl
 };

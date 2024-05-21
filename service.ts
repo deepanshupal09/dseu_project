@@ -26,7 +26,8 @@ import {
     updateMultipleDetails,
     updateExam,
     fetchCampus,
-    deleteExamRegisteration
+    deleteExamRegisteration,
+    fetchExamControlModal
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -516,6 +517,18 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
         console.error("Error updating multiple users: ", error);
         throw new Error("internal server error");
     }
+}
+
+export function fetchTheExamControl(campus:string, program:string, semester:number): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetchExamControlModal(campus, program, semester).then((results)=>{
+            console.log("exam control:", results.rows);
+            resolve(results.rows[0]);
+        }).catch((error) => {
+            console.log("Error in fetching exam control: ", error);
+            reject("Internal server error in fetchExamControl");
+        });
+    });
 }
 
 export function fetchTheCampus(): Promise<any> {

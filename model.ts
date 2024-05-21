@@ -26,7 +26,8 @@ import {
     updateMultipleDetailsByRollno,
     updateExamControl,
     fetchCampusDetails,
-    deleteExamRegisterationByRollno
+    deleteExamRegisterationByRollno,
+    fetchExamControl
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -518,6 +519,18 @@ export function fetchCampus (): Promise<QueryResult<any>> {
 export function deleteExamRegisteration(rollno: string): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
         pool.query(deleteExamRegisterationByRollno,[rollno], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchExamControlModal(campus: string, program:string, semester:number): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchExamControl,[campus, program, semester], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

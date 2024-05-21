@@ -21,7 +21,7 @@ import bcrypt from "bcrypt";
 dotenv.config();
 
 const app = express();
-const port = 6969;
+const port = 8000;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -113,12 +113,13 @@ app.get("/sendUserDetailsEmail", controller.sendUserDetailsEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 app.get("/updateMultipleDetailsByRollno", controller.updateMultipleDetailsByRollno);
-app.get("/updateExamControl", controller.updateExamControl);
+app.post("/updateExamControl", controller.updateExamControl);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 // app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
+app.get("/fetchExamControl", controller.fetchExamControl);
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
 
