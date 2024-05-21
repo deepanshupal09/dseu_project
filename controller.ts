@@ -141,12 +141,12 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
     } = req.body;
     console.log(req.body)
     updateDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission).then((results)=>{
-        res.status(200).send("successfully updated!")
+        res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
-        res.status(500).send("internal server error");
+        res.status(500).send({message: "internal server error"});
     })
 } catch (error) {
-      res.send("internal server error");    
+      res.send({message: "internal server error"});    
   }
 };
 
