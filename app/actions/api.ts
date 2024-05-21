@@ -348,32 +348,7 @@ export async function fetchCourseDetailsByCourseCode(token:string, coursedetails
   }
 }
 
-export async function getUserByRollNo(rollno: string, token: string) {
-  try {
-    const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/getUserByRollno",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-
-    const data = await response.json(); // Parse the JSON response
-    return data;
-  } catch (error) {
-    throw error;
-  }
-}
 
 export async function updateDetails(user: StudentDetails, token: string) {
   try {
@@ -422,3 +397,82 @@ export async function updateDetails(user: StudentDetails, token: string) {
     throw error;
   }
 }
+
+  export async function fetchExamControl(token:string) {
+    try {
+      const response = await fetch(
+        "https://admin-exam.dseu.ac.in/fetchCampusDetails",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          }
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  export async function getUserByRollNo(rollno: string, token: string) {
+    try {
+      const response = await fetch(
+        "https://admin-exam.dseu.ac.in/api/admin/getUserByRollno",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  export async function fetchUserByRollno(rollno: string, token: string) {
+    try {
+      const response = await fetch(
+        "https://admin-exam.dseu.ac.in/getUserByRollno",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }

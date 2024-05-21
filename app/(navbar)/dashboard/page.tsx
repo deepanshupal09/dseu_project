@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
-import { fetchExamRegisterations } from "../../actions/api";
+import { fetchExamControl, fetchExamRegisterations } from "../../actions/api";
 import { StudentDetails } from "../profile/page";
 
 export default function Home() {
@@ -24,7 +24,15 @@ export default function Home() {
     details:
       "",
   })
-  const [open ,setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchExamControl(token).then((res)=>{
+      console.log("res: ", res);
+    }).catch((error) => {
+      console.log("error: ", error);
+    })
+  },[])
+  const [examControl ,setExamControl] = useState<boolean>(false);
 
 
 
@@ -76,7 +84,7 @@ export default function Home() {
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            {open?
+            {examControl?
             <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are live now!</li>:<li>Exam registrations for B.Tech and M.Tech Courses are closed now.</li>}
             {/* <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are closed now.</li> */}
             {/* <li  className="my-6">Examination Registrations about to close.</li>
