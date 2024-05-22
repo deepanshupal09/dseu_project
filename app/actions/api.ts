@@ -345,5 +345,25 @@ export async function fetchCourseDetailsByCourseCode(token:string, coursedetails
     throw error;
   }
 }
-
+export async function fetchDetailsByCampus(token:string){
+  try{
+    const response = await fetch ("https://admin-exam.dseu.ac.in/api/admin/fetchCampusDetails",{
+      method : "GET",
+      mode : "cors",
+      cache: "no-cache",
+      headers:{
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+    const data = await response.json(); 
+    return data;
+  } catch(error){
+    throw error;
+  }
+}
 
