@@ -298,6 +298,11 @@ export default function Registration() {
     }
   }, [courseCodes]);
 
+  useEffect(()=>{
+    setAdmitCardData([]);
+  },[selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester])
+  
+
   const handleApplyFilters = async () => {
     setAdmitCardData([]);
     fetchExamRegistrationByProgramAndSemester(

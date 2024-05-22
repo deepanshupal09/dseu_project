@@ -25,6 +25,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../../actions/cookie";
@@ -36,6 +38,7 @@ import {
 } from "../../actions/api";
 import { useRouter } from "next/navigation";
 import { StudentDetails } from "../profile/page";
+
 
 interface ProfDetails {
   username: string;
@@ -67,6 +70,7 @@ export default function Home() {
   const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [profile, setProfile] = useState<ProfDetails|null>(null);
+  const [warning , setWarning] = useState<boolean>(false);
   const [token, setToken] = useState("");
   useEffect(() => {
     getAuth().then((auth: any) => {
@@ -86,7 +90,41 @@ export default function Home() {
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
-  const [open, setOpen] = useState<Boolean>(false);
+  const [open, setOpen] = useState<Boolean>(true);
+
+  useEffect(()=>{
+    function validateSelectedSubjects() {
+      const selectedSubjects = getSelectedSubjects();
+      let hasPE = false;
+      let hasOE = false;
+  
+      // Check for the presence of PE and OE subjects in the selectedSubjects
+      selectedSubjects.forEach(subject => {
+        if (subject.type === 'PE') {
+          hasPE = true;
+        } else if (subject.type === 'OE') {
+          hasOE = true;
+        }
+      });
+  
+      // Check if there are PE or OE subjects in the subjectsData
+      const peExists = subjectsData.some(subject => subject.type === 'PE');
+      const oeExists = subjectsData.some(subject => subject.type === 'OE');
+  
+      // Set warning if a PE or OE subject exists in subjectsData but not in selectedSubjects
+      if ((peExists && !hasPE) || (oeExists && !hasOE)) {
+        setWarning(true)  ;
+        setPreviewSelection(false)
+      } else {
+        setWarning(false);
+      }
+    }
+
+    if(previewSelection) {
+      validateSelectedSubjects();
+    }
+  
+  },[previewSelection])
 
 
   useEffect(() => {
@@ -603,6 +641,15 @@ export default function Home() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar open={warning} autoHideDuration={6000} onClose={()=>{setWarning(false)}}>
+  <Alert
+    onClose={()=>{setWarning(false)}}
+    severity="error"
+    variant="filled"
+  >
+    Please select all electives before submitting!
+  </Alert>
+</Snackbar>
 
       <Dialog
         open={confirmSubmission}
