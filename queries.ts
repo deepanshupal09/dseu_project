@@ -123,7 +123,7 @@ export const updateExamControl: string = `
 `;
 
 export const fetchCampusDetails: string =`
-  SELECT DISTINCT campus, program, semester FROM semester_course GROUP BY campus, program, semester;
+SELECT DISTINCT program_type, campus, program, semester,exam_control FROM semester_course GROUP BY program_type,campus, program, semester, exam_control;
 `;
 
 export const deleteExamRegisterationByRollno: string = `

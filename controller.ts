@@ -591,6 +591,7 @@ const fetchExamControl = (req: Request, res: Response) => {
     const campus:string = req.headers.campus as string;
     const program:string = req.headers.program as string;
     const semester: number = parseInt(req.headers.semester as string); 
+    console.log("campus: ",campus, program, semester)
     fetchTheExamControl(campus, program, semester).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
@@ -616,7 +617,7 @@ const fetchCampusDetails = (req:Request, res:Response) => {
   }
 }
 
-const deleteExamRegisterationByRollno = (req:Request, res:Response) => {
+const deleteExamRegistrationByRollno = (req:Request, res:Response) => {
   try{
     const rollno:string = req.headers.rollno as string;
     deleteExam(rollno).then((results)=>{
@@ -658,5 +659,5 @@ export {
   updateExamControl,
   fetchCampusDetails,
   fetchExamControl,
-  deleteExamRegisterationByRollno
+  deleteExamRegistrationByRollno
 };

@@ -14,10 +14,11 @@ router.get("/fetchExamRegistrationByCourseCode",controller.fetchExamRegistration
 router.post("/fetchCourseDetailsByCourseCode", controller.fetchCourseDetailsByCourseCode);
 router.get("/getUserByRollno", controller.getUserByRollno);
 router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
-router.get("/deleteExamRegisterationByRollno",controller.deleteExamRegisterationByRollno);
+router.get("/fetchCampusDetails", controller.fetchCampusDetails);
+router.get("/deleteExamRegistrationByRollno",controller.deleteExamRegistrationByRollno);
 
 
 
 
-
+    
 export default router;
