@@ -34,6 +34,9 @@ import {
   programListByType,
   programTypeList,
 } from "@/app/getuserdetails/[rollno]/page";
+import { useDebouncedCallback } from 'use-debounce';
+import { DeleteForever } from "@mui/icons-material";
+
 
 export function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -155,6 +158,10 @@ function Home() {
     }
   }
 
+  const handleSearch = useDebouncedCallback((roll)=>{
+    searchRollNo(roll)
+  },300)
+
   return (
     <div className="sm:pl-[300px] sm:mt-[100px] flex items-center flex-col mt-[140px] w-full px-2 sm:pr-10">
       <div>
@@ -170,8 +177,9 @@ function Home() {
             value={rollno}
             onChange={(e) => {
               setRollno(e.target.value);
-              searchRollNo(e.target.value);
+              handleSearch(e.target.value);
             }}
+            
             label="Enter Roll No"
           />
           {/* <Button type="submit" variant="contained">
@@ -504,6 +512,7 @@ function Home() {
                 </div>
               </div>
             </div>
+            <Button className="flex items-center " color="error" > <div> <DeleteForever className="scale-80" /></div><div> Delete Exam Registration</div></Button>
           </div>
           <Button
             onClick={() => {

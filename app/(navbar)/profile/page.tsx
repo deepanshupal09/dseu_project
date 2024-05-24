@@ -16,6 +16,7 @@ import {
   fetchExamControl,
   fetchUserByRollno,
   updateDetails,
+  updateDetailsUser,
 } from "@/app/actions/api";
 import {
   Button,
@@ -71,31 +72,22 @@ export default function Home() {
   const [token, setToken] = useState<string>("");
   const [examControl, setExamControl] = useState<boolean>(false);
   const [edit, setEdit] = useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    if (token !== "") {
+    // if(token!=="") {
       if (user?.campus !== undefined) {
-        fetchExamControl(
-          token,
-          user?.campus,
-          user?.program,
-          user?.semester.toString()
-        )
-          .then((res) => {
-            // console.log("exam: ")
-            setExamControl(res.exam_control);
-          })
-          .catch((error) => {
-            console.log("error: ", error);
-          });
+        fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
+          console.log("res: ", res);
+          setExamControl(res.exam_control)
+        }).catch((error) => {
+          console.log("error: ", error);
+        })
       }
-    }
-  }, [token]);
+    // }
+  },[original])
 
-  useEffect(() => {
-    console.log("exam_control: ", examControl);
-    setEdit(examControl);
-  }, [examControl]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -113,19 +105,42 @@ export default function Home() {
   async function handleUpdate() {
     try {
       if (user) {
-        const response = await updateDetails(user, token);
+        const response = await updateDetailsUser(user, token);
         console.log("response: ", response);
         setMessage("Successfully updated");
         setOpen(true);
         setConfirmSumbission(false);
         setOriginal(null);
         setUser(null);
+        setEdit(false)
+        setReload(!reload);
       }
     } catch (error) {
       setMessage("Something went wrong! Please try again later.");
       console.log("error: ", error);
     }
   }
+  useEffect(()=>{
+    getAuth().then((auth) => {
+      if (auth) {
+        setToken(auth.value);
+        const temp = parseJwt(auth?.value as string);
+        fetchUserByRollno(temp.user.rollno, auth.value)
+          .then((res) => {
+            console.log("user: ", res[0]);
+            setUser(res[0]);
+            setOriginal(res[0]);
+            // setPhotoPath(res.)
+          })
+          .catch((error: any) => {
+            console.log("error: ", error);
+          });
+        // console.log("user: ", temp.user)
+        // setUser(temp.user);
+        // setPhotoPath(temp.user.photo);
+      }
+    });
+  },[reload])
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
@@ -181,156 +196,6 @@ export default function Home() {
   return (
     <div className="max-sm:mt-[120px] mt-[120px]">
       <div className="sm:pl-[300px] sm:mt-[100px] flex flex-col  items-center mt-[140px] w-full px-2 sm:pr-10">
-        {/* {!edit && (
-          <>
-            <div className="relative md:ml-60 mt-6 md:w-auto">
-              <div className="bg-dseublue py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl text-white">
-                <img
-                  className="rounded-full object-cover"
-                  style={{ width: 50, height: 50, borderRadius: "50%" }}
-                  alt="user"
-                  src={user?.photo}
-                  key={user?.rollno}
-                />
-
-                <div>
-                  <h1 className="text-xl font-bold">{user?.name}</h1>
-                </div>
-                <div className="text-center sm:text-right">
-                  <p className="font-bold">Roll Number:</p>
-                  <p>{user?.rollno}</p>
-                  <p className="font-bold">Semester: </p>
-                  <p>{user?.semester}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
-              <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
-                <h2 className="text-xl font-bold mb-4 w-1/2">
-                  Personal Details
-                </h2>
-                <div className="w-full">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="flex items-center mb-2">
-                      <PersonIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Name:</span>
-                        <br /> {user?.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center mb-2">
-                      <PersonIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">{"Father's Name:"}</span>
-                        <br /> {user?.father}
-                      </p>
-                    </div>
-                    <div className="flex items-center mb-2">
-                      <PersonIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">{"Mother's Name:"}</span>
-                        <br /> {user?.mother}
-                      </p>
-                    </div>
-                    <div className="flex items-center mb-2">
-                      <PhoneIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Mobile Number:</span>
-                        <br /> {user?.phone}
-                      </p>
-                    </div>
-                    <div className="flex items-center mb-2">
-                      <CreditCardRoundedIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Aadhar Card:</span>
-                        <br /> {user?.aadhar}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center mb-2">
-                      <Face6RoundedIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Gender:</span>
-                        <br /> {user?.gender}
-                      </p>
-                    </div>
-                    <div className="flex  mb-2">
-                      <VpnKeyIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">abc_id:</span>
-                        <br /> {user?.abc_id}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center mb-2">
-                      <MailIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Email:</span>
-                        <br /> {user?.emailid}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative md:ml-60 mt-8 w-full md:w-auto shadow-sm">
-              <div className="bg-white md:w-full py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-start justify-between max-w-6xl text-gray-700">
-                <h2 className="text-xl font-bold mb-4 w-1/2">
-                  University Details
-                </h2>
-                <div className="w-full">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="flex  mb-2">
-                      <SchoolIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Campus Name:</span>
-                        <br /> {user?.campus}
-                      </p>
-                    </div>
-                    <div className="flex  mb-2">
-                      <BookIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Program Type:</span>
-                        <br /> {user?.program_type}
-                      </p>
-                    </div>
-                    <div className="flex  mb-2">
-                      <ClassIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Program Name:</span>
-                        <br /> {user?.program}
-                      </p>
-                    </div>
-                    <div className="flex  mb-2">
-                      <PersonIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Roll Number:</span>
-                        <br /> {user?.rollno}
-                      </p>
-                    </div>
-                    <div className="flex  mb-2">
-                      <CalendarTodayIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Semester:</span>
-                        <br /> {user?.semester}
-                      </p>
-                    </div>
-
-                    <div className="flex  mb-2">
-                      <PersonIcon className="mr-2" />
-                      <p>
-                        <span className="font-bold">Role:</span>
-                        <br /> Student
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )} */}
         {user && (
           <div>
             <div className="flex w-[70vw] max-sm:w-screen flex-col items-center ">
@@ -340,7 +205,7 @@ export default function Home() {
                     className="rounded-full object-cover"
                     style={{ width: 50, height: 50, borderRadius: "50%" }}
                     alt="user"
-                    src={"https://exam.dseu.ac.in/" + user?.photo}
+                    src={"https://exam.dseu.ac.in/" + user?.photo+`?${Date.now()}`}
                     key={user?.rollno}
                   />
                   <div>

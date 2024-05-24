@@ -320,6 +320,7 @@ export async function fetchExamRegistrationByCourseCode(token:string ,campus: st
     throw error;
   }
 }
+
 export async function fetchCourseDetailsByCourseCode(token:string, coursedetails: {campus:string,program:string, coursecode: string[]}) {
   try {
     console.log("campus ",coursedetails);
@@ -397,9 +398,58 @@ export async function updateDetails(user: StudentDetails, token: string) {
     throw error;
   }
 }
+export async function updateDetailsUser(user: StudentDetails, token: string) {
+  try {
+    const body = {
+      program: user.program,
+      semester: user.semester,
+      phone: user.phone,
+      campus: user.campus,
+      emailid: user.emailid,
+      gender: user.gender,
+      alternate_phone: user.alternate_phone,
+      father: user.father,
+      mother: user.mother,
+      guardian: user.guardian,
+      aadhar: user.aadhar,
+      abc_id: user.abc_id,
+      pwbd_certificate: user.pwbd_certificate,
+      photo: user.photo,
+      program_type: user.program_type,
+      password: "",
+      rollno: user.rollno,
+      year_of_admission: user.year_of_admission,
+      date_of_birth: user.date_of_birth,
+    }
+    const response = await fetch(
+      "https://admin-exam.dseu.ac.in/api/data/updateDetailsByRollno",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
   export async function fetchExamControl(token:string, campus: string, program: string, semester: string) {
     try {
+      console.log("campus, program, semester", campus, program, semester)
+      
       const response = await fetch(
         "https://admin-exam.dseu.ac.in/api/data/fetchExamControl",
         {
