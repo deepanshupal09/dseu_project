@@ -23,7 +23,8 @@ import {
   updateMultipleUsersDetails,
   updateTheExam,
   fetchTheCampus,
-  fetchTheExamControl
+  fetchTheExamControl,
+  deleteExam
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -615,6 +616,20 @@ const fetchCampusDetails = (req:Request, res:Response) => {
   }
 }
 
+const deleteExamRegisterationByRollno = (req:Request, res:Response) => {
+  try{
+    const rollno:string = req.headers.rollno as string;
+    deleteExam(rollno).then((results)=>{
+      res.status(200).send({message:"exam registration deleted!"})
+    }).catch((error)=>{
+      res.status(500).send("Internal server error exam reg. delete")
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -642,5 +657,6 @@ export {
   updateMultipleDetailsByRollno,
   updateExamControl,
   fetchCampusDetails,
-  fetchExamControl
+  fetchExamControl,
+  deleteExamRegisterationByRollno
 };

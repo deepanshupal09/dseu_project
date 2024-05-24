@@ -67,7 +67,6 @@ export const fetchExamRegistrationByRollNo: string = `
 `;
 
 
-
 export const fetchExamRegistrationByCourseCode: string = `
   SELECT u.name, er.rollno, u.program, u.semester FROM exam_registeration er
   JOIN users u ON er.rollno = u.rollno

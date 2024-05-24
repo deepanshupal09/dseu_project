@@ -238,6 +238,8 @@ export async function updateDetails(
     }
 }
 
+
+
 export async function updateMultipleUsersDetails(users: Array<{ rollno: string, father: string, mother: string, aadhar: string, abc_id: string }>): Promise<string> {
     try {
         for (const user of users) {
@@ -538,6 +540,17 @@ export function fetchTheCampus(): Promise<any> {
         }).catch((error) => {
             console.log("Error in fetching campus details: ", error);
                 reject("Internal server error in fetchCampusDetails");
+        })
+    })
+}
+
+export function deleteExam(rollno: string): Promise<any> {
+    return new Promise((resolve,reject) => {
+        deleteExamRegisteration(rollno).then((result) =>{
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in deleting exam reg. details: ", error);
+                reject("Internal server error in delete exam reg.");
         })
     })
 }

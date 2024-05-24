@@ -120,6 +120,8 @@ app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
 app.get("/fetchExamControl", controller.fetchExamControl);
+app.get("/deleteExamRegisterationByRollno",controller.deleteExamRegisterationByRollno);
+
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
 
