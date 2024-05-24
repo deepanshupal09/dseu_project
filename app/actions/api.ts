@@ -529,15 +529,18 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
       throw error;
     }
   }
-  export async function fetchCampusDetailsGlobal() {
+
+  export async function deleteExamRegistration(rollno: string, token: string) {
     try {
       const response = await fetch(
-        "https://admin-exam.dseu.ac.in/fetchCampusDetails",
+        "https://admin-exam.dseu.ac.in/api/admin/deleteExamRegistrationByRollno",
         {
           method: "GET",
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
           },
         }
       );

@@ -27,7 +27,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { getUserByRollNo, updateDetails } from "@/app/actions/api";
+import { deleteExamRegistration, getUserByRollNo, updateDetails } from "@/app/actions/api";
 import { SelectChangeEvent } from "@mui/material/Select";
 import {
   campusList,
@@ -69,10 +69,7 @@ function Home() {
   const [open, setOpen] = useState(false);
   const [original, setOriginal] = useState<StudentDetails | null>(null);
   const [confirmSubmission, setConfirmSumbission] = useState(false);
-  
-  const {data} = useData();
-  console.log("data: ", data)
-
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
   // useEffect(() => {
   //   
   //   
@@ -91,6 +88,20 @@ function Home() {
       return null;
     });
   };
+
+  async function handleDeleteRegistration() {
+    try {
+      const response = await deleteExamRegistration(rollno, token);
+      setConfirmDeletion(false)
+      setMessage('Exam registration deleted successfully')
+      setOpen(true)
+      console.log("response: ", response);
+    } catch(error) {
+      console.log("error delete: ", error)
+      setOpen(true)
+      setMessage("Something went wrong! Please try again later")
+    }
+  }
 
   async function handleUpdate() {
     try {
@@ -513,7 +524,7 @@ function Home() {
                 </div>
               </div>
             </div>
-            <Button className="flex items-center " color="error" > <div> <DeleteForever className="scale-80" /></div><div> Delete Exam Registration</div></Button>
+            <Button onClick={()=>{setConfirmDeletion(true)}} className="flex items-center justify-center space-x-2 " color="error" > <div> <DeleteForever className="scale-90" /></div><div> Delete Exam Registration</div></Button>
           </div>
           <Button
             onClick={() => {
@@ -552,6 +563,24 @@ function Home() {
             Submit
           </Button>
           <Button onClick={() => setConfirmSumbission(false)} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={confirmDeletion}
+        onClose={() => setConfirmDeletion(false)}
+      >
+        <DialogTitle> Delete Exam Registration</DialogTitle>
+        <DialogContent>
+      Are you sure you want to delete Exam Registration?
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleDeleteRegistration} color="primary">
+            Submit
+          </Button>
+          <Button onClick={() => setConfirmDeletion(false)} color="primary">
             Cancel
           </Button>
         </DialogActions>
