@@ -141,7 +141,7 @@ function Home() {
     });
   }, []);
 
-  async function searchRollNo() {
+  async function searchRollNo(rollno: string) {
     if (rollno) {
       try {
         const response = await getUserByRollNo(rollno, token);
@@ -159,23 +159,24 @@ function Home() {
     <div className="sm:pl-[300px] sm:mt-[100px] flex items-center flex-col mt-[140px] w-full px-2 sm:pr-10">
       <div>
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            searchRollNo();
-          }}
+          // onSubmit={(e) => {
+          //   e.preventDefault();
+          //   searchRollNo(rollno);
+          // }}
           className="flex space-x-2 "
         >
           <TextField
-            size="small"
+            size="medium"
             value={rollno}
             onChange={(e) => {
               setRollno(e.target.value);
+              searchRollNo(e.target.value);
             }}
-            label="Roll No"
+            label="Enter Roll No"
           />
-          <Button type="submit" variant="contained">
+          {/* <Button type="submit" variant="contained">
             Search
-          </Button>
+          </Button> */}
         </form>
       </div>
       {user && (
@@ -516,11 +517,11 @@ function Home() {
         </div>
       )}
 
-      {!user && (
+      {/* {!user && (
         <Typography variant="h6" className=" my-4" component="h2">
           Roll No not found!
         </Typography>
-      )}
+      )} */}
       <Dialog
         open={confirmSubmission}
         onClose={() => setConfirmSumbission(false)}
