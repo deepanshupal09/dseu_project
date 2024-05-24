@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import favicon from "../public/favicon.ico";
+import { AppProps } from 'next/app';
+import { DataProvider } from "../contexts/DataContext";
+
 
 export const metadata: Metadata = {
   title: "DSEU ERP",
@@ -15,11 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.6.3/umd/react.production.min.js" async ></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.6.3/umd/react-dom.production.min.js" async ></script> */}
         <link rel="icon" href={favicon.src} />
       </head>
-      <body>{children}</body>
+      <body><DataProvider>{children}</DataProvider></body>
     </html>
   );
 }

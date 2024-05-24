@@ -34,9 +34,7 @@ import {
   programListByType,
   programTypeList,
 } from "@/app/getuserdetails/[rollno]/page";
-import { useDebouncedCallback } from 'use-debounce';
-import { DeleteForever } from "@mui/icons-material";
-
+import { useData } from "@/contexts/DataContext";
 
 export function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -71,6 +69,9 @@ function Home() {
   const [open, setOpen] = useState(false);
   const [original, setOriginal] = useState<StudentDetails | null>(null);
   const [confirmSubmission, setConfirmSumbission] = useState(false);
+  
+  const {data} = useData();
+  console.log("data: ", data)
 
   // useEffect(() => {
   //   

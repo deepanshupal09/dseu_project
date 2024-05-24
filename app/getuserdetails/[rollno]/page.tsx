@@ -15,6 +15,7 @@ import { deleteSignupCookie } from "@/app/actions/cookie";
 import Final from "./Final";
 import PreviewPage from "./Preview";
 import { useParams } from "next/navigation";
+import { useData } from "@/contexts/DataContext";
 
 export const campusList = [
   "Arybhatt DSEU Ashok Vihar Campus",
@@ -161,6 +162,9 @@ export default function Home({params}:{params: {rollno: string}}) {
   // const rollno = pathname.split("/")[2];
   // const params = useParams();
   // const rollno = params.rollno;
+
+  const {data} = useData()
+  console.log("data: ", data);
 
   const handleBackToLogin = () => {
     deleteSignupCookie();

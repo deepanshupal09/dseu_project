@@ -529,3 +529,27 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
       throw error;
     }
   }
+  export async function fetchCampusDetailsGlobal() {
+    try {
+      const response = await fetch(
+        "https://admin-exam.dseu.ac.in/fetchCampusDetails",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
