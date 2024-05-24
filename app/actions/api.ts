@@ -398,16 +398,19 @@ export async function updateDetails(user: StudentDetails, token: string) {
   }
 }
 
-  export async function fetchExamControl(token:string) {
+  export async function fetchExamControl(token:string, campus: string, program: string, semester: string) {
     try {
       const response = await fetch(
-        "https://admin-exam.dseu.ac.in/fetchCampusDetails",
+        "https://admin-exam.dseu.ac.in/api/data/fetchExamControl",
         {
           method: "GET",
           mode: "cors",
           headers: {
             "Content-Type": "application/json",
             token: token,
+            campus: campus,
+            semester: semester,
+            program: program
           }
         }
       );
@@ -453,7 +456,7 @@ export async function updateDetails(user: StudentDetails, token: string) {
   export async function fetchUserByRollno(rollno: string, token: string) {
     try {
       const response = await fetch(
-        "https://admin-exam.dseu.ac.in/getUserByRollno",
+        "https://admin-exam.dseu.ac.in/api/data/getUserByRollno",
         {
           method: "GET",
           mode: "cors",

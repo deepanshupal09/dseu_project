@@ -17,6 +17,7 @@ export default function Home() {
     "Exam Registration",
     "Course Details",
   ];
+  const [examControl ,setExamControl] = useState<boolean>(false);
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [recentChange,setRecentChange] = useState({
     title: "Exam Registrations",
@@ -26,13 +27,17 @@ export default function Home() {
   })
 
   useEffect(() => {
-    fetchExamControl(token).then((res)=>{
-      console.log("res: ", res);
-    }).catch((error) => {
-      console.log("error: ", error);
-    })
-  },[])
-  const [examControl ,setExamControl] = useState<boolean>(false);
+    if(token!=="") {
+      if (user?.campus !== undefined) {
+        fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
+          // console.log("res: ", res);
+          setExamControl(res.exam_control)
+        }).catch((error) => {
+          console.log("error: ", error);
+        })
+      }
+    }
+  },[token])
 
 
 
@@ -40,6 +45,7 @@ export default function Home() {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
       setToken(auth.value);
+      console.log("token: ", auth.value)
       setUser(temp.user);
 
     });
