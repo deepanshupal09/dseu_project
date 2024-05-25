@@ -27,13 +27,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { deleteExamRegistration, getUserByRollNo, updateDetails } from "@/app/actions/api";
-import { SelectChangeEvent } from "@mui/material/Select";
 import {
-  campusList,
-  programListByType,
-  programTypeList,
-} from "@/app/getuserdetails/[rollno]/page";
+  deleteExamRegistration,
+  getUserByRollNo,
+  updateDetails,
+} from "@/app/actions/api";
+import { SelectChangeEvent } from "@mui/material/Select";
+// import {
+//   campusList,
+//   programListByType,
+//   programTypeList,
+// } from "@/app/getuserdetails/[rollno]/page";
+import { useDebouncedCallback } from "use-debounce";
+import { DeleteForever } from "@mui/icons-material";
+
 import { useData } from "@/contexts/DataContext";
 
 export function deepEqual(obj1: any, obj2: any): boolean {
@@ -41,7 +48,12 @@ export function deepEqual(obj1: any, obj2: any): boolean {
     return true;
   }
 
-  if (obj1 == null || typeof obj1 !== "object" || obj2 == null || typeof obj2 !== "object") {
+  if (
+    obj1 == null ||
+    typeof obj1 !== "object" ||
+    obj2 == null ||
+    typeof obj2 !== "object"
+  ) {
     return false;
   }
 
@@ -70,10 +82,13 @@ function Home() {
   const [original, setOriginal] = useState<StudentDetails | null>(null);
   const [confirmSubmission, setConfirmSumbission] = useState(false);
   const [confirmDeletion, setConfirmDeletion] = useState(false);
+  const { data } = useData();
+  // console.log("data ", data)
+
   // useEffect(() => {
-  //   
-  //   
-  //   
+  //   console.log("original: ",original)
+  //   console.log("user: ",user)
+  //   console.log(deepEqual(original, user));  // Should log: true
   // },[original, user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,14 +107,14 @@ function Home() {
   async function handleDeleteRegistration() {
     try {
       const response = await deleteExamRegistration(rollno, token);
-      setConfirmDeletion(false)
-      setMessage('Exam registration deleted successfully')
-      setOpen(true)
+      setConfirmDeletion(false);
+      setMessage("Exam registration deleted successfully");
+      setOpen(true);
       console.log("response: ", response);
-    } catch(error) {
-      console.log("error delete: ", error)
-      setOpen(true)
-      setMessage("Something went wrong! Please try again later")
+    } catch (error) {
+      console.log("error delete: ", error);
+      setOpen(true);
+      setMessage("Something went wrong! Please try again later");
     }
   }
 
@@ -141,7 +156,9 @@ function Home() {
       if (prevUser) {
         return {
           ...prevUser,
-          [name]: isNaN(parseInt(sanitizedValue))?"":parseInt(sanitizedValue),
+          [name]: isNaN(parseInt(sanitizedValue))
+            ? ""
+            : parseInt(sanitizedValue),
         };
       }
       return null;
@@ -162,7 +179,7 @@ function Home() {
         const response = await getUserByRollNo(rollno, token);
         
         setUser(response[0]);
-        setOriginal(response[0])
+        setOriginal(response[0]);
       } catch (error) {
         
         setUser(null);
@@ -170,9 +187,9 @@ function Home() {
     }
   }
 
-  const handleSearch = useDebouncedCallback((roll)=>{
-    searchRollNo(roll)
-  },300)
+  const handleSearch = useDebouncedCallback((roll) => {
+    searchRollNo(roll);
+  }, 300);
 
   return (
     <div className="sm:pl-[300px] sm:mt-[100px] flex items-center flex-col mt-[140px] w-full px-2 sm:pr-10">
@@ -191,7 +208,6 @@ function Home() {
               setRollno(e.target.value);
               handleSearch(e.target.value);
             }}
-            
             label="Enter Roll No"
           />
           {/* <Button type="submit" variant="contained">
@@ -406,7 +422,7 @@ function Home() {
                           sx={{ width: 150 }}
                           variant="filled"
                         >
-                          {campusList.map((campus) => (
+                          {Object.keys(data).map((campus) => (
                             <MenuItem key={campus} value={campus}>
                               {campus}
                             </MenuItem>
@@ -430,7 +446,7 @@ function Home() {
                           sx={{ width: 150 }}
                           variant="filled"
                         >
-                          {programTypeList.map((programType) => (
+                          {Object.keys(data[user.campus]).map((programType) => (
                             <MenuItem key={programType} value={programType}>
                               {programType}
                             </MenuItem>
@@ -455,7 +471,7 @@ function Home() {
                           // sx={{ maxWidth: 200, }} // Adjust the value as needed
                           variant="filled"
                         >
-                          {programListByType[user.program_type].map(
+                          {Object.keys(data[user.campus][user.program_type]).map(
                             (program: string) => (
                               <MenuItem key={program} value={program}>
                                 {program}
@@ -524,14 +540,27 @@ function Home() {
                 </div>
               </div>
             </div>
-            <Button onClick={()=>{setConfirmDeletion(true)}} className="flex items-center justify-center space-x-2 " color="error" > <div> <DeleteForever className="scale-90" /></div><div> Delete Exam Registration</div></Button>
+            <Button
+              onClick={() => {
+                setConfirmDeletion(true);
+              }}
+              className="flex items-center justify-center space-x-2"
+              color="error"
+            >
+              {" "}
+              <div>
+                {" "}
+                <DeleteForever className="scale-75" />
+              </div>
+              <div> Delete Exam Registration</div>
+            </Button>
           </div>
           <Button
             onClick={() => {
               setConfirmSumbission(true);
             }}
             variant="contained"
-            disabled={deepEqual(original,user)}
+            disabled={deepEqual(original, user)}
           >
             Apply Changes
           </Button>
@@ -550,11 +579,13 @@ function Home() {
         <DialogTitle> Are you sure you want to submit the details?</DialogTitle>
         <DialogContent>
           <Typography variant="body1">
-          <Typography component="span" variant="body1" fontWeight="bold">
+            <Typography component="span" variant="body1" fontWeight="bold">
               NOTE:
             </Typography>
-            
-            {" If Campus, Program or Semester is changed, then current exam registrations will be deleted."}
+
+            {
+              " If Campus, Program or Semester is changed, then current exam registrations will be deleted."
+            }
           </Typography>
         </DialogContent>
 
@@ -567,13 +598,10 @@ function Home() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={confirmDeletion}
-        onClose={() => setConfirmDeletion(false)}
-      >
+      <Dialog open={confirmDeletion} onClose={() => setConfirmDeletion(false)}>
         <DialogTitle> Delete Exam Registration</DialogTitle>
         <DialogContent>
-      Are you sure you want to delete Exam Registration?
+          Are you sure you want to delete Exam Registration?
         </DialogContent>
 
         <DialogActions>

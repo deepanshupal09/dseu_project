@@ -22,7 +22,7 @@ type CampusDetailType = {
 };
 
 interface DataContextProps {
-  data: DataType | null;
+  data: TransformedType;
 }
 type ProgramListByTypeType = {
   [key: string]: string[];
@@ -40,10 +40,46 @@ interface DataProviderProps {
   children: ReactNode;
 }
 
+type TransformedType = {
+  [campus: string]: {
+    [programType: string]: {
+      [program: string]: string[];
+    };
+  };
+};
+
+
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [data, setData] = useState<DataType|null>(null);
+  const [data, setData] = useState<TransformedType>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  
+  function transformData(data: CampusDetailType[]): TransformedType {
+    let result: TransformedType = {};
+  
+    data.forEach(item => {
+      if (!result[item.campus]) {
+        result[item.campus] = {};
+      }
+      if (!result[item.campus][item.program_type]) {
+        result[item.campus][item.program_type] = {};
+      }
+      if (!result[item.campus][item.program_type][item.program]) {
+        result[item.campus][item.program_type][item.program] = [];
+      }
+      result[item.campus][item.program_type][item.program].push(item.semester.toString());
+    });
+    for (let campus in result) {
+      for (let programType in result[campus]) {
+        for (let program in result[campus][programType]) {
+          result[campus][programType][program].sort((a, b) => parseInt(a) - parseInt(b));
+        }
+      }
+    }
+  
+    return result;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,10 +102,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
             }
           }
         })
-        console.log("Campus List:", campusList);
-        console.log("Program Type List:", programTypeList);
-        console.log("Program List by Type:", programListByType);
-        setData({campusList, programTypeList, programListByType});
+
+        const transfomedData = transformData(data);
+        console.log("tran")
+        // console.log("check: ",check["G.B. Pant DSEU Okhla I Campus"]["Undergraduate"]["Bachelor of Technology (Computer Science Engineering)"])
+        setData(transfomedData);
       } catch (err) {
         setError(err as Error);
       } finally {

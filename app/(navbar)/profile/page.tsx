@@ -31,12 +31,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  campusList,
-  programListByType,
-  programTypeList,
-} from "@/app/getuserdetails/[rollno]/page";
 import { deepEqual } from "@/app/admin/(navbar)/edit-student-details/page";
+import { useData } from "@/contexts/DataContext";
 
 export interface StudentDetails {
   name: string;
@@ -87,6 +83,8 @@ export default function Home() {
     // }
   },[original])
 
+
+  const { data } = useData();
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -437,7 +435,7 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {campusList.map((campus) => (
+                                {Object.keys(data).map((campus) => (
                                   <MenuItem key={campus} value={campus}>
                                     {campus}
                                   </MenuItem>
@@ -464,7 +462,7 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {programTypeList.map((programType) => (
+                                {Object.keys(data[user.campus])?.map((programType) => (
                                   <MenuItem
                                     key={programType}
                                     value={programType}
@@ -494,9 +492,7 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {programListByType[
-                                  user?.program_type as string
-                                ]?.map((program: string) => (
+                                {Object.keys(data[user.campus][user.program_type])?.map((program: string) => (
                                   <MenuItem key={program} value={program}>
                                     {program}
                                   </MenuItem>

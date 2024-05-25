@@ -11,14 +11,10 @@ import {
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { ArrowBackIosNew } from "@mui/icons-material";
+import { useData } from "@/contexts/DataContext";
 
 export interface ProgramListByType {
   [key: string]: string[];
-  Diploma: string[];
-  Undergraduate: string[];
-  PostGraduate: string[];
-  Doctorate: string[];
-  Certificate: string[];
 }
 
 interface Props {
@@ -28,10 +24,6 @@ interface Props {
   programtype: string;
   onNext: Function;
   onPrevious: Function;
-  campusList: string[];
-  programListByType: ProgramListByType;
-  semesterList: string[];
-  programTypeList: string[];
   setcollege: Function;
   setsemester: Function;
   setprogram: Function;
@@ -46,11 +38,7 @@ export default function UserDetailsPage({
   onNext,
   onPrevious,
   setsemester,
-  campusList,
-  programListByType,
-  programTypeList,
   setprogramtype,
-  semesterList,
   setprogram,
   setcollege,
 }: Props) {
@@ -64,6 +52,7 @@ export default function UserDetailsPage({
     setprogramtype(programtype);
     onNext();
   };
+  const {data} = useData()
 
   return (
     <form
@@ -75,7 +64,7 @@ export default function UserDetailsPage({
       </Typography>
       <div className="w-[100%]">
         <Autocomplete
-          options={campusList}
+          options={Object.keys(data)}
           value={college || ""}
           onChange={(event, newValue) => {
             setcollege(newValue);
@@ -97,7 +86,7 @@ export default function UserDetailsPage({
       </div>
       <div className="w-[100%]">
         <Autocomplete
-          options={programTypeList}
+          options={college && college !== ''?Object.keys(data[college]):[]}
           value={programtype}
           color="grey"
           onChange={(event, newValue) => {
@@ -122,7 +111,7 @@ export default function UserDetailsPage({
       </div>
       <div className="w-[100%]">
         <Autocomplete
-          options={programListByType[programtype]}
+          options={college && programtype && college !== '' && programtype !== ''?Object.keys(data[college][programtype]):[]}
           value={program || ""}
           onChange={(event, newValue) => {
             setprogram(newValue);
@@ -140,7 +129,7 @@ export default function UserDetailsPage({
       </div>
       <div className="w-[100%]">
         <Autocomplete
-          options={semesterList}
+          options={college && program && programtype && college !== '' && programtype !=='' && program !==''?data[college][programtype][program]:[]}
           value={semester || ""}
           onChange={(event, newValue) => {
             setsemester(newValue);
