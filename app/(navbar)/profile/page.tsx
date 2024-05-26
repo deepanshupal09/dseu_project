@@ -194,7 +194,7 @@ export default function Home() {
   return (
     <div className="max-sm:mt-[120px] mt-[120px]">
       <div className="sm:pl-[300px] sm:mt-[100px] flex flex-col  items-center mt-[140px] w-full px-2 sm:pr-10">
-        {user && (
+        {user  && data && (
           <div>
             <div className="flex w-[70vw] max-sm:w-screen flex-col items-center ">
               <div className="mt-6 w-full">

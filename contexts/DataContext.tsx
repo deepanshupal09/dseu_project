@@ -22,7 +22,7 @@ type CampusDetailType = {
 };
 
 interface DataContextProps {
-  data: TransformedType;
+  data: TransformedType | null;
 }
 type ProgramListByTypeType = {
   [key: string]: string[];
@@ -50,7 +50,7 @@ type TransformedType = {
 
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [data, setData] = useState<TransformedType>({});
+  const [data, setData] = useState<TransformedType|null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 

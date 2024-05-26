@@ -173,20 +173,20 @@ export default function Registration() {
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
-    setSelectedProgramCategory("")
-    setSelectedProgram("")
-    setSelectedSemester("")
+    setSelectedProgramCategory("");
+    setSelectedProgram("");
+    setSelectedSemester("");
     // setSelectedProgramCategory("");
   };
   const handleChangeProgramCategory = (event: SelectChangeEvent) => {
     setSelectedProgramCategory(event.target.value);
-    setSelectedProgram("")
-    setSelectedSemester("")
+    setSelectedProgram("");
+    setSelectedSemester("");
   };
-  
+
   const handleChangeProgram = (event: SelectChangeEvent) => {
     setSelectedProgram(event.target.value);
-    setSelectedSemester("")
+    setSelectedSemester("");
   };
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
@@ -206,110 +206,130 @@ export default function Registration() {
         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
           SELECT
         </h2>
-        <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
-          {user?.role === "super" && (
+        {data && (
+          <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
+            {user?.role === "super" && (
+              <FormControl
+                size="small"
+                className="w-full md:w-1/3 sm:w-auto mt-5"
+              >
+                <InputLabel id="program-category-label">Campus</InputLabel>
+                <Select
+                  labelId="program-category-label"
+                  id="program-category"
+                  value={selectedCampus || ""}
+                  label="Program category"
+                  onChange={handleChangeSelectedCampus}
+                >
+                  {Object.keys(data)?.map((campus, index) => (
+                    <MenuItem key={index} value={campus}>
+                      {campus}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
             <FormControl
               size="small"
               className="w-full md:w-1/3 sm:w-auto mt-5"
             >
-              <InputLabel id="program-category-label">Campus</InputLabel>
+              <InputLabel id="program-category-label">
+                Program category
+              </InputLabel>
               <Select
                 labelId="program-category-label"
                 id="program-category"
-                value={selectedCampus || ""}
+                value={selectedProgramCategory || ""}
                 label="Program category"
-                onChange={handleChangeSelectedCampus}
+                onChange={handleChangeProgramCategory}
               >
-                {Object.keys(data)?.map((campus, index) => (
-                  <MenuItem key={index} value={campus}>
-                    {campus}
-                  </MenuItem>
-                ))}
+                {selectedCampus &&
+                  selectedCampus !== "" &&
+                  Object.keys(data[selectedCampus])?.map((category, index) => (
+                    <MenuItem key={index} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
-          )}
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id="program-category-label">
-              Program category
-            </InputLabel>
-            <Select
-              labelId="program-category-label"
-              id="program-category"
-              value={selectedProgramCategory || ""}
-              label="Program category"
-              onChange={handleChangeProgramCategory}
+            <FormControl
+              size="small"
+              className="w-full md:w-1/3 sm:w-auto mt-5"
             >
-              {selectedCampus && selectedCampus !== "" &&
-                Object.keys(data[selectedCampus])?.map((category, index) => (
-                  <MenuItem key={index} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id="select-program-label">Select Program</InputLabel>
-            <Select
-              labelId="select-program-label"
-              id="select-program"
-              value={selectedProgram || ""}
-              label="Select Program"
-              onChange={handleChangeProgram}
-            >
-              {selectedCampus && selectedProgramCategory && selectedCampus !== "" &&
-                selectedProgramCategory !== "" &&
-                Object.keys(data[selectedCampus][selectedProgramCategory])?.map(
-                  (program, index) => (
+              <InputLabel id="select-program-label">Select Program</InputLabel>
+              <Select
+                labelId="select-program-label"
+                id="select-program"
+                value={selectedProgram || ""}
+                label="Select Program"
+                onChange={handleChangeProgram}
+              >
+                {selectedCampus &&
+                  selectedProgramCategory &&
+                  selectedCampus !== "" &&
+                  selectedProgramCategory !== "" &&
+                  Object.keys(
+                    data[selectedCampus][selectedProgramCategory]
+                  )?.map((program, index) => (
                     <MenuItem key={index} value={program}>
                       {program}
                     </MenuItem>
-                  )
-                )}
-            </Select>
-          </FormControl>
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id="semester-label">Semester</InputLabel>
-            <Select
-              labelId="semester-label"
-              id="semester"
-              value={selectedSemester || ""}
-              label="Semester"
-              onChange={handleChangeSemester}
+                  ))}
+              </Select>
+            </FormControl>
+            <FormControl
+              size="small"
+              className="w-full md:w-1/3 sm:w-auto mt-5"
             >
-              {" "}
-              {selectedCampus && selectedProgramCategory && selectedProgram && selectedCampus !== "" &&
-                selectedProgramCategory !== "" &&
-                selectedProgram !== "" &&
-                data[selectedCampus][selectedProgramCategory][
-                  selectedProgram
-                ]?.map((semester, index) => (
-                  <MenuItem key={index} value={semester}>
-                    {semester}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id="course-label">Course</InputLabel>
-            <Select
-              labelId="course-label"
-              id="course"
-              value={selectedCourse}
-              label="Course"
-              onChange={handleChangeCourse}
+              <InputLabel id="semester-label">Semester</InputLabel>
+              <Select
+                labelId="semester-label"
+                id="semester"
+                value={selectedSemester || ""}
+                label="Semester"
+                onChange={handleChangeSemester}
+              >
+                {" "}
+                {selectedCampus &&
+                  selectedProgramCategory &&
+                  selectedProgram &&
+                  selectedCampus !== "" &&
+                  selectedProgramCategory !== "" &&
+                  selectedProgram !== "" &&
+                  data[selectedCampus][selectedProgramCategory][
+                    selectedProgram
+                  ]?.map((semester, index) => (
+                    <MenuItem key={index} value={semester}>
+                      {semester}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <FormControl
+              size="small"
+              className="w-full md:w-1/3 sm:w-auto mt-5"
             >
-              {selectedCampus !== "" &&
-                selectedProgramCategory !== "" &&
-                selectedProgram !== "" &&
-                selectedSemester !== "" &&
-                courseList.map((course, index) => (
-                  <MenuItem key={index} value={course}>
-                    {course}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-        </div>
+              <InputLabel id="course-label">Course</InputLabel>
+              <Select
+                labelId="course-label"
+                id="course"
+                value={selectedCourse}
+                label="Course"
+                onChange={handleChangeCourse}
+              >
+                {selectedCampus !== "" &&
+                  selectedProgramCategory !== "" &&
+                  selectedProgram !== "" &&
+                  selectedSemester !== "" &&
+                  courseList.map((course, index) => (
+                    <MenuItem key={index} value={course}>
+                      {course}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </div>
+        )}
         <div></div>
         {/* Table */}
 

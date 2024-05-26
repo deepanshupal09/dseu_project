@@ -52,7 +52,7 @@ export default function UserDetailsPage({
     setprogramtype(programtype);
     onNext();
   };
-  const {data} = useData()
+  const { data } = useData();
 
   return (
     <form
@@ -62,89 +62,108 @@ export default function UserDetailsPage({
       <Typography variant="h4" gutterBottom>
         College Details
       </Typography>
-      <div className="w-[100%]">
-        <Autocomplete
-          options={Object.keys(data)}
-          value={college || ""}
-          onChange={(event, newValue) => {
-            setcollege(newValue);
-            setHelperText("");
-            setError(false);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Campus"
-              required
-              variant="outlined"
-              fullWidth
-              helperText={helperText}
-              error={error}
+      {data && (
+        <>
+          <div className="w-[100%]">
+            <Autocomplete
+              options={Object.keys(data)}
+              value={college || ""}
+              onChange={(event, newValue) => {
+                setcollege(newValue);
+                setHelperText("");
+                setError(false);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Campus"
+                  required
+                  variant="outlined"
+                  fullWidth
+                  helperText={helperText}
+                  error={error}
+                />
+              )}
             />
-          )}
-        />
-      </div>
-      <div className="w-[100%]">
-        <Autocomplete
-          options={college && college !== ''?Object.keys(data[college]):[]}
-          value={programtype}
-          color="grey"
-          onChange={(event, newValue) => {
-            setprogramtype(newValue);
-            setprogram("");
-            setHelperText("");
-            setError(false);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Program Type"
-              required
-              variant="outlined"
-              fullWidth
-              helperText={helperText}
-              error={error}
+          </div>
+          <div className="w-[100%]">
+            <Autocomplete
+              options={
+                college && college !== "" ? Object.keys(data[college]) : []
+              }
+              value={programtype}
               color="grey"
+              onChange={(event, newValue) => {
+                setprogramtype(newValue);
+                setprogram("");
+                setHelperText("");
+                setError(false);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Program Type"
+                  required
+                  variant="outlined"
+                  fullWidth
+                  helperText={helperText}
+                  error={error}
+                  color="grey"
+                />
+              )}
             />
-          )}
-        />
-      </div>
-      <div className="w-[100%]">
-        <Autocomplete
-          options={college && programtype && college !== '' && programtype !== ''?Object.keys(data[college][programtype]):[]}
-          value={program || ""}
-          onChange={(event, newValue) => {
-            setprogram(newValue);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Program"
-              required
-              variant="outlined"
-              fullWidth
+          </div>
+          <div className="w-[100%]">
+            <Autocomplete
+              options={
+                college && programtype && college !== "" && programtype !== ""
+                  ? Object.keys(data[college][programtype])
+                  : []
+              }
+              value={program || ""}
+              onChange={(event, newValue) => {
+                setprogram(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Program"
+                  required
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
             />
-          )}
-        />
-      </div>
-      <div className="w-[100%]">
-        <Autocomplete
-          options={college && program && programtype && college !== '' && programtype !=='' && program !==''?data[college][programtype][program]:[]}
-          value={semester || ""}
-          onChange={(event, newValue) => {
-            setsemester(newValue);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Semester"
-              required
-              variant="outlined"
-              fullWidth
+          </div>
+          <div className="w-[100%]">
+            <Autocomplete
+              options={
+                college &&
+                program &&
+                programtype &&
+                college !== "" &&
+                programtype !== "" &&
+                program !== ""
+                  ? data[college][programtype][program]
+                  : []
+              }
+              value={semester || ""}
+              onChange={(event, newValue) => {
+                setsemester(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Semester"
+                  required
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
             />
-          )}
-        />
-      </div>
+          </div>
+        </>
+      )}
       <div className="flex gap-x-2 w-full">
         <button
           type="button"

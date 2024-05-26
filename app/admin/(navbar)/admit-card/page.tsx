@@ -262,6 +262,7 @@ export default function Registration() {
         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
           SELECT
         </h2>
+        {data && (
         <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
           {user?.role === "super" && (
             <FormControl
@@ -345,6 +346,7 @@ export default function Registration() {
             </Select>
           </FormControl>
         </div>
+        )}
         <div>
           <Button
             onClick={handleApplyFilters}

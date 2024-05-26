@@ -215,7 +215,7 @@ function Home() {
           </Button> */}
         </form>
       </div>
-      {user && (
+      {user  && data && (
         <div className="flex  w-[70vw] flex-col items-center ">
           <div className=" mt-6 md:w-full">
             <div className="bg-dseublue py-2 px-6 rounded shadow w-full  my-6 flex flex-col sm:flex-row items-center justify-between  text-white">
