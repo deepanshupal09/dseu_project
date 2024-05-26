@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import Head from "../dashboard/Head";
 import Nav from "../dashboard/Nav";
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Checkbox, FormControl, InputLabel, Select, MenuItem, Box, Button, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Checkbox, FormControl, InputLabel, Select, MenuItem, Box, Button, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip, ListItemText } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { fetchDetailsByCampus } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
@@ -12,6 +13,10 @@ interface CampusData {
     campus: string;
     program: string;
     semester: string;
+    exam_control: "false" | "true";
+}
+interface CampusMapping {
+    [key: string]: CampusData[];
 }
 interface User {
     campus: string;
@@ -19,6 +24,7 @@ interface User {
 
 export default function Registration() {
     const [campusData, setCampusData] = useState<CampusData[]>([]);
+    const [campusMapping, setCampusMapping] = useState<CampusMapping>({});
     const [selectedCampus, setSelectedCampus] = useState<string[]>([]);
     const [selectedProgram, setSelectedProgram] = useState<Record<string, string[]>>({});
     const [selectedSemester, setSelectedSemester] = useState<Record<string, string[]>>({});
@@ -31,6 +37,13 @@ export default function Registration() {
     const [filterCampus, setFilterCampus] = useState<string[]>([]);
     const [filterProgram, setFilterProgram] = useState<string[]>([]);
     const [filterSemester, setFilterSemester] = useState<string[]>([]);
+    const [campusList, setCampusList] = useState<string[]>([]);
+    const [programList, setProgramList] = useState<string[]>([]);
+    const [semesterList, setSemesterList] = useState<string[]>([]);
+    const [campusRenderList, setCampusRenderList] = useState<string[]>([]);
+    const [programRenderList, setProgramRenderList] = useState<string[]>([]);
+    const [semesterRenderList, setSemesterRenderList] = useState<string[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getAuthAdmin().then(async (t: any) => {
@@ -44,13 +57,69 @@ export default function Registration() {
         if (token) {
             fetchDetailsByCampus(token)
                 .then((res: CampusData[]) => {
-                    setCampusData(res);
+                    // console.log(res);
+                    const modifiedRes = res.map((data) => ({
+                        ...data,
+                        semester: data.semester.toString(),
+                    }));
+
+                    setCampusData(modifiedRes);
+
+                    const uniqueCampuses = new Set<string>();
+                    const uniquePrograms = new Set<string>();
+                    const uniqueSemesters = new Set<string>();
+
+                    modifiedRes.forEach((data) => {
+                        uniqueCampuses.add(data.campus);
+                        uniquePrograms.add(data.program);
+                        uniqueSemesters.add(data.semester);
+                    });
+
+                    setCampusList(Array.from(uniqueCampuses));
+                    setProgramList(Array.from(uniquePrograms));
+                    setSemesterList(Array.from(uniqueSemesters));
+
+                    setCampusRenderList(Array.from(uniqueCampuses));
+                    setProgramRenderList(Array.from(uniquePrograms));
+                    setSemesterRenderList(Array.from(uniqueSemesters));
+
+                    // console.log("campus:",uniqueCampuses,uniquePrograms,uniqueSemesters )
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
     }, [token]);
+
+    useEffect(() => {
+        const temp1 = campusData.filter((data) => filterCampus.includes(data.campus) && (filterSemester.length === 0 || filterSemester.includes(data.semester))).map((data) => data.program);
+
+        const temp2 = campusData.filter((data) => filterCampus.includes(data.campus) && (filterProgram.length === 0 || filterProgram.includes(data.program))).map((data) => data.semester);
+        // console.log(3,temp1,temp2);
+
+        setProgramRenderList(Array.from(new Set(temp1)));
+        setSemesterRenderList(Array.from(new Set(temp2)));
+    }, [filterCampus]);
+
+    useEffect(() => {
+        const temp1 = campusData.filter((data) => filterProgram.includes(data.program) && (filterCampus.length === 0 || filterCampus.includes(data.campus))).map((data) => data.semester);
+
+        const temp2 = campusData.filter((data) => filterProgram.includes(data.program) && (filterSemester.length === 0 || filterSemester.includes(data.semester))).map((data) => data.campus);
+        // console.log(2,temp1,temp2);
+
+        setCampusRenderList(Array.from(new Set(temp2)));
+        setSemesterRenderList(Array.from(new Set(temp1)));
+    }, [filterProgram]);
+
+    useEffect(() => {
+        const temp1 = campusData.filter((data) => filterSemester.includes(data.semester) && (filterProgram.length === 0 || filterProgram.includes(data.program))).map((data) => data.campus);
+
+        const temp2 = campusData.filter((data) => filterSemester.includes(data.semester) && (filterCampus.length === 0 || filterCampus.includes(data.campus))).map((data) => data.program);
+        // console.log(1,temp1,temp2);
+
+        setCampusRenderList(Array.from(new Set(temp1)));
+        setProgramRenderList(Array.from(new Set(temp2)));
+    }, [filterSemester]);
 
     const handleCampusCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -107,12 +176,63 @@ export default function Registration() {
     };
 
     const handleSemesterCheckboxChange = (campus: string, program: string, semester: string, event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.checked;
+        const isSelected = event.target.checked;
+        const key = `${campus}-${program}`;
+
         setSelectedSemester((prev) => {
-            const key = `${campus}-${program}`;
-            const updatedSemesters = value ? [...(prev[key] || []), semester] : (prev[key] || []).filter((s) => s !== semester);
-            return { ...prev, [key]: updatedSemesters };
+            const updatedSemesters = { ...prev };
+            if (isSelected) {
+                if (updatedSemesters[key]) {
+                    updatedSemesters[key].push(semester);
+                } else {
+                    updatedSemesters[key] = [semester];
+                }
+            } else {
+                if (updatedSemesters[key]) {
+                    updatedSemesters[key] = updatedSemesters[key].filter((s) => s !== semester);
+                    if (updatedSemesters[key].length === 0) {
+                        delete updatedSemesters[key];
+                    }
+                }
+            }
+            return updatedSemesters;
         });
+
+        if (isSelected) {
+            if (!selectedCampus.includes(campus)) {
+                setSelectedCampus((prev) => [...prev, campus]);
+            }
+            setSelectedProgram((prev) => {
+                const updatedPrograms = { ...prev };
+                if (!updatedPrograms[campus]?.includes(program)) {
+                    updatedPrograms[campus] = [...(updatedPrograms[campus] || []), program];
+                }
+                return updatedPrograms;
+            });
+        } else {
+            setSelectedProgram((prev) => {
+                const updatedPrograms = { ...prev };
+                if (updatedPrograms[campus]?.includes(program)) {
+                    const remainingSemesters = campusData
+                        .filter((item) => item.campus === campus && item.program === program)
+                        .map((item) => String(item.semester))
+                        .filter((sem) => sem !== semester);
+
+                    if (remainingSemesters.length === 0) {
+                        updatedPrograms[campus] = updatedPrograms[campus].filter((p) => p !== program);
+                        if (updatedPrograms[campus].length === 0) {
+                            delete updatedPrograms[campus];
+                        }
+                    }
+                }
+                return updatedPrograms;
+            });
+
+            setSelectedCampus((prev) => {
+                const updatedCampus = prev.filter((c) => c !== campus);
+                return updatedCampus;
+            });
+        }
     };
 
     const handleCloseModal = () => {
@@ -125,6 +245,7 @@ export default function Registration() {
     };
 
     const handleConfirmFilteredAction = () => {
+        setLoading(true);
         const payload: { campus: string; program: string; semester: string; action: string }[] = [];
 
         selectedCampus.forEach((campus) => {
@@ -137,26 +258,13 @@ export default function Registration() {
 
         console.log(payload);
 
-        setSnackbarMessage(openCloseAction === "open" ? "Exam registrations opened for filtered selection" : "Exam registrations closed for filtered selection");
+        setSnackbarMessage(openCloseAction === "true" ? "Exam registrations opened for your selections" : "Exam registrations closed for your selections");
 
         setSnackbarOpen(true);
         handleCloseModal();
-    };
-
-    const handleFilterChange = (filterType: string, value: string[]) => {
-        switch (filterType) {
-            case "campus":
-                setFilterCampus(value);
-                break;
-            case "program":
-                setFilterProgram(value);
-                break;
-            case "semester":
-                setFilterSemester(value);
-                break;
-            default:
-                break;
-        }
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
     };
 
     const handleTagDelete = (filterType: string, value: string) => {
@@ -212,6 +320,7 @@ export default function Registration() {
                                             <Box>
                                                 {campusData
                                                     .filter((item) => item.campus === campus && item.program === program)
+                                                    .filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester))
                                                     .map((item, semesterIndex) => (
                                                         <Box key={semesterIndex} display="flex" alignItems="center">
                                                             <Checkbox checked={selectedSemester[`${campus}-${program}`]?.includes(String(item.semester)) || false} onChange={(event) => handleSemesterCheckboxChange(campus, program, String(item.semester), event)} value={String(item.semester)} />
@@ -230,8 +339,25 @@ export default function Registration() {
         });
     };
 
-    const getUniqueValues = (data: CampusData[], key: keyof CampusData) => {
-        return Array.from(new Set(data.map((item) => item[key])));
+    const applyFilters = () => {
+        const filteredData = campusData.filter((item) => (filterCampus.length === 0 || filterCampus.includes(item.campus)) && (filterProgram.length === 0 || filterProgram.includes(item.program)) && (filterSemester.length === 0 || filterSemester.includes(item.semester)));
+
+        const selectedCampuses = Array.from(new Set(filteredData.map((item) => item.campus)));
+        const selectedPrograms = selectedCampuses.reduce((acc, campus) => {
+            const programs = filteredData.filter((item) => item.campus === campus).map((item) => item.program);
+            acc[campus] = Array.from(new Set(programs));
+            return acc;
+        }, {} as Record<string, string[]>);
+
+        const selectedSemesters = filteredData.reduce((acc, item) => {
+            const key = `${item.campus}-${item.program}`;
+            acc[key] = acc[key] ? [...acc[key], String(item.semester)] : [String(item.semester)];
+            return acc;
+        }, {} as Record<string, string[]>);
+
+        setSelectedCampus(selectedCampuses);
+        setSelectedProgram(selectedPrograms);
+        setSelectedSemester(selectedSemesters);
     };
 
     return (
@@ -249,7 +375,7 @@ export default function Registration() {
                         <FormControl fullWidth>
                             <InputLabel>Campus</InputLabel>
                             <Select multiple value={filterCampus} onChange={(event) => setFilterCampus(event.target.value as string[])} label="Campus" renderValue={(selected) => (selected as string[]).join(", ")}>
-                                {getUniqueValues(campusData, "campus").map((campus, index) => (
+                                {campusRenderList.map((campus, index) => (
                                     <MenuItem key={index} value={campus}>
                                         <Checkbox checked={filterCampus.includes(campus)} />
                                         <Typography>{campus}</Typography>
@@ -260,7 +386,7 @@ export default function Registration() {
                         <FormControl fullWidth>
                             <InputLabel>Program</InputLabel>
                             <Select multiple value={filterProgram} onChange={(event) => setFilterProgram(event.target.value as string[])} label="Program" renderValue={(selected) => (selected as string[]).join(", ")}>
-                                {getUniqueValues(campusData, "program").map((program, index) => (
+                                {programRenderList.map((program, index) => (
                                     <MenuItem key={index} value={program}>
                                         <Checkbox checked={filterProgram.includes(program)} />
                                         <Typography>{program}</Typography>
@@ -271,7 +397,7 @@ export default function Registration() {
                         <FormControl fullWidth>
                             <InputLabel>Semester</InputLabel>
                             <Select multiple value={filterSemester} onChange={(event) => setFilterSemester(event.target.value as string[])} label="Semester" renderValue={(selected) => (selected as string[]).join(", ")}>
-                                {getUniqueValues(campusData, "semester").map((semester, index) => (
+                                {semesterRenderList.map((semester, index) => (
                                     <MenuItem key={index} value={semester}>
                                         <Checkbox checked={filterSemester.includes(semester.toString())} />
                                         <Typography>{semester}</Typography>
@@ -291,33 +417,30 @@ export default function Registration() {
                             <Chip key={index} label={semester} onDelete={() => handleTagDelete("semester", semester)} />
                         ))}
                     </Box>
+
+                    <Box display="flex" justifyContent="center" mb={2}>
+                        <Button variant="contained" color="primary" onClick={applyFilters} disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}>
+                            Apply
+                        </Button>
+                    </Box>
+
                     {filterAccordions()}
                     <Box mt={2} display="flex" justifyContent="center">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleOpenCloseClick("close")}
-                            // disabled={selectedSemester.length === 0}
-                        >
+                        <Button variant="contained" color="primary" onClick={() => handleOpenCloseClick("false")} disabled={Object.keys(selectedSemester).length === 0}>
                             Close
                         </Button>
                         <Box ml={2}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleOpenCloseClick("open")}
-                                // disabled={selectedSemester.length === 0}
-                            >
+                            <Button variant="contained" color="primary" onClick={() => handleOpenCloseClick("true")} disabled={Object.keys(selectedSemester).length === 0}>
                                 Open
                             </Button>
                         </Box>
                     </Box>
                 </div>
             </div>
-            <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} />
+            <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "left" }} open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)} message={snackbarMessage} />
             <Dialog open={openCloseModal} onClose={handleCloseModal}>
                 <DialogTitle>Confirm Action</DialogTitle>
-                <DialogContent>`{`Are you sure you want to ${openCloseAction} exam registrations for selected campuses, programs, and semesters?`}``</DialogContent>
+                <DialogContent>{`Are you sure you want to ${openCloseAction === "true" ? "open" : "close"} exam registrations for selected campuses, programs, and semesters?`}</DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseModal} color="primary">
                         Cancel
@@ -326,6 +449,7 @@ export default function Registration() {
                         Confirm
                     </Button>
                 </DialogActions>
+                {loading && <CircularProgress />}
             </Dialog>
         </>
     );
