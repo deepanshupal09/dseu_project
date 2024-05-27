@@ -600,3 +600,23 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
       throw error;
     }
   }
+export async function fetchUpdateExamControl(body: { campus: string, program: string, semester: number, exam_control: boolean }[], token:string) {
+  console.log(body);
+  try {
+    const response = await fetch('https://exam-vm-admin.dseu.ac.in/api/admin/updateExamControl', {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token:token,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json(); 
+    return data;
+  } catch (error) {
+    throw error; 
+  }
+}
