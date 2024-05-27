@@ -34,6 +34,7 @@ import { parseJwt } from "../../actions/utils";
 import {
   addExamRegisterations,
   fetchCoursesByRollNo,
+  fetchExamControl,
   fetchExamRegisterations,
 } from "../../actions/api";
 import { useRouter } from "next/navigation";
@@ -90,7 +91,20 @@ export default function Home() {
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
-  const [open, setOpen] = useState<Boolean>(true);
+  const [examControl, setExamControl] = useState<Boolean>(true);
+
+  useEffect(() => {
+    if(token!=="") {
+      if (user?.campus !== undefined) {
+        fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
+          // 
+          setExamControl(res.exam_control)
+        }).catch((error) => {
+          
+        })
+      }
+    }
+  },[token])
 
   useEffect(()=>{
     function validateSelectedSubjects() {
@@ -359,7 +373,7 @@ export default function Home() {
                   className="rounded-full object-cover"
                   style={{ width: 50, height: 50, borderRadius: "50%" }}
                   alt="user"
-                  src={user?.photo}
+                  src={`https://exam.dseu.ac.in/${user?.photo}?${Date.now()}`}
                 />
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">
@@ -390,7 +404,7 @@ export default function Home() {
 
         </div>
         {/* Exam registration open */}
-        {open && (
+        {examControl && (
           <>           {!chosen && (
             <>
                         <Typography className="text-center" variant="body1">
@@ -536,7 +550,7 @@ export default function Home() {
 </>
 
         )}
-        {!open && (
+        {!examControl && (
           <>
         {!chosen && (
                       <Typography className=" text-center text-xl p-2 ">

@@ -8,8 +8,7 @@ import logo from "./images/logo.png";
 import { useRouter } from "next/navigation";
 import { login } from "./actions/api";
 import { getAuth, setAuth, setSignupCookie } from "./actions/cookie";
-import jwt_decode, { JwtPayload } from "jwt-decode"; // Import JwtPayload type
-import { parseJwt } from "./actions/utils";
+
 
 export default function Home() {
   const [RollNo, setRollNo] = useState<string>("");
@@ -18,9 +17,6 @@ export default function Home() {
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-
-
-
   async function handleLogin() {
     try {
       setLoading(true);
@@ -35,7 +31,7 @@ export default function Home() {
         setError(true);
         setHelperText("Internal Server Error");
       } else {
-        console.log("Response: ", response)
+        
         if (response.defaultPass) {
           await setSignupCookie();
           router.push(`/getuserdetails/${RollNo}`)

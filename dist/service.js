@@ -17,7 +17,7 @@ const model_1 = require("./model");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 function handleLogin(rollno, password) {
-    console.log("service");
+    
     return new Promise((resolve, reject) => {
         (0, model_1.fetchPasswordByRollNo)(rollno)
             .then((results) => {
@@ -54,14 +54,14 @@ function handleLogin(rollno, password) {
 exports.handleLogin = handleLogin;
 function handleLoginByEmailId(emailid, password) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("service");
+        
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
             (0, model_1.fetchPasswordByEmailId)(emailid)
                 .then((results) => __awaiter(this, void 0, void 0, function* () {
                 if (results.rows.length > 0) {
                     const dbPassword = results.rows[0].password;
                     // const hash = await bcrypt.hash("DSEU@12345", 10);
-                    // console.log("pass:",hash);
+                    // 
                     bcrypt_1.default
                         .compare(password, dbPassword)
                         .then(function (result) {
@@ -117,9 +117,9 @@ function updateDetails(rollno, program, semester, phone, campus, emailid, gender
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const last_modified = new Date().toString();
-            console.log("rollno ", rollno);
+            
             const passwordResult = yield (0, model_1.fetchPasswordByRollNo)(rollno);
-            console.log("service ", passwordResult.rows);
+            
             if (passwordResult.rows.length > 0) {
                 const hash = yield bcrypt_1.default.hash(password, 10);
                 const results = yield (0, model_1.putDetailsByRollno)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, // Use the uploaded link if available, otherwise use the original value
@@ -132,7 +132,7 @@ function updateDetails(rollno, program, semester, phone, campus, emailid, gender
             }
         }
         catch (error) {
-            console.log(error);
+            
             throw new Error("internal server error");
         }
     });
@@ -157,7 +157,7 @@ function fetchUserByRollno(rollno) {
             resolve(results.rows);
         })
             .catch((error) => {
-            console.log("Service error: ", error);
+            
             reject("internal server error");
         });
     });
@@ -169,7 +169,7 @@ exports.fetchUserByRollno = fetchUserByRollno;
 //     addExamRegisteration(rollno, course_code, last_modified).then((results) => {
 //       resolve("Successfully inserted in Exam Registeration!");
 //     }).catch((error) => {
-//       console.log("Exam registeration service error: ",error);
+//       
 //       reject("Internal server error");
 //     })
 //   })
@@ -181,7 +181,7 @@ function fetchTheCourses(semester, program) {
             resolve(results.rows);
         })
             .catch((error) => {
-            console.log("error in fetching courses: ", error);
+            
             reject("Internal server error 1");
         });
     });
@@ -194,7 +194,7 @@ function fetchTheCoursesRollNo(rollno) {
             resolve(results.rows);
         })
             .catch((error) => {
-            console.log("error in fetching courses by rollno: ", error);
+            
             reject("Internal server error roll 1");
         });
     });
@@ -207,7 +207,7 @@ function fetchTheExamRegistration(rollno) {
             resolve(result.rows);
         })
             .catch((error) => {
-            console.log("error in fetching exam registeration: ", error);
+            
             reject("Internal server error fetch exam registeration 1");
         });
     });
@@ -220,7 +220,7 @@ function fetchTheExamRegistrationCourse(course_code) {
             resolve(result.rows);
         })
             .catch((error) => {
-            console.log("error in fetching exam registeration by course: ", error);
+            
             reject("Internal server error fetch exam registeration course 1");
         });
     });
@@ -244,14 +244,14 @@ function fetchTheExamRegistrationProgramAndSemester(campus, program_type, progra
             resolve(Object.values(students));
         })
             .catch((error) => {
-            console.log("error in fetching exam registeration by program and course: ", error);
+            
             reject("Internal server error fetch exam registeration progrtam and semester 1");
         });
     });
 }
 exports.fetchTheExamRegistrationProgramAndSemester = fetchTheExamRegistrationProgramAndSemester;
 function insertTheUsers(users) {
-    console.log("hello");
+    
     return new Promise((resolve, reject) => {
         let data = [];
         // Use Promise.all to wait for all bcrypt hash operations to complete
@@ -259,7 +259,7 @@ function insertTheUsers(users) {
             let subpass = (user.name.toUpperCase()).substring(0, 4);
             subpass = subpass.split(" ")[0];
             const password = subpass + user.rollno;
-            console.log(password);
+            
             return new Promise((resolve, reject) => {
                 bcrypt_1.default.hash(password, 10, function (err, hash) {
                     data.push(Object.assign(Object.assign({}, user), { password: hash }));
@@ -268,33 +268,33 @@ function insertTheUsers(users) {
             });
         }))
             .then(() => {
-            console.log("data: ", data);
+            
             // Assuming insertUsers returns a Promise
             (0, model_1.insertUsers)(data)
                 .then((result) => {
                 resolve(result.rows);
             })
                 .catch((error) => {
-                console.log("Error in inserting users: ", error);
+                
                 reject("Internal server error in insertUsers 1");
             });
         })
             .catch((error) => {
-            console.log("Error in hashing passwords: ", error);
+            
             reject("Internal server error in hashing passwords");
         });
     });
 }
 exports.insertTheUsers = insertTheUsers;
 function insertTheExamRegisterations(registeration) {
-    console.log("hello");
+    
     return new Promise((resolve, reject) => {
         (0, model_1.insertExamRegisterations)(registeration)
             .then((result) => {
             resolve(result.rows);
         })
             .catch((error) => {
-            console.log("Error in inserting exam registerations: ", error);
+            
             reject("Internal server error in insertExamRegisterations");
         });
     });
@@ -305,7 +305,7 @@ function fetchTheProgram(program_type) {
         (0, model_1.fetchProgram)(program_type).then((result) => {
             resolve(result.rows);
         }).catch((error) => {
-            console.log("Error in fetching programs: ", error);
+            
             reject("Internal server error in insertExamRegisterations");
         });
     });
@@ -314,10 +314,10 @@ exports.fetchTheProgram = fetchTheProgram;
 function fetchTheEmailId(rollno) {
     return new Promise((resolve, reject) => {
         (0, model_1.fetchEmailId)(rollno).then((result) => {
-            // console.log(result.rows[0].emailid);
+            // 
             resolve(result.rows[0].emailid);
         }).catch((error) => {
-            console.log("Error in fetching email: ", error);
+            
             reject("Internal server error in fetchingEmailid");
         });
     });
@@ -328,7 +328,7 @@ function otpUpdateService(otp, rollno) {
         (0, model_1.otpUpdateModel)(otp, rollno).then((result) => {
             resolve(result);
         }).catch((error) => {
-            console.log("Error in otp udation: ", error);
+            
             reject("Internal server error in otp updation");
         });
     });
@@ -339,7 +339,7 @@ function otpVerifyService(rollno) {
         (0, model_1.otpVerifyModel)(rollno).then((result) => {
             resolve(result);
         }).catch((error) => {
-            console.log("Error in otp validation: ", error);
+            
             reject("Internal server error in otp validation");
         });
     });
@@ -352,7 +352,7 @@ function updateThePassword(password, rollno) {
             (0, model_1.updatePassword)(hash, rollno).then((result) => {
                 resolve(result);
             }).catch((error) => {
-                console.log("Error in password updation: ", error);
+                
                 reject("Internal server error in password updation");
             });
         });
@@ -364,7 +364,7 @@ function fetchTheStudent(program_type, program, semester) {
         (0, model_1.fetchStudent)(program_type, program, semester).then((result) => {
             resolve(result.rows);
         }).catch((error) => {
-            console.log("Error in password updation: ", error);
+            
             reject("Internal server error in password updation");
         });
     });
@@ -375,7 +375,7 @@ function fetchTheStudentCampus(campus, program_type, program, semester) {
         (0, model_1.fetchStudentCampus)(campus, program_type, program, semester).then((result) => {
             resolve(result.rows);
         }).catch((error) => {
-            console.log("Error in password updation: ", error);
+            
             reject("Internal server error in password updation");
         });
     });

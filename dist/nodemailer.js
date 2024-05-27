@@ -19,7 +19,7 @@ dotenv_1.default.config();
 const controller_1 = require("./controller");
 const sendEmail = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const rollno = req.headers.rollno;
-    console.log(rollno);
+    
     try {
         const email = yield (0, controller_1.fetchEmailIdByRollno)(rollno);
         const mailOptions = {
@@ -30,7 +30,7 @@ const sendEmail = (0, express_async_handler_1.default)((req, res) => __awaiter(v
         };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
+                
                 res.status(500).send({ message: "Internal Server Error!" });
             }
             else {

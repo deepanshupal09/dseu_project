@@ -54,9 +54,9 @@ app.use(body_parser_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use("/api/data/", middleware_1.verifyToken, routes_1.default);
 app.post("/upload", upload.single("image"), (req, res) => {
-    console.log("yasu", req.file);
+    
     if (!req.file) {
-        console.log("error");
+        
         return res.status(400).send({ message: "No file uploaded." });
     }
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -89,5 +89,5 @@ app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndPro
 app.get("/loginByEmailId", controller.loginByEmailId);
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    
 });

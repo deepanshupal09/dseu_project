@@ -2,7 +2,7 @@ export async function uploadFile(file: File, fileName: string) {
     try {
       const formData = new FormData();
       formData.append("image", file, fileName); // Append the file with its name to the FormData object
-      console.log("formdata: ", formData);
+      
   
       // No need to set Content-Type header manually when using FormData
   
@@ -21,7 +21,7 @@ export async function uploadFile(file: File, fileName: string) {
       }
   
       const responseData = await response.json();
-      console.log("Uploaded file path:", responseData);
+      
       return responseData;
   
       // Do something with the uploaded file path, if needed

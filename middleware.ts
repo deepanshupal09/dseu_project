@@ -44,7 +44,7 @@ export default async function middleware(req: NextRequest) {
 
   
   if (path.startsWith("/getuserdetails") && !signUpCookie ) {
-    // console.log("redirect f from here")
+    // 
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
 

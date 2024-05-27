@@ -28,6 +28,7 @@ import {
 } from "@/app/actions/api";
 import Image from "next/image";
 import { Course, User } from "../query/page";
+import { useData } from "@/contexts/DataContext";
 
 interface ProgramList {
   [key: string]: string[];
@@ -60,117 +61,10 @@ interface DropdownMenuProps {
   handleShowIndex: () => void;
 }
 
-const programListByType: ProgramList = {
-  Diploma: [
-    "Diploma in Applied Arts",
-    "Diploma in Architecture",
-    "Diploma in Automobile Engineering",
-    "Diploma in Chemical Engineering",
-    "Diploma in Civil Engineering",
-    "Diploma in Computer Engineering",
-    "Diploma in Cosmetology & Health",
-    "Diploma in Electrical Engineering",
-    "Diploma in Electronic Engineering",
-    "Diploma in Fashion Design",
-    "Diploma in Fashion Design and Garment Technology",
-    "Diploma in Interior Design",
-    "Diploma in Mechanical Engineering",
-    "Diploma in Pharmacy",
-    "Diploma in Printing Technology",
-    "Diploma in Tool and Die Making",
-    "Diploma in Artificial Intelligence and Machine Learning",
-    "Diploma in Robotic and Process Automation",
-    "Diploma in Electrical Engineering - Part Time",
-    "Diploma in Mechanical Engineering - Part Time",
-    "Diploma in Automobile Engineering - Part Time",
-    "Diploma in Civil Engineering - Part Time",
-  ],
-  Undergraduate: [
-    "Bachelor of Arts (Aesthetics & Beauty Therapy)",
-    "Bachelor of Science (Aesthetics & Beauty Therapy)",
-    "Bachelor of Computer Applications",
-    "Bachelor of Business Administration (Banking, Financial Services and Insurance)",
-    "Bachelor of Commerce (Business Process Management)",
-    "Bachelor of Business Administration (Operation and Business Process Management)",
-    "Bachelor of Science (Data Analytics)",
-    "Bachelor of Arts (Digital Media and Design)",
-    "Bachelor of Management Studies (E-Commerce Operations)",
-    "Bachelor of Business Administration (Facilities and Hygiene Management)",
-    "Bachelor of Management Studies (Land Transportation)",
-    "Bachelor of Science (Medical Laboratory Technology)",
-    "Bachelor of Business Administration (Retail Management)",
-    "Bachelor of Arts (Spanish)",
-    "Bachelor of Business Administration (Automotive Retail Management)",
-    "Bachelor of Business Administration (Hospital Management)",
-    "Bachelor of Business Administration (Innovation and Entrepreneurship)",
-    "Bachelor of Optometry",
-    "Bachelor in Library Sciences",
-    "Bachelor of Science (Dialysis Technology)",
-    "Bachelor of Science (Emergency Medical Technology)",
-    "Bachelor of Technology (Mechanical and Automation Engineering)",
-    "Bachelor of Technology (Electronics and Communication Engineering)",
-    "Bachelor of Technology (Computer Science Engineering)",
-    "Bachelor of Technology (Mechanical Engineering)",
-    "Bachelor of Technology (Tool Engineering)",
-    "Bachelor of Technology (Mechatronics Engineering)",
-  ],
-  PostGraduate: [
-    "Master of Computer Applications",
-    "Master of Technology (Mechanical Engineering)",
-    "Master of Technology (Tool Engineering)",
-    "Master of Technology (Computer Science Engineering with Specialization in Al & ML)",
-    "Master of Technology (Electronic & Communication Engineering With Specialization in IOT)",
-    "Master of Technology (Mechanical Engineering with Specialization in Thermal/Production/Design)",
-    "Master of Science (Medical Laboratory Sciences)",
-  ],
-  Doctorate: [
-    "Doctor of Philosophy (Computer Science and Engineering)",
-    "Doctor of Philosophy (Computer Application)",
-    "Doctor of Philosophy (Mechanical Engineering/Allied Branches)",
-    "Doctor of Philosophy (Electronics and Communication Engineering/Allied Branches)",
-  ],
-  Certificate: [
-    "Certificate Course in Modern Office Management & Secretarial Practice",
-  ],
-};
-
-const programTypeList = [
-  "Diploma",
-  "Undergraduate",
-  "PostGraduate",
-  "Doctorate",
-  "Certificate",
-];
-
-const campusList = [
-  "Arybhatt DSEU Ashok Vihar Campus",
-  "Ambedkar DSEU Shakarpur Campus-I",
-  "DSEU Okhla II Campus",
-  "G.B. Pant DSEU Okhla I Campus",
-  "Guru Nanak Dev DSEU Rohini Campus",
-  "DSEU Dwarka Campus",
-  "Kasturba DSEU Pitampura Campus",
-  "Meerabai DSEU Maharani Bagh Campus",
-  "DSEU Pusa Campus - I",
-  "DSEU Rajokri Campus",
-  "DSEU Sirifort Campus",
-  "DSEU Wazirpur-I Campus",
-  "Dr.H.J. Bhabha DSEU Mayur Vihar Campus",
-  "DSEU Ranhola Campus",
-  "G.B. Pant DSEU Okhla III Campus",
-  "DSEU Jaffarpur Campus",
-  "Bhai Parmanand DSEU Shakarpur II Campus",
-  "DSEU Pusa II Campus",
-  "DSEU Champs okhla II Campus",
-  "Sir C.V. Raman DSEU Dheerpur Campus",
-  "DSEU Vivek vihar Campus",
-];
 
 
 export default function Registration() {
-  const [selectedProgramCategory, setSelectedProgramCategory] = useState("");
-  const [selectedProgram, setSelectedProgram] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
+  const { data } = useData();
   const [studentsData, setStudentsData] = useState<Student[]>([]);
   const [campus, setCampus] = useState("");
   const [token, setToken] = useState("");
@@ -185,17 +79,14 @@ export default function Registration() {
   const detailSheetRef = useRef(null);
   const containerRef = useRef(null);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
+  const [selectedProgramCategory, setSelectedProgramCategory] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
   const [user, setUser] = useState<User | null>(null);
   const [courseCodes,setCourseCodes] = useState<string[]>([]);
-  const [semesterList, setSemesterList]=useState<string[]>(["2","4","6"]);
+  // const [semesterList, setSemesterList]=useState<string[]>(["2","4","6"]);
 
-    useEffect(() => {
-      if(selectedProgramCategory==="PostGraduate") {
-        setSemesterList(["2","4"]);
-      } else {
-        setSemesterList(["2","4","6"]);
-      }
-    }, [selectedProgramCategory]);
+  
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -221,11 +112,11 @@ export default function Registration() {
         response.map((course: Course, index: number) => {
           temp.push({ sno: index + 1, ...course });
         });
-        console.log("course Details: ",temp)
+        
         setIndexData(temp);
-        console.log("response: ", response);
+        
       }).catch((error)=>{
-        console.log("error fetching course details: ",error);
+        
       })
     }
   }, [courseCodes]);
@@ -250,7 +141,7 @@ export default function Registration() {
           selectedProgram,
           selectedSemester
         );
-        console.log(data);
+        
         let set = new Set<string>();
         data.map((student: Student)=>{
           student.course_codes.map((courseCode: string)=>{
@@ -259,7 +150,7 @@ export default function Registration() {
         })
         const array = Array.from(set);
         setCourseCodes(array);
-        console.log("course: ",array)
+        
 
 
         setStudentsData(data);
@@ -268,6 +159,11 @@ export default function Registration() {
       console.error("Error fetching data:", error);
     }
   };
+
+  // useEffect(() => {
+  //   
+  // },[selectedCampus,selectedProgram,selectedProgramCategory,selectedSemester])
+  // 
 
   const [selectedOption, setSelectedOption] = React.useState("");
 
@@ -279,23 +175,28 @@ export default function Registration() {
       handleShowIndex();
     }
   };
-
-  const handleChangeProgramCategory = (event: SelectChangeEvent) => {
-    setSelectedProgramCategory(event.target.value);
-    setSelectedProgram("");
-    setSelectedSemester("");
-  };
+  // useEffect(()=>{
+  //   setSelectedProgramCategory(Object.keys(data[selectedCampus])[0])
+  // },[selectedCampus])
+  // useEffect(()=>{
+  //   setSelectedProgram(Object.keys(data[selectedCampus][selectedProgramCategory])[0])
+  // },[selectedProgramCategory])
+  // useEffect(()=>{
+  //   setSelectedSemester(data[selectedCampus][selectedProgramCategory][selectedProgram][0])
+  // },[selectedProgram])
+  // 
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
-    setSelectedProgramCategory("");
-    setSelectedProgram("");
-    setSelectedSemester("");
   };
+
+  const handleChangeProgramCategory = (event: SelectChangeEvent) => {
+    setSelectedProgramCategory(event.target.value);
+  };
+
 
   const handleChangeProgram = (event: SelectChangeEvent) => {
     setSelectedProgram(event.target.value);
-    setSelectedSemester("");
   };
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
@@ -340,6 +241,7 @@ export default function Registration() {
           <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
             SELECT
           </h2>
+          {data && (
           <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
             {user?.role === "super" && (
               <FormControl
@@ -354,7 +256,7 @@ export default function Registration() {
                   label="Program category"
                   onChange={handleChangeSelectedCampus}
                 >
-                  {campusList.map((campus, index) => (
+                  {Object.keys(data)?.map((campus, index) => (
                     <MenuItem key={index} value={campus}>
                       {campus}
                     </MenuItem>
@@ -376,11 +278,14 @@ export default function Registration() {
                 label="Program category"
                 onChange={handleChangeProgramCategory}
               >
-                {programTypeList.map((category, index) => (
+                {selectedCampus !== "" && (
+
+                Object.keys(data[selectedCampus])?.map((category, index) => (
                   <MenuItem key={index} value={category}>
                     {category}
                   </MenuItem>
-                ))}
+                ))
+                )}
               </Select>
             </FormControl>
             <FormControl
@@ -396,13 +301,15 @@ export default function Registration() {
                 onChange={handleChangeProgram}
                 disabled={!selectedProgramCategory}
               >
-                {programListByType[selectedProgramCategory]?.map(
-                  (program, index) => (
-                    <MenuItem key={index} value={program}>
-                      {program}
-                    </MenuItem>
+                {selectedCampus !== "" && selectedProgramCategory !== "" && (
+                  Object.keys(data[selectedCampus][selectedProgramCategory])?.map(
+                    (program, index) => (
+                      <MenuItem key={index} value={program}>
+                        {program}
+                      </MenuItem>
+                    )
                   )
-                )}
+                )} 
               </Select>
             </FormControl>
             <FormControl
@@ -418,14 +325,17 @@ export default function Registration() {
                 onChange={handleChangeSemester}
                 disabled={!selectedProgram}
               >
-                {semesterList.map((semester, index) => (
+                {selectedCampus !== "" && selectedProgramCategory !== "" && selectedProgram !== "" && (
+                data[selectedCampus][selectedProgramCategory][selectedProgram]?.map((semester, index) => (
                   <MenuItem key={index} value={semester}>
                     {semester}
                   </MenuItem>
-                ))}
+                ))
+                )}
               </Select>
             </FormControl>
           </div>
+          )}
           {/* <div className="flex justify-center">
             <Button
               variant="contained"

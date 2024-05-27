@@ -13,7 +13,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 //             return res.status(401).send("Unauthorized");
 //         }
 //         const tokenData = await verifyTokenByRollNo(rollno);
-//         console.log(tokenData)
+//         
 //         if (tokenData.token !== token) {
 //             return res.status(401).json("Unauthorized! Token didn't match");
 //         }
@@ -32,7 +32,7 @@ const verifyToken = (req, res, next) => {
         return res.status(401).send('Access Denied');
     try {
         const decoded = jsonwebtoken_1.default.verify(token, 'chotahathi');
-        console.log("user: ", decoded);
+        
         req.user = decoded;
         next();
     }

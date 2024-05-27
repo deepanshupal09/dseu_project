@@ -1,8 +1,10 @@
 "use server";
 
+import { StudentDetails } from "../(navbar)/profile/page";
+
 export async function signup(body: any) {
-  console.log("here");
-  const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
+  
+  const res = await fetch("https://exam-vm-admin.dseu.ac.in/signup", {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
@@ -21,7 +23,7 @@ export async function signup(body: any) {
 
 export async function addExamRegisterations(body: any, token: string) {
   const res = await fetch(
-    "https://admin-exam.dseu.ac.in/api/data/addExamRegisterations",
+    "https://exam-vm-admin.dseu.ac.in/api/data/addExamRegisterations",
     {
       method: "POST",
       mode: "cors",
@@ -45,7 +47,7 @@ export async function addExamRegisterations(body: any, token: string) {
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
   try {
     const res = await fetch(
-      "https://admin-exam.dseu.ac.in/api/data/fetchCoursesByRollNo",
+      "https://exam-vm-admin.dseu.ac.in/api/data/fetchCoursesByRollNo",
       {
         method: "GET",
         mode: "cors",
@@ -59,17 +61,17 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
     );
 
     const data = await res.json();
-    console.log("API Response:", data); // Log the response
+    
     return data;
   } catch (error) {
-    console.log("Error fetching courses:", error); // Log any errors
+    
     throw error;
   }
 }
 
 export async function login(headers: {}) {
   try {
-    const response = await fetch("https://admin-exam.dseu.ac.in/login", {
+    const response = await fetch("https://exam-vm-admin.dseu.ac.in/login", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -93,7 +95,7 @@ export async function login(headers: {}) {
 export async function fetchExamRegisterations(rollno: string, token: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/data/fetchExamRegistrationByRollNo",
+      "https://exam-vm-admin.dseu.ac.in/api/data/fetchExamRegistrationByRollNo",
       {
         method: "GET",
         mode: "cors",
@@ -122,7 +124,7 @@ export async function fetchExamRegisterations(rollno: string, token: string) {
 export async function sendEmail(rollno: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/sendEmail",
+      "https://exam-vm-admin.dseu.ac.in/sendEmail",
       {
         method: "GET",
         mode: "cors",
@@ -149,7 +151,7 @@ export async function sendEmail(rollno: string) {
 export async function verifyOtpAndPassword(rollno: string, otp: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/verifyOtpAndPassword",
+      "https://exam-vm-admin.dseu.ac.in/verifyOtpAndPassword",
       {
         method: "GET",
         mode: "cors",
@@ -176,7 +178,7 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
 export async function updatePasswordByOtp(rollno: string, password: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/updatePasswordByOtp",
+      "https://exam-vm-admin.dseu.ac.in/updatePasswordByOtp",
       {
         method: "GET",
         mode: "cors",
@@ -204,7 +206,7 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
 export async function loginAdmin(email: string, password: string) {
   try {
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/loginByEmailId",
+      "https://exam-vm-admin.dseu.ac.in/loginByEmailId",
       {
         method: "GET",
         mode: "cors",
@@ -232,9 +234,9 @@ export async function loginAdmin(email: string, password: string) {
 
 export async function fetchExamRegistrationByProgramAndSemester(token:string ,campus: string, program_type: string, program:string, semester:string) {
   try {
-    console.log("campus ",program_type);
+    
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester",
+      "https://exam-vm-admin.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester",
       {
         method: "GET",
         mode: "cors",
@@ -263,9 +265,9 @@ export async function fetchExamRegistrationByProgramAndSemester(token:string ,ca
 
 export async function fetchCoursesBySemester(token:string ,campus: string, program:string, semester:string) {
   try {
-    // console.log("campus ",program_type);
+    // 
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchCoursesBySemester",
+      "https://exam-vm-admin.dseu.ac.in/api/admin/fetchCoursesBySemester",
       {
         method: "GET",
         mode: "cors",
@@ -292,9 +294,9 @@ export async function fetchCoursesBySemester(token:string ,campus: string, progr
 }
 export async function fetchExamRegistrationByCourseCode(token:string ,campus: string, course_code: string) {
   try {
-    // console.log("campus ",program_type);
+    // 
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode",
+      "https://exam-vm-admin.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode",
       {
         method: "GET",
         mode: "cors",
@@ -318,11 +320,12 @@ export async function fetchExamRegistrationByCourseCode(token:string ,campus: st
     throw error;
   }
 }
+
 export async function fetchCourseDetailsByCourseCode(token:string, coursedetails: {campus:string,program:string, coursecode: string[]}) {
   try {
-    console.log("campus ",coursedetails);
+    
     const response = await fetch(
-      "https://admin-exam.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode",
+      "https://exam-vm-admin.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode",
       {
         method: "POST",
         mode: "cors",
@@ -347,3 +350,233 @@ export async function fetchCourseDetailsByCourseCode(token:string, coursedetails
 }
 
 
+
+export async function updateDetails(user: StudentDetails, token: string) {
+  try {
+    const body = {
+      program: user.program,
+      semester: user.semester,
+      phone: user.phone,
+      campus: user.campus,
+      emailid: user.emailid,
+      gender: user.gender,
+      alternate_phone: user.alternate_phone,
+      father: user.father,
+      mother: user.mother,
+      guardian: user.guardian,
+      aadhar: user.aadhar,
+      abc_id: user.abc_id,
+      pwbd_certificate: user.pwbd_certificate,
+      photo: user.photo,
+      program_type: user.program_type,
+      password: "",
+      rollno: user.rollno,
+      year_of_admission: user.year_of_admission,
+      date_of_birth: user.date_of_birth,
+    }
+    const response = await fetch(
+      "https://exam-vm-admin.dseu.ac.in/api/admin/updateDetailsByRollno",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function updateDetailsUser(user: StudentDetails, token: string) {
+  try {
+    const body = {
+      program: user.program,
+      semester: user.semester,
+      phone: user.phone,
+      campus: user.campus,
+      emailid: user.emailid,
+      gender: user.gender,
+      alternate_phone: user.alternate_phone,
+      father: user.father,
+      mother: user.mother,
+      guardian: user.guardian,
+      aadhar: user.aadhar,
+      abc_id: user.abc_id,
+      pwbd_certificate: user.pwbd_certificate,
+      photo: user.photo,
+      program_type: user.program_type,
+      password: "",
+      rollno: user.rollno,
+      year_of_admission: user.year_of_admission,
+      date_of_birth: user.date_of_birth,
+    }
+    const response = await fetch(
+      "https://exam-vm-admin.dseu.ac.in/api/data/updateDetailsByRollno",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json(); // Parse the JSON response
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+  export async function fetchExamControl(token:string, campus: string, program: string, semester: string) {
+    try {
+      
+      
+      const response = await fetch(
+        "https://exam-vm-admin.dseu.ac.in/api/data/fetchExamControl",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            campus: campus,
+            semester: semester,
+            program: program
+          }
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  export async function getUserByRollNo(rollno: string, token: string) {
+    try {
+      const response = await fetch(
+        "https://exam-vm-admin.dseu.ac.in/api/admin/getUserByRollno",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  export async function fetchUserByRollno(rollno: string, token: string) {
+    try {
+      const response = await fetch(
+        "https://exam-vm-admin.dseu.ac.in/api/data/getUserByRollno",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  export async function fetchCampusDetailsGlobal() {
+    try {
+      const response = await fetch(
+        "https://exam-vm-admin.dseu.ac.in/fetchCampusDetails",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  export async function deleteExamRegistration(rollno: string, token: string) {
+    try {
+      const response = await fetch(
+        "https://exam-vm-admin.dseu.ac.in/api/admin/deleteExamRegistrationByRollno",
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            rollno: rollno,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+  
+      const data = await response.json(); // Parse the JSON response
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }

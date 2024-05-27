@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 export async function getAuth() {
   const cookieStore = cookies()
   const auth = cookieStore.get('auth')
-//   console.log(auth)
+//   
   return auth
 }
 
@@ -15,7 +15,7 @@ export async function setAuth(token: string) {
 export async function getSignupCookie() {
     const cookieStore = cookies()
     const auth = cookieStore.get('signup')
-    console.log(auth)
+    
     return auth
 }
 export async function setSignupCookie() {

@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
-import { fetchExamRegisterations } from "../../actions/api";
+import { fetchExamControl, fetchExamRegisterations } from "../../actions/api";
 import { StudentDetails } from "../profile/page";
 
 export default function Home() {
@@ -17,6 +17,7 @@ export default function Home() {
     "Exam Registration",
     "Course Details",
   ];
+  const [examControl ,setExamControl] = useState<boolean>(false);
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [recentChange,setRecentChange] = useState({
     title: "Exam Registrations",
@@ -24,7 +25,19 @@ export default function Home() {
     details:
       "",
   })
-  const [open ,setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if(token!=="") {
+      if (user?.campus !== undefined) {
+        fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
+          
+          setExamControl(res.exam_control)
+        }).catch((error) => {
+          
+        })
+      }
+    }
+  },[token])
 
 
 
@@ -32,6 +45,7 @@ export default function Home() {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
       setToken(auth.value);
+      
       setUser(temp.user);
 
     });
@@ -76,7 +90,7 @@ export default function Home() {
             <CampaignIcon /> Announcement
           </h1>
           <ul className="text-white">
-            {open?
+            {examControl?
             <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are live now!</li>:<li>Exam registrations for B.Tech and M.Tech Courses are closed now.</li>}
             {/* <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are closed now.</li> */}
             {/* <li  className="my-6">Examination Registrations about to close.</li>
