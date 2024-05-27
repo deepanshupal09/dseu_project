@@ -221,11 +221,11 @@ export default function Registration() {
         response.map((course: Course, index: number) => {
           temp.push({ sno: index + 1, ...course });
         });
-        console.log("course Details: ",temp)
+        
         setIndexData(temp);
-        console.log("response: ", response);
+        
       }).catch((error)=>{
-        console.log("error fetching course details: ",error);
+        
       })
     }
   }, [courseCodes]);
@@ -250,7 +250,7 @@ export default function Registration() {
           selectedProgram,
           selectedSemester
         );
-        console.log(data);
+        
         let set = new Set<string>();
         data.map((student: Student)=>{
           student.course_codes.map((courseCode: string)=>{
@@ -259,7 +259,7 @@ export default function Registration() {
         })
         const array = Array.from(set);
         setCourseCodes(array);
-        console.log("course: ",array)
+        
 
 
         setStudentsData(data);

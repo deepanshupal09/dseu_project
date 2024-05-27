@@ -35,7 +35,7 @@ export default function Home() {
         setError(true);
         setHelperText("Internal Server Error");
       } else {
-        console.log("Response: ", response)
+        
         if (response.defaultPass) {
           await setSignupCookie();
           router.push(`/getuserdetails/${RollNo}`)

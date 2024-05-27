@@ -73,9 +73,9 @@ function Home() {
   const [confirmSubmission, setConfirmSumbission] = useState(false);
 
   // useEffect(() => {
-  //   console.log("original: ",original)
-  //   console.log("user: ",user)  
-  //   console.log(deepEqual(original, user));  // Should log: true
+  //   
+  //   
+  //   
   // },[original, user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +95,7 @@ function Home() {
     try {
       if (user) {
         const response = await updateDetails(user, token);
-        console.log("response: ", response);
+        
         setMessage("Successfully updated");
         setOpen(true);
         setConfirmSumbission(false);
@@ -105,7 +105,7 @@ function Home() {
       }
     } catch (error) {
       setMessage("Something went wrong! Please try again later.");
-      console.log("error: ", error);
+      
     }
   }
 
@@ -148,11 +148,11 @@ function Home() {
     if (rollno) {
       try {
         const response = await getUserByRollNo(rollno, token);
-        console.log("response: ", response);
+        
         setUser(response[0]);
         setOriginal(response[0])
       } catch (error) {
-        console.log("error: ", error);
+        
         setUser(null);
       }
     }

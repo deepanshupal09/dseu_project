@@ -78,10 +78,10 @@ export default function Home() {
     // if(token!=="") {
       if (user?.campus !== undefined) {
         fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
-          console.log("res: ", res);
+          
           setExamControl(res.exam_control)
         }).catch((error) => {
-          console.log("error: ", error);
+          
         })
       }
     // }
@@ -106,7 +106,7 @@ export default function Home() {
     try {
       if (user) {
         const response = await updateDetailsUser(user, token);
-        console.log("response: ", response);
+        
         setMessage("Successfully updated");
         setOpen(true);
         setConfirmSumbission(false);
@@ -117,7 +117,7 @@ export default function Home() {
       }
     } catch (error) {
       setMessage("Something went wrong! Please try again later.");
-      console.log("error: ", error);
+      
     }
   }
   useEffect(()=>{
@@ -127,15 +127,15 @@ export default function Home() {
         const temp = parseJwt(auth?.value as string);
         fetchUserByRollno(temp.user.rollno, auth.value)
           .then((res) => {
-            console.log("user: ", res[0]);
+            
             setUser(res[0]);
             setOriginal(res[0]);
             // setPhotoPath(res.)
           })
           .catch((error: any) => {
-            console.log("error: ", error);
+            
           });
-        // console.log("user: ", temp.user)
+        // 
         // setUser(temp.user);
         // setPhotoPath(temp.user.photo);
       }
@@ -178,15 +178,15 @@ export default function Home() {
         const temp = parseJwt(auth?.value as string);
         fetchUserByRollno(temp.user.rollno, auth.value)
           .then((res) => {
-            console.log("user: ", res[0]);
+            
             setUser(res[0]);
             setOriginal(res[0]);
             // setPhotoPath(res.)
           })
           .catch((error: any) => {
-            console.log("error: ", error);
+            
           });
-        // console.log("user: ", temp.user)
+        // 
         // setUser(temp.user);
         // setPhotoPath(temp.user.photo);
       }

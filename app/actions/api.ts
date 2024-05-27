@@ -3,7 +3,7 @@
 import { StudentDetails } from "../(navbar)/profile/page";
 
 export async function signup(body: any) {
-  console.log("here");
+  
   const res = await fetch("https://admin-exam.dseu.ac.in/signup", {
     method: "POST",
     mode: "cors",
@@ -61,10 +61,10 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
     );
 
     const data = await res.json();
-    console.log("API Response:", data); // Log the response
+    
     return data;
   } catch (error) {
-    console.log("Error fetching courses:", error); // Log any errors
+    
     throw error;
   }
 }
@@ -234,7 +234,7 @@ export async function loginAdmin(email: string, password: string) {
 
 export async function fetchExamRegistrationByProgramAndSemester(token:string ,campus: string, program_type: string, program:string, semester:string) {
   try {
-    console.log("campus ",program_type);
+    
     const response = await fetch(
       "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester",
       {
@@ -265,7 +265,7 @@ export async function fetchExamRegistrationByProgramAndSemester(token:string ,ca
 
 export async function fetchCoursesBySemester(token:string ,campus: string, program:string, semester:string) {
   try {
-    // console.log("campus ",program_type);
+    // 
     const response = await fetch(
       "https://admin-exam.dseu.ac.in/api/admin/fetchCoursesBySemester",
       {
@@ -294,7 +294,7 @@ export async function fetchCoursesBySemester(token:string ,campus: string, progr
 }
 export async function fetchExamRegistrationByCourseCode(token:string ,campus: string, course_code: string) {
   try {
-    // console.log("campus ",program_type);
+    // 
     const response = await fetch(
       "https://admin-exam.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode",
       {
@@ -323,7 +323,7 @@ export async function fetchExamRegistrationByCourseCode(token:string ,campus: st
 
 export async function fetchCourseDetailsByCourseCode(token:string, coursedetails: {campus:string,program:string, coursecode: string[]}) {
   try {
-    console.log("campus ",coursedetails);
+    
     const response = await fetch(
       "https://admin-exam.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode",
       {
@@ -448,7 +448,7 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
 
   export async function fetchExamControl(token:string, campus: string, program: string, semester: string) {
     try {
-      console.log("campus, program, semester", campus, program, semester)
+      
       
       const response = await fetch(
         "https://admin-exam.dseu.ac.in/api/data/fetchExamControl",

@@ -33,7 +33,7 @@ const getUserByRollno = (req, res) => {
     }
     catch (error) {
         res.status(400).send({ message: "There is some error encountered!" });
-        console.log("error: ", error);
+        
     }
 };
 exports.getUserByRollno = getUserByRollno;
@@ -41,7 +41,7 @@ const login = (req, res) => {
     try {
         const rollno = req.headers.rollno;
         const password = req.headers.password;
-        console.log("rollno", rollno);
+        
         if (rollno && password) {
             (0, service_1.handleLogin)(rollno, password)
                 .then(({ token, defaultPass }) => {
@@ -69,7 +69,7 @@ const loginByEmailId = (req, res) => {
     try {
         const emailid = req.headers.emailid;
         const password = req.headers.password;
-        console.log("email id", emailid);
+        
         if (emailid && password) {
             (0, service_1.handleLoginByEmailId)(emailid, password)
                 .then(({ token }) => {
@@ -96,7 +96,7 @@ exports.loginByEmailId = loginByEmailId;
 const updateDetailsByRollno = (req, res) => {
     try {
         const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, rollno, year_of_admission } = req.body;
-        console.log(req.body);
+        
         (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission).then((results) => {
             res.status(200).send("successfully updated!");
         }).catch((error) => {
@@ -109,10 +109,10 @@ const updateDetailsByRollno = (req, res) => {
 };
 exports.updateDetailsByRollno = updateDetailsByRollno;
 function signup(req, res) {
-    console.log('singup');
+    
     try {
         const { program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, rollno, year_of_admission } = req.body;
-        console.log(101, req.body);
+        
         (0, service_1.updateDetails)(rollno, program, semester, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission).then((results) => {
             res.status(200).send({ message: "successfully updated!" });
         }).catch((error) => {
@@ -142,7 +142,7 @@ const fetchCoursesBySemester = (req, res) => {
     try {
         const semester = parseInt(req.headers.semester);
         const program = req.headers.program;
-        console.log("semester , course_code :", semester, program);
+        
         (0, service_1.fetchTheCourses)(semester, program).then((results) => {
             res.status(200).send(results);
         }).catch((error) => {
@@ -157,9 +157,9 @@ exports.fetchCoursesBySemester = fetchCoursesBySemester;
 const fetchCoursesByRollNo = (req, res) => {
     try {
         const rollno = req.headers.rollno;
-        console.log("rolllno courses: ", rollno);
+        
         (0, service_1.fetchTheCoursesRollNo)(rollno).then((results) => {
-            console.log("results: ", results);
+            
             res.status(200).send(results);
         }).catch((error) => {
             res.status(500).send("internal server error roll 2");
@@ -173,7 +173,7 @@ exports.fetchCoursesByRollNo = fetchCoursesByRollNo;
 const fetchExamRegistrationByRollNo = (req, res) => {
     try {
         const rollno = req.headers.rollno;
-        console.log("exam registration: ", rollno);
+        
         (0, service_1.fetchTheExamRegistration)(rollno).then((results) => {
             res.status(200).send(results);
         }).catch((error) => {
@@ -219,7 +219,7 @@ exports.fetchExamRegistrationByProgramAndSemester = fetchExamRegistrationByProgr
 const addUsers = (req, res) => {
     try {
         const users = req.body;
-        console.log("users: ", users);
+        
         (0, service_1.insertTheUsers)(users).then((results) => {
             res.status(200).send({ message: "succesfully inserted!" });
         }).catch((error) => {
@@ -301,7 +301,7 @@ const sendEmail = (0, express_async_handler_1.default)((req, res) => __awaiter(v
                 res.status(500).send({ message: 'Internal Server Error!' });
             }
             else {
-                console.log('Email sent successfully!');
+                
                 res.status(200).send({ message: 'Email sent successfully!' });
             }
         });
@@ -315,7 +315,7 @@ exports.sendEmail = sendEmail;
 const updatePasswordByOtp = (req, res) => {
     try {
         const { rollno, password } = req.headers;
-        console.log("rollno, ", rollno, "password: ", password);
+        
         (0, service_1.updateThePassword)(password, rollno).then((results) => {
             res.status(200).send({ message: "Password updated successfully!" });
         }).catch((error) => {
@@ -331,10 +331,10 @@ const verifyOtpAndPassword = ((req, res) => __awaiter(void 0, void 0, void 0, fu
     var _a;
     try {
         const { rollno, otp } = req.headers;
-        console.log(otp);
+        
         const storedOTPResult = yield (0, service_1.otpVerifyService)(rollno);
         const storedOTP = (_a = storedOTPResult.rows[0]) === null || _a === void 0 ? void 0 : _a.otp;
-        console.log(storedOTP);
+        
         if (otp === storedOTP) {
             res.status(200).send({ message: "OTP verified successfully!" });
         }

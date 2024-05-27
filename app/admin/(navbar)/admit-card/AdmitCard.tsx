@@ -453,7 +453,7 @@ const MyDocument = ({ users }: { users: StudentData[] }) => {
               {/* {console.} */}
 
               {user.papers.map((e, index) => {
-                console.log("e: ", e);
+                
                 return (
                   <>
                     <View key={index} style={styles.table}>

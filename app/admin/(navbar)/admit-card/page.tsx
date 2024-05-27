@@ -276,8 +276,8 @@ export default function Registration() {
               ...course,
             });
           });
-          console.log("data: ", courseData);
-          console.log("student data: ", studentList);
+          
+          
 
           const users: StudentData[] = studentList.map((student) => ({
             campus: selectedCampus, // Update with your campus name or fetch from student data if available
@@ -289,11 +289,11 @@ export default function Registration() {
             photo: "https://exam.dseu.ac.in" + student.photo + "?" + Date.now(),
           }));
 
-          console.log("users: ", users);
+          
           setAdmitCardData(users);
         })
         .catch((error) => {
-          console.log("error fetching course details: ", error);
+          
         });
     }
   }, [courseCodes]);
@@ -313,7 +313,7 @@ export default function Registration() {
       selectedSemester
     )
       .then((res) => {
-        console.log("response: ", res);
+        
         setStudentList(res);
         let set = new Set<string>();
         res.map((student: Student) => {
@@ -324,10 +324,10 @@ export default function Registration() {
         const array = Array.from(set);
         setCourseCodes(array);
         setStudentList(res);
-        console.log("array: ", array);
+        
       })
       .catch((error) => {
-        console.log("error: ", error);
+        
       });
   };
 

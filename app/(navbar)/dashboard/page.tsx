@@ -30,10 +30,10 @@ export default function Home() {
     if(token!=="") {
       if (user?.campus !== undefined) {
         fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
-          console.log("res: ", res);
+          
           setExamControl(res.exam_control)
         }).catch((error) => {
-          console.log("error: ", error);
+          
         })
       }
     }
@@ -45,7 +45,7 @@ export default function Home() {
     getAuth().then((auth: any) => {
       const temp = parseJwt(auth?.value);
       setToken(auth.value);
-      console.log("token: ", auth.value)
+      
       setUser(temp.user);
 
     });
