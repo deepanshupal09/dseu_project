@@ -20,12 +20,12 @@ import {
   DialogContent,
   DialogActions,
   Chip,
-  ListItemText,
 } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   fetchDetailsByCampus,
+  // fetchUpdateExamControl,
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
@@ -64,7 +64,7 @@ export default function Registration() {
   const [campusRenderList, setCampusRenderList]= useState<string[]>([]);
   const [programRenderList, setProgramRenderList]= useState<string[]>([]);
   const [semesterRenderList, setSemesterRenderList]= useState<string[]>([]);
-  const [loading,setLoading]= useState(false);
+  const [payload,setPayload]= useState<any[]>([]); 
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -73,6 +73,7 @@ export default function Registration() {
       }
     });
   }, []);
+  
 
   useEffect(() => {
     if (token) {
@@ -103,7 +104,6 @@ export default function Registration() {
         setProgramRenderList(Array.from(uniquePrograms));
         setSemesterRenderList(Array.from(uniqueSemesters));
       
-        // console.log("campus:",uniqueCampuses,uniquePrograms,uniqueSemesters )
       }).catch((error) => {
         console.log(error);
       });
@@ -112,13 +112,14 @@ export default function Registration() {
 
   useEffect(()=>{
     const temp1 = campusData
-    .filter(data => filterCampus.includes(data.campus)&&(filterSemester.length===0 || filterSemester.includes(data.semester)))
+    .filter(data => ((filterCampus.length===0 || filterCampus.includes(data.campus))&&(filterSemester.length===0 || filterSemester.includes(data.semester))))
     .map(data => data.program);
 
+
   const temp2 = campusData
-    .filter(data => filterCampus.includes(data.campus)&&(filterProgram.length===0 || filterProgram.includes(data.program)))
+    .filter(data => ((filterCampus.length===0 || filterCampus.includes(data.campus))&&(filterProgram.length===0 || filterProgram.includes(data.program))))
     .map(data => data.semester);
-    // console.log(3,temp1,temp2);
+    // console.log(33,temp1,temp2);
 
   setProgramRenderList(Array.from(new Set(temp1))); 
   setSemesterRenderList(Array.from(new Set(temp2))); 
@@ -127,13 +128,13 @@ export default function Registration() {
 
   useEffect(()=>{
     const temp1 = campusData
-    .filter(data => filterProgram.includes(data.program)&&(filterCampus.length===0 || filterCampus.includes(data.campus)))
+    .filter(data => ((filterProgram.length===0|| filterProgram.includes(data.program))&&(filterCampus.length===0 || filterCampus.includes(data.campus))))
     .map(data => data.semester);
 
   const temp2 = campusData
-    .filter(data => filterProgram.includes(data.program)&&(filterSemester.length===0 || filterSemester.includes(data.semester)))
+    .filter(data => ((filterProgram.length===-0 || filterProgram.includes(data.program))&&(filterSemester.length===0 || filterSemester.includes(data.semester))))
     .map(data => data.campus);
-    // console.log(2,temp1,temp2);
+    // console.log(22,temp1,temp2);
 
   setCampusRenderList(Array.from(new Set(temp2))); 
   setSemesterRenderList(Array.from(new Set(temp1))); 
@@ -142,19 +143,18 @@ export default function Registration() {
 
   useEffect(()=>{
     const temp1 = campusData
-    .filter(data => filterSemester.includes(data.semester)&&(filterProgram.length===0 ||filterProgram.includes(data.program)))
+    .filter(data => ((filterSemester.length===0 || filterSemester.includes(data.semester))&&(filterProgram.length===0 ||filterProgram.includes(data.program))))
     .map(data => data.campus);
 
   const temp2 = campusData
-    .filter(data => filterSemester.includes(data.semester)&&(filterCampus.length===0 || filterCampus .includes(data.campus)))
+    .filter(data => ((filterSemester.length===0 || filterSemester.includes(data.semester))&&(filterCampus.length===0 || filterCampus .includes(data.campus))))
     .map(data => data.program);
-    // console.log(1,temp1,temp2);
+    // console.log(11,temp1,temp2);
 
   setCampusRenderList(Array.from(new Set(temp1))); 
   setProgramRenderList(Array.from(new Set(temp2))); 
 
   },[filterSemester])
-  
 
   const handleCampusCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -290,7 +290,6 @@ export default function Registration() {
   };
 
   const handleConfirmFilteredAction = () => {
-    setLoading(true);
     const payload: { campus: string, program: string, semester: string, action: string }[] = [];
 
     selectedCampus.forEach((campus) => {
@@ -302,18 +301,16 @@ export default function Registration() {
     });
 
     console.log(payload);
+    
 
     setSnackbarMessage(
       openCloseAction === "true"
-        ? "Exam registrations opened for your selections"
-        : "Exam registrations closed for your selections"
+        ? "Exam registrations opened for your selections."
+        : "Exam registrations closed for your selections."
     );
 
     setSnackbarOpen(true);
     handleCloseModal();
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
   };
 
 
@@ -338,14 +335,18 @@ export default function Registration() {
       .map((item) => item.campus)
       .filter((campus, index, self) => self.indexOf(campus) === index)
       .filter((campus) => filterCampus.length === 0 || filterCampus.includes(campus));
-
+  
     return filteredCampuses.map((campus, index) => {
       let filteredPrograms = campusData
         .filter((item) => item.campus === campus)
         .map((item) => item.program)
         .filter((program, index, self) => self.indexOf(program) === index)
         .filter((program) => filterProgram.length === 0 || filterProgram.includes(program));
-
+  
+      if (filteredPrograms.length === 0) {
+        return null; 
+      }
+  
       return (
         <Accordion key={index}>
           <AccordionSummary
@@ -363,34 +364,42 @@ export default function Registration() {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            {filteredPrograms.map((program, programIndex) => (
-              <Accordion key={programIndex}>
-                <AccordionSummary
-                  expandIcon={<ArrowDropDownIcon />}
-                  aria-controls={`panel2-content-${programIndex}`}
-                  id={`panel2-header-${programIndex}`}
-                >
-                  <Box display="flex" alignItems="center">
-                    <Checkbox
-                      checked={selectedProgram[campus]?.includes(program) || false}
-                      onChange={(event) => handleProgramCheckboxChange(campus, program, event)}
-                      value={program}
-                    />
-                    <Typography>{program}</Typography>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <FormControl fullWidth margin="normal">
-                    <Box display="flex" flexDirection="column">
-                      <h4>Semesters</h4>
-                      <Box>
-                        {campusData
-                          .filter((item) => item.campus === campus && item.program === program)
-                          .filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester))
-                          .map((item, semesterIndex) => (
+            {filteredPrograms.map((program, programIndex) => {
+              let filteredSemesters = campusData
+                .filter((item) => item.campus === campus && item.program === program)
+                .filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester));
+  
+              if (filteredSemesters.length === 0) {
+                return null; 
+              }
+  
+              return (
+                <Accordion key={programIndex}>
+                  <AccordionSummary
+                    expandIcon={<ArrowDropDownIcon />}
+                    aria-controls={`panel2-content-${programIndex}`}
+                    id={`panel2-header-${programIndex}`}
+                  >
+                    <Box display="flex" alignItems="center">
+                      <Checkbox
+                        checked={selectedProgram[campus]?.includes(program) || false}
+                        onChange={(event) => handleProgramCheckboxChange(campus, program, event)}
+                        value={program}
+                      />
+                      <Typography>{program}</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <FormControl fullWidth margin="normal">
+                      <Box display="flex" flexDirection="column">
+                        <h4>Semesters</h4>
+                        <Box>
+                          {filteredSemesters.map((item, semesterIndex) => (
                             <Box key={semesterIndex} display="flex" alignItems="center">
                               <Checkbox
-                                checked={selectedSemester[`${campus}-${program}`]?.includes(String(item.semester)) || false}
+                                checked={
+                                  selectedSemester[`${campus}-${program}`]?.includes(String(item.semester)) || false
+                                }
                                 onChange={(event) =>
                                   handleSemesterCheckboxChange(campus, program, String(item.semester), event)
                                 }
@@ -399,18 +408,21 @@ export default function Registration() {
                               <Typography>{item.semester}</Typography>
                             </Box>
                           ))}
+                        </Box>
                       </Box>
-                    </Box>
-                  </FormControl>
-                </AccordionDetails>
-              </Accordion>
-            ))}
+                    </FormControl>
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
           </AccordionDetails>
         </Accordion>
       );
-    });
+    }).filter(item => item !== null); 
   };
   
+
+
   const applyFilters = () => {
     const filteredData = campusData.filter((item) =>
       (filterCampus.length === 0 || filterCampus.includes(item.campus)) &&
@@ -524,7 +536,7 @@ export default function Registration() {
               variant="contained"
               color="primary"
               onClick={applyFilters}
-              disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}
+              // disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}
             >
               Apply
             </Button>
@@ -563,7 +575,7 @@ export default function Registration() {
       <Dialog open={openCloseModal} onClose={handleCloseModal}>
         <DialogTitle>Confirm Action</DialogTitle>
         <DialogContent>
-          {`Are you sure you want to ${openCloseAction === "true" ? "open" : "close"} exam registrations for selected campuses, programs, and semesters?`}
+          {`Are you sure you want to ${openCloseAction==='true'?'open':'close'} exam registrations for selected campuses, programs, and semesters?`}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
@@ -573,7 +585,7 @@ export default function Registration() {
             Confirm
           </Button>
         </DialogActions>
-        {loading && <CircularProgress />}
+        { <CircularProgress />}
       </Dialog>
     </>
   );
