@@ -203,7 +203,7 @@ export default function PreviewPage({
           </tr>
           <tr>
             <td className="md:px-6 max-md:pl-2 py-4 font-semibold">Alternate Phone:</td>
-            <td className="md:px-6 max-md:pl-2 py-4">{altPhone===""?"N.A":altPhone}</td>
+            <td className="md:px-6 max-md:pl-2 py-4">{altPhone===""?"N.A.":altPhone}</td>
             <td className="px-2 py-4">
               <Switch
                 checked={toggles.altPhone}
@@ -251,7 +251,7 @@ export default function PreviewPage({
                   alt="User"
                   key={key}
                 />
-              ):"N.A"}
+              ):"N.A."}
             </td>
             <td className="px-2 py-4">
               <Switch
