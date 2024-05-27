@@ -25,7 +25,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   fetchDetailsByCampus,
-  // fetchUpdateExamControl,
+  fetchUpdateExamControl
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
@@ -285,45 +285,70 @@ export default function Registration() {
         setOpenCloseModal(true);
     };
 
-  const handleConfirmFilteredAction = () => {
-    const payload: { campus: string, program: string, semester: string, action: string }[] = [];
-
-        selectedCampus.forEach((campus) => {
-            (selectedProgram[campus] || []).forEach((program) => {
-                (selectedSemester[`${campus}-${program}`] || []).forEach((semester) => {
-                    payload.push({ campus, program, semester, action: openCloseAction });
-                });
-            });
+  const handleConfirmFilteredAction = async () => {
+    const payload: { campus: string, program: string, semester: number, exam_control: boolean }[] = [];
+  
+    selectedCampus.forEach((campus) => {
+      (selectedProgram[campus] || []).forEach((program) => {
+        (selectedSemester[`${campus}-${program}`] || []).forEach((semester) => {
+          payload.push({
+            campus,
+            program,
+            semester: Number(semester),
+            exam_control: openCloseAction === "true",
+          });
         });
-
+      });
+    });
+  
     console.log(payload);
-    
-
-    setSnackbarMessage(
-      openCloseAction === "true"
-        ? "Exam registrations opened for your selections."
-        : "Exam registrations closed for your selections."
-    );
-
+  
+    try {
+      const body:{ campus: string, program: string, semester: number, exam_control: boolean }[] = [] = payload;
+      const res = await fetchUpdateExamControl(body,token);
+  
+        const message = openCloseAction === "true"
+          ? "Exam registrations opened for your selections."
+          : "Exam registrations closed for your selections.";
+        setSnackbarMessage(message);
+      
+    } catch (error) {
+      console.error("Error updating exam control:", error);
+      alert("Internal server error!");
+    }
+  
     setSnackbarOpen(true);
     handleCloseModal();
   };
+  
+  
+  // useEffect(()=>{
+  //   console.log(1,filterCampus);
+  //   console.log(2,campusRenderList);
+  //   console.log(3,programRenderList);
+  //   console.log(4,semesterRenderList)
+  //   console.log(5,filterProgram);
+  //   console.log(6,filterSemester);
+  //   console.log(7,campusData);
+  //   // console.log(8,programList)
+  // },[filterCampus,filterProgram,filterSemester])
 
-    const handleTagDelete = (filterType: string, value: string) => {
-        switch (filterType) {
-            case "campus":
-                setFilterCampus((prev) => prev.filter((item) => item !== value));
-                break;
-            case "program":
-                setFilterProgram((prev) => prev.filter((item) => item !== value));
-                break;
-            case "semester":
-                setFilterSemester((prev) => prev.filter((item) => item !== value));
-                break;
-            default:
-                break;
-        }
-    };
+
+  const handleTagDelete = (filterType: string, value: string) => {
+    switch (filterType) {
+      case "campus":
+        setFilterCampus((prev) => prev.filter((item) => item !== value));
+        break;
+      case "program":
+        setFilterProgram((prev) => prev.filter((item) => item !== value));
+        break;
+      case "semester":
+        setFilterSemester((prev) => prev.filter((item) => item !== value));
+        break;
+      default:
+        break;
+    }
+  };
 
   const filterAccordions = () => {
     let filteredCampuses = campusData
@@ -580,7 +605,7 @@ export default function Registration() {
             Confirm
           </Button>
         </DialogActions>
-        { <CircularProgress />}
+        {/* { <CircularProgress />} */}
       </Dialog>
     </>
   );
