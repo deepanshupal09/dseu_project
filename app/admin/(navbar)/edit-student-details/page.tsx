@@ -83,7 +83,7 @@ function Home() {
   const [confirmSubmission, setConfirmSumbission] = useState(false);
   const [confirmDeletion, setConfirmDeletion] = useState(false);
   const { data } = useData();
-  // console.log("data ", data)
+  // 
 
   // useEffect(() => {
   //   console.log("original: ",original)
@@ -110,9 +110,9 @@ function Home() {
       setConfirmDeletion(false);
       setMessage("Exam registration deleted successfully");
       setOpen(true);
-      console.log("response: ", response);
+      
     } catch (error) {
-      console.log("error delete: ", error);
+      
       setOpen(true);
       setMessage("Something went wrong! Please try again later");
     }

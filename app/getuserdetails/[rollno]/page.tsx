@@ -58,8 +58,11 @@ export default function Home({ params }: { params: { rollno: string } }) {
   // const rollno = params.rollno;
 
   const { data } = useData();
-  const { campusList, programListByType, programTypeList } = data;
-  console.log("data: ", data);
+
+  useEffect(()=>{
+    console.log("semester",  semester)
+  },[semester])
+  
 
   const handleBackToLogin = () => {
     deleteSignupCookie();
@@ -105,7 +108,7 @@ export default function Home({ params }: { params: { rollno: string } }) {
       }
       const body: BodyType = {
         program: program,
-        semester: parseInt(semester.split(" ")[1]),
+        semester: parseInt(semester),
         father: father,
         mother: mother,
         campus: college,

@@ -104,8 +104,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         })
 
         const transfomedData = transformData(data);
-        console.log("tran")
-        // console.log("check: ",check["G.B. Pant DSEU Okhla I Campus"]["Undergraduate"]["Bachelor of Technology (Computer Science Engineering)"])
+        
+        // 
         setData(transfomedData);
       } catch (err) {
         setError(err as Error);

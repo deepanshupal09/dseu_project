@@ -46,10 +46,10 @@ export default function UserDetailsPage({
   const [error, setError] = useState(false);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setcollege(college);
-    setsemester(semester);
-    setprogram(program);
-    setprogramtype(programtype);
+    // setcollege(college);
+    // setsemester(semester);
+    // setprogram(program);
+    // setprogramtype(programtype);
     onNext();
   };
   const { data } = useData();
@@ -149,6 +149,7 @@ export default function UserDetailsPage({
               }
               value={semester || ""}
               onChange={(event, newValue) => {
+                console.log("sem: ", typeof newValue)
                 setsemester(newValue);
               }}
               renderInput={(params) => (

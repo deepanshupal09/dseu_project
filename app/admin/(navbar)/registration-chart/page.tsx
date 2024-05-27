@@ -161,9 +161,9 @@ export default function Registration() {
   };
 
   // useEffect(() => {
-  //   console.log(`Campus ${selectedCampus} Program ${selectedProgram} ProgramType ${selectedProgramCategory} semester ${selectedSemester}` )
+  //   
   // },[selectedCampus,selectedProgram,selectedProgramCategory,selectedSemester])
-  // console.log(`Campus ${selectedCampus} Program ${selectedProgram} ProgramType ${selectedProgramCategory} semester ${selectedSemester}` )
+  // 
 
   const [selectedOption, setSelectedOption] = React.useState("");
 
@@ -184,7 +184,7 @@ export default function Registration() {
   // useEffect(()=>{
   //   setSelectedSemester(data[selectedCampus][selectedProgramCategory][selectedProgram][0])
   // },[selectedProgram])
-  // console.log(data)
+  // 
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
