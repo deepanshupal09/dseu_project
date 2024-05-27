@@ -196,7 +196,7 @@ export default function Home() {
       <div className="sm:pl-[300px] sm:mt-[100px] flex flex-col  items-center mt-[140px] w-full px-2 sm:pr-10">
         {user  && data && (
           <div>
-            <div className="flex w-[70vw] max-sm:w-screen flex-col items-center ">
+            <form onSubmit={(e)=>{e.preventDefault(); setConfirmSumbission(true)}} className="flex w-[70vw] max-sm:w-screen flex-col items-center ">
               <div className="mt-6 w-full">
                 <div className="bg-dseublue py-2 px-6 rounded shadow w-full my-6 flex flex-col sm:flex-row items-center justify-between text-white">
                   <img
@@ -303,7 +303,7 @@ export default function Home() {
                               type="text"
                               inputProps={{
                                 maxLength: 10,
-                                pattern: "\\d{12}",
+                                pattern: "\\d{10}",
                               }}
                             />
                           ) : (
@@ -329,7 +329,7 @@ export default function Home() {
                               inputProps={{
                                 maxLength: 12,
                                 inputMode: "numeric",
-                                pattern: "[0-9]*",
+                                pattern: "\\d{12}",
                               }}
                             />
                           ) : (
@@ -379,7 +379,7 @@ export default function Home() {
                               inputProps={{
                                 maxLength: 12,
                                 inputMode: "numeric",
-                                pattern: "[0-9]*",
+                                pattern: "\\d{12}",
                               }}
                               type="text"
                             />
@@ -492,7 +492,7 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {Object.keys(data[user.campus][user.program_type])?.map((program: string) => (
+                                {data[user.campus][user.program_type] && Object.keys(data[user.campus][user.program_type])?.map((program: string) => (
                                   <MenuItem key={program} value={program}>
                                     {program}
                                   </MenuItem>
@@ -530,21 +530,24 @@ export default function Home() {
                             <span className="font-bold">Semester:</span>
                             <br />
                             {edit ? (
-                              <TextField
+                              <Select
                                 hiddenLabel
                                 className="mt-2"
                                 size="small"
-                                variant="filled"
-                                name="semester"
-                                value={user?.semester}
-                                onChange={handleNumericInputChange}
-                                type="text"
-                                inputProps={{
-                                  maxLength: 1,
-                                  inputMode: "numeric",
-                                  pattern: "[0-9]*",
+                                value={user?.semester.toString()}
+                                onChange={(e)=>{
+                                  setUser({...user, semester: parseInt(e.target.value)})
                                 }}
-                              />
+                                name="Semester"
+                                sx={{ width: 150 }}
+                                variant="filled"
+                              >
+                                {data[user.campus][user.program_type][user.program] && data[user.campus][user.program_type][user.program]?.map((semester: string, key) => (
+                                  <MenuItem key={key} value={semester}>
+                                    {semester}
+                                  </MenuItem>
+                                ))}
+                              </Select>
                             ) : (
                               <span>{user?.semester}</span>
                             )}
@@ -580,9 +583,7 @@ export default function Home() {
                   {edit && (
                     <div className="flex space-x-2">
                       <Button
-                        onClick={() => {
-                          setConfirmSumbission(true);
-                        }}
+                        type="submit"
                         variant="contained"
                         disabled={deepEqual(original, user)}
                       >
@@ -610,7 +611,7 @@ export default function Home() {
                   )}
                 </>
               )}
-            </div>
+            </form>
           </div>
         )}
       </div>

@@ -83,7 +83,7 @@ function Home() {
   const [confirmSubmission, setConfirmSumbission] = useState(false);
   const [confirmDeletion, setConfirmDeletion] = useState(false);
   const { data } = useData();
-  // 
+  //
 
   // useEffect(() => {
   //   console.log("original: ",original)
@@ -110,9 +110,7 @@ function Home() {
       setConfirmDeletion(false);
       setMessage("Exam registration deleted successfully");
       setOpen(true);
-      
     } catch (error) {
-      
       setOpen(true);
       setMessage("Something went wrong! Please try again later");
     }
@@ -122,7 +120,7 @@ function Home() {
     try {
       if (user) {
         const response = await updateDetails(user, token);
-        
+
         setMessage("Successfully updated");
         setOpen(true);
         setConfirmSumbission(false);
@@ -132,9 +130,23 @@ function Home() {
       }
     } catch (error) {
       setMessage("Something went wrong! Please try again later.");
-      
     }
   }
+  // useEffect(() => {
+  //   if (user) {
+  //     setUser({ ...user, program_type: "", program: "", semester: 0 });
+  //   }
+  // }, [user?.campus]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setUser({ ...user, program: "", semester: 0 });
+  //   }
+  // }, [user?.program_type]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setUser({ ...user, semester: 0 });
+  //   }
+  // }, [user?.program]);
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
@@ -177,11 +189,10 @@ function Home() {
     if (rollno) {
       try {
         const response = await getUserByRollNo(rollno, token);
-        
+
         setUser(response[0]);
         setOriginal(response[0]);
       } catch (error) {
-        
         setUser(null);
       }
     }
@@ -215,8 +226,9 @@ function Home() {
           </Button> */}
         </form>
       </div>
-      {user  && data && (
-        <div className="flex  w-[70vw] flex-col items-center ">
+      {/* {console.log("data", data)} */}
+      {user && data && (
+        <form onSubmit={(e)=>{e.preventDefault(); setConfirmSumbission(true)}} className="flex  w-[70vw] flex-col items-center ">
           <div className=" mt-6 md:w-full">
             <div className="bg-dseublue py-2 px-6 rounded shadow w-full  my-6 flex flex-col sm:flex-row items-center justify-between  text-white">
               <img
@@ -309,7 +321,7 @@ function Home() {
                         type="text"
                         inputProps={{
                           maxLength: 10, // Set maximum length to 12
-                          pattern: "\\d{12}", // Pattern for exactly 12 digits
+                          pattern: "\\d{10}", // Pattern for exactly 12 digits
                         }}
                       />
                     </p>
@@ -446,11 +458,14 @@ function Home() {
                           sx={{ width: 150 }}
                           variant="filled"
                         >
-                          {Object.keys(data[user.campus]).map((programType) => (
-                            <MenuItem key={programType} value={programType}>
-                              {programType}
-                            </MenuItem>
-                          ))}
+                          {user.campus !== "" &&
+                            Object.keys(data[user.campus])?.map(
+                              (programType) => (
+                                <MenuItem key={programType} value={programType}>
+                                  {programType}
+                                </MenuItem>
+                              )
+                            )}
                         </Select>
                       </p>
                     </div>
@@ -471,13 +486,14 @@ function Home() {
                           // sx={{ maxWidth: 200, }} // Adjust the value as needed
                           variant="filled"
                         >
-                          {Object.keys(data[user.campus][user.program_type]).map(
-                            (program: string) => (
+                           {data[user.campus][user.program_type] &&
+                            Object.keys(
+                              data[user.campus][user.program_type]
+                            )?.map((program: string) => (
                               <MenuItem key={program} value={program}>
                                 {program}
                               </MenuItem>
-                            )
-                          )}
+                            ))}
                         </Select>
                       </p>
                     </div>
@@ -503,21 +519,30 @@ function Home() {
                       <p>
                         <span className="font-bold">Semester:</span>
                         <br />
-                        <TextField
+                        <Select
                           hiddenLabel
                           className="mt-2"
                           size="small"
-                          variant="filled"
-                          name="semester"
-                          value={user.semester}
-                          onChange={handleNumericInputChange}
-                          type="text"
-                          inputProps={{
-                            maxLength: 1,
-                            inputMode: "numeric",
-                            pattern: "[0-9]*",
+                          value={user?.semester.toString()}
+                          onChange={(e) => {
+                            setUser({
+                              ...user,
+                              semester: parseInt(e.target.value),
+                            });
                           }}
-                        />
+                          name="Semester"
+                          sx={{ width: 150 }}
+                          variant="filled"
+                        >
+                          {data[user.campus][user.program_type] && data[user.campus][user.program_type][user.program] &&
+                            data[user.campus][user.program_type][
+                              user.program
+                            ]?.map((semester: string, key) => (
+                              <MenuItem key={key} value={semester}>
+                                {semester}
+                              </MenuItem>
+                            ))}
+                        </Select>
                       </p>
                     </div>
                     <div className="flex mb-2">
@@ -556,15 +581,13 @@ function Home() {
             </Button>
           </div>
           <Button
-            onClick={() => {
-              setConfirmSumbission(true);
-            }}
+          type="submit"
             variant="contained"
             disabled={deepEqual(original, user)}
           >
             Apply Changes
           </Button>
-        </div>
+        </form>
       )}
 
       {/* {!user && (
