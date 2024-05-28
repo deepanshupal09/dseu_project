@@ -31,8 +31,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { deepEqual } from "@/app/admin/(navbar)/edit-student-details/page";
 import { useData } from "@/contexts/DataContext";
+import { deepEqual } from "@/utils";
 
 export interface StudentDetails {
   name: string;
