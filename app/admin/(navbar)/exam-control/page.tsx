@@ -163,45 +163,58 @@ export default function Registration() {
   const handleCampusCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const isSelected = event.target.checked;
+  
     setSelectedCampus((prev) =>
       isSelected ? [...prev, value] : prev.filter((c) => c !== value)
     );
-
-        setSelectedProgram((prev) => {
-            const updatedPrograms = { ...prev };
-            if (isSelected) {
-                updatedPrograms[value] = campusData.filter((item) => item.campus === value).map((item) => item.program);
+  
+    setSelectedProgram((prev) => {
+      const updatedPrograms = { ...prev };
+      if (isSelected) {
+        updatedPrograms[value] = campusData
+          .filter((item) => item.campus === value)
+          .map((item) => item.program);
+      } else {
+        delete updatedPrograms[value];
+      }
+      return updatedPrograms;
+    });
+  
+    setSelectedSemester((prev) => {
+      const updatedSemesters = { ...prev };
+      if (isSelected) {
+        campusData
+          .filter((item) => item.campus === value)
+          .forEach((item) => {
+            const key = `${value}-${item.program}`;
+            if (updatedSemesters[key]) {
+              updatedSemesters[key] = [
+                ...Array.from(new Set([...updatedSemesters[key], String(item.semester)]))
+              ];
             } else {
-                delete updatedPrograms[value];
+              updatedSemesters[key] = [String(item.semester)];
             }
-            return updatedPrograms;
+          });
+      } else {
+        Object.keys(updatedSemesters).forEach((key) => {
+          if (key.startsWith(value)) {
+            delete updatedSemesters[key];
+          }
         });
+      }
+      return updatedSemesters;
+    });
+  };
+  
 
-        setSelectedSemester((prev) => {
-            const updatedSemesters = { ...prev };
-            if (isSelected) {
-                campusData
-                    .filter((item) => item.campus === value)
-                    .forEach((item) => {
-                        updatedSemesters[`${value}-${item.program}`] = [String(item.semester)];
-                    });
-            } else {
-                Object.keys(updatedSemesters).forEach((key) => {
-                    if (key.startsWith(value)) {
-                        delete updatedSemesters[key];
-                    }
-                });
-            }
-            return updatedSemesters;
-        });
-    };
-
-    const handleProgramCheckboxChange = (campus: string, program: string, event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.checked;
-        setSelectedProgram((prev) => {
-            const updatedPrograms = value ? [...(prev[campus] || []), program] : (prev[campus] || []).filter((p) => p !== program);
-            return { ...prev, [campus]: updatedPrograms };
-        });
+  const handleProgramCheckboxChange = (campus: string, program: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.checked;
+    setSelectedProgram((prev) => {
+      const updatedPrograms = value
+        ? [...(prev[campus] || []), program]
+        : (prev[campus] || []).filter((p) => p !== program);
+      return { ...prev, [campus]: updatedPrograms };
+    });
 
         if (value && !selectedCampus.includes(campus)) {
             setSelectedCampus((prev) => [...prev, campus]);
@@ -363,8 +376,41 @@ export default function Registration() {
         .filter((program, index, self) => self.indexOf(program) === index)
         .filter((program) => filterProgram.length === 0 || filterProgram.includes(program));
   
+      let isAllProgramsSelected = filteredPrograms.every(program =>
+        (selectedProgram[campus] || []).includes(program)
+      );
+  
+      let areAllSemestersSelected = filteredPrograms.every(program =>
+        (selectedSemester[`${campus}-${program}`] || []).length > 0 &&
+        campusData.filter(item => item.campus === campus && item.program === program)
+          .every(item => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester)))
+      );
+  
+      let isSomeProgramSelected = filteredPrograms.some(program =>
+        (selectedProgram[campus] || []).includes(program)
+      );
+  
+      let isSomeSemesterSelected = filteredPrograms.some(program =>
+        (selectedSemester[`${campus}-${program}`] || []).length > 0
+      );
+  
+      let isAnyProgramOrSemesterSelected = filteredPrograms.some(program =>
+        (selectedProgram[campus] || []).includes(program) ||
+        (selectedSemester[`${campus}-${program}`] || []).length > 0
+      );
+  
+      let isCampusSelected = isAnyProgramOrSemesterSelected && areAllSemestersSelected && isAllProgramsSelected;
+      let isSomeProgramIndeterminate = !isAllProgramsSelected && isSomeProgramSelected;
+      let isSomeSemesterIndeterminate = !areAllSemestersSelected && isSomeSemesterSelected;
+  
+      if (!isAnyProgramOrSemesterSelected || (isSomeProgramIndeterminate && !isSomeSemesterSelected)) {
+        isCampusSelected = false;
+        isSomeProgramIndeterminate = false;
+        isSomeSemesterIndeterminate = false;
+      }
+  
       if (filteredPrograms.length === 0) {
-        return null; 
+        return null;
       }
   
       return (
@@ -376,7 +422,8 @@ export default function Registration() {
           >
             <Box display="flex" alignItems="center">
               <Checkbox
-                checked={selectedCampus.includes(campus)}
+                checked={isCampusSelected}
+                indeterminate={isSomeProgramIndeterminate || isSomeSemesterIndeterminate}
                 onChange={handleCampusCheckboxChange}
                 value={campus}
               />
@@ -389,8 +436,13 @@ export default function Registration() {
                 .filter((item) => item.campus === campus && item.program === program)
                 .filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester));
   
+              let isProgramSelected = (selectedProgram[campus] || []).includes(program);
+              let areAllSemestersSelected = filteredSemesters.length > 0 && filteredSemesters.every(item =>
+                (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))
+              );
+  
               if (filteredSemesters.length === 0) {
-                return null; 
+                return null;
               }
   
               return (
@@ -402,7 +454,10 @@ export default function Registration() {
                   >
                     <Box display="flex" alignItems="center">
                       <Checkbox
-                        checked={selectedProgram[campus]?.includes(program) || false}
+                        checked={areAllSemestersSelected}
+                        indeterminate={!areAllSemestersSelected && filteredSemesters.some(item =>
+                          (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))
+                        )}
                         onChange={(event) => handleProgramCheckboxChange(campus, program, event)}
                         value={program}
                       />
@@ -410,16 +465,14 @@ export default function Registration() {
                     </Box>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <FormControl fullWidth margin="normal">
+                    <FormControl className="mx-6" fullWidth margin="normal">
                       <Box display="flex" flexDirection="column">
                         <h4>Semesters</h4>
                         <Box>
                           {filteredSemesters.map((item, semesterIndex) => (
                             <Box key={semesterIndex} display="flex" alignItems="center">
                               <Checkbox
-                                checked={
-                                  selectedSemester[`${campus}-${program}`]?.includes(String(item.semester)) || false
-                                }
+                                checked={(selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))}
                                 onChange={(event) =>
                                   handleSemesterCheckboxChange(campus, program, String(item.semester), event)
                                 }
@@ -438,11 +491,12 @@ export default function Registration() {
           </AccordionDetails>
         </Accordion>
       );
-    }).filter(item => item !== null); 
+    }).filter(item => item !== null);
   };
+
   
-
-
+  
+ 
   const applyFilters = () => {
     const filteredData = campusData.filter((item) =>
       (filterCampus.length === 0 || filterCampus.includes(item.campus)) &&
@@ -470,8 +524,6 @@ export default function Registration() {
     setSelectedSemester(selectedSemesters);
   
   };
-  
-
 
   return (
     <>
