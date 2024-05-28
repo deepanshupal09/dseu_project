@@ -373,7 +373,7 @@ export default function Home() {
                   className="rounded-full object-cover"
                   style={{ width: 50, height: 50, borderRadius: "50%" }}
                   alt="user"
-                  src={`https://exam.dseu.ac.in/${user?.photo}?${Date.now()}`}
+                  src={`https://exam-vm.dseu.ac.in/${user?.photo}?${Date.now()}`}
                 />
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">

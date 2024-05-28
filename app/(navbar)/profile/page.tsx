@@ -72,20 +72,22 @@ export default function Home() {
 
   useEffect(() => {
     // if(token!=="") {
-      if (user?.campus !== undefined) {
-        fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
-          
-          setExamControl(res.exam_control)
-        }).catch((error) => {
-          
+    if (user?.campus !== undefined) {
+      fetchExamControl(
+        token,
+        user?.campus,
+        user?.program,
+        user?.semester.toString()
+      )
+        .then((res) => {
+          setExamControl(res.exam_control);
         })
-      }
+        .catch((error) => {});
+    }
     // }
-  },[original])
-
+  }, [original]);
 
   const { data } = useData();
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -104,41 +106,37 @@ export default function Home() {
     try {
       if (user) {
         const response = await updateDetailsUser(user, token);
-        
+
         setMessage("Successfully updated");
         setOpen(true);
         setConfirmSumbission(false);
         setOriginal(null);
         setUser(null);
-        setEdit(false)
+        setEdit(false);
         setReload(!reload);
       }
     } catch (error) {
       setMessage("Something went wrong! Please try again later.");
-      
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     getAuth().then((auth) => {
       if (auth) {
         setToken(auth.value);
         const temp = parseJwt(auth?.value as string);
         fetchUserByRollno(temp.user.rollno, auth.value)
           .then((res) => {
-            
             setUser(res[0]);
             setOriginal(res[0]);
             // setPhotoPath(res.)
           })
-          .catch((error: any) => {
-            
-          });
-        // 
+          .catch((error: any) => {});
+        //
         // setUser(temp.user);
         // setPhotoPath(temp.user.photo);
       }
     });
-  },[reload])
+  }, [reload]);
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
@@ -176,15 +174,12 @@ export default function Home() {
         const temp = parseJwt(auth?.value as string);
         fetchUserByRollno(temp.user.rollno, auth.value)
           .then((res) => {
-            
             setUser(res[0]);
             setOriginal(res[0]);
             // setPhotoPath(res.)
           })
-          .catch((error: any) => {
-            
-          });
-        // 
+          .catch((error: any) => {});
+        //
         // setUser(temp.user);
         // setPhotoPath(temp.user.photo);
       }
@@ -194,16 +189,26 @@ export default function Home() {
   return (
     <div className="max-sm:mt-[120px] mt-[120px]">
       <div className="sm:pl-[300px] sm:mt-[100px] flex flex-col  items-center mt-[140px] w-full px-2 sm:pr-10">
-        {user  && data && (
+        {user && data && (
           <div>
-            <form onSubmit={(e)=>{e.preventDefault(); setConfirmSumbission(true)}} className="flex w-[70vw] max-sm:w-screen flex-col items-center ">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setConfirmSumbission(true);
+              }}
+              className="flex w-[70vw] max-sm:w-screen flex-col items-center "
+            >
               <div className="mt-6 w-full">
                 <div className="bg-dseublue py-2 px-6 rounded shadow w-full my-6 flex flex-col sm:flex-row items-center justify-between text-white">
                   <img
                     className="rounded-full object-cover"
                     style={{ width: 50, height: 50, borderRadius: "50%" }}
                     alt="user"
-                    src={"https://exam.dseu.ac.in/" + user?.photo+`?${Date.now()}`}
+                    src={
+                      "https://exam-vm.dseu.ac.in/" +
+                      user?.photo +
+                      `?${Date.now()}`
+                    }
                     key={user?.rollno}
                   />
                   <div>
@@ -462,14 +467,16 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {Object.keys(data[user.campus])?.map((programType) => (
-                                  <MenuItem
-                                    key={programType}
-                                    value={programType}
-                                  >
-                                    {programType}
-                                  </MenuItem>
-                                ))}
+                                {Object.keys(data[user.campus])?.map(
+                                  (programType) => (
+                                    <MenuItem
+                                      key={programType}
+                                      value={programType}
+                                    >
+                                      {programType}
+                                    </MenuItem>
+                                  )
+                                )}
                               </Select>
                             ) : (
                               <span>{user?.program_type}</span>
@@ -492,11 +499,14 @@ export default function Home() {
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {data[user.campus][user.program_type] && Object.keys(data[user.campus][user.program_type])?.map((program: string) => (
-                                  <MenuItem key={program} value={program}>
-                                    {program}
-                                  </MenuItem>
-                                ))}
+                                {data[user.campus][user.program_type] &&
+                                  Object.keys(
+                                    data[user.campus][user.program_type]
+                                  )?.map((program: string) => (
+                                    <MenuItem key={program} value={program}>
+                                      {program}
+                                    </MenuItem>
+                                  ))}
                               </Select>
                             ) : (
                               <span>{user?.program}</span>
@@ -535,18 +545,27 @@ export default function Home() {
                                 className="mt-2"
                                 size="small"
                                 value={user?.semester.toString()}
-                                onChange={(e)=>{
-                                  setUser({...user, semester: parseInt(e.target.value)})
+                                onChange={(e) => {
+                                  setUser({
+                                    ...user,
+                                    semester: parseInt(e.target.value),
+                                  });
                                 }}
                                 name="Semester"
                                 sx={{ width: 150 }}
                                 variant="filled"
                               >
-                                {data[user.campus][user.program_type][user.program] && data[user.campus][user.program_type][user.program]?.map((semester: string, key) => (
-                                  <MenuItem key={key} value={semester}>
-                                    {semester}
-                                  </MenuItem>
-                                ))}
+                                {data[user.campus][user.program_type] &&
+                                  data[user.campus][user.program_type][
+                                    user.program
+                                  ] &&
+                                  data[user.campus][user.program_type][
+                                    user.program
+                                  ]?.map((semester: string, key) => (
+                                    <MenuItem key={key} value={semester}>
+                                      {semester}
+                                    </MenuItem>
+                                  ))}
                               </Select>
                             ) : (
                               <span>{user?.semester}</span>

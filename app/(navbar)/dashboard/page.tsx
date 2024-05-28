@@ -91,7 +91,7 @@ export default function Home() {
           </h1>
           <ul className="text-white">
             {examControl?
-            <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are live now!</li>:<li>Exam registrations for B.Tech and M.Tech Courses are closed now.</li>}
+            <li className="my-6">Exam registrations are live now!</li>:<li>Exam registrations are closed now.</li>}
             {/* <li className="my-6">Exam registrations for B.Tech and M.Tech Courses are closed now.</li> */}
             {/* <li  className="my-6">Examination Registrations about to close.</li>
             <li className="my-6">Course Details about to open.</li>
