@@ -621,6 +621,6 @@ function Home() {
     </div>
   );
 }
-export {deepEqual}
+
 
 export default Home;
