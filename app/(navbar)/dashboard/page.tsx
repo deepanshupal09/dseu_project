@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
-import { fetchExamControl, fetchExamRegisterations } from "../../actions/api";
+import { fetchExamControl, fetchExamRegisterations, fetchUserByRollno } from "../../actions/api";
 import { StudentDetails } from "../profile/page";
 
 export default function Home() {
@@ -38,6 +38,20 @@ export default function Home() {
       }
     }
   },[token])
+
+  useEffect(() => {
+    getAuth().then((auth) => {
+      if (auth) {
+        setToken(auth.value);
+        const temp = parseJwt(auth?.value as string);
+        fetchUserByRollno(temp.user.rollno, auth.value)
+          .then((res) => {
+            setUser(res[0]);
+          })
+          .catch((error: any) => {});
+      }
+    });
+  }, []);
 
 
 

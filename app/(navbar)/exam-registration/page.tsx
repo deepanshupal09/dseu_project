@@ -36,6 +36,7 @@ import {
   fetchCoursesByRollNo,
   fetchExamControl,
   fetchExamRegisterations,
+  fetchUserByRollno,
 } from "../../actions/api";
 import { useRouter } from "next/navigation";
 import { StudentDetails } from "../profile/page";
@@ -66,11 +67,8 @@ interface Backlog {
 }
 
 export default function Home() {
-  const [selected, setSelected] = useState(0);
   const [previewSelection, setPreviewSelection] = useState(false);
-  const options = ["Dashboard", "Profile", "Exam Registration", "Help"];
   const [user, setUser] = useState<StudentDetails | null>(null);
-  const [profile, setProfile] = useState<ProfDetails|null>(null);
   const [warning , setWarning] = useState<boolean>(false);
   const [token, setToken] = useState("");
   useEffect(() => {
@@ -78,13 +76,6 @@ export default function Home() {
       const temp = parseJwt(auth?.value);
       setToken(auth?.value);
       setUser(temp.user);
-      setProfile({
-        username: temp.user.name,
-        rollNumber: temp.user.rollno,
-        semester: temp.user.semester,
-        campusName: temp.user.campus,
-        programName: temp.user.program,
-      });
     });
   }, []);
 
@@ -92,6 +83,20 @@ export default function Home() {
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
   const [examControl, setExamControl] = useState<Boolean>(true);
+
+  useEffect(() => {
+    getAuth().then((auth) => {
+      if (auth) {
+        setToken(auth.value);
+        const temp = parseJwt(auth?.value as string);
+        fetchUserByRollno(temp.user.rollno, auth.value)
+          .then((res) => {
+            setUser(res[0]);
+          })
+          .catch((error: any) => {});
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if(token!=="") {
@@ -303,9 +308,9 @@ export default function Home() {
 
   const generateSemesters = () => {
     const semesters: string[] = [];
-    if (profile) {
-      for (let i = 1; i < profile.semester; i++) {
-        if (profile.semester % 2 === 0) {
+    if (user) {
+      for (let i = 1; i < user.semester; i++) {
+        if (user.semester % 2 === 0) {
           if (i % 2 === 0) {
             semesters.push(i.toString());
           }
@@ -377,13 +382,13 @@ export default function Home() {
                 />
                 <div className="ml-4">
                   <Typography variant="h6" component="h2">
-                    {profile?.username}
+                    {user?.name}
                   </Typography>
                   <Typography variant="body1" component="p">
-                    Roll Number: {profile?.rollNumber}
+                    Roll Number: {user?.rollno}
                   </Typography>
                   <Typography variant="body1" component="p">
-                    Semester: {profile?.semester}
+                    Semester: {user?.semester}
                   </Typography>
                 </div>
               </div>
@@ -391,10 +396,10 @@ export default function Home() {
             <Grid item xs={12} sm={6} md={5} lg={4}>
               <div className="text-right">
                 <Typography variant="body1" component="p">
-                  Campus: {profile?.campusName}
+                  Campus: {user?.campus}
                 </Typography>
                 <Typography variant="body1" component="p">
-                  Program: {profile?.programName}
+                  Program: {user?.program}
                 </Typography>
               </div>
             </Grid>
