@@ -575,7 +575,7 @@ const updateExamControl = (req: Request, res: Response) => {
   try{
     const users =req.body;
     updateTheExam(users).then((results)=>{
-      res.status(200).send("successfully updated!");
+      res.status(200).send({message: "successfully updated!"});
     }).catch((error)=>{
       console.error('Error in updateMultipleUsers: ', error);
       res.status(500).send({message: "internal server error"});
