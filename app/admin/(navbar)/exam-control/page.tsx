@@ -480,13 +480,15 @@ export default function Registration() {
   return (
     <>
       <div className="bg-[#dfdede]">
+        <Head username={user?.campus} />
+        <Nav />
       </div>
       <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         <div className="bg-dseublue py-2 px-2 sm:mx-8 rounded shadow mt-28">
           <h1 className="text-2xl text-white font-bold text-center">Exam Control</h1>
         </div>
         <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
-          <div className="flex mb-2 space-x-3" >
+          <Box display="flex" justifyContent="space-between" mb={2}>
             <FormControl fullWidth>
               <InputLabel>Campus</InputLabel>
               <Select
@@ -540,7 +542,7 @@ export default function Registration() {
                 ))}
               </Select>
             </FormControl>
-          </div>
+          </Box>
           <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
             {filterCampus.map((campus, index) => (
               <Chip key={index} label={campus} onDelete={() => handleTagDelete("campus", campus)} />
