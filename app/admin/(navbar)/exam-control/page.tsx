@@ -488,7 +488,7 @@ export default function Registration() {
           <h1 className="text-2xl text-white font-bold text-center">Exam Control</h1>
         </div>
         <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
-          <Box display="flex" justifyContent="space-between" mb={2}>
+          <div className="flex mb-2 space-x-3" >
             <FormControl fullWidth>
               <InputLabel>Campus</InputLabel>
               <Select
@@ -542,7 +542,7 @@ export default function Registration() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
+          </div>
           <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
             {filterCampus.map((campus, index) => (
               <Chip key={index} label={campus} onDelete={() => handleTagDelete("campus", campus)} />
