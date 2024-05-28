@@ -1,4 +1,4 @@
-import React, { useState, MouseEventHandler } from "react";
+import React, { useState, MouseEventHandler, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -53,6 +53,19 @@ export default function UserDetailsPage({
     onNext();
   };
   const { data } = useData();
+
+  useEffect(()=>{
+    setprogramtype("")
+    setprogram("")
+    setsemester("")
+  },[college])
+  useEffect(()=>{
+    setprogram("")
+    setsemester("")
+  },[programtype])
+  useEffect(()=>{
+    setsemester("")
+  },[program])
 
   return (
     <form
@@ -116,7 +129,7 @@ export default function UserDetailsPage({
           <div className="w-[100%]">
             <Autocomplete
               options={
-                college && programtype && college !== "" && programtype !== ""
+                data[college] && data[college][programtype] && college && programtype && college !== "" && programtype !== ""
                   ? Object.keys(data[college][programtype])
                   : []
               }
@@ -138,6 +151,8 @@ export default function UserDetailsPage({
           <div className="w-[100%]">
             <Autocomplete
               options={
+                data[college] && data[college][programtype] &&
+                data[college][programtype][program] &&
                 college &&
                 program &&
                 programtype &&
