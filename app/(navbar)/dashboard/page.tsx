@@ -27,17 +27,18 @@ export default function Home() {
   })
 
   useEffect(() => {
+    console.log("token", token)
     if(token!=="") {
       if (user?.campus !== undefined) {
         fetchExamControl(token, user?.campus, user?.program, user?.semester.toString()).then((res)=>{
-          
           setExamControl(res.exam_control)
+          console.log(res)
         }).catch((error) => {
           
         })
       }
     }
-  },[token])
+  },[user])
 
   useEffect(() => {
     getAuth().then((auth) => {
