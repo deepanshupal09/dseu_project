@@ -350,7 +350,7 @@ export async function fetchCourseDetailsByCourseCode(token:string, coursedetails
 }
 export async function fetchDetailsByCampus(token:string){
   try{
-    const response = await fetch ("https://admin-exam.dseu.ac.in/api/admin/fetchCampusDetails",{
+    const response = await fetch ("https://exam-vm-admin.dseu.ac.in/api/admin/fetchCampusDetails",{
       method : "GET",
       mode : "cors",
       cache: "no-cache",
