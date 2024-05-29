@@ -3,7 +3,7 @@
 import { StudentDetails } from "../(navbar)/profile/page";
 
 export async function signup(body: any) {
-    const res = await fetch("${/signup", {
+    const res = await fetch(`${process.env.BACKEND_URL}/signup`, {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -21,7 +21,7 @@ export async function signup(body: any) {
 }
 
 export async function addExamRegisterations(body: any, token: string) {
-    const res = await fetch("${/api/data/addExamRegisterations", {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/data/addExamRegisterations`, {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -42,7 +42,7 @@ export async function addExamRegisterations(body: any, token: string) {
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
     try {
-        const res = await fetch("${/api/data/fetchCoursesByRollNo", {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/data/fetchCoursesByRollNo`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
