@@ -402,7 +402,7 @@ export function insertTheUsers(users: any): Promise<any> {
 }
 
 export function insertTheExamRegisterations(registeration: any): Promise<any> {
-    console.log("hello");
+    console.log("hello: ", registeration);
     return new Promise((resolve, reject) => {
         insertExamRegisterations(registeration)
             .then((result) => {
