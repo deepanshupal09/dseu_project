@@ -556,10 +556,3 @@ export async function fetchUpdateExamControl(body: { campus: string; program: st
         throw error;
     }
 }
-
-    const data = await response.json(); 
-    return data;
-  } catch (error) {
-    throw error; 
-  }
-}
