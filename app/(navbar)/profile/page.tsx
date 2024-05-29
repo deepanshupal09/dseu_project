@@ -219,7 +219,7 @@ export default function Home() {
                                             borderRadius: "50%",
                                         }}
                                         alt="user"
-                                        src={"https://exam-vm.dseu.ac.in/" + user?.photo + `?${Date.now()}`}
+                                        src={"https://exam.dseu.ac.in/" + user?.photo + `?${Date.now()}`}
                                         key={user?.rollno}
                                     />
                                     <div>
