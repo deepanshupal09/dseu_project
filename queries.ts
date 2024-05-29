@@ -108,7 +108,7 @@ export const fetchSpecialization: string = `
 
 
 export const fetchExamRegistrationByRollNo: string = `
-    SELECT er.course_code, c.course_name, er.last_modified, sc.course_type
+    SELECT er.course_code, c.course_name, er.last_modified, sc.course_type, u.
     FROM exam_registeration er 
     INNER JOIN courses c ON er.course_code = c.course_code 
     INNER JOIN users u ON er.rollno = u.rollno

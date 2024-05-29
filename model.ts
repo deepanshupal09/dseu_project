@@ -348,20 +348,69 @@ export function insertUsers(
     });
 }
 
+// export function insertExamRegisterations(registeration: {
+//     rollno: string;
+//     course_code: Array<string>;
+// }): Promise<QueryResult<any>> {
+//     return new Promise((resolve, reject) => {
+//         const last_modified: string = new Date().toString();
+
+//         //last modified format = Fri May 03 2024 21:52:13 GMT+0530 (India Standard Time)
+//         const query = `
+//       INSERT INTO exam_registeration (rollno, course_code, last_modified)
+//       VALUES ${registeration.course_code
+//           ?.map((courseCode) => {
+//               return `('${registeration.rollno}', '${courseCode}', '${last_modified}')`;
+//           })
+//           .join(", ")}
+//     `;
+//         console.log("query: ",query);
+//         pool.query(query, (error, results) => {
+//             if (error) {
+//                 reject(error);
+//             } else {
+//                 resolve(results);
+//             }
+//         });
+//     });
+// }
+
 export function insertExamRegisterations(registeration: {
     rollno: string;
+    semester: number;
     course_code: Array<string>;
 }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        const last_modified: string = new Date().toString();
+
+        const last_modified: Date = new Date();
+
+        const endYear: number = last_modified.getFullYear();
+        let startYear: number;
+        let end:number;
+        let academic_year: string;
+
+        if (registeration.semester % 2 == 0) {
+            startYear = endYear - 1;
+            academic_year = `${startYear}-${endYear}`;
+        } else {
+            startYear = endYear;
+            end= startYear+1;
+            academic_year = `${startYear}-${end}`;
+        }
+
+        console.log("academic year: ",academic_year);
+
+
         const query = `
-      INSERT INTO exam_registeration (rollno, course_code, last_modified)
-      VALUES ${registeration.course_code
-          .map((courseCode) => {
-              return `('${registeration.rollno}', '${courseCode}', '${last_modified}')`;
-          })
-          .join(", ")}
-    `;
+        INSERT INTO exam_registeration (rollno, course_code, last_modified, academic_year)
+        VALUES ${registeration.course_code
+            .map((courseCode) => {
+                return `('${registeration.rollno}', '${courseCode}', '${last_modified}', '${academic_year}')`;
+            })
+            .join(", ")}
+        `;
+        console.log("query: ",query);
+
         pool.query(query, (error, results) => {
             if (error) {
                 reject(error);
@@ -371,6 +420,7 @@ export function insertExamRegisterations(registeration: {
         });
     });
 }
+
 
 export function fetchProgram( program_type: string) : Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
