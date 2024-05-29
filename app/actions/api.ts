@@ -3,7 +3,7 @@
 import { StudentDetails } from "../(navbar)/profile/page";
 
 export async function signup(body: any) {
-    const res = await fetch("https://exam-vm-admin.dseu.ac.in/signup", {
+    const res = await fetch("${/signup", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -21,7 +21,7 @@ export async function signup(body: any) {
 }
 
 export async function addExamRegisterations(body: any, token: string) {
-    const res = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/addExamRegisterations", {
+    const res = await fetch("${/api/data/addExamRegisterations", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -42,7 +42,7 @@ export async function addExamRegisterations(body: any, token: string) {
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
     try {
-        const res = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/fetchCoursesByRollNo", {
+        const res = await fetch("${/api/data/fetchCoursesByRollNo", {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -63,7 +63,7 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
 
 export async function login(headers: {}) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/login", {
+        const response = await fetch(`${process.env.BACKEND_URL}/login`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -86,7 +86,7 @@ export async function login(headers: {}) {
 
 export async function fetchExamRegisterations(rollno: string, token: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/fetchExamRegistrationByRollNo", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamRegistrationByRollNo`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -110,7 +110,7 @@ export async function fetchExamRegisterations(rollno: string, token: string) {
 
 export async function sendEmail(rollno: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/sendEmail", {
+        const response = await fetch(`${process.env.BACKEND_URL}/sendEmail`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -134,7 +134,7 @@ export async function sendEmail(rollno: string) {
 
 export async function verifyOtpAndPassword(rollno: string, otp: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/verifyOtpAndPassword", {
+        const response = await fetch(`${process.env.BACKEND_URL}/verifyOtpAndPassword`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -158,7 +158,7 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
 }
 export async function updatePasswordByOtp(rollno: string, password: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/updatePasswordByOtp", {
+        const response = await fetch(`${process.env.BACKEND_URL}/updatePasswordByOtp`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -183,7 +183,7 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
 
 export async function loginAdmin(email: string, password: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/loginByEmailId", {
+        const response = await fetch(`${process.env.BACKEND_URL}/loginByEmailId`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -208,7 +208,7 @@ export async function loginAdmin(email: string, password: string) {
 
 export async function fetchExamRegistrationByProgramAndSemester(token: string, campus: string, program_type: string, program: string, semester: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/fetchExamRegistrationByProgramAndSemester", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByProgramAndSemester`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -236,7 +236,7 @@ export async function fetchExamRegistrationByProgramAndSemester(token: string, c
 export async function fetchCoursesBySemester(token: string, campus: string, program: string, semester: string) {
     try {
         //
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/fetchCoursesBySemester", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesBySemester`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -262,7 +262,7 @@ export async function fetchCoursesBySemester(token: string, campus: string, prog
 export async function fetchExamRegistrationByCourseCode(token: string, campus: string, course_code: string) {
     try {
         //
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/fetchExamRegistrationByCourseCode", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByCourseCode`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -287,7 +287,7 @@ export async function fetchExamRegistrationByCourseCode(token: string, campus: s
 
 export async function fetchCourseDetailsByCourseCode(token: string, coursedetails: { campus: string; program: string; coursecode: string[] }) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/fetchCourseDetailsByCourseCode", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCourseDetailsByCourseCode`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -310,7 +310,7 @@ export async function fetchCourseDetailsByCourseCode(token: string, coursedetail
 }
 export async function fetchDetailsByCampus(token: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/fetchCampusDetails", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCampusDetails`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -353,7 +353,7 @@ export async function updateDetails(user: StudentDetails, token: string) {
             year_of_admission: user.year_of_admission,
             date_of_birth: user.date_of_birth,
         };
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/updateDetailsByRollno", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateDetailsByRollno`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -397,7 +397,7 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
             year_of_admission: user.year_of_admission,
             date_of_birth: user.date_of_birth,
         };
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/updateDetailsByRollno", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/data/updateDetailsByRollno`, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -421,7 +421,7 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
 
 export async function fetchExamControl(token: string, campus: string, program: string, semester: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/fetchExamControl", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamControl`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -447,7 +447,7 @@ export async function fetchExamControl(token: string, campus: string, program: s
 
 export async function getUserByRollNo(rollno: string, token: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/getUserByRollno", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/getUserByRollno`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -470,7 +470,7 @@ export async function getUserByRollNo(rollno: string, token: string) {
 }
 export async function fetchUserByRollno(rollno: string, token: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/data/getUserByRollno", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/data/getUserByRollno`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -493,7 +493,7 @@ export async function fetchUserByRollno(rollno: string, token: string) {
 }
 export async function fetchCampusDetailsGlobal() {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/fetchCampusDetails", {
+        const response = await fetch(`${process.env.BACKEND_URL}/fetchCampusDetails`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -515,7 +515,7 @@ export async function fetchCampusDetailsGlobal() {
 
 export async function deleteExamRegistration(rollno: string, token: string) {
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/deleteExamRegistrationByRollno", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/deleteExamRegistrationByRollno`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -539,7 +539,7 @@ export async function deleteExamRegistration(rollno: string, token: string) {
 export async function fetchUpdateExamControl(body: { campus: string; program: string; semester: number; exam_control: boolean }[], token: string) {
     console.log(body);
     try {
-        const response = await fetch("https://exam-vm-admin.dseu.ac.in/api/admin/updateExamControl", {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateExamControl`, {
             method: "POST",
             mode: "cors",
             cache: "no-cache",

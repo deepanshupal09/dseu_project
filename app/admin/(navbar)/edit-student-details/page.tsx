@@ -208,7 +208,7 @@ function Home() {
                 className="rounded-full object-cover"
                 style={{ width: 50, height: 50, borderRadius: "50%" }}
                 alt="user"
-                src={"https://exam-vm.dseu.ac.in/" + user?.photo}
+                src={`${process.env.NEXT_PUBLIC_PHOTO_URL}/` + user?.photo}
                 key={user?.rollno}
               />
 

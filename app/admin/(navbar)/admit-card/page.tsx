@@ -185,7 +185,7 @@ export default function Registration() {
             rollno: student.rollno,
             dob: student.dob,
             papers: mapCourseCodesToPapers(student.course_codes, courseData),
-            photo: "https://exam-vm.dseu.ac.in" + student.photo + "?" + Date.now(),
+            photo: `${process.env.NEXT_PUBLIC_PHOTO_URL}/` + student.photo + "?" + Date.now(),
           }));
 
           

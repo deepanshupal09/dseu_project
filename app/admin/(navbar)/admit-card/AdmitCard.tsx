@@ -47,7 +47,7 @@ const dummyUser: User[] = [
     name: "John Doe",
     rollno: "CS001",
     dob: "1990-01-01",
-    photo: "https://exam-vm.dseu.ac.in/image/41521001_photo.jpg",
+    photo: `${process.env.NEXT_PUBLIC_PHOTO_URL}/image/41521001_photo.jpg`,
     papers: [
       {
         sno: 1,
@@ -128,7 +128,7 @@ const dummyUser: User[] = [
     name: "John Doe",
     rollno: "CS001",
     dob: "1990-01-01",
-    photo: "https://exam-vm.dseu.ac.in/image/41521001_photo.jpg",
+    photo: `${process.env.NEXT_PUBLIC_PHOTO_URL}/image/41521001_photo.jpg`,
     papers: [
       {
         sno: 1,
