@@ -100,17 +100,27 @@ export default function Home() {
 
     useEffect(() => {
         if (user && data) {
+            const program_type = Object.keys(data[user.campus])[0];
+            const program = Object.keys(data[user.campus][program_type])[0];
+            const semester = parseInt(data[user.campus][program_type][program][0]);
+
             setUser({
                 ...user,
-                program_type: Object.keys(data[user.campus])[0],
+                program_type: program_type,
+                program: program,
+                semester: semester,
             });
         }
     }, [user?.campus]);
     useEffect(() => {
         if (user && data) {
+            const program = Object.keys(data[user.campus][user.program_type])[0];
+            const semester = parseInt(data[user.campus][user.program_type][program][0]);
+
             setUser({
                 ...user,
-                program: Object.keys(data[user.campus][user.program_type])[0],
+                program: program,
+                semester: semester,
             });
         }
     }, [user?.program_type]);
