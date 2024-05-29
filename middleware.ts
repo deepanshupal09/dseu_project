@@ -27,6 +27,11 @@ export default async function middleware(req: NextRequest) {
   //   return NextResponse.redirect(new URL("/", req.nextUrl));
   // }
 
+  // console.log("first",adminCookie)
+
+  if (path.startsWith("/admin/exam-control") && adminCookie.user.role !== "super") {
+    return NextResponse.redirect(new URL("/",req.nextUrl)) 
+  }
 
   if ((path === "/admin" || path === "/") && adminCookie) {
     return NextResponse.redirect(new URL("/admin/dashboard",req.nextUrl)) 

@@ -2,14 +2,31 @@
 import React, { useState, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { MenuOpen } from "@mui/icons-material";
+import { getAuthAdmin } from "@/app/actions/cookie";
+import { User } from "../query/page";
+import { parseJwt } from "@/app/actions/utils";
 
 export default function Nav() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeLink, setActiveLink] = useState("");
-    const options = ["Dashboard", "Registration Chart", "Admit Card", "Query", "Edit Student Details", "Exam Control"];
+    const [options, setOptions] = useState(["Dashboard", "Registration Chart", "Admit Card", "Query", "Edit Student Details"]);
     useEffect(() => {
         setActiveLink(window.location.pathname);
     }, []);
+    // const [user, setUser] = useState<User|null>(null);
+
+    useEffect(() => {
+        getAuthAdmin().then(async (t: any) => {
+          if (t) {
+            const data = await parseJwt(t.value);
+            // console.log("data: ", data)
+            if (data?.user?.role==='super') {
+                setOptions([...options,"Exam Control"])
+            }
+          }
+        });
+      }, []);
+
 
     return (
         <>
