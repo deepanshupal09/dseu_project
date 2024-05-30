@@ -56,6 +56,40 @@ function Home() {
   const [confirmSubmission, setConfirmSumbission] = useState(false);
   const [confirmDeletion, setConfirmDeletion] = useState(false);
   const { data } = useData();
+  useEffect(() => {
+    if (user && data) {
+        const program_type = Object.keys(data[user.campus])[0];
+        const program = Object.keys(data[user.campus][program_type])[0];
+        const semester = parseInt(data[user.campus][program_type][program][0]);
+
+        setUser({
+            ...user,
+            program_type: program_type,
+            program: program,
+            semester: semester,
+        });
+    }
+}, [user?.campus]);
+useEffect(() => {
+    if (user && data) {
+        const program = Object.keys(data[user.campus][user.program_type])[0];
+        const semester = parseInt(data[user.campus][user.program_type][program][0]);
+
+        setUser({
+            ...user,
+            program: program,
+            semester: semester,
+        });
+    }
+}, [user?.program_type]);
+useEffect(() => {
+    if (user && data) {
+        setUser({
+            ...user,
+            semester: parseInt(data[user.campus][user.program_type][user.program][0]),
+        });
+    }
+}, [user?.program]);
   //
 
   // useEffect(() => {
@@ -178,7 +212,7 @@ function Home() {
   return (
     <div className="sm:pl-[300px] sm:mt-[100px] flex items-center flex-col mt-[140px] w-full px-2 sm:pr-10">
       <div>
-        <form
+        <div
           // onSubmit={(e) => {
           //   e.preventDefault();
           //   searchRollNo(rollno);
@@ -197,7 +231,7 @@ function Home() {
           {/* <Button type="submit" variant="contained">
             Search
           </Button> */}
-        </form>
+        </div>
       </div>
       {/* {console.log("data", data)} */}
       {user && data && (
