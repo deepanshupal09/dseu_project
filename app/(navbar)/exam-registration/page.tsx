@@ -414,7 +414,7 @@ export default function Home() {
             <>
                         <Typography className="text-center" variant="body1">
               <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective,
-              OE - Open Elective
+              OE - Open Elective, EC - Elective Course  
             </Typography>
               <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
                 <Table sx={{ "& td, & th": { padding: "8px" } }}>
