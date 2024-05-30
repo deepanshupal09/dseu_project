@@ -562,7 +562,7 @@ export default function Home() {
                     size="large"
                     // style={{ backgroundColor: "#0066ff", color: "#ffffff" }}
                   >
-                    REGISTER
+                    PREVIEW AND REGISTER 
                   </Button>
                 </div>
               </>
