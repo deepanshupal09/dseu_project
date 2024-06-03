@@ -537,9 +537,10 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
         // Send the email
         const mailOptions = {
             from: process.env.SMTP_MAIL,
-            to: emailString,
+            // to: 'acoe@dseu.ac.in',
+            bcc: emailString,
             subject: 'Exam Registration',
-            text: `This is a testing email. 2\n Please ignore this! 2`
+            text: `This is a testing email. 5\n Please ignore this! 5`
         };
         return new Promise((resolve, reject)=>{
             transporter.sendMail(mailOptions, (error, info) => {
