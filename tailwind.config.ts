@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   content: [
@@ -16,11 +17,23 @@ const config: Config = {
       fontFamily: {
         roboto: ["Roboto Slab", "serif"]
       },
-      colors:{
+      colors: {
         dseublue: '#0172BA',
+      },
+      transitionProperty: {
+        'transition-behavior': 'allow-discrete',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function({ addUtilities }) {
+      const newUtilities = {
+        '.transition-behavior-allow-discrete': {
+          'transition-behavior': 'allow-discrete',
+        },
+      };
+    }),
+  ],
 };
+
 export default config;
