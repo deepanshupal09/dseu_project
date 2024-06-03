@@ -561,6 +561,8 @@ export function fetchCourseDetails( courseDetails:{
     });
 }
 
+
+
 export function updateMultipleDetails (
     rollno: string,
     father: string,
@@ -595,6 +597,24 @@ export function updateExam (
         })
     })
 }
+
+
+export function fetchEmailID( 
+    campus:string, 
+    program:string,
+    semester:number
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchEmailQuery, [campus, program, semester], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
 
 export function fetchCampus (): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {

@@ -40,6 +40,7 @@ import {
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
 import generateOTP from "./otp_generator"
+import { transporter } from "./controller";
 
 export function handleLogin(
     rollno: string,
@@ -568,16 +569,55 @@ export function fetchTheCourseDetails(courseDetails:any): Promise<any> {
 
 export async function updateTheExam(users: Array<{ campus:string, program:string, semester:number, exam_control: boolean}>): Promise<string> {
     try {
+        let emailResults;
+        let emailid;
+        let emailArray = [];
+        let emailString;
         for (const user of users) {
             const results = await updateExam(user.campus, user.program, user.semester, user.exam_control);
-            console.log("Update results: ", results);
+            
+            if(user.exam_control === true){
+                emailResults = await fetchEmailID(user.campus, user.program, user.semester);
+                emailid = emailResults?.rows[0]?.emailid; 
+                
+                for (let i = 0; i < (emailResults.rowCount as number) ; i++) {
+                    emailArray.push(emailResults?.rows[i]?.emailid);
+                }
+            }
         }
-        return "Exam control successfully updated!";
+
+        emailString = emailArray.join(", ");
+        console.log("emailid 1: ",emailString);
+        console.log("emailid 2: ",emailResults);
+        console.log("emailid 3: ",emailArray.length);
+
+        // Send the email
+        const mailOptions = {
+            from: process.env.SMTP_MAIL,
+            to: emailString,
+            subject: 'Exam Registration',
+            text: `This is a testing email. 2\n Please ignore this! 2`
+        };
+        return new Promise((resolve, reject)=>{
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    reject('Internal Server Error!');
+                } else {
+                    console.log('Email sent successfully!');
+                    resolve('Email sent successfully!' );
+                }
+            });
+        }) 
+
     } catch (error) {
         console.error("Error updating multiple users: ", error);
         throw new Error("internal server error");
     }
 }
+
+
+
 
 // export function fetchTheExamControl(campus:string, program:string, semester:number, program_type:string): Promise<any> {
 //     return new Promise((resolve, reject) => {

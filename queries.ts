@@ -225,3 +225,10 @@ export const resetStudentRegistration: string= `
     dob=null
   WHERE rollno = $1 AND name=$2;
 `;
+
+export const fetchEmailQuery: string = `
+SELECT DISTINCT u.name ,u.emailid
+FROM users u
+JOIN semester_course sc ON sc.campus = u.campus AND sc.program = u.program AND sc.semester = u.semester 
+WHERE sc.campus =$1 AND sc.program = $2 AND sc.semester = $3;
+`;
