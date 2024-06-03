@@ -379,7 +379,7 @@ const fetchEmailIdByRollno = (req: Request, res: Response): void => {
   }
 }
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
   secure: false, // true for 465, false for other ports
@@ -574,6 +574,7 @@ const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
 const updateExamControl = (req: Request, res: Response) => {
   try{
     const users =req.body;
+    // console.log("user controller", users);
     updateTheExam(users).then((results)=>{
       res.status(200).send("successfully updated!");
     }).catch((error)=>{

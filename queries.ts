@@ -133,3 +133,10 @@ export const deleteExamRegisterationByRollno: string = `
 export const fetchExamControl: string = `
   SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;
 `;
+
+export const fetchEmailQuery: string = `
+SELECT DISTINCT u.name ,u.emailid
+FROM users u
+JOIN semester_course sc ON sc.campus = u.campus AND sc.program = u.program AND sc.semester = u.semester 
+WHERE sc.campus =$1 AND sc.program = $2 AND sc.semester = $3;
+`;
