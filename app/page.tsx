@@ -15,6 +15,7 @@ export default function Home() {
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [section, setSection] = useState(0);
   const router = useRouter();
   async function handleLogin() {
     try {
@@ -107,48 +108,81 @@ export default function Home() {
           }`}
         >
           <div
-            className={`h-[2px] fixed top-20 w-full bg-gray-300 transition-all duration-700 ease-in-out ${
-              isOpen ? "w-full" : "w-0"
+            className={`h-[1px] fixed top-20 w-full   bg-gray-300  transition-all duration-[1500ms] ease-in-out ${
+              isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           ></div>
           <div
-            className={`h-[2px] fixed bottom-20 w-full bg-gray-300 transition-all duration-700 ease-in-out ${
-              isOpen ? "w-full" : "w-0"
+            className={`h-[1px] fixed bottom-20 w-full ${section !== 0 && 'bottom-0'}  bg-gray-300  transition-all duration-[1500ms] ease-in-out ${
+              isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           ></div>
           <div
-            className={`fixed top-20 bottom-20 w-[2px] right-1/2 bg-gray-300 transition-all duration-1000 ease-in-out ${
-              startBottomAnimation ? "h-[calc(100vh-160px)]" : "h-0"
+            className={`fixed top-20 bottom-20 w-[1px] ${
+              section === 1
+                ? "right-0"
+                : section === 2
+                ? "right-full h-[100vh]"
+                : "right-1/2"
+            }   bg-gray-300 transition-all duration-1000 ease-in-out ${
+              startBottomAnimation ? section === 1
+              ? "right-0 h-[110vh]"
+              : section === 2
+              ? "right-full h-[110vh]"
+              : "right-1/2 h-[calc(100vh-160px)] ": "h-0"
             }`}
           ></div>
           <div
+            onClick={() => {
+              if (section === 1) setSection(0);
+              else setSection(1);
+            }}
             className={`fixed top-20 transition-all duration-1000 ${
               startBottomAnimation
                 ? "h-[calc(100vh-160px)] text-black"
                 : "h-0 text-white"
-            } font-roboto text-[70px] cursor-pointer h-[calc(100vh-160px)] w-1/2 flex flex-col justify-center items-center group`}
+            } font-roboto text-[70px]   cursor-pointer h-[calc(100vh-160px)]  ${
+              section === 2
+                ? "-translate-x-[100%] w-1/2"
+                : section === 1
+                ? " w-[100vw]"
+                : "w-1/2"
+            } flex flex-col justify-center items-center group`}
           >
-            <div>
+            <div >
               <div>OUR TEAM</div>
-              <div className="flex w-full justify-center ">
-                <div className="h-1 w-0 group-hover:transition-all duration-700 ease-in-out  bg-black group-hover:w-1/2"></div>
-                <div className="h-1 w-0 group-hover:transition-all duration-700 ease-in-out  bg-black group-hover:w-1/2"></div>
-              </div>
+              <div
+                className={`h-[2px]  bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out`}
+              ></div>
             </div>
+            {/* <div className={`${section===1?' ':''} transition-all duration-500`}>
+            content
+            </div> */}
           </div>
           <div
+            onClick={() => {
+              if (section === 2) setSection(0);
+              else setSection(2);
+            }}
             className={`fixed top-20 transition-all right-0 duration-1000 ${
               startBottomAnimation
                 ? "h-[calc(100vh-160px)] text-black"
                 : "h-0 text-white"
-            } font-roboto text-[70px] cursor-pointer h-[calc(100vh-160px)] w-1/2 flex flex-col justify-center items-center group`}
+            } font-roboto text-[70px]  ${
+              section === 1
+                ? "translate-x-[100%] w-1/2"
+                : section === 2
+                ? " w-[100vw]"
+                : "w-1/2"
+            } cursor-pointer h-[calc(100vh-160px)] w-1/2 flex flex-col justify-center items-center group`}
           >
             <div>
               <div>FAQ</div>
-              <div className="flex w-full justify-center ">
-                <div className="h-1 w-0 group-hover:transition-all duration-700 ease-in-out  bg-black group-hover:w-1/2"></div>
-                <div className="h-1 w-0 group-hover:transition-all duration-700 ease-in-out  bg-black group-hover:w-1/2"></div>
-              </div>
+              <div className="h-[2px] bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out"></div>
+              {/* <div className="flex w-full justify-center ">
+                <div className="h-[2px] w-0 group-hover:transition-all duration-[1500] ease-in-out  bg-black group-hover:w-1/2"></div>
+                <div className="h-[2px] w-0 group-hover:transition-all duration-[1500] ease-in-out  bg-black group-hover:w-1/2"></div>
+              </div> */}
             </div>
           </div>
         </div>
