@@ -99,7 +99,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        if (user && data) {
+        if (user && data && user !== original) {
             const program_type = Object.keys(data[user.campus])[0];
             const program = Object.keys(data[user.campus][program_type])[0];
             const semester = parseInt(data[user.campus][program_type][program][0]);
@@ -113,7 +113,7 @@ export default function Home() {
         }
     }, [user?.campus]);
     useEffect(() => {
-        if (user && data) {
+        if (user && data && user !== original) {
             const program = Object.keys(data[user.campus][user.program_type])[0];
             const semester = parseInt(data[user.campus][user.program_type][program][0]);
 
@@ -125,7 +125,7 @@ export default function Home() {
         }
     }, [user?.program_type]);
     useEffect(() => {
-        if (user && data) {
+        if (user && data && user !== original) {
             setUser({
                 ...user,
                 semester: parseInt(data[user.campus][user.program_type][user.program][0]),
