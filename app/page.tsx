@@ -119,10 +119,6 @@ export default function Home() {
                         <div>
                             <div>{section !== 2 ? <>FAQ</> : <>LOG IN</>}</div>
                             <div className="h-[2px] bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out"></div>
-                            {/* <div className="flex w-full justify-center ">
-                <div className="h-[2px] w-0 group-hover:transition-all duration-[1500] ease-in-out  bg-black group-hover:w-1/2"></div>
-                <div className="h-[2px] w-0 group-hover:transition-all duration-[1500] ease-in-out  bg-black group-hover:w-1/2"></div>
-              </div> */}
                         </div>
                     </div>
                 </div>
@@ -232,9 +228,11 @@ export default function Home() {
                     <OurTeam />
                 </div>
             )}
-            {section === 2 && <div className="my-5 mx-24   ">
-              <FAQPage />
-              </div>}
+            {section === 2 && (
+                <div className="my-5 h-screen overflow-hidden mx-24   ">
+                    <FAQPage />
+                </div>
+            )}
 
             <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
                 <CircularProgress color="inherit" />
