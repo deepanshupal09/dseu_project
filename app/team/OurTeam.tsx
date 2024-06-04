@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import {
   Container,
@@ -141,9 +141,25 @@ const devteam: TeamMember[] = [
     role: "Fullstack Developer",
     imageUrl: "images/deepanshu.png",
     hoverImageUrl: "images/deepanshu-hover.png",
-    intro:
-      "Dr. Anu Bharadwaj is an esteemed Professor specializing in computer networks and cybersecurity. With expertise in network architecture and security protocols, Dr. Bharadwaj educates the next generation of cybersecurity professionals and conducts research to address emerging threats.Dr. Anu Bharadwaj is an esteemed Professor specializing in computer networks and cybersecurity. With expertise in network architecture and security protocols, Dr. Bharadwaj educates the next generation of cybersecurity professionals and conducts research to address emerging threats.Dr. Anu Bharadwaj is an esteemed Professor specializing in computer networks and cybersecurity. With expertise in network architecture and security protocols, Dr. Bharadwaj educates the next generation of cybersecurity professionals and conducts research to address emerging threats.Dr. Anu Bharadwaj is an esteemed Professor specializing in computer networks and cybersecurity. With expertise in network architecture and security protocols, Dr. Bharadwaj educates the next generation of cybersecurity professionals and conducts research to address emerging threats.Dr. Anu Bharadwaj is an esteemed Professor specializing in computer networks and cybersecurity. With expertise in network architecture and security protocols, Dr. Bharadwaj educates the next generation of cybersecurity professionals and conducts research to address emerging threats.",
+    intro: "Deepanshu is the fullstack developer for this project, handling both frontend and backend technologies. His responsibilities include working with REST APIs, TypeScript, and PostgreSQL databases, as well as creating intuitive interfaces using Next.js, React, and TailwindCSS. He is highly skilled in various tech stacks, including PERN, MERN, and FERN, and proficient in multiple programming languages. Deepanshu achieved an AIR 45 at the ACM ICPC Chennai Regionals 2023-24. He is the general secretary of COPs, the college's programming society. Additionally, he is a 3-star coder on Codechef. Outside of his technical work, he enjoys playing video games and listening to music in his free time.",
     linkedinUrl: "https://www.linkedin.com/in/deepanshupal09/",
+  },
+  {
+    name: "Anant Bansal",
+    role: "Project Manager",
+    imageUrl: "/images/anant.png",
+    hoverImageUrl: "/images/anant-hover.png",
+    intro: "Anant Bansal contributes as the pivotal project manager and fullstack developer in this project. His responsibilities included developing engaging interfaces using Next.js, React, and TailwindCSS; contributing majorly to the backend technology, and handling SQL database in this project, and managing crucial discussions along the course. He is proficient in MERN, FERN, PERN stacks, and various programming languages. He is an Expert at Codeforces, and a 4-star coder in Codechef, demonstrating his prowess in competitive programming. He is the Vice-President at COPs (Club of Programmers), the college's programming society. He is also an ICPC Regionalist. Alongside his academic and technical pursuits, he plays video games and plays ukelele in his leisure time.",
+    linkedinUrl: "https://www.linkedin.com/in/bansalanant/",
+  },
+  {
+    name: "Shubham Vashisht",
+    role: "Frontend Developer",
+    imageUrl: "/images/shubham.png",
+    hoverImageUrl: "/images/shubham-hover.png",
+    intro:
+    "Shubham is the frontend developer in this project. His responsibilities included crafting intuitive and engaging interfaces using Vue.js, React, Next.js, and Tailwind. Shubham's proficiency extends beyond the frontend, with knowledge in backend technologies like Express and MongoDB, and experience in various programming languages. As the captain of the college volleyball team, Shubham's leadership and team skills shine through. Additionally, he is passionate about writing, creating music, and playing all kinds of sports. His entrepreneurial spirit was recognized when he was selected by top startups from the university. Shubham's diverse interests and skills make him a versatile and dynamic member of the team.",
+    linkedinUrl: "https://www.linkedin.com/in/shubham-vashisht-174722238/",
   },
   {
     name: "Duke Dhal",
@@ -153,24 +169,6 @@ const devteam: TeamMember[] = [
     intro:
       "Duke is the backend developer in this project. His responsibility in the project involved working with rest APIs in Node.js, Express.js, TypeScript, and the PostgreSQL database. Personally, Duke is proficient in multiple programming languages with experience in both frontend and backend including SQL and NoSQL based databases. With his interest inclined more towards the backend, he also has a keen interest in competitive programming leading him and his team, Maniaxe, to achieve an All India Rank of 45 in the ICPC 2023-24 Regionals. He is a music enthusiast, produced songs of genres including pop and hip hop. He also has an undying affection for Japanese comics called manga and anime as well.",
     linkedinUrl: "https://www.linkedin.com/in/duke-d-575154275/",
-  },
-  {
-    name: "Shubham Vashisht",
-    role: "Frontend Developer",
-    imageUrl: "/images/shubham.png",
-    hoverImageUrl: "/images/shubham-hover.png",
-    intro:
-      "Shubham is the frontend developer in this project. His responsibilities included crafting intuitive and engaging interfaces using Vue.js, React, Next.js, and Tailwind. Shubham's proficiency extends beyond the frontend, with knowledge in backend technologies like Express and MongoDB, and experience in various programming languages. As the captain of the college volleyball team, Shubham's leadership and team skills shine through. Additionally, he is passionate about writing, creating music, and playing all kinds of sports. His entrepreneurial spirit was recognized when he was selected by top startups from the university. Shubham's diverse interests and skills make him a versatile and dynamic member of the team.",
-    linkedinUrl: "https://www.linkedin.com/in/shubham-vashisht-174722238/",
-  },
-  {
-    name: "Anant Bansal",
-    role: "Project Manager",
-    imageUrl: "/images/anant.png",
-    hoverImageUrl: "/images/anant-hover.png",
-    intro:
-      "Dr. Sushil Kumar is a distinguished Professor specializing in advanced data analytics and machine learning. With a passion for research and teaching, Dr. Kumar mentors students and conducts groundbreaking research in artificial intelligence and data science.",
-    linkedinUrl: "https://www.linkedin.com/in/bansalanant/",
   },
   {
     name: "Abhinav Mangalore",
@@ -183,6 +181,23 @@ const devteam: TeamMember[] = [
   },
 ];
 
+function shuffle(array:TeamMember[]) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+
+
 const professors: TeamMember[] = [
   {
     name: "Mr. Manjeet Singh Pangtey",
@@ -190,9 +205,9 @@ const professors: TeamMember[] = [
     imageUrl: "/images/Manjeet_Singh_Pangtey.png",
     hoverImageUrl: "/images/Manjeet_Singh_Pangtey-hover.png",
     intro:
-      "Mr Manjeet has worked as a software engineer for 4 years where he was involved in designing and developing web solutions before choosing teaching as a profession. With a background in higher education administration and a commitment to student success, Mr. Pangtey fosters a culture of academic excellence and innovation. He works collaboratively with faculty, staff, and students to advance our university's mission and values.",
+    "Mr Manjeet has worked as a software engineer for 4 years where he was involved in designing and developing web solutions before choosing teaching as a profession. With a background in higher education administration and a commitment to student success, Mr. Pangtey fosters a culture of academic excellence and innovation. He works collaboratively with faculty, staff, and students to advance our university's mission and values.",
   },
-
+  
   {
     name: "Dr. Pankaj Lathar",
     role: "Controller of Examinations",
@@ -207,33 +222,35 @@ const professors: TeamMember[] = [
     imageUrl: "/images/Sushil_Kumar.png",
     hoverImageUrl: "/images/Sushil_Kumar-hover.png",
     intro:
-      "Dr. Sushil Kumar began his academic career in July 2009 and joined the Computer Science and Engineering Department at G.B. Pant DSEU Okhla 1 Campus in December 2015. His research interests include Ad hoc Networks, Vehicular Ad hoc Networks, Machine Learning, and Data Science. He has published numerous papers in refereed journals and conferences and serves on the review board of various international and national journals. Additionally, he holds the position of Assistant Controller of Examination at DSEU and has also served as Faculty Incharge of Student Welfare and Cultural Activities at G.B. Pant DSEU Okhla 1 Campus.",
+    "Dr. Sushil Kumar began his academic career in July 2009 and joined the Computer Science and Engineering Department at G.B. Pant DSEU Okhla 1 Campus in December 2015. His research interests include Ad hoc Networks, Vehicular Ad hoc Networks, Machine Learning, and Data Science. He has published numerous papers in refereed journals and conferences and serves on the review board of various international and national journals. Additionally, he holds the position of Assistant Controller of Examination at DSEU and has also served as Faculty Incharge of Student Welfare and Cultural Activities at G.B. Pant DSEU Okhla 1 Campus.",
   },
 ];
 const extendedteam: TeamMember[] = [
   {
     name: "Harshit Tiwari",
-    role: "Assistant Professor",
+    role: "",
     imageUrl: "/images/harshit1.png",
     hoverImageUrl: "/images/harshit2.png",
     intro:
-      "Harshit Tiwari is a B.Tech Computer Science Engineering student at G.B Pant DSEU, Okhla-1 Campus, driven by a deep passion for coding and continuous learning. As a dedicated coder and tech enthusiast, he constantly explores the latest advancements in computer science, from algorithms to emerging technologies. Harshit values hands-on learning, which has equipped him with strong skills in software development, problem-solving, and collaboration. Open to opportunities that align with his passion, Harshit is eager to engage in internships, collaborations, and innovative projects.",
+    "Harshit Tiwari is a B.Tech Computer Science Engineering student at G.B Pant DSEU, Okhla-1 Campus, driven by a deep passion for coding and continuous learning. As a dedicated coder and tech enthusiast, he constantly explores the latest advancements in computer science, from algorithms to emerging technologies. Harshit values hands-on learning, which has equipped him with strong skills in software development, problem-solving, and collaboration. Open to opportunities that align with his passion, Harshit is eager to engage in internships, collaborations, and innovative projects.",
     linkedinUrl: "https://www.linkedin.com/in/abhinav-mangalore-919b0a193/",
   },
   {
     name: "Ashutosh Sahu",
-    role: "Controller of Examinations",
+    role: "",
     imageUrl: "images/ashu1.png",
     hoverImageUrl: "images/ashu2.png",
-    intro:
-      "Dr. Pankaj Lathar has more than 21 years of teaching experience in various leading institutes such as Ch. Brahm Prakash Government Engineering College (Delhi), Maharaja Surajmal Institute (Delhi), Maharshi Dayanand University (Rohtak) at both UG & PG levels. He has published about 19 research papers in various national and international journals of repute and 5 books on various titles of Computer Science & Information Technology (IT).",
+    intro:"Ashutosh significantly contributed to the development of DSEU's university website portal during his internship, focusing on data segregation. As an active member of the COPs coding society, he demonstrates a strong commitment to coding and web development. Ashutosh possesses foundational knowledge in front-end development, including proficiency in HTML, CSS, and JavaScript, and is dedicated to further advancing his skills in this field.He actively participates in coding platforms such as CodeChef and CodeBlocks, striving to deepen his understanding of programming.  In addition to his technical pursuits, Ashutosh enjoys playing badminton and carrom and is an avid anime enthusiast. His diverse interests and commitment to continuous learning make him a well-rounded and valuable member of the team.",
     linkedinUrl: "https://www.linkedin.com/in/abhinav-mangalore-919b0a193/",
   },
 ];
 
 const OurTeam = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-
+  useEffect(() => {
+    shuffle(devteam)
+  },[])
+  
   return (
     <div>
       <Head>
@@ -242,7 +259,7 @@ const OurTeam = () => {
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-        />
+          />
       </Head>
       <main className="py-10">
         <Container maxWidth="lg">
@@ -418,8 +435,8 @@ const OurTeam = () => {
                     }}
                   />
                 </RectangularAvatar>
-                <div className="flex items-center justify-center lg:justify-start">
-                <Box className="flex items-center justify-center lg:justify-start ml-4">
+                <div className="flex items-center justify-center  lg:justify-start">
+                <Box className="flex items-center justify-center   lg:justify-start ">
                   {selectedMember.linkedinUrl && (
                     <IconButton
                       href={selectedMember.linkedinUrl}
@@ -447,7 +464,7 @@ const OurTeam = () => {
                   </LoraTypography2>
                 </Box>
                 <Box style={{ maxHeight: "400px", overflowY: "auto" }}>
-                  <LoraTypography variant="body1">
+                  <LoraTypography variant="body1" className="text-justify">
                     {selectedMember.intro}
                   </LoraTypography>
                 </Box>

@@ -25,15 +25,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-    plugin(function({ addUtilities }) {
-      const newUtilities = {
-        '.transition-behavior-allow-discrete': {
-          'transition-behavior': 'allow-discrete',
-        },
-      };
-    }),
-  ],
+
 };
 
 export default config;

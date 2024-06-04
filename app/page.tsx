@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { login } from "./actions/api";
 import { getAuth, setAuth, setSignupCookie } from "./actions/cookie";
 import OurTeam from "./team/OurTeam";
+import FAQPage from "@/FAQ/FAQPage";
 
 export default function Home() {
     const [RollNo, setRollNo] = useState<string>("");
@@ -95,7 +96,7 @@ export default function Home() {
                             }
                             setIsOpen(false);
                         }}
-                        className={`fixed top-20 transition-all duration-1000 ${startBottomAnimation ? "h-[calc(100vh-160px)] text-black" : "h-0 text-white"} font-roboto text-[70px]   cursor-pointer h-[calc(100vh-160px)]   flex flex-col justify-center items-center group `}
+                        className={`fixed top-20 transition-all duration-1000 ${startBottomAnimation ? "h-[calc(100vh-160px)] text-black" : "h-0 text-white"} font-roboto max-sm:text-[30px] text-[70px]   cursor-pointer h-[calc(100vh-160px)]   flex flex-col justify-center items-center group `}
                     >
                         <div className="w-[50vw] flex justify-center items-center">
                             <div className={` flex items-center justify-center flex-col transition-opacity duration-300 transform ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"} `}>
@@ -113,7 +114,7 @@ export default function Home() {
                             }
                             setIsOpen(false);
                         }}
-                        className={`fixed top-20 transition-all right-0 duration-1000 ${startBottomAnimation ? "h-[calc(100vh-160px)] text-black" : "h-0 text-white"} font-roboto text-[70px]  cursor-pointer h-[calc(100vh-160px)] w-1/2 flex flex-col justify-center items-center group`}
+                        className={`fixed top-20 transition-all right-0 duration-1000 ${startBottomAnimation ? "h-[calc(100vh-160px)] text-black" : "h-0 text-white"} font-roboto max-sm:text-[30px] text-[70px]  cursor-pointer h-[calc(100vh-160px)] w-1/2 flex flex-col justify-center items-center group`}
                     >
                         <div>
                             <div>{section !== 2 ? <>FAQ</> : <>LOG IN</>}</div>
@@ -231,7 +232,9 @@ export default function Home() {
                     <OurTeam />
                 </div>
             )}
-            {section === 2 && <div>FAQ</div>}
+            {section === 2 && <div className="my-5 mx-24   ">
+              <FAQPage />
+              </div>}
 
             <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
                 <CircularProgress color="inherit" />
