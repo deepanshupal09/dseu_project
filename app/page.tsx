@@ -104,9 +104,7 @@ export default function Home() {
                 <div className={`fixed top-0 right-0 z-20 w-screen h-screen bg-orange-400  transition-transform duration-[450ms] ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"}`}></div>
                 <div className={`fixed top-0 right-0 z-20 w-screen h-screen bg-red-400  transition-transform duration-[500ms] ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"}`}></div> */}
         <div
-          className={`fixed top-0 right-0 z-20 w-screen ${
-            section !== 0 ? "h-full overflow-scroll" : "h-screen"
-          } bg-white transition-transform duration-[600ms] ease-in-out ${
+          className={`fixed top-0 right-0 z-20 w-screen h-screen bg-white transition-transform duration-[600ms] ease-in-out ${
             isOpen ? "translate-y-0" : "-translate-y-full"
           }`}
         >
@@ -154,23 +152,30 @@ export default function Home() {
                 : section === 1
                 ? " w-[100vw]"
                 : "w-1/2"
-            } flex flex-col justify-center items-center group`}
+            } flex flex-col justify-center items-center group relative`}
           >
-            <div>
-              <div>OUR TEAM</div>
-              {/* <OurTeam /> */}
+            <div
+              className={`absolute top-1/2  -mt-[35px] -ml-[160px] ${
+                section === 1 ? "left-full" : "left-1/2"
+              }`}
+            >
+              <div className={`${section === 1 && "hidden"}`}>OUR TEAM</div>
               <div
-                className={`h-[2px]  bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out`}
+                className={`h-[2px] ${
+                  section === 1 && "hidden"
+                } bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out`}
               ></div>
-              {/* {section === 1 && (
-                <div className="top-96">
-                  <OurTeam />
-                </div>
-              )} */}
             </div>
-            {/* <div className={`${section===1?' ':''} transition-all duration-500`}>
-            content
-            </div> */}
+            {/* {section === 1 && ( */}
+            <div
+              className={`${
+                section === 1 ? "translate-x-0 " : "-translate-x-full"
+              } z-50 transition-all  overflow-auto w-screen duration-500 no-scrollbar `}
+            >
+              <OurTeam />
+            </div>
+
+            {/* )} */}
           </div>
           <div
             onClick={() => {
