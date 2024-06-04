@@ -40,17 +40,16 @@ export const fetchCoursesBySemester: string = `
   JOIN courses c ON sc.course_code = c.course_code
   WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
 `;
-
 export const fetchCoursesByRollNo: string = `
   WITH user_info AS (
-    SELECT program, semester, campus
+    SELECT program, semester, campus, program_type
     FROM users
     WHERE rollno = $1
   ), semester_courses AS (
     SELECT sc.course_code, c.course_name, sc.semester, sc.course_type
     FROM semester_course sc
     JOIN courses c ON sc.course_code = c.course_code, user_info ui
-    WHERE sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2
+    WHERE sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
   )
   SELECT sc.course_name, sc.course_code, sc.semester, sc.course_type
   FROM semester_courses sc;
