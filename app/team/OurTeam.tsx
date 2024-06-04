@@ -231,7 +231,7 @@ const extendedteam: TeamMember[] = [
   },
 ];
 
-const Team = () => {
+const OurTeam = () => {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   return (
@@ -460,4 +460,4 @@ const Team = () => {
   );
 };
 
-export default Team;
+export default OurTeam;

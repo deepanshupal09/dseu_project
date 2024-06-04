@@ -8,6 +8,7 @@ import logo from "./images/logo.png";
 import { useRouter } from "next/navigation";
 import { login } from "./actions/api";
 import { getAuth, setAuth, setSignupCookie } from "./actions/cookie";
+import OurTeam from "./team/OurTeam";
 
 export default function Home() {
   const [RollNo, setRollNo] = useState<string>("");
@@ -103,7 +104,9 @@ export default function Home() {
                 <div className={`fixed top-0 right-0 z-20 w-screen h-screen bg-orange-400  transition-transform duration-[450ms] ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"}`}></div>
                 <div className={`fixed top-0 right-0 z-20 w-screen h-screen bg-red-400  transition-transform duration-[500ms] ease-in-out ${isOpen ? "translate-y-0" : "-translate-y-full"}`}></div> */}
         <div
-          className={`fixed top-0 right-0 z-20 w-screen h-screen bg-white transition-transform duration-[600ms] ease-in-out ${
+          className={`fixed top-0 right-0 z-20 w-screen ${
+            section !== 0 ? "h-full overflow-scroll" : "h-screen"
+          } bg-white transition-transform duration-[600ms] ease-in-out ${
             isOpen ? "translate-y-0" : "-translate-y-full"
           }`}
         >
@@ -113,7 +116,9 @@ export default function Home() {
             }`}
           ></div>
           <div
-            className={`h-[1px] fixed bottom-20 w-full ${section !== 0 && 'bottom-0'}  bg-gray-300  transition-all duration-[1500ms] ease-in-out ${
+            className={`h-[1px] fixed bottom-20 w-full ${
+              section !== 0 && "bottom-0"
+            }  bg-gray-300  transition-all duration-[1500ms] ease-in-out ${
               isOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           ></div>
@@ -125,11 +130,13 @@ export default function Home() {
                 ? "right-full h-[100vh]"
                 : "right-1/2"
             }   bg-gray-300 transition-all duration-1000 ease-in-out ${
-              startBottomAnimation ? section === 1
-              ? "right-0 h-[110vh]"
-              : section === 2
-              ? "right-full h-[110vh]"
-              : "right-1/2 h-[calc(100vh-160px)] ": "h-0"
+              startBottomAnimation
+                ? section === 1
+                  ? "right-0 h-[110vh]"
+                  : section === 2
+                  ? "right-full h-[110vh]"
+                  : "right-1/2 h-[calc(100vh-160px)] "
+                : "h-0"
             }`}
           ></div>
           <div
@@ -149,11 +156,17 @@ export default function Home() {
                 : "w-1/2"
             } flex flex-col justify-center items-center group`}
           >
-            <div >
+            <div>
               <div>OUR TEAM</div>
+              {/* <OurTeam /> */}
               <div
                 className={`h-[2px]  bg-black group-hover:w-full w-0 transition-all mx-auto duration-500 origin-center ease-in-out`}
               ></div>
+              {/* {section === 1 && (
+                <div className="top-96">
+                  <OurTeam />
+                </div>
+              )} */}
             </div>
             {/* <div className={`${section===1?' ':''} transition-all duration-500`}>
             content
