@@ -567,7 +567,7 @@ export function fetchTheCourseDetails(courseDetails:any): Promise<any> {
 }
 
 
-export async function updateTheExam(users: Array<{ campus:string, program:string, semester:number, exam_control: boolean}>): Promise<string> {
+export async function updateTheExam(users: Array<{ campus:string, program:string, semester:number, exam_control: boolean}>, email_control: boolean): Promise<string> {
     try {
         let emailResults;
         let emailid;
@@ -576,7 +576,7 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
         for (const user of users) {
             const results = await updateExam(user.campus, user.program, user.semester, user.exam_control);
             
-            if(user.exam_control === true){
+            if(user.exam_control === true && email_control === true){
                 emailResults = await fetchEmailID(user.campus, user.program, user.semester);
                 emailid = emailResults?.rows[0]?.emailid; 
                 
@@ -595,7 +595,7 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
         const mailOptions = {
             from: process.env.SMTP_MAIL,
             // to: 'acoe@dseu.ac.in',
-            bcc: emailString,
+            cc: emailString,
             subject: 'Exam Registration',
             text: `This is a testing email. 5\n Please ignore this! 5`
         };
