@@ -522,9 +522,21 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
     }
 }
 
-export function fetchTheExamControl(campus:string, program:string, semester:number, program_type:string): Promise<any> {
+// export function fetchTheExamControl(campus:string, program:string, semester:number, program_type:string): Promise<any> {
+//     return new Promise((resolve, reject) => {
+//         fetchExamControlModal(campus, program, semester, program_type).then((results)=>{
+//             console.log("exam control:", results.rows);
+//             resolve(results.rows[0]);
+//         }).catch((error) => {
+//             console.log("Error in fetching exam control: ", error);
+//             reject("Internal server error in fetchExamControl");
+//         });
+//     });
+// }
+
+export function fetchTheExamControl(campus:string, program:string, semester:number): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchExamControlModal(campus, program, semester, program_type).then((results)=>{
+        fetchExamControlModal(campus, program, semester).then((results)=>{
             console.log("exam control:", results.rows);
             resolve(results.rows[0]);
         }).catch((error) => {

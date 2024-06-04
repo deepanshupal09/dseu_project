@@ -529,9 +529,20 @@ export function deleteExamRegisteration(rollno: string): Promise<QueryResult<any
     })
 }
 
-export function fetchExamControlModal(campus: string, program:string, semester:number, program_type: string): Promise<QueryResult<any>>{
+// export function fetchExamControlModal(campus: string, program:string, semester:number, program_type: string): Promise<QueryResult<any>>{
+//     return new Promise((resolve, reject) =>{
+//         pool.query(fetchExamControl,[campus, program, semester, program_type], (error, results)=>{
+//             if(error) {
+//                 reject(error);
+//             } else {
+//                 resolve(results);
+//             }
+//         })
+//     })
+// }
+export function fetchExamControlModal(campus: string, program:string, semester:number): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
-        pool.query(fetchExamControl,[campus, program, semester, program_type], (error, results)=>{
+        pool.query(fetchExamControl,[campus, program, semester], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

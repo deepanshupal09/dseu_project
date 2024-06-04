@@ -35,11 +35,18 @@ export const pushTokenQuery: string =
   "INSERT INTO user_tokens (rollno, token,created_at, last_modified, expiry) VALUES ($1,$2,$3,$4,$5)";
 // export const addExamRegisterationByRollno: string = "INSERT INTO exam_registeration (rollno, course_code, last_modified) VALUES ($1,$2,$3)";
 
+// export const fetchCoursesBySemester: string = `
+//   SELECT c.course_name,c.course_code, sc.credit,sc.course_type FROM semester_course sc
+//   JOIN courses c ON sc.course_code = c.course_code
+//   WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3 AND sc.program_type=$4
+// `;
 export const fetchCoursesBySemester: string = `
   SELECT c.course_name,c.course_code, sc.credit,sc.course_type FROM semester_course sc
   JOIN courses c ON sc.course_code = c.course_code
-  WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3 AND sc.program_type=$4;
+  WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
 `;
+
+
 export const fetchCoursesByRollNo: string = `
   WITH user_info AS (
     SELECT program, semester, campus, program_type
@@ -129,7 +136,10 @@ export const deleteExamRegisterationByRollno: string = `
   DELETE FROM exam_registeration WHERE rollno=$1;
 `;
 
+// export const fetchExamControl: string = `
+//   SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3 AND program_type=$4 
+// `;
+
 export const fetchExamControl: string = `
-  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3 AND program_type=$4;
-`;
+  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;`;
 
