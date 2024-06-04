@@ -229,7 +229,7 @@ export default function Home() {
                 </div>
             )}
             {section === 2 && (
-                <div className="my-5 h-screen overflow-hidden mx-24   ">
+                <div className="my-5 h-[100vh] mx-24   ">
                     <FAQPage />
                 </div>
             )}

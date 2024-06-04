@@ -42,7 +42,7 @@ const faqs = [
 
 const FAQPage: React.FC = () => {
     return (
-        <div className="overflow-scroll no-scrollbar h-full mx-auto px-4 py-8">
+        <div className="overflow-scroll h-full   mx-auto px-4 py-8">
             <div style={{ fontSize: "50px" }} className=" font-medium mb-6">
                 FAQs
             </div>
@@ -51,8 +51,8 @@ const FAQPage: React.FC = () => {
                     <FAQItem key={index} question={faq.question} answer={faq.answer} />
                 ))}
             </div>
-            <div className="mt-8 h-full w-full">
-                <iframe className="mx-auto h-full" src="https://www.youtube.com/embed/V9XC7KCpfbU?si=AEgDSJa54TJptg6p" title="YouTube video player" width={"90%"} height={"90%"}></iframe>
+            <div className="mt-8 h-full">
+                <iframe className="mx-auto h-full" height={"90%"} width={"90%"} src="https://www.youtube.com/embed/V9XC7KCpfbU?si=AEgDSJa54TJptg6p" title="YouTube video player"></iframe>
             </div>
         </div>
     );
