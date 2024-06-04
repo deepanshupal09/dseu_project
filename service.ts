@@ -268,10 +268,11 @@ export async function verifyTokenByRollNo(rollno: string) {
 export function fetchTheCourses(
     campus: string,
     program: string,
-    semester: number
+    semester: number,
+    program_type: string
 ): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchCourses(campus, program, semester)
+        fetchCourses(campus, program, semester, program_type)
             .then((results) => {
                 resolve(results.rows);
             })
@@ -521,9 +522,9 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
     }
 }
 
-export function fetchTheExamControl(campus:string, program:string, semester:number): Promise<any> {
+export function fetchTheExamControl(campus:string, program:string, semester:number, program_type:string): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchExamControlModal(campus, program, semester).then((results)=>{
+        fetchExamControlModal(campus, program, semester, program_type).then((results)=>{
             console.log("exam control:", results.rows);
             resolve(results.rows[0]);
         }).catch((error) => {

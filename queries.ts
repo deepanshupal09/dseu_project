@@ -38,7 +38,7 @@ export const pushTokenQuery: string =
 export const fetchCoursesBySemester: string = `
   SELECT c.course_name,c.course_code, sc.credit,sc.course_type FROM semester_course sc
   JOIN courses c ON sc.course_code = c.course_code
-  WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
+  WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3 AND sc.program_type=$4;
 `;
 export const fetchCoursesByRollNo: string = `
   WITH user_info AS (
@@ -130,5 +130,6 @@ export const deleteExamRegisterationByRollno: string = `
 `;
 
 export const fetchExamControl: string = `
-  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;
+  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3 AND program_type=$4;
 `;
+

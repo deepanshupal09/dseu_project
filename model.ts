@@ -227,12 +227,13 @@ export function fetchUser(rollno: string): Promise<QueryResult<any>> {
 export function fetchCourses(
     campus: string,
     program: string,
-    semester: number
+    semester: number,
+    program_type: string
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(
             fetchCoursesBySemester,
-            [campus, program, semester],
+            [campus, program, semester, program_type],
             (error, results) => {
                 if (error) {
                     console.log("fetch courses error: ", error);
@@ -528,9 +529,9 @@ export function deleteExamRegisteration(rollno: string): Promise<QueryResult<any
     })
 }
 
-export function fetchExamControlModal(campus: string, program:string, semester:number): Promise<QueryResult<any>>{
+export function fetchExamControlModal(campus: string, program:string, semester:number, program_type: string): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
-        pool.query(fetchExamControl,[campus, program, semester], (error, results)=>{
+        pool.query(fetchExamControl,[campus, program, semester, program_type], (error, results)=>{
             if(error) {
                 reject(error);
             } else {
