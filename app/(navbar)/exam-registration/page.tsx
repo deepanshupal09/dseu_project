@@ -28,7 +28,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import { Deselect, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
 import {
@@ -198,6 +198,7 @@ export default function Home() {
         const rollno = user.rollno;
         try {
           const courses = await fetchCoursesByRollNo(rollno, token);
+          console.log(courses)
           const userSemester = user.semester;
           let subDataTemp: Subject[] = [],
             backlogDataTemp: Backlog[] = [];
@@ -274,10 +275,14 @@ export default function Home() {
       }));
     } else {
       // Deselect any previously selected elective of the same type
-      if (subject.type === "PE") {
-        deselectPreviousElective("PE");
-      } else if (subject.type === "OE") {
-        deselectPreviousElective("OE");
+      // if (subject.type === "PE") {
+      //   deselectPreviousElective("PE");
+      // } else if (subject.type === "OE") {
+      //   deselectPreviousElective("OE");
+      // }
+
+      if (subject.type !== "CC") {
+        deselectPreviousElective(subject.type);
       }
 
       // Toggle the selection of the subject
