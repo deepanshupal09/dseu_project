@@ -605,6 +605,7 @@ const updateExamControl = (req: Request, res: Response) => {
 //     res.send({message: "internal server error"});    
 //   }
 // }
+
 const fetchExamControl = (req: Request, res: Response) => {
   try{
     const campus:string = req.headers.campus as string;
