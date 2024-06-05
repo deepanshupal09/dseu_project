@@ -233,13 +233,13 @@ const extendedteam: TeamMember[] = [
     hoverImageUrl: "/images/harshit2.png",
     intro:
     "Harshit Tiwari is a B.Tech Computer Science Engineering student at G.B Pant DSEU, Okhla-1 Campus, driven by a deep passion for coding and continuous learning. As a dedicated coder and tech enthusiast, he constantly explores the latest advancements in computer science, from algorithms to emerging technologies. Harshit values hands-on learning, which has equipped him with strong skills in software development, problem-solving, and collaboration. Open to opportunities that align with his passion, Harshit is eager to engage in internships, collaborations, and innovative projects.",
-    linkedinUrl: "https://www.linkedin.com/in/abhinav-mangalore-919b0a193/",
+    linkedinUrl: "https://www.linkedin.com/in/harshit-tiwari-80b3672a4/",
   },
   {
-    name: "Ashutosh Sahu",
+    name: "Ashutosh Kumar Sahu",
     role: "",
-    imageUrl: "images/ashu1.png",
-    hoverImageUrl: "images/ashu2.png",
+    imageUrl: "images/ashu1.jpg",
+    hoverImageUrl: "images/ashu2.jpg",
     intro:"Ashutosh significantly contributed to the development of DSEU's university website portal during his internship, focusing on data segregation. As an active member of the COPs coding society, he demonstrates a strong commitment to coding and web development. Ashutosh possesses foundational knowledge in front-end development, including proficiency in HTML, CSS, and JavaScript, and is dedicated to further advancing his skills in this field.He actively participates in coding platforms such as CodeChef and CodeBlocks, striving to deepen his understanding of programming.  In addition to his technical pursuits, Ashutosh enjoys playing badminton and carrom and is an avid anime enthusiast. His diverse interests and commitment to continuous learning make him a well-rounded and valuable member of the team.",
     linkedinUrl: "https://www.linkedin.com/in/abhinav-mangalore-919b0a193/",
   },
