@@ -74,10 +74,11 @@ export default function Registration() {
 
     useEffect(() => {
         if (user && selectedProgram !== "" && selectedSemester !== "") {
-            fetchCoursesBySemester(token, selectedCampus, selectedProgram, selectedSemester)
+            fetchCoursesBySemester(token, selectedCampus, selectedProgram, selectedSemester, selectedProgramCategory)
                 .then((response: Course[]) => {
                     const temp: string[] = [];
                     setCourseCodes(response);
+                    console.log(response);
                     response.map((e) => temp.push(e.course_name));
                     setCourseList(temp);
                 })

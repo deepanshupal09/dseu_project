@@ -233,7 +233,7 @@ export async function fetchExamRegistrationByProgramAndSemester(token: string, c
     }
 }
 
-export async function fetchCoursesBySemester(token: string, campus: string, program: string, semester: string) {
+export async function fetchCoursesBySemester(token: string, campus: string, program: string, semester: string, program_type: string) {
     try {
         //
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesBySemester`, {
@@ -245,6 +245,7 @@ export async function fetchCoursesBySemester(token: string, campus: string, prog
                 campus: campus,
                 program: program,
                 semester: semester,
+                programtype: program_type,
             },
         });
 
@@ -254,6 +255,7 @@ export async function fetchCoursesBySemester(token: string, campus: string, prog
         }
 
         const data = await response.json(); // Parse the JSON response
+        console.log("data: ", data);
         return data;
     } catch (error) {
         throw error;
