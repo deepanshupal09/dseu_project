@@ -34,7 +34,8 @@ import {
     resetStudentModal,
     otpUpdateModelAdmin,
     otpVerifyModelAdmin,
-    updatePasswordAdmin
+    updatePasswordAdmin,
+    fetchEmailID
 
 } from "./model";
 import jwt from "jsonwebtoken";

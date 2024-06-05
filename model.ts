@@ -711,7 +711,7 @@ export function resetStudentModal(
     last_modified:string
 ): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
-        pool.query(resetStudentRegistration, [rollno, name, password, last_modified], (error, results)=>{
+        pool.query(fetchExamControl,[campus, program, semester, program_type], (error, results)=>{
             if(error) {
                 reject(error);
             } else {
