@@ -625,6 +625,7 @@ const fetchExamControl = (req: Request, res: Response) => {
   }
 }
 
+
 const fetchCampusDetails = (req:Request, res:Response) => {
   try{
     fetchTheCampus().then((results)=>{
