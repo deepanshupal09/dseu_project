@@ -244,8 +244,9 @@ const fetchCoursesBySemester = (req: Request, res: Response):void => {
     const semester: number = parseInt(req.headers.semester as string);
     const program: string = req.headers.program as string;
     const campus: string = req.headers.campus as string;
+    const program_type: string = req.headers.program_type as string;
     console.log("semester , course_code :", semester, program);
-    fetchTheCourses(campus, program, semester).then((results) => {
+    fetchTheCourses(campus, program, semester,program_type).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {
       res.status(500).send("internal server 2");
@@ -591,8 +592,9 @@ const fetchExamControl = (req: Request, res: Response) => {
   try{
     const campus:string = req.headers.campus as string;
     const program:string = req.headers.program as string;
+    const program_type:string = req.headers.program_type as string;
     const semester: number = parseInt(req.headers.semester as string); 
-    fetchTheExamControl(campus, program, semester).then((results)=>{
+    fetchTheExamControl(campus, program, semester, program_type).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.error('Error in updateMultipleUsers: ', error);
