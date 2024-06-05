@@ -78,7 +78,6 @@ export default function Registration() {
                 .then((response: Course[]) => {
                     const temp: string[] = [];
                     setCourseCodes(response);
-                    console.log(response);
                     response.map((e) => temp.push(e.course_name));
                     setCourseList(temp);
                 })
