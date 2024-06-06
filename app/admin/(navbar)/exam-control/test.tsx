@@ -68,10 +68,10 @@ export default function Registration() {
   if (token) {
     
    fetchDetailsByCampus(token).then((res: CampusData[]) => {
-    // console.log(res);
+    // 
     setCampusData(res);
    }).catch((error) => {
-    console.log(error);
+    
    });
   }
  }, [token]);
@@ -170,7 +170,7 @@ export default function Registration() {
    });
   });
 
-  console.log(payload);
+  
 
   setSnackbarMessage(
    openCloseAction === "open"

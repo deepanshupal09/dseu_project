@@ -18,7 +18,7 @@ export default async function middleware(req: NextRequest) {
   const adminCookie = (await parseJwt(cookies().get("admin")?.value))?.user;
   const signUpCookie =  (cookies().get("signup")?.value);
 
-  // console.log("value: ",adminCookie)
+  // 
   // if(isBlockedRoute) {
   //   return NextResponse.redirect(new URL("/",req.nextUrl));
   // }
@@ -28,7 +28,7 @@ export default async function middleware(req: NextRequest) {
   //   return NextResponse.redirect(new URL("/", req.nextUrl));
   // }
 
-  // console.log("first",adminCookie)
+  // 
 
   if (isAdminRoute && !adminCookie) {
     return NextResponse.redirect(new URL("/",req.nextUrl)) 

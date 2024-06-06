@@ -57,7 +57,7 @@ export default function Registration() {
         if (token) {
             fetchDetailsByCampus(token)
                 .then((res: CampusData[]) => {
-                    // console.log(res);
+                    // 
                     const modifiedRes = res.map((data) => ({
                         ...data,
                         semester: data.semester.toString(),
@@ -84,7 +84,7 @@ export default function Registration() {
                     setSemesterRenderList(Array.from(uniqueSemesters));
                 })
                 .catch((error) => {
-                    console.log(error);
+                    
                 });
         }
     }, [token]);
@@ -93,7 +93,7 @@ export default function Registration() {
         const temp1 = campusData.filter((data) => (filterCampus.length === 0 || filterCampus.includes(data.campus)) && (filterSemester.length === 0 || filterSemester.includes(data.semester))).map((data) => data.program);
 
         const temp2 = campusData.filter((data) => (filterCampus.length === 0 || filterCampus.includes(data.campus)) && (filterProgram.length === 0 || filterProgram.includes(data.program))).map((data) => data.semester);
-        // console.log(33,temp1,temp2);
+        // 
 
         setProgramRenderList(Array.from(new Set(temp1)));
         setSemesterRenderList(Array.from(new Set(temp2)));
@@ -103,7 +103,7 @@ export default function Registration() {
         const temp1 = campusData.filter((data) => (filterProgram.length === 0 || filterProgram.includes(data.program)) && (filterCampus.length === 0 || filterCampus.includes(data.campus))).map((data) => data.semester);
 
         const temp2 = campusData.filter((data) => (filterProgram.length === -0 || filterProgram.includes(data.program)) && (filterSemester.length === 0 || filterSemester.includes(data.semester))).map((data) => data.campus);
-        // console.log(22,temp1,temp2);
+        // 
 
         setCampusRenderList(Array.from(new Set(temp2)));
         setSemesterRenderList(Array.from(new Set(temp1)));
@@ -113,7 +113,7 @@ export default function Registration() {
         const temp1 = campusData.filter((data) => (filterSemester.length === 0 || filterSemester.includes(data.semester)) && (filterProgram.length === 0 || filterProgram.includes(data.program))).map((data) => data.campus);
 
         const temp2 = campusData.filter((data) => (filterSemester.length === 0 || filterSemester.includes(data.semester)) && (filterCampus.length === 0 || filterCampus.includes(data.campus))).map((data) => data.program);
-        // console.log(11,temp1,temp2);
+        // 
 
         setCampusRenderList(Array.from(new Set(temp1)));
         setProgramRenderList(Array.from(new Set(temp2)));
@@ -264,7 +264,7 @@ export default function Registration() {
             });
         });
 
-        console.log(payload);
+        
 
         try {
             const body: { campus: string; program: string; semester: number; exam_control: boolean }[] = ([] = payload);
@@ -282,14 +282,14 @@ export default function Registration() {
     };
 
     // useEffect(()=>{
-    //   console.log(1,filterCampus);
-    //   console.log(2,campusRenderList);
-    //   console.log(3,programRenderList);
-    //   console.log(4,semesterRenderList)
-    //   console.log(5,filterProgram);
-    //   console.log(6,filterSemester);
-    //   console.log(7,campusData);
-    //   // console.log(8,programList)
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   // 
     // },[filterCampus,filterProgram,filterSemester])
 
     const handleTagDelete = (filterType: string, value: string) => {

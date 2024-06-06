@@ -82,9 +82,9 @@ function Home() {
     //
 
     // useEffect(() => {
-    //   console.log("original: ",original)
-    //   console.log("user: ",user)
-    //   console.log(deepEqual(original, user));  // Should log: true
+    //   
+    //   
+    //   
     // },[original, user])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,7 +220,7 @@ function Home() {
           </Button> */}
                 </div>
             </div>
-            {/* {console.log("data", data)} */}
+            {/* {
             {user && data && (
                 <form
                     onSubmit={(e) => {

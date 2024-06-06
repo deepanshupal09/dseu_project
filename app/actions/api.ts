@@ -255,7 +255,7 @@ export async function fetchCoursesBySemester(token: string, campus: string, prog
         }
 
         const data = await response.json(); // Parse the JSON response
-        console.log("data: ", data);
+        
         return data;
     } catch (error) {
         throw error;
@@ -539,7 +539,7 @@ export async function deleteExamRegistration(rollno: string, token: string) {
     }
 }
 export async function fetchUpdateExamControl(body: { campus: string; program: string; semester: number; exam_control: boolean }[], token: string) {
-    console.log(body);
+    
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateExamControl`, {
             method: "POST",

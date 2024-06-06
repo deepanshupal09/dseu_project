@@ -60,7 +60,7 @@ export default function Home({ params }: { params: { rollno: string } }) {
   const { data } = useData();
 
   useEffect(()=>{
-    console.log("semester",  semester)
+    
   },[semester])
   
 

@@ -195,7 +195,7 @@ export default function Home() {
         const rollno = user.rollno;
         try {
           const courses = await fetchCoursesByRollNo(rollno, token);
-          console.log(courses)
+          
           const userSemester = user.semester;
           let subDataTemp: Subject[] = [],
             backlogDataTemp: Backlog[] = [];

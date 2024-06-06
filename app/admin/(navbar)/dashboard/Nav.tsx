@@ -19,7 +19,7 @@ export default function Nav() {
         getAuthAdmin().then(async (t: any) => {
           if (t) {
             const data = await parseJwt(t.value);
-            // console.log("data: ", data)
+            // 
             if (data?.user?.role==='super') {
                 setOptions([...options,"Exam Control"])
             }

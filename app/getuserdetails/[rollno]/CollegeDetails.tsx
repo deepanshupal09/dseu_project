@@ -164,7 +164,7 @@ export default function UserDetailsPage({
               }
               value={semester || ""}
               onChange={(event, newValue) => {
-                console.log("sem: ", typeof newValue)
+                
                 setsemester(newValue);
               }}
               renderInput={(params) => (
