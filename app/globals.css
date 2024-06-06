@@ -13,6 +13,25 @@
   scrollbar-width: none; /* Firefox */
 }
 
+.bordered {
+  /* display: inline-block;
+  padding: 20px;
+  /* Optional: 
+     A normal dashed border can be set as a fallback, particularly if older browsers need to be supported. Notes:
+     - the 4px width here is overwritten with any border-image-width value
+     - a border-image-width can be omitted if it is the same value as the dashed border width
+  */
+
+  border: 2px dashed #D1DBE8;
+
+}
+
+
+/* .largeGaps {
+  border-image-source: url("https://i.sstatic.net/LKclP.png");
+  margin: 0 20px;
+} */
+
 .btn-grad {
   background-color: #21d4fd;
   background-image: linear-gradient(19deg, #21d4fd 0%, #b721ff 100%);
