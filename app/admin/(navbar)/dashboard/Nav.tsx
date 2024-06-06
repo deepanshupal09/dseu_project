@@ -9,7 +9,7 @@ import { parseJwt } from "@/app/actions/utils";
 export default function Nav() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeLink, setActiveLink] = useState("");
-    const [options, setOptions] = useState(["Dashboard", "Registration Chart", "Admit Card", "Query"]);
+    const [options, setOptions] = useState(["Dashboard", "Registration Chart", "Admit Card", "Query", "Edit Student Details", "Marks Entry"]);
     useEffect(() => {
         setActiveLink(window.location.pathname);
     }, []);
