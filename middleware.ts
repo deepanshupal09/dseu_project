@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { parseJwt } from "./app/actions/utils";
 
 const protectedRoutes = ["/dashboard", "/exam-registration"];
-const adminRoutes = ["/admin/dashboard","/admin/registration-chart","/admin/admit-card","/admin/query"] ;
+const adminRoutes = ["/admin/dashboard","/admin/registration-chart","/admin/admit-card","/admin/query","/admin/exam-control"] ;
 const publicRoutes = ["/"];
 const blockedRoutes = ["/getuserdetails","/exam-registration"]
 
@@ -14,10 +14,11 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path);
   const isAdminRoute = adminRoutes.includes(path);
   const isBlockedRoute = blockedRoutes.includes(path);
-  const cookie = await parseJwt(cookies().get("auth")?.value);
-  const adminCookie = await parseJwt(cookies().get("admin")?.value);
+  const cookie = (await parseJwt(cookies().get("auth")?.value))?.user;
+  const adminCookie = (await parseJwt(cookies().get("admin")?.value))?.user;
   const signUpCookie =  (cookies().get("signup")?.value);
 
+  // console.log("value: ",adminCookie)
   // if(isBlockedRoute) {
   //   return NextResponse.redirect(new URL("/",req.nextUrl));
   // }
@@ -29,7 +30,11 @@ export default async function middleware(req: NextRequest) {
 
   // console.log("first",adminCookie)
 
-  if (path.startsWith("/admin/exam-control") && adminCookie.user.role !== "super") {
+  if (isAdminRoute && !adminCookie) {
+    return NextResponse.redirect(new URL("/",req.nextUrl)) 
+  }
+
+  if (path.startsWith("/admin/exam-control") && adminCookie.role !== "super") {
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
 
@@ -48,7 +53,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   
-  if (path.startsWith("/getuserdetails") && !signUpCookie ) {
+  if (path.startsWith("/getuserdetails") && (!signUpCookie || signUpCookie !== 'true') ) {
     // 
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
