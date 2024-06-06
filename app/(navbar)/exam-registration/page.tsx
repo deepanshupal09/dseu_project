@@ -119,36 +119,33 @@ export default function Home() {
 
   useEffect(() => {
     function validateSelectedSubjects() {
-      const selectedSubjects = getSelectedSubjects();
-      let hasPE = false;
-      let hasOE = false;
+        const selectedSubjects = getSelectedSubjects();
+        const selectedTypes = new Set(selectedSubjects.map((subject) => subject.type));
+        const availableTypes = new Set(subjectsData
+            .filter((subject) => subject.type !== "CC")
+            .map((subject) => subject.type)
+        );
 
-      // Check for the presence of PE and OE subjects in the selectedSubjects
-      selectedSubjects.forEach((subject) => {
-        if (subject.type === "PE") {
-          hasPE = true;
-        } else if (subject.type === "OE") {
-          hasOE = true;
+        // Convert Sets to Arrays for iteration
+        const selectedTypesArray = Array.from(selectedTypes);
+        const availableTypesArray = Array.from(availableTypes);
+
+        // Check if every type in availableTypes is present in selectedTypes
+        const missingTypes = availableTypesArray.some((type) => !selectedTypesArray.includes(type));
+
+        // Set warning if any type exists in subjectsData but not in selectedSubjects
+        if (missingTypes) {
+            setWarning(true);
+            setPreviewSelection(false);
+        } else {
+            setWarning(false);
         }
-      });
-
-      // Check if there are PE or OE subjects in the subjectsData
-      const peExists = subjectsData.some((subject) => subject.type === "PE");
-      const oeExists = subjectsData.some((subject) => subject.type === "OE");
-
-      // Set warning if a PE or OE subject exists in subjectsData but not in selectedSubjects
-      if ((peExists && !hasPE) || (oeExists && !hasOE)) {
-        setWarning(true);
-        setPreviewSelection(false);
-      } else {
-        setWarning(false);
-      }
     }
 
     if (previewSelection) {
-      validateSelectedSubjects();
+        validateSelectedSubjects();
     }
-  }, [previewSelection]);
+}, [previewSelection, subjectsData]);
 
   useEffect(() => {
     const initialSelection: Record<string, boolean> = {};
