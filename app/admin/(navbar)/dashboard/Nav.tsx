@@ -21,8 +21,7 @@ export default function Nav() {
             const data = await parseJwt(t.value);
             // 
             if (data?.user?.role==='super') {
-                setOptions([...options,"Exam Control"])
-                setOptions([...options, "Edit Student Details"])
+                setOptions([...options,"Exam Control", "Edit Student Details"])
             }
           }
         });
