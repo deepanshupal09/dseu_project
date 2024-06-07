@@ -223,7 +223,7 @@ function Home() {
                 </div>
             </div>
              
-            {user && data && (
+            {user && data && user.emailid !== null && (
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
