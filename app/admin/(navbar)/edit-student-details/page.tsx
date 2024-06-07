@@ -180,11 +180,9 @@ function Home() {
     }, []);
 
     async function searchRollNo(rollno: string) {
-        console.log("here")
         if (rollno) {
             try {
                 const response = await getUserByRollNo(rollno, token);
-                console.log(response)
 
                 setUser(response[0]);
                 setOriginal(response[0]);
