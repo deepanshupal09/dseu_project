@@ -34,7 +34,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
 
-  if (path.startsWith("/admin/exam-control") && adminCookie.role !== "super") {
+  if ((path.startsWith("/admin/exam-control")||path.startsWith("/admin/edit-student-details")) && adminCookie.role !== "super") {
     return NextResponse.redirect(new URL("/",req.nextUrl)) 
   }
 

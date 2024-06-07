@@ -9,7 +9,7 @@ import { parseJwt } from "@/app/actions/utils";
 export default function Nav() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeLink, setActiveLink] = useState("");
-    const [options, setOptions] = useState(["Dashboard", "Registration Chart", "Admit Card", "Query", "Edit Student Details"]);
+    const [options, setOptions] = useState(["Dashboard", "Registration Chart", "Admit Card", "Query"]);
     useEffect(() => {
         setActiveLink(window.location.pathname);
     }, []);
@@ -22,6 +22,7 @@ export default function Nav() {
             // 
             if (data?.user?.role==='super') {
                 setOptions([...options,"Exam Control"])
+                setOptions([...options, "Edit Student Details"])
             }
           }
         });
