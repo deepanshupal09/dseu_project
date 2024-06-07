@@ -180,9 +180,11 @@ function Home() {
     }, []);
 
     async function searchRollNo(rollno: string) {
+        console.log("here")
         if (rollno) {
             try {
                 const response = await getUserByRollNo(rollno, token);
+                console.log(response)
 
                 setUser(response[0]);
                 setOriginal(response[0]);
@@ -220,7 +222,7 @@ function Home() {
           </Button> */}
                 </div>
             </div>
-            {/* {
+             
             {user && data && (
                 <form
                     onSubmit={(e) => {
@@ -515,11 +517,11 @@ function Home() {
                 </form>
             )}
 
-            {/* {!user && (
+         {!user && (
         <Typography variant="h6" className=" my-4" component="h2">
           Roll No not found!
         </Typography>
-      )} */}
+      )}
             <Dialog open={confirmSubmission} onClose={() => setConfirmSumbission(false)}>
                 <DialogTitle> Are you sure you want to submit the details?</DialogTitle>
                 <DialogContent>
