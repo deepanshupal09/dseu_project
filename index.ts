@@ -3,6 +3,8 @@ import routes from "./routes";
 import cors from "cors";
 import dotenv from "dotenv";
 import * as controller from "./controller";
+import * as marks_controller from "./marks/marks_controller"
+
 import { verifyAdmin, verifyToken } from "./middleware";
 import bodyParser from "body-parser";
 import multer, { Multer } from "multer";
@@ -122,6 +124,12 @@ app.get("/addExamRegisterations", controller.addExamRegisterations);
 app.get("/loginByEmailId", controller.loginByEmailId);
 app.get("/fetchExamControl", controller.fetchExamControl);
 app.get("/deleteExamRegisterationByRollno",controller.deleteExamRegisterationByRollno);
+app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
+app.get("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);
+app.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
+app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
+app.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
+app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
 
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
