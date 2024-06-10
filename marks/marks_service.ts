@@ -66,7 +66,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                     });
                             } else {
                                 console.log("Updating student details...");
-
+                                console.log("result: ", fetchResult.rows[0]);
                                 if(fetchResult.rows[0].freeze_marks === false){
                                     const currentTime = new Date().toISOString();
                                     details.modified_at = currentTime;
