@@ -15,7 +15,7 @@ import { exec } from 'child_process';
 import pool from "./db";
 
 
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 
 
 dotenv.config();
@@ -43,6 +43,7 @@ app.use("/api/data/", verifyToken, routes);
 app.use("/api/admin/",verifyAdmin,adminRoutes);
 
 app.post("/upload", upload.single("image"), async (req: Request, res: Response) => {
+    try {
     console.log("yasu", req.file);
     if (!req.file) {
         console.log("error");
@@ -65,7 +66,6 @@ app.post("/upload", upload.single("image"), async (req: Request, res: Response) 
     );
 
     fs.renameSync(req.file.path, newFilePath);
-    try {
         const compressedFilePath = path.resolve(
             '/home/dseu/Desktop/uploads/',
             `${newFileName}_compressed.png`
@@ -79,13 +79,13 @@ app.post("/upload", upload.single("image"), async (req: Request, res: Response) 
         // Replace the original file with the compressed one
         fs.unlinkSync(newFilePath);
         fs.renameSync(compressedFilePath, newFilePath);
+        res.setHeader("New-File-Name", newFileName);
+        res.send({ path: `/image/${newFileName}.png` });
     } catch (error) {
         console.error("Error compressing image:", error);
         return res.status(500).send({ message: "Error compressing image." });
     }
 
-    res.setHeader("New-File-Name", newFileName);
-    res.send({ path: `/image/${newFileName}.png` });
 });
 
 // app.get("/generatePassword", async(req,res)=>{
@@ -162,3 +162,27 @@ backupJob.start();
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+app.post("/createlogin", async (req: Request, res: Response)=> {
+    const data = req.body; // Assuming req.body is an array of objects
+    const insertions = [];
+    
+    for (const item of data) {
+        const email = item.email;
+        const password = item.password;
+        const campus = item.campus;
+        const role = item.role;
+
+        const pwd = await hash(password, 10);
+
+        try {
+            const result = await pool.query("INSERT INTO admin (emailid,password,role,campus) values ($1, $2, $3, $4)", [email, pwd, role, campus]);
+            insertions.push({ email, campus, message: "login added at campus " + campus });
+        } catch (error) {
+            insertions.push({ email, campus, message: "Internal Server Error!" });
+        }
+    }
+
+    res.send(insertions);
+})
+
