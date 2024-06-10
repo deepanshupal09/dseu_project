@@ -25,20 +25,26 @@ export const toggleMarkControl:string =`
 `;
 
 export const fetchMarksInternal: string = `
-  SELECT im.course_code, im.marks 
+  SELECT im.course_code, im.marks, sc.credit, c.course_name
   FROM internal_marks AS im
-  LEFT JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  INNER JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  INNER JOIN semester_course AS sc ON im.course_code=sc.course_code
+  INNER JOIN courses AS c ON im.course_code=c.course_code
   WHERE im.academic_year = $2 AND im.rollno = $1;
 `;
 export const fetchMarksExternal: string = `
-  SELECT im.course_code, im.marks 
+  SELECT im.course_code, im.marks ,sc.credit, c.course_name
   FROM external_marks AS im
   INNER JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  INNER JOIN semester_course AS sc ON im.course_code=sc.course_code
+  INNER JOIN courses AS c ON im.course_code=c.course_code
   WHERE im.academic_year = $2 AND im.rollno = $1;
 `;
 export const fetchMarksAggregate: string = `
-  SELECT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester
+  SELECT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester, sc.credit, c.course_name
   FROM aggregate_marks AS im
   INNER JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  INNER JOIN semester_course AS sc ON im.course_code=sc.course_code
+  INNER JOIN courses AS c ON im.course_code=c.course_code 
   WHERE im.academic_year = $2 AND im.rollno = $1;
 `;

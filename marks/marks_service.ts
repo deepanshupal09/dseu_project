@@ -345,9 +345,9 @@ export function fetchMarksService(rollno:string, academic_year:string): Promise<
                     program_type: aggregateResults.rows[0].program_type,
                     program: aggregateResults.rows[0].program,
                     semester: aggregateResults.rows[0].semester,
-                    internal_marks: internalResults.rows.map(row => ({course_code: row.course_code, marks: row.marks})),
-                    external_marks: externalResults.rows.map(row => ({course_code: row.course_code, marks: row.marks})),
-                    aggregate_marks: aggregateResults.rows.map(row => ({course_code: row.course_code, marks: row.marks}))
+                    internal_marks: internalResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks})),
+                    external_marks: externalResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks})),
+                    aggregate_marks: aggregateResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks}))
                 };
                 resolve(result);
             } else {
