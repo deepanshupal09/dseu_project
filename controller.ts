@@ -344,12 +344,12 @@ const addExamRegisterations = (req: Request, res: Response): void => {
     const registeration = req.body;
     console.log("registration: ", req.body)
     insertTheExamRegisterations(registeration).then((results) => {
-      res.status(200).send("Successfully inserted!");
+      res.status(200).send({message: "Successfully inserted!"});
     }).catch((error) => {
-      res.status(500).send("Internal server error in insertExamRegisterations");
+      res.status(500).send({message: "Internal server error in insertExamRegisterations"});
     })
   } catch (error) {
-    res.send("Internal server error in addExamRegisterations");
+    res.send({message: "Internal server error in addExamRegisterations"});
   }
 }
 
