@@ -656,6 +656,7 @@ const deleteExamRegistrationByRollno = (req:Request, res:Response) => {
 
 const fetchAllExamControlDetailsController = (req:Request, res:Response) => {
   try{
+    console.log("vashisht bhaiii");
     fetchAllExamControlDetailsService().then((results)=>{
       res.status(200).send(results)
     }).catch((error)=>{
