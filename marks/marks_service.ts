@@ -10,7 +10,10 @@ import { fetchStudentDetailsFromInternal,
      fetchStudentDetailsFromAggregate,
      updateStudentDetailsFromAggregate,
      fetchMarksControlModal,
-     toggleMarksControlModal
+     toggleMarksControlModal,
+     fetchMarksInternalModal,
+     fetchMarksExternalModal,
+     fetchMarksAggregateModal
 } from "./marks_model";
 
 export function fetchTheStudentDetailsFromInternal(details:any): Promise<any> {
@@ -40,15 +43,14 @@ export function fetchTheStudentDetailsFromExternal(details:any): Promise<any> {
     });
 }
 
+
 export async function handleStudentDetailsFromInternal(details: any): Promise<any> {
     return fetchMarksControlModal(details)
         .then((controlResult) => {
-            // console.log("control: ",controlResult.rows);
             if (!controlResult.rows[0].marks_control) {
                 return new Promise((resolve, reject) => {
                     fetchStudentDetailsFromInternal(details)
                         .then((fetchResult) => {
-                            // console.log("lenght: ",fetchResult.rows.length);
                             if (fetchResult.rows.length === 0) {
                                 console.log("Inserting student details...");
 
@@ -66,7 +68,6 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                     });
                             } else {
                                 console.log("Updating student details...");
-                                console.log("result: ", fetchResult.rows[0]);
                                 if(fetchResult.rows[0].freeze_marks === false){
                                     const currentTime = new Date().toISOString();
                                     details.modified_at = currentTime;
@@ -79,12 +80,14 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                             console.log("Error in updating student details: ", updateError);
                                             reject("Internal server error in updateStudentDetailsFromInternal");
                                         });
+                                } else{
+                                    resolve("Internal marks are freezed!");
                                 }
                             }
                         
                             fetchTheStudentDetailsFromExternal(details).then((externalResults)=>{
                                 if(externalResults && externalResults.length>0 && externalResults[0].freeze_marks === true){
-                                    if(details.freeze_marks === true){  //details
+                                    if(details.freeze_marks === true){
                                         const rollnoMarksMap = new Map();
                                         for(let i=0; i<details.rollno.length; i++){
                                             rollnoMarksMap.set(details.rollno[i], details.marks[i]);
@@ -97,7 +100,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     campus: details.campus,
                                                     program_type: details.program_type,
                                                     program: details.program,
-                                                    marks: parseInt(rollnoMarksMap.get(externalResults[i].rollno)) + externalResults[i].marks,
+                                                    marks: '',
                                                     semester: details.semester,
                                                     freeze_marks: true,
                                                     created_at: new Date().toISOString(),
@@ -105,6 +108,17 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     academic_year: details.academic_year,
                                                     course_code: details.course_code
                                                 }
+
+                                                if (rollnoMarksMap.get(externalResults[i].rollno) === 'A' && externalResults[i].marks === 'A') {
+                                                    aggregateDetails.marks = 'A';
+                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) === 'A' && externalResults[i].marks !== 'A') {
+                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(externalResults[i].marks)).toString();
+                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'A' && externalResults[i].marks === 'A') {
+                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
+                                                } else {
+                                                    aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
+                                                }
+
                                                 insertIntoAggregateMarks(aggregateDetails)
                                                 .then((insertResult) => {
                                                     console.log("aggregate_marks populated successfully!");
@@ -135,6 +149,8 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
             return Promise.reject("Internal server error in fetchMarksControlModal");
         });
 }
+
+
 
 
 export async function handleStudentDetailsFromExternal(details: any): Promise<any> {
@@ -175,6 +191,8 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                             console.log("Error in updating student details: ", updateError);
                                             reject("Internal server error in updateStudentDetailsFromInternal");
                                         });
+                                } else{
+                                    resolve("Internal marks are freezed!");
                                 }
                             }
                             fetchTheStudentDetailsFromInternal(details).then((internalResults)=>{
@@ -192,7 +210,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     campus: details.campus,
                                                     program_type: details.program_type,
                                                     program: details.program,
-                                                    marks: parseInt(rollnoMarksMap.get(internalResults[i].rollno)) + internalResults[i].marks,
+                                                    marks: '',
                                                     semester: details.semester,
                                                     freeze_marks: true,
                                                     created_at: new Date().toISOString(),
@@ -200,6 +218,18 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     academic_year: details.academic_year,
                                                     course_code: details.course_code
                                                 }
+
+                                                if (rollnoMarksMap.get(internalResults[i].rollno).trim() === 'A' && internalResults[i].marks.trim() === 'A') {
+                                                    aggregateDetails.marks = 'A';
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) === 'A' && internalResults[i].marks !== 'A') {
+                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(internalResults[i].marks)).toString();
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) !== 'A' && internalResults[i].marks === 'A') {
+                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
+                                                } else {
+                                                    aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
+                                                }
+
+
                                                 insertIntoAggregateMarks(aggregateDetails)
                                                 .then((insertResult) => {
                                                     console.log("aggregate_marks populated successfully!");
@@ -297,4 +327,39 @@ export function toggleMarksControlService(details:any) : Promise<any>{
             reject(error);
         })
     })
+}
+
+export function fetchMarksService(rollno:string, academic_year:string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        Promise.all([
+            fetchMarksInternalModal(rollno,academic_year),
+            fetchMarksExternalModal(rollno,academic_year),
+            fetchMarksAggregateModal(rollno,academic_year)
+        ])
+        .then(([internalResults, externalResults, aggregateResults]) => {
+            if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0) {
+                const result = {
+                    rollno: rollno,
+                    academic_year: academic_year,
+                    campus: aggregateResults.rows[0].campus,
+                    program_type: aggregateResults.rows[0].program_type,
+                    program: aggregateResults.rows[0].program,
+                    semester: aggregateResults.rows[0].semester,
+                    internal_marks: internalResults.rows.map(row => ({course_code: row.course_code, marks: row.marks})),
+                    external_marks: externalResults.rows.map(row => ({course_code: row.course_code, marks: row.marks})),
+                    aggregate_marks: aggregateResults.rows.map(row => ({course_code: row.course_code, marks: row.marks}))
+                };
+                resolve(result);
+            } else {
+                fetchMarksInternalModal(rollno,academic_year).then((results)=>{
+                    console.log("results:", results);
+                })
+                reject("No data found for the given roll number and academic year");
+            }
+        })
+        .catch((error) => {
+            console.log("Error in fetchMarksService: ", error);
+            reject("Internal server error in fetchMarksService");
+        });
+    });
 }
