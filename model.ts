@@ -27,7 +27,10 @@ import {
     updateExamControl,
     fetchCampusDetails,
     deleteExamRegisterationByRollno,
-    fetchExamControl
+    fetchExamControl,
+    fetchSpecialization,
+    fetchCoursesByProgramAndSemester,
+    fetchAllExamControlDetailsQuery
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -551,3 +554,45 @@ export function fetchExamControlModal(campus: string, program:string, semester:n
         })
     })
 }
+
+export function fetchSpecializationModal(
+    special:string
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchSpecialization,[special], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchCourseDetailsModal(
+    rollno:string,
+    program:string,
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchCoursesByProgramAndSemester,[rollno,program], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchAllExamControlDetailsModal(): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchAllExamControlDetailsQuery, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+

@@ -103,7 +103,8 @@ app.get("/login", controller.login);
 app.post("/signup", controller.signup);
 app.post("/addUsers", controller.addUsers);
 // app.get("/getUserByRollno", controller.getUserByRollno);
-// app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
+app.get("/fetchCoursesBySemester", controller.fetchCoursesBySemester);
+app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
 // app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
 app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 app.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
@@ -121,6 +122,7 @@ app.get("/loginByEmailId", controller.loginByEmailId);
 // app.get("/fetchExamControl", controller.fetchExamControl);
 // app.get("/deleteExamRegistrationByRollno",controller.deleteExamRegistrationByRollno);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
+app.get("/fetchAllExamControlDetailsController", controller.fetchAllExamControlDetailsController);
 
 
 

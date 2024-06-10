@@ -24,7 +24,8 @@ import {
   updateTheExam,
   fetchTheCampus,
   fetchTheExamControl,
-  deleteExam
+  deleteExam,
+  fetchAllExamControlDetailsService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -244,7 +245,7 @@ const fetchCoursesBySemester = (req: Request, res: Response):void => {
     const semester: number = parseInt(req.headers.semester as string);
     const program: string = req.headers.program as string;
     const campus: string = req.headers.campus as string;
-    const program_type: string = req.headers.program_type as string;
+    const program_type: string = req.headers.programtype as string;
     console.log("semester , course_code :", semester, program);
     fetchTheCourses(campus, program, semester, program_type).then((results) => {
       res.status(200).send(results);
@@ -653,6 +654,19 @@ const deleteExamRegistrationByRollno = (req:Request, res:Response) => {
   }
 }
 
+const fetchAllExamControlDetailsController = (req:Request, res:Response) => {
+  try{
+    fetchAllExamControlDetailsService().then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).send("Internal server error exam control. fetch")
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -681,5 +695,6 @@ export {
   updateExamControl,
   fetchCampusDetails,
   fetchExamControl,
-  deleteExamRegistrationByRollno
+  deleteExamRegistrationByRollno,
+  fetchAllExamControlDetailsController
 };

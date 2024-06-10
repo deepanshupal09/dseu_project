@@ -42,6 +42,18 @@ export const fetchCoursesBySemester: string = `
 `;
 
 // export const fetchCoursesBySemester: string = `
+//   SELECT sc.program_type, sc.program, c.course_name, c.course_code, sc.credit, sc.course_type, sp.program AS special_program,
+//          spc.course_name AS special_course_name, spc.course_code AS special_course_code
+//   FROM semester_course sc
+//   JOIN courses c ON sc.course_code = c.course_code
+//   LEFT JOIN specialization sp ON sc.program = sp.special
+//   LEFT JOIN semester_course spsc ON sp.program = spsc.program
+//   LEFT JOIN courses spc ON spsc.course_code = spc.course_code
+//   WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3 AND sc.program_type=$4
+// `;
+
+
+// export const fetchCoursesBySemester: string = `
 //   SELECT c.course_name,c.course_code, sc.credit,sc.course_type FROM semester_course sc
 //   JOIN courses c ON sc.course_code = c.course_code
 //   WHERE sc.campus=$1 AND sc.program=$2 AND sc.semester=$3;
@@ -54,13 +66,44 @@ export const fetchCoursesByRollNo: string = `
     FROM users
     WHERE rollno = $1
   ), semester_courses AS (
-    SELECT sc.course_code, c.course_name, sc.semester, sc.course_type
+    SELECT sc.program, sc.course_code, c.course_name, sc.semester, sc.course_type
     FROM semester_course sc
     JOIN courses c ON sc.course_code = c.course_code, user_info ui
     WHERE sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
   )
-  SELECT sc.course_name, sc.course_code, sc.semester, sc.course_type
+  SELECT sc.program, sc.course_name, sc.course_code, sc.semester, sc.course_type
   FROM semester_courses sc;
+`;
+
+export const fetchCoursesByProgramAndSemester: string = `
+  WITH user_info AS (
+    SELECT program, semester, campus, program_type
+    FROM users
+    WHERE rollno = $1
+  ), semester_courses AS (
+    SELECT sc.program, sc.course_code, c.course_name, sc.semester, sc.course_type
+    FROM semester_course sc
+    JOIN courses c ON sc.course_code = c.course_code, user_info ui
+    WHERE sc.program = $2 and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
+  )
+  SELECT sc.program, sc.course_name, sc.course_code, sc.semester, sc.course_type
+  FROM semester_courses sc;
+`;
+
+// export const fetchCoursesByProgramAndSemester: string = `
+//   WITH semester_courses AS (
+//     SELECT sc.program, sc.course_code, c.course_name, sc.semester, sc.course_type
+//     FROM semester_course sc
+//     JOIN courses c ON sc.course_code = c.course_code
+//     WHERE sc.program = $1 AND sc.semester <= $2 AND sc.semester % 2 = $2 % 2 AND 
+//   )
+//   SELECT sc.program, sc.course_name, sc.course_code, sc.semester, sc.course_type
+//   FROM semester_courses sc;
+// `;
+
+
+export const fetchSpecialization: string = `
+  SELECT program FROM specialization WHERE special=$1;
 `;
 
 
@@ -144,3 +187,6 @@ export const deleteExamRegisterationByRollno: string = `
 export const fetchExamControl: string = `
   SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;`;
 
+export const fetchAllExamControlDetailsQuery: string = `
+  SELECT DISTINCT campus, program, semester, exam_control FROM semester_course;
+`;

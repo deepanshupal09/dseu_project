@@ -27,7 +27,11 @@ import {
     updateExam,
     fetchCampus,
     deleteExamRegisteration,
-    fetchExamControlModal
+    fetchExamControlModal,
+    fetchSpecializationModal,
+    fetchCourseDetailsModal,
+    fetchAllExamControlDetailsModal
+
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -287,7 +291,22 @@ export function fetchTheCoursesRollNo(rollno: string): Promise<any> {
     return new Promise((resolve, reject) => {
         fetchCoursesRollNo(rollno)
             .then((results) => {
-                resolve(results.rows);
+                console.log("results: ",results.rows);
+                // console.log("results: ",fetchSpecializationModal(results.rows[0].program));
+                fetchSpecializationModal(results.rows[0].program).then((specialResults)=>{
+                    console.log("special: ",specialResults.rows[0]);
+                    if(!specialResults.rows.length){
+                        resolve(results.rows);
+                    } else {
+                        console.log("sem:",results.rows[0].semester, "program type",results.rows[0].program_type);
+                        fetchCourseDetailsModal(rollno, specialResults.rows[0].program).then((extraResults)=>{
+                            console.log("extra results: ",extraResults.rows[0]);
+                            let combinedResults = [...results.rows, ...extraResults.rows];
+                            resolve(combinedResults);
+                        })
+                    }
+                })
+                
             })
             .catch((error) => {
                 console.log("error in fetching courses by rollno: ", error);
@@ -567,4 +586,17 @@ export function deleteExam(rollno: string): Promise<any> {
         })
     })
 }
+
+export function fetchAllExamControlDetailsService(): Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchAllExamControlDetailsModal().then((result) =>{
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in fetching exam reg. details: ", error);
+                reject("Internal server error in fetch exam reg.");
+        })
+    })
+}
+
+
 
