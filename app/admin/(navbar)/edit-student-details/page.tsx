@@ -13,8 +13,8 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { getAuth, getAuthAdmin } from "../../../actions/cookie";
 import { parseJwt } from "../../../actions/utils";
 import { StudentDetails } from "@/app/(navbar)/profile/page";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, Select, Snackbar, TextField, Typography } from "@mui/material";
-import { deleteExamRegistration, getUserByRollNo, updateDetails } from "@/app/actions/api";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormGroup, MenuItem, Select, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography, setRef } from "@mui/material";
+import { addExamRegisterations, addExamRegisterationsAdmin, deleteExamRegistration, fetchCoursesByRollNo, fetchCoursesByRollNoAdmin, fetchExamRegisterations, getUserByRollNo, updateDetails } from "@/app/actions/api";
 import { SelectChangeEvent } from "@mui/material/Select";
 // import {
 //   campusList,
@@ -26,6 +26,24 @@ import { DeleteForever } from "@mui/icons-material";
 
 import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
+import { useRouter } from "next/navigation";
+import { Deselect, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+
+interface Subject {
+    name: string;
+    code: string;
+    type: string;
+}
+
+interface SelectedSubjects {
+    [key: string]: boolean;
+}
+
+interface Backlog {
+    subject: string;
+    subjectCode: string;
+    semester: number;
+}
 
 function Home() {
     const [user, setUser] = useState<StudentDetails | null>(null);
@@ -37,9 +55,21 @@ function Home() {
     const [confirmSubmission, setConfirmSumbission] = useState(false);
     const [confirmDeletion, setConfirmDeletion] = useState(false);
     const { data } = useData();
+    const [previewSelection, setPreviewSelection] = useState(false);
+    const [warning, setWarning] = useState<boolean>(false);
+    const [confirmExamRegistration, setConfirmExamRegistration] = useState(false);
+
+    const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
+    const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>({});
+    const [selectedBacklogs, setSelectedBacklogs] = useState<Backlog[]>([]);
+    const [giveBacklogExams, setGiveBacklogExams] = useState(false);
+    const [selectedSemester, setSelectedSemester] = useState("");
+    const [chosen, setChosen] = useState(true);
+    const [selectedSub, setSelectedSub] = useState<Subject[]>([]);
 
     const [reload, setReload] = useState<boolean>(true);
-
+    const [refresh, setRefresh] = useState<boolean>(false);
     useEffect(() => {
         if (original) {
             setReload(false);
@@ -79,12 +109,250 @@ function Home() {
             });
         }
     }, [user?.program]);
+
+    useEffect(() => {
+        function validateSelectedSubjects() {
+            const selectedSubjects = getSelectedSubjects();
+            const selectedTypes = new Set(selectedSubjects.map((subject) => subject.type));
+            const availableTypes = new Set(subjectsData.filter((subject) => subject.type !== "CC").map((subject) => subject.type));
+
+            // Convert Sets to Arrays for iteration
+            const selectedTypesArray = Array.from(selectedTypes);
+            const availableTypesArray = Array.from(availableTypes);
+
+            // Check if every type in availableTypes is present in selectedTypes
+            const missingTypes = availableTypesArray.some((type) => !selectedTypesArray.includes(type));
+
+            // Set warning if any type exists in subjectsData but not in selectedSubjects
+            if (missingTypes) {
+                setWarning(true);
+                setPreviewSelection(false);
+            } else {
+                setWarning(false);
+            }
+        }
+
+        if (previewSelection) {
+            validateSelectedSubjects();
+        }
+    }, [previewSelection, subjectsData]);
+
+    useEffect(() => {
+        const initialSelection: Record<string, boolean> = {};
+        subjectsData.forEach((subject) => {
+            if (subject.type === "CC") {
+                initialSelection[subject.code] = true;
+            } else {
+                initialSelection[subject.code] = false;
+            }
+        });
+        setSelectedSubjects(initialSelection);
+    }, [subjectsData]);
+
+    async function fetchRegistration() {
+        if (user) {
+            return new Promise((resolve, reject) => {
+                const rollno = user.rollno;
+                fetchExamRegisterations(rollno, token)
+                    .then((res: any) => {
+                        if (res.length > 0) {
+                            const temp: Subject[] = [];
+                            res.forEach((subject: any) => {
+                                temp.push({
+                                    name: subject.course_name,
+                                    code: subject.course_code,
+                                    type: subject.course_type,
+                                });
+                            });
+                            setChosen(true);
+                            resolve(true);
+                        } else {
+                            setChosen(false);
+                            resolve(false);
+                        }
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            });
+        }
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (user) {
+                const rollno = user.rollno;
+                try {
+                    const courses = await fetchCoursesByRollNoAdmin(rollno, token);
+
+                    const userSemester = user.semester;
+                    let subDataTemp: Subject[] = [],
+                        backlogDataTemp: Backlog[] = [];
+
+                    courses.forEach((course: any) => {
+                        if (course.semester < user.semester)
+                            backlogDataTemp.push({
+                                subject: course.course_name,
+                                subjectCode: course.course_code,
+                                semester: course.semester,
+                            });
+                        else
+                            subDataTemp.push({
+                                name: course.course_name,
+                                code: course.course_code,
+                                type: course.course_type,
+                            });
+                    });
+                    const temp: string[] = [];
+                    subDataTemp.forEach((subject) => {
+                        if (subject.type === "CC") {
+                            temp.push(subject.code);
+                        }
+                    });
+
+                    setSelectedSubjects((prevSelected) => {
+                        const updatedSelection = { ...prevSelected };
+                        temp.forEach((code) => {
+                            if (!(code in updatedSelection)) {
+                                updatedSelection[code] = false;
+                            }
+                        });
+                        return updatedSelection;
+                    });
+
+                    setSubjectsData(subDataTemp);
+                    setBacklogsData(backlogDataTemp);
+                } catch (error) {}
+            }
+        };
+
+        fetchData();
+    }, [user, refresh]);
+
+    const handleSelectSubject = (subject: Subject) => {
+        if (subject.type === "CC") {
+            // CC subjects cannot be deselected
+            return;
+        }
+
+        // Check if the subject is already selected
+        const alreadySelected = selectedSubjects[subject.code];
+
+        // Deselect any previously selected elective of the same type
+        const deselectPreviousElective = (type: string) => {
+            const previousElective = Object.keys(selectedSubjects).find((key) => subjectsData.find((subject) => subject.code === key)?.type === type && selectedSubjects[key]);
+            if (previousElective) {
+                setSelectedSubjects((prevSelected) => ({
+                    ...prevSelected,
+                    [previousElective]: false,
+                }));
+            }
+        };
+
+        // If the subject is already selected, deselect it
+        if (alreadySelected) {
+            setSelectedSubjects((prevSelected) => ({
+                ...prevSelected,
+                [subject.code]: false,
+            }));
+        } else {
+            // Deselect any previously selected elective of the same type
+            // if (subject.type === "PE") {
+            //   deselectPreviousElective("PE");
+            // } else if (subject.type === "OE") {
+            //   deselectPreviousElective("OE");
+            // }
+
+            if (subject.type !== "CC") {
+                deselectPreviousElective(subject.type);
+            }
+
+            // Toggle the selection of the subject
+            setSelectedSubjects((prevSelected) => ({
+                ...prevSelected,
+                [subject.code]: true,
+            }));
+        }
+    };
+
+    const handleSelectBacklog = (backlog: any) => {
+        setSelectedBacklogs((prevBacklogs: Backlog[]) => {
+            const existingBacklogIndex = prevBacklogs.findIndex((b) => b.subjectCode === backlog.subjectCode && b.semester === backlog.semester);
+
+            if (existingBacklogIndex !== -1) {
+                return prevBacklogs.filter((b, index) => index !== existingBacklogIndex);
+            } else {
+                return [...prevBacklogs, backlog];
+            }
+        });
+    };
+
+    const generateSemesters = () => {
+        const semesters: string[] = [];
+        if (user) {
+            for (let i = 1; i < user.semester; i++) {
+                if (user.semester % 2 === 0) {
+                    if (i % 2 === 0) {
+                        semesters.push(i.toString());
+                    }
+                } else {
+                    if (i % 2 !== 0) {
+                        semesters.push(i.toString());
+                    }
+                }
+            }
+        }
+        return semesters;
+    };
+
+    const getSelectedSubjects = () => {
+        return subjectsData.filter((subject) => selectedSubjects[subject.code]);
+    };
+
+    const handlePreview = () => {
+        console.log("here");
+        setPreviewSelection(true);
+    };
+
+    const confirmSelection = () => {
+        setPreviewSelection(false);
+        setConfirmExamRegistration(true);
+    };
+    const router = useRouter();
+
+    const submitDetails = async () => {
+        const selectedSubjectCodes = getSelectedSubjects().map(({ code }) => code);
+        const backlogSubjectCodes = selectedBacklogs.map(({ subjectCode }) => subjectCode);
+        const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
+
+        const res = await fetchRegistration();
+
+        if (res === true) {
+            setOpen(true);
+            setMessage("Please delete the existing exam registration first!");
+            setConfirmExamRegistration(false);
+        } else {
+            try {
+                const body = { rollno: user?.rollno, course_code: allSubjectCodes };
+                const res = await addExamRegisterationsAdmin(body, token);
+                setOpen(true);
+                setMessage("Exam registration updated!");
+                setConfirmExamRegistration(false);
+            } catch (error) {
+                setConfirmExamRegistration(false);
+                console.error("Error submitting details:", error);
+                alert("Internal server error!");
+            }
+            setConfirmSumbission(false);
+        }
+    };
+
     //
 
     // useEffect(() => {
-    //   
-    //   
-    //   
+    //
+    //
+    //
     // },[original, user])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +384,7 @@ function Home() {
         try {
             if (user) {
                 const response = await updateDetails(user, token);
-
+                setRefresh(true);
                 setMessage("Successfully updated");
                 setOpen(true);
                 setConfirmSumbission(false);
@@ -220,7 +488,7 @@ function Home() {
           </Button> */}
                 </div>
             </div>
-             
+
             {user && data && user.emailid !== null && (
                 <form
                     onSubmit={(e) => {
@@ -494,6 +762,125 @@ function Home() {
                                 </div>
                             </div>
                         </div>
+                        <>
+                            <Typography className="text-center" variant="body1">
+                                <b>Course Types: </b>CC - Compulsory Course, PE - Program Elective, OE - Open Elective
+                            </Typography>
+                            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col sm:flex-row items-center justify-between max-w-6xl">
+                                <Table sx={{ "& td, & th": { padding: "8px" } }}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Typography variant="subtitle1">Course Name</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="subtitle1">Course Code</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="subtitle1">Course Type</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="subtitle1">Select</Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {subjectsData.map((subject, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <Typography>{subject.name}</Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography>{subject.code}</Typography>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography>{subject.type}</Typography>
+                                                </TableCell>
+                                                <TableCell>{subject.type === "CC" ? <Checkbox checked disabled /> : <Checkbox checked={selectedSubjects[subject.code] || false} onChange={() => handleSelectSubject(subject)} />}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                            <div className="flex justify-center">
+                                <Typography></Typography>
+                            </div>
+                            <div className="py-2 px-6 rounded shadow mx-auto my-6 flex flex-col items-center justify-between max-w-6xl">
+                                {generateSemesters().length > 0 && (
+                                    <FormGroup row>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={giveBacklogExams}
+                                                    onChange={() => {
+                                                        setGiveBacklogExams(!giveBacklogExams);
+                                                        if (giveBacklogExams) {
+                                                            setSelectedBacklogs([]);
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                            label="Register for Reappear Exams?"
+                                        />
+                                    </FormGroup>
+                                )}
+                                {giveBacklogExams && (
+                                    <div className="w-full">
+                                        {generateSemesters().map((semester) => (
+                                            <Accordion key={semester}>
+                                                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                                    <Typography variant="subtitle1">Semester {semester}</Typography>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <Table>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell style={{ width: "50%" }}>
+                                                                    <Typography>Course Name</Typography>
+                                                                </TableCell>
+                                                                <TableCell style={{ width: "25%" }}>
+                                                                    <Typography>Course Code</Typography>
+                                                                </TableCell>
+                                                                <TableCell style={{ width: "25%" }}>
+                                                                    <Typography>Select</Typography>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {backlogsData
+                                                                .filter((backlog) => backlog.semester === parseInt(semester))
+                                                                .map((backlog, index) => (
+                                                                    <TableRow key={index}>
+                                                                        <TableCell style={{ width: "50%" }}>
+                                                                            <Typography>{backlog.subject}</Typography>
+                                                                        </TableCell>
+                                                                        <TableCell style={{ width: "25%" }}>
+                                                                            <Typography>{backlog.subjectCode}</Typography>
+                                                                        </TableCell>
+                                                                        <TableCell style={{ width: "25%" }}>
+                                                                            <Checkbox checked={selectedBacklogs.some((b) => b.subjectCode === backlog.subjectCode && b.semester === parseInt(semester))} onChange={() => handleSelectBacklog(backlog)} />
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-center mt-2 mb-5">
+                                <Button
+                                    onClick={handlePreview}
+                                    variant="contained"
+                                    size="large"
+                                    // style={{ backgroundColor: "#0066ff", color: "#ffffff" }}
+                                >
+                                    PREVIEW AND REGISTER
+                                </Button>
+                            </div>
+                        </>
                         <Button
                             onClick={() => {
                                 setConfirmDeletion(true);
@@ -515,11 +902,46 @@ function Home() {
                 </form>
             )}
 
-         {!user && (
-        <Typography variant="h6" className=" my-4" component="h2">
-          Roll No not found!
-        </Typography>
-      )}
+            {!user && (
+                <Typography variant="h6" className=" my-4" component="h2">
+                    Roll No not found!
+                </Typography>
+            )}
+            <Dialog open={previewSelection} fullWidth maxWidth="md" onClose={() => setPreviewSelection(false)}>
+                <DialogTitle>Preview Selection</DialogTitle>
+                <DialogContent className="flex flex-col">
+                    <div>
+                        <Typography variant="h6">Selected Courses:</Typography>
+                        <ul>
+                            {getSelectedSubjects().map((subject, index) => (
+                                <li key={index}>
+                                    {subject.name} - {subject.code}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    {selectedBacklogs.length > 0 && (
+                        <div>
+                            <Typography variant="h6">Selected Reappear Exams:</Typography>
+                            <ul>
+                                {selectedBacklogs.map((backlog, index) => (
+                                    <li key={index}>
+                                        {backlog.subject} - {backlog.subjectCode}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={confirmSelection} variant="contained" color="primary">
+                        Confirm
+                    </Button>
+                    <Button onClick={() => setPreviewSelection(false)} variant="outlined" color="primary">
+                        Edit
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Dialog open={confirmSubmission} onClose={() => setConfirmSumbission(false)}>
                 <DialogTitle> Are you sure you want to submit the details?</DialogTitle>
                 <DialogContent>
@@ -563,6 +985,37 @@ function Home() {
                 }}
                 message={message}
             />
+            <Snackbar
+                open={warning}
+                autoHideDuration={6000}
+                onClose={() => {
+                    setWarning(false);
+                }}
+            >
+                <Alert
+                    onClose={() => {
+                        setWarning(false);
+                    }}
+                    severity="error"
+                    variant="filled"
+                >
+                    Please select all electives before submitting!
+                </Alert>
+            </Snackbar>
+            <Dialog open={confirmExamRegistration} onClose={() => setConfirmExamRegistration(false)}>
+                <DialogTitle>Confirm Submission</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">Are you sure you want to submit the details?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={submitDetails} color="primary">
+                        Submit
+                    </Button>
+                    <Button onClick={() => setConfirmExamRegistration(false)} color="primary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }

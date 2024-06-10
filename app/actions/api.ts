@@ -39,10 +39,50 @@ export async function addExamRegisterations(body: any, token: string) {
             throw error;
         });
 }
+export async function addExamRegisterationsAdmin(body: any, token: string) {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/admin/addExamRegisterations`, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+
+        headers: {
+            "Content-Type": "application/json",
+            token: token,
+        },
+        body: JSON.stringify(body),
+    })
+        .then(async (res) => {
+            const data = await res.json();
+            return data;
+        })
+        .catch((error) => {
+            throw error;
+        });
+}
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
     try {
         const res = await fetch(`${process.env.BACKEND_URL}/api/data/fetchCoursesByRollNo`, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json",
+                token: token,
+                rollno: rollno,
+            },
+        });
+
+        const data = await res.json();
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function fetchCoursesByRollNoAdmin(rollno: string, token: string) {
+    try {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesByRollNo`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -87,6 +127,29 @@ export async function login(headers: {}) {
 export async function fetchExamRegisterations(rollno: string, token: string) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamRegistrationByRollNo`, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json",
+                rollno: rollno,
+                token: token,
+            },
+        });
+
+        if (!response.ok) {
+            return response.status;
+        }
+
+        const data = await response.json(); // Parse the JSON response
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+export async function fetchExamRegisterationsByRollNo(rollno: string, token: string) {
+    try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByRollNo`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache",
@@ -255,7 +318,7 @@ export async function fetchCoursesBySemester(token: string, campus: string, prog
         }
 
         const data = await response.json(); // Parse the JSON response
-        
+
         return data;
     } catch (error) {
         throw error;
@@ -539,7 +602,6 @@ export async function deleteExamRegistration(rollno: string, token: string) {
     }
 }
 export async function fetchUpdateExamControl(body: { campus: string; program: string; semester: number; exam_control: boolean }[], token: string) {
-    
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateExamControl`, {
             method: "POST",
