@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -65,7 +65,7 @@ export function updateStudentDetailsFromInternal(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     modified_at: string,
 }): Promise<QueryResult<any>> {
@@ -75,7 +75,7 @@ export function updateStudentDetailsFromInternal(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE internal_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = ${details.marks[i]}, freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE internal_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
 
 
             pool.query(query, (error, results) => {
@@ -98,7 +98,7 @@ export function updateStudentDetailsFromExternal(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     modified_at: string,
 }): Promise<QueryResult<any>> {
@@ -108,7 +108,7 @@ export function updateStudentDetailsFromExternal(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE external_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = ${details.marks[i]}, freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE external_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
 
             // console.log("query:", query);
 
@@ -132,7 +132,7 @@ export function insertStudentDetailsFromInternal(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     created_at: string,
     modified_at: string,
@@ -145,7 +145,7 @@ export function insertStudentDetailsFromInternal(details: {
         let query = `INSERT INTO internal_marks (campus, program_type, program, semester, course_code, academic_year, rollno, marks, freeze_marks, created_at, modified_at) VALUES `;
 
         for (let i = 0; i < details.rollno.length; i++) {
-            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', ${details.marks[i]}, '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
+            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', '${details.marks[i]}', '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
         }
 
         // Remove the last comma and add a semicolon to end the query
@@ -172,7 +172,7 @@ export function insertStudentDetailsFromExternal(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     created_at: string,
     modified_at: string,
@@ -185,7 +185,7 @@ export function insertStudentDetailsFromExternal(details: {
         let query = `INSERT INTO external_marks (campus, program_type, program, semester, course_code, academic_year, rollno, marks, freeze_marks, created_at, modified_at) VALUES `;
 
         for (let i = 0; i < details.rollno.length; i++) {
-            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', ${details.marks[i]}, '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
+            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', '${details.marks[i]}', '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
         }
 
         // Remove the last comma and add a semicolon to end the query
@@ -212,7 +212,7 @@ export function insertStudentDetailsIntoAggregate(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     created_at: string,
     modified_at: string,
@@ -225,7 +225,7 @@ export function insertStudentDetailsIntoAggregate(details: {
         let query = `INSERT INTO aggregate_marks (campus, program_type, program, semester, course_code, academic_year, rollno, marks, freeze_marks, created_at, modified_at) VALUES `;
 
         for (let i = 0; i < details.rollno.length; i++) {
-            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', ${details.marks[i]}, '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
+            query += `('${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.rollno[i]}', '${details.marks[i]}', '${details.freeze_marks}',  '${details.created_at}', '${details.modified_at}'),`;
         }
 
         // Remove the last comma and add a semicolon to end the query
@@ -251,7 +251,7 @@ export function updateStudentDetailsFromAggregate(details: {
     course_code: string,
     academic_year: string,
     rollno: Array<string>,
-    marks: Array<number>,
+    marks: Array<string>,
     freeze_marks: boolean,
     created_at: string,
     modified_at: string,
@@ -262,7 +262,7 @@ export function updateStudentDetailsFromAggregate(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE aggregate_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = ${details.marks[i]}, freeze_marks = '${details.freeze_marks}', created_at = '${details.created_at}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE aggregate_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', created_at = '${details.created_at}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
 
             // console.log("query:", query);
 
@@ -309,7 +309,7 @@ export function insertIntoAggregateMarks(aggregateDetails:{
     campus: string, 
     program_type:string, 
     program:string, 
-    marks:number, 
+    marks:string, 
     semester:number, 
     freeze_marks:boolean, 
     created_at:string, 
@@ -367,3 +367,49 @@ export function toggleMarksControlModal(details:{
         });
     });
 }
+
+export function fetchMarksInternalModal(
+    rollno:string,
+    academic_year:string
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+export function fetchMarksExternalModal(
+    rollno:string,
+    academic_year:string
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+export function fetchMarksAggregateModal(
+    rollno:string,
+    academic_year:string
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+

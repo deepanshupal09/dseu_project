@@ -130,6 +130,7 @@ app.post("/handleStudentDetailsFromExternalController",marks_controller.handleSt
 app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
 app.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
 app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
+app.get("/fetchMarksController",marks_controller.fetchMarksController);
 
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
