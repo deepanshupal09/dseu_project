@@ -35,7 +35,7 @@ import {
 
 } from "./model";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import generateOTP from "./otp_generator"
 
 export function handleLogin(
@@ -604,12 +604,13 @@ export function resetStudentService(
     rollno:string,
     name:string,
 ): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise(async(resolve,reject) => {
         const last_modified: string = new Date().toString();
         let subpass = (name.toUpperCase()).substring(0, 4);
         subpass = subpass.split(" ")[0];
         const pass = subpass +rollno;
-        resetStudentModal(rollno, name, pass, last_modified).then((result) =>{
+        const hsh = await hash(pass, 10);
+        resetStudentModal(rollno, name, hsh, last_modified).then((result) =>{
             resolve(result.rows);
         }).catch((error) => {
             console.log("Error in reseting student details: ", error);

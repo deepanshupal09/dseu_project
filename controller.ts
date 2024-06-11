@@ -673,9 +673,9 @@ const resetStudentController = (req:Request, res:Response) => {
     const rollno:string = req.headers.rollno as string;
     const name:string = req.headers.name as string;
     resetStudentService(rollno, name).then((results)=>{
-      res.status(200).send(results)
+      res.status(200).send({"message":"reset successful"})
     }).catch((error)=>{
-      res.status(500).send("Internal server error reset student details")
+      res.status(500).json({"message":"Internal server error reset student details"})
     })
   }
   catch(error){
