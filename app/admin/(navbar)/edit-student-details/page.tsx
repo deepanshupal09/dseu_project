@@ -63,6 +63,7 @@ import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
 import { useRouter } from "next/navigation";
 import { Deselect, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import { resetStudent as resetStudentDetails } from "@/app/actions/api";
 
 interface Subject {
   name: string;
@@ -93,6 +94,7 @@ function Home() {
   const [previewSelection, setPreviewSelection] = useState(false);
   const [warning, setWarning] = useState<boolean>(false);
   const [confirmExamRegistration, setConfirmExamRegistration] = useState(false);
+  const [resetStudent, setResetStudent] = useState(false);
 
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
@@ -222,7 +224,7 @@ function Home() {
         })
         .catch((error) => {});
     }
-  }, [user, refresh]);
+  }, [original, refresh]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -273,7 +275,7 @@ function Home() {
     };
 
     fetchData();
-  }, [user, refresh]);
+  }, [original, refresh]);
 
   const handleSelectSubject = (subject: Subject) => {
     if (subject.type === "CC") {
@@ -385,6 +387,22 @@ function Home() {
     setConfirmSumbission(false);
   };
 
+  async function handleResetStudent() {
+    try {
+      if (user) {
+        const res = await resetStudentDetails(token, user?.rollno, user?.name);
+        setOpen(true);
+        setMessage("Student Details reset!");
+        setResetStudent(false);
+        router.push("/admin/edit-student-details");
+      }
+    } catch (error) {
+      setOpen(true);
+      console.log("error: ", error)
+      setMessage("Internal Server Error!");
+      setResetStudent(false);
+    }
+  }
   //
 
   // useEffect(() => {
@@ -1089,6 +1107,20 @@ function Home() {
               </div>
               <div> Delete Exam Registration</div>
             </Button>
+            <Button
+              onClick={() => {
+                setResetStudent(true);
+              }}
+              className="flex items-center justify-center space-x-2"
+              color="error"
+            >
+              {" "}
+              <div>
+                {" "}
+                <DeleteForever className="scale-75" />
+              </div>
+              <div> Resent Student Details</div>
+            </Button>
           </div>
           <Button
             type="submit"
@@ -1201,6 +1233,21 @@ function Home() {
             Submit
           </Button>
           <Button onClick={() => setConfirmDeletion(false)} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={resetStudent} onClose={() => setResetStudent(false)}>
+        <DialogTitle> Reset Student Details</DialogTitle>
+        <DialogContent>
+          Are you sure you want to Reset Student Details?
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleResetStudent} color="primary">
+            Submit
+          </Button>
+          <Button onClick={() => setResetStudent(false)} color="primary">
             Cancel
           </Button>
         </DialogActions>

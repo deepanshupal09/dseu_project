@@ -620,3 +620,23 @@ export async function fetchUpdateExamControl(body: { campus: string; program: st
         throw error;
     }
 }
+export async function resetStudent(token: string,rollno: string, name: string) {
+    try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/resetStudentController`, {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json",
+                token: token,
+                rollno: rollno,
+                name: name
+            }
+        });
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
