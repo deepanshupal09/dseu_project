@@ -1119,7 +1119,7 @@ function Home() {
                 {" "}
                 <DeleteForever className="scale-75" />
               </div>
-              <div> Resent Student Details</div>
+              <div> Reset Student Details</div>
             </Button>
           </div>
           <Button
