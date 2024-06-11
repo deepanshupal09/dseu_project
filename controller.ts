@@ -25,7 +25,8 @@ import {
   fetchTheCampus,
   fetchTheExamControl,
   deleteExam,
-  fetchAllExamControlDetailsService
+  fetchAllExamControlDetailsService,
+  resetStudentService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -668,6 +669,21 @@ const fetchAllExamControlDetailsController = (req:Request, res:Response) => {
   }
 }
 
+const resetStudentController = (req:Request, res:Response) => {
+  try{
+    const rollno:string = req.headers.rollno as string;
+    const name:string = req.headers.name as string;
+    resetStudentService(rollno, name).then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).send("Internal server error reset student details")
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -697,5 +713,6 @@ export {
   fetchCampusDetails,
   fetchExamControl,
   deleteExamRegistrationByRollno,
-  fetchAllExamControlDetailsController
+  fetchAllExamControlDetailsController,
+  resetStudentController
 };

@@ -30,7 +30,8 @@ import {
     fetchExamControlModal,
     fetchSpecializationModal,
     fetchCourseDetailsModal,
-    fetchAllExamControlDetailsModal
+    fetchAllExamControlDetailsModal,
+    resetStudentModal
 
 } from "./model";
 import jwt from "jsonwebtoken";
@@ -597,6 +598,26 @@ export function fetchAllExamControlDetailsService(): Promise<any> {
         })
     })
 }
+
+
+export function resetStudentService(
+    rollno:string,
+    name:string,
+): Promise<any> {
+    return new Promise((resolve,reject) => {
+        const last_modified: string = new Date().toString();
+        let subpass = (name.toUpperCase()).substring(0, 4);
+        subpass = subpass.split(" ")[0];
+        const pass = subpass +rollno;
+        resetStudentModal(rollno, name, pass, last_modified).then((result) =>{
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in reseting student details: ", error);
+                reject("Internal server error in reseting student details");
+        })
+    })
+}
+
 
 
 

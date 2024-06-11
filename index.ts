@@ -123,6 +123,7 @@ app.get("/loginByEmailId", controller.loginByEmailId);
 // app.get("/deleteExamRegistrationByRollno",controller.deleteExamRegistrationByRollno);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 app.get("/fetchAllExamControlDetailsController", controller.fetchAllExamControlDetailsController);
+app.post("/resetStudentController", controller.resetStudentController);
 
 
 

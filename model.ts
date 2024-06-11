@@ -30,7 +30,8 @@ import {
     fetchExamControl,
     fetchSpecialization,
     fetchCoursesByProgramAndSemester,
-    fetchAllExamControlDetailsQuery
+    fetchAllExamControlDetailsQuery,
+    resetStudentRegistration
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -587,6 +588,23 @@ export function fetchCourseDetailsModal(
 export function fetchAllExamControlDetailsModal(): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
         pool.query(fetchAllExamControlDetailsQuery, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function resetStudentModal(
+    rollno:string,
+    name:string,
+    password:string,
+    last_modified:string
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(resetStudentRegistration, [rollno, name, password, last_modified], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

@@ -185,8 +185,33 @@ export const deleteExamRegisterationByRollno: string = `
 // `;
 
 export const fetchExamControl: string = `
-  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;`;
+  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;
+`;
 
 export const fetchAllExamControlDetailsQuery: string = `
   SELECT DISTINCT campus, program, semester, exam_control FROM semester_course;
+`;
+
+export const resetStudentRegistration: string= `
+  UPDATE users SET 
+    program = null,
+    semester = null,
+    phone = null,
+    campus = null,
+    emailid = null,
+    gender = null,
+    alternate_phone = null,
+    father = null,
+    mother = null,
+    guardian = null,
+    aadhar = null,
+    abc_id = null,
+    pwbd_certificate = null,
+    photo = null,
+    last_modified = $4,
+    program_type = null,
+    password = $3,
+    year_of_admission = null,
+    dob=null
+  WHERE rollno = $1 AND name=$2;
 `;
