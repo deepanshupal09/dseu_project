@@ -126,7 +126,7 @@ export const fetchExamRegistrationByCourseCode: string = `
 export const fetchExamRegistrationByProgramAndSemester: string = `
   SELECT u.photo, u.name, er.rollno, u.dob, u.program, u.semester, er.course_code FROM exam_registeration er
   JOIN users u ON er.rollno = u.rollno
-  where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4;  
+  where u.campus=$1 AND u.program_type=$2 AND u.program=$3 AND u.semester=$4 ORDER BY er.rollno;  
 `;
 // export const fetchExamRegistrationByProgramAndSemester: string = `
 //    SELECT u.photo, u.name, er.rollno, u.dob, u.program, u.semester, er.course_code FROM exam_registeration er

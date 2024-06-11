@@ -19,5 +19,9 @@ router.get("/deleteExamRegistrationByRollno",controller.deleteExamRegistrationBy
 router.post("/updateExamControl", controller.updateExamControl);
 router.get("fetchAllExamControlDetailsController", controller.fetchAllExamControlDetailsController);
 router.post("/resetStudentController", controller.resetStudentController);
+router.get("/fetchExamRegistrationByRollNo",controller.fetchExamRegistrationByRollNo);
+router.get("/fetchCoursesByRollNo",controller.fetchCoursesByRollNo);
+router.post("/addExamRegisterations",controller.addExamRegisterations);
+
 
 export default router;
