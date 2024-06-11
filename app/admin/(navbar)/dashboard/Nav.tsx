@@ -21,7 +21,7 @@ export default function Nav() {
             const data = await parseJwt(t.value);
             // 
             if (data?.user?.role==='super') {
-                setOptions([...options,"Exam Control", "Edit Student Details"])
+                setOptions([...options,"Exam Control", "Edit Student Details","Marks Control"])
             }
           }
         });
@@ -33,7 +33,7 @@ export default function Nav() {
             <div className="bg-white top-0 max-sm:w-full fixed left-0 sm:h-screen ">
                 <div className="container mx-auto mb-2">
                     <div>
-                        <div className="w-[250px] text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
+                        <div className="w-[250px]  z-50 text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
                             {options.map((option, index) => {
                                 const path = `/admin/${option.toLowerCase().replace(/\s+/g, "-")}`;
                                 return (
@@ -43,7 +43,7 @@ export default function Nav() {
                                 );
                             })}
                         </div>
-                        <div className="sm:hidden absolute top-[60px] bg-white w-full flex flex-col">
+                        <div className="sm:hidden fixed top-[60px] w-full z-50 bg-white shadow-lg">
                             {true && (
                                 <div className="flex flex-row items-center space-x-7 bg-white p-4 shadow-lg  ">
                                     {options.map((option, index) => {

@@ -5,21 +5,16 @@ import Nav from "../dashboard/Nav";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Checkbox, FormControl, InputLabel, Select, MenuItem, Box, Button, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { fetchDetailsByCampus, fetchUpdateExamControl, fetchAllExamControlDetails} from "@/app/actions/api";
+import { fetchDetailsByCampus, fetchUpdateMarksControl } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 
 interface CampusData {
     campus: string;
+    program_type: string;
     program: string;
     semester: string;
-    exam_control: "false" | "true";
-}
-interface CampusData2 {
-    campus: string;
-    program: string;
-    semester: number;
-    exam_control: boolean;
+    marks_control: "false" | "true";
 }
 interface CampusMapping {
     [key: string]: CampusData[];
@@ -27,7 +22,6 @@ interface CampusMapping {
 interface User {
     campus: string;
 }
-
 
 export default function Registration() {
     const [campusData, setCampusData] = useState<CampusData[]>([]);
@@ -50,8 +44,7 @@ export default function Registration() {
     const [campusRenderList, setCampusRenderList] = useState<string[]>([]);
     const [programRenderList, setProgramRenderList] = useState<string[]>([]);
     const [semesterRenderList, setSemesterRenderList] = useState<string[]>([]);
-    const [examControlDetails, setExamControlDetails] = useState<CampusData2[]>([]);
-    const [reloadDetails, setReloadDetails] = useState<boolean>(false);
+    const [payload, setPayload] = useState<any[]>([]);
 
     useEffect(() => {
         getAuthAdmin().then(async (t: any) => {
@@ -61,17 +54,6 @@ export default function Registration() {
         });
     }, []);
 
-    useEffect(() => {
-        if (token) {
-            fetchAllExamControlDetails(token).then((res: CampusData2[]) => {
-                // console.log(res);
-                setExamControlDetails(res); 
-            }).catch((error) => {
-                console.error(error); 
-            });
-        }
-    }, [token,reloadDetails]);
-    
     useEffect(() => {
         if (token) {
             fetchDetailsByCampus(token)
@@ -268,16 +250,17 @@ export default function Registration() {
     };
 
     const handleConfirmFilteredAction = async () => {
-        const payload: { campus: string; program: string; semester: number; exam_control: boolean }[] = [];
+        const payload: { campus: string; program_type: string; program: string; semester: number; marks_control: boolean }[] = [];
 
         selectedCampus.forEach((campus) => {
             (selectedProgram[campus] || []).forEach((program) => {
                 (selectedSemester[`${campus}-${program}`] || []).forEach((semester) => {
                     payload.push({
                         campus,
+                        program_type,
                         program,
                         semester: Number(semester),
-                        exam_control: openCloseAction === "true",
+                        marks_control: openCloseAction === "true",
                     });
                 });
             });
@@ -286,8 +269,8 @@ export default function Registration() {
         
 
         try {
-            const body: { campus: string; program: string; semester: number; exam_control: boolean }[] = ([] = payload);
-            const res = await fetchUpdateExamControl(body, token);
+            const body: { campus: string; program_type: string; program: string; semester: number; marks_control: boolean }[] = ([] = payload);
+            const res = await fetchUpdateMarksControl(body, token);
 
             const message = openCloseAction === "true" ? "Exam registrations opened for your selections." : "Exam registrations closed for your selections.";
             setSnackbarMessage(message);
@@ -298,8 +281,18 @@ export default function Registration() {
 
         setSnackbarOpen(true);
         handleCloseModal();
-        setReloadDetails(!reloadDetails);
     };
+
+    // useEffect(()=>{
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   
+    //   // 
+    // },[filterCampus,filterProgram,filterSemester])
 
     const handleTagDelete = (filterType: string, value: string) => {
         switch (filterType) {
@@ -316,190 +309,96 @@ export default function Registration() {
                 break;
         }
     };
-    const getColorTags = () => {
-        const campusTags: Record<string, string> = {};
-        const programTags: Record<string, string> = {};
-        const semesterTags: Record<string, string> = {};
-    
-        examControlDetails.forEach((detail: CampusData2) => {
-            semesterTags[`${detail.campus}-${detail.program}-${detail.semester}`] = detail.exam_control ? 'green' : 'red';
-        });
-    
-        const campusPrograms: Record<string, Set<string>> = campusData.reduce((acc: Record<string, Set<string>>, item: CampusData) => {
-            if (!acc[item.campus]) {
-                acc[item.campus] = new Set();
-            }
-            acc[item.campus].add(item.program);
-            return acc;
-        }, {});
-        Object.keys(campusPrograms).forEach(campus => {
-            campusPrograms[campus].forEach(program => {
-                const semesters = semesterList.filter(semester => 
-                    semesterTags[`${campus}-${program}-${semester}`] !== undefined
-                );
-                const allTrue = semesters.every(semester => semesterTags[`${campus}-${program}-${semester}`] === 'green');
-                const allFalse = semesters.every(semester => semesterTags[`${campus}-${program}-${semester}`] === 'red');
-                
-                if (allTrue) {
-                    programTags[`${campus}-${program}`] = 'green';
-                } else if (allFalse) {
-                    programTags[`${campus}-${program}`] = 'red';
-                } else {
-                    programTags[`${campus}-${program}`] = 'yellow';
+
+    const filterAccordions = () => {
+        let filteredCampuses = campusData
+            .map((item) => item.campus)
+            .filter((campus, index, self) => self.indexOf(campus) === index)
+            .filter((campus) => filterCampus.length === 0 || filterCampus.includes(campus));
+
+        return filteredCampuses
+            .map((campus, index) => {
+                let filteredPrograms = campusData
+                    .filter((item) => item.campus === campus)
+                    .map((item) => item.program)
+                    .filter((program, index, self) => self.indexOf(program) === index)
+                    .filter((program) => filterProgram.length === 0 || filterProgram.includes(program));
+
+                let isAllProgramsSelected = filteredPrograms.every((program) => (selectedProgram[campus] || []).includes(program));
+
+                let areAllSemestersSelected = filteredPrograms.every((program) => (selectedSemester[`${campus}-${program}`] || []).length > 0 && campusData.filter((item) => item.campus === campus && item.program === program).every((item) => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))));
+
+                let isSomeProgramSelected = filteredPrograms.some((program) => (selectedProgram[campus] || []).includes(program));
+
+                let isSomeSemesterSelected = filteredPrograms.some((program) => (selectedSemester[`${campus}-${program}`] || []).length > 0);
+
+                let isAnyProgramOrSemesterSelected = filteredPrograms.some((program) => (selectedProgram[campus] || []).includes(program) || (selectedSemester[`${campus}-${program}`] || []).length > 0);
+
+                let isCampusSelected = isAnyProgramOrSemesterSelected && areAllSemestersSelected && isAllProgramsSelected;
+                let isSomeProgramIndeterminate = !isAllProgramsSelected && isSomeProgramSelected;
+                let isSomeSemesterIndeterminate = !areAllSemestersSelected && isSomeSemesterSelected;
+
+                if (!isAnyProgramOrSemesterSelected || (isSomeProgramIndeterminate && !isSomeSemesterSelected)) {
+                    isCampusSelected = false;
+                    isSomeProgramIndeterminate = false;
+                    isSomeSemesterIndeterminate = false;
                 }
-            });
-    
-            // Check campus level tags
-            const allProgramsGreen = Array.from(campusPrograms[campus]).every(program => programTags[`${campus}-${program}`] === 'green');
-            const allProgramsRed = Array.from(campusPrograms[campus]).every(program => programTags[`${campus}-${program}`] === 'red');
-            const anyProgramYellow = Array.from(campusPrograms[campus]).some(program => programTags[`${campus}-${program}`] === 'yellow');
-            const hasRed = Array.from(campusPrograms[campus]).some(program => programTags[`${campus}-${program}`] === 'red');
-            const hasGreen = Array.from(campusPrograms[campus]).some(program => programTags[`${campus}-${program}`] === 'green');
-    
-            // console.log(`Campus: ${campus}`);
-            // console.log('Programs:', Array.from(campusPrograms[campus]).map(program => `${program}: ${programTags[`${campus}-${program}`]}`).join(', '));
-            // console.log('Conditions - allProgramsGreen:', allProgramsGreen, ', allProgramsRed:', allProgramsRed, ', anyProgramYellow:', anyProgramYellow, ', hasRed:', hasRed, ', hasGreen:', hasGreen);
-    
-            if (anyProgramYellow) {
-                // console.log('Setting campus to yellow due to anyProgramYellow');
-                campusTags[campus] = 'yellow';
-            } else if (allProgramsGreen) {
-                // console.log('Setting campus to green due to allProgramsGreen');
-                campusTags[campus] = 'green';
-            } else if (allProgramsRed) {
-                // console.log('Setting campus to red due to allProgramsRed');
-                campusTags[campus] = 'red';
-            } else if (hasRed && hasGreen) {
-                // console.log('Setting campus to yellow due to mix of red and green');
-                campusTags[campus] = 'yellow';
-            } else {
-                // console.log('No specific condition met, defaulting to yellow');
-                campusTags[campus] = 'yellow';
-            }
-        });
-        return { campusTags, programTags, semesterTags };
-    };
-    
 
-    const { campusTags, programTags, semesterTags } = getColorTags();
+                if (filteredPrograms.length === 0) {
+                    return null;
+                }
 
-const filterAccordions = () => {
-    let filteredCampuses = campusData
-    .map((item) => item.campus)
-    .filter((campus, index, self) => self.indexOf(campus) === index)
-    .filter((campus) => {
-        let programsInCampus = campusData.filter(item => item.campus === campus).map(item => item.program);
-        let programsFiltered = filterProgram.length === 0 || programsInCampus.some(program => filterProgram.includes(program));
-        
-        if (programsFiltered) {
-            let semestersInCampus = campusData.filter(item => item.campus === campus && (filterProgram.length === 0 || filterProgram.includes(item.program))).map(item => item.semester);
-            return filterSemester.length === 0 || semestersInCampus.some(semester => filterSemester.includes(semester));
-        } else {
-            return false; 
-        }
-    });
+                return (
+                    <Accordion key={index}>
+                        <AccordionSummary expandIcon={<ArrowDropDownIcon />} aria-controls={`panel1-content-${index}`} id={`panel1-header-${index}`}>
+                            <Box display="flex" alignItems="center">
+                                <Checkbox checked={isCampusSelected} indeterminate={isSomeProgramIndeterminate || isSomeSemesterIndeterminate} onChange={handleCampusCheckboxChange} value={campus} />
+                                <Typography>{campus}</Typography>
+                            </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {filteredPrograms.map((program, programIndex) => {
+                                let filteredSemesters = campusData.filter((item) => item.campus === campus && item.program === program).filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester));
 
-    return filteredCampuses.map((campus, index) => {
-        let filteredPrograms = campusData
-            .filter((item) => item.campus === campus)
-            .map((item) => item.program)
-            .filter((program, index, self) => self.indexOf(program) === index)
-            .filter((program) => filterProgram.length === 0 || filterProgram.includes(program));
+                                let isProgramSelected = (selectedProgram[campus] || []).includes(program);
+                                let areAllSemestersSelected = filteredSemesters.length > 0 && filteredSemesters.every((item) => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester)));
 
-        let isAllProgramsSelected = filteredPrograms.every((program) => (selectedProgram[campus] || []).includes(program));
-        let areAllSemestersSelected = filteredPrograms.every((program) => 
-            (selectedSemester[`${campus}-${program}`] || []).length > 0 && campusData.filter((item) => item.campus === campus && item.program === program).every((item) => 
-                (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))
-            )
-        );
+                                if (filteredSemesters.length === 0) {
+                                    return null;
+                                }
 
-        let isSomeProgramSelected = filteredPrograms.some((program) => (selectedProgram[campus] || []).includes(program));
-        let isSomeSemesterSelected = filteredPrograms.some((program) => (selectedSemester[`${campus}-${program}`] || []).length > 0);
-        let isAnyProgramOrSemesterSelected = filteredPrograms.some((program) => 
-            (selectedProgram[campus] || []).includes(program) || (selectedSemester[`${campus}-${program}`] || []).length > 0
-        );
-
-        let isCampusSelected = isAnyProgramOrSemesterSelected && areAllSemestersSelected && isAllProgramsSelected;
-        let isSomeProgramIndeterminate = !isAllProgramsSelected && isSomeProgramSelected;
-        let isSomeSemesterIndeterminate = !areAllSemestersSelected && isSomeSemesterSelected;
-
-        if (!isAnyProgramOrSemesterSelected || (isSomeProgramIndeterminate && !isSomeSemesterSelected)) {
-            isCampusSelected = false;
-            isSomeProgramIndeterminate = false;
-            isSomeSemesterIndeterminate = false;
-        }
-
-        if (filteredPrograms.length === 0) {
-            return null;
-        }
-
-        return (
-            <Accordion key={index}>
-                <AccordionSummary expandIcon={<ArrowDropDownIcon />} aria-controls={`panel1-content-${index}`} id={`panel1-header-${index}`}>
-                    <div className="flex items-center w-full justify-between" >
-                        <div className="flex items-center">
-                        <Checkbox checked={isCampusSelected} indeterminate={isSomeProgramIndeterminate || isSomeSemesterIndeterminate} onChange={handleCampusCheckboxChange} value={campus} />
-                        <Typography>{campus}</Typography>
-                        </div>
-                        <Chip label=''  className={`border-2  ${campusTags[campus] === 'green' ? 'bg-green-400 border-green-400' :  campusTags[campus] === 'red' ? 'bg-red-500 border-red-400' : 'bg-yellow-300 border-yellow-400'} p-2 m-4 rounded-full w-1 h-1`} />
-
-                    </div>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {filteredPrograms.map((program, programIndex) => {
-                        let filteredSemesters = campusData.filter((item) => item.campus === campus && item.program === program).filter((item) => filterSemester.length === 0 || filterSemester.includes(item.semester));
-
-                        let isProgramSelected = (selectedProgram[campus] || []).includes(program);
-                        let areAllSemestersSelected = filteredSemesters.length > 0 && filteredSemesters.every((item) => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester)));
-
-                        if (filteredSemesters.length === 0) {
-                            return null;
-                        }
-
-                        return (
-                            <Accordion key={programIndex}>
-                                <AccordionSummary expandIcon={<ArrowDropDownIcon />} aria-controls={`panel2-content-${programIndex}`} id={`panel2-header-${programIndex}`}>
-                                    <div className="flex items-center w-full justify-between" >
-                                        <div className="flex items-center">
-                                        <Checkbox checked={areAllSemestersSelected} indeterminate={!areAllSemestersSelected && filteredSemesters.some((item) => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester)))} onChange={(event) => handleProgramCheckboxChange(campus, program, event)} value={program} />
-                                        <Typography>{program}</Typography>
-                                        </div>
-                                        <Chip label=''  className={`border-2  ${programTags[`${campus}-${program}`] === 'green' ? 'bg-green-400 border-green-400' :  programTags[`${campus}-${program}`] === 'red' ? 'bg-red-500 border-red-400' : 'bg-yellow-300 border-yellow-400'} p-2 m-4 rounded-full justify-between w-1 h-1`} />
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <FormControl className="mx-6" fullWidth margin="normal">
-                                        <Box display="flex" flexDirection="column">
-                                            <h4>Semesters</h4>
-                                            <Box>
-                                                {filteredSemesters.map((item, semesterIndex) => (
-                                                    <div key={semesterIndex} className="flex items-center w-full justify-between">
-                                                    <div className="flex items-center">
-                                                      <Checkbox
-                                                        checked={(selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))}
-                                                        onChange={(event) =>
-                                                          handleSemesterCheckboxChange(campus, program, String(item.semester), event)
-                                                        }
-                                                        value={String(item.semester)}
-                                                      />
-                                                      <Typography>{item.semester}</Typography>
-                                                    </div>
-                                                        <Chip label=''  className={`border-2  ${semesterTags[`${campus}-${program}-${item.semester}`] === 'green' ? 'bg-green-500 border-green-400' : semesterTags[`${campus}-${program}-${item.semester}`] === 'red' ? 'bg-red-500 border-red-400' : 'bg-yellow-300 border-yellow-400'} p-2 mr-12 rounded-full w-1 h-1`} />
-                                            </div>
-                                                ))}
+                                return (
+                                    <Accordion key={programIndex}>
+                                        <AccordionSummary expandIcon={<ArrowDropDownIcon />} aria-controls={`panel2-content-${programIndex}`} id={`panel2-header-${programIndex}`}>
+                                            <Box display="flex" alignItems="center">
+                                                <Checkbox checked={areAllSemestersSelected} indeterminate={!areAllSemestersSelected && filteredSemesters.some((item) => (selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester)))} onChange={(event) => handleProgramCheckboxChange(campus, program, event)} value={program} />
+                                                <Typography>{program}</Typography>
                                             </Box>
-                                        </Box>
-                                    </FormControl>
-                                </AccordionDetails>
-                            </Accordion>
-                        );
-                    })}
-                </AccordionDetails>
-            </Accordion>
-        );
-    });
-};
-
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <FormControl className="mx-6" fullWidth margin="normal">
+                                                <Box display="flex" flexDirection="column">
+                                                    <h4>Semesters</h4>
+                                                    <Box>
+                                                        {filteredSemesters.map((item, semesterIndex) => (
+                                                            <Box key={semesterIndex} display="flex" alignItems="center">
+                                                                <Checkbox checked={(selectedSemester[`${campus}-${program}`] || []).includes(String(item.semester))} onChange={(event) => handleSemesterCheckboxChange(campus, program, String(item.semester), event)} value={String(item.semester)} />
+                                                                <Typography>{item.semester}</Typography>
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                </Box>
+                                            </FormControl>
+                                        </AccordionDetails>
+                                    </Accordion>
+                                );
+                            })}
+                        </AccordionDetails>
+                    </Accordion>
+                );
+            })
+            .filter((item) => item !== null);
+    };
 
     const applyFilters = () => {
         const filteredData = campusData.filter((item) => (filterCampus.length === 0 || filterCampus.includes(item.campus)) && (filterProgram.length === 0 || filterProgram.includes(item.program)) && (filterSemester.length === 0 || filterSemester.includes(item.semester)));
@@ -521,13 +420,6 @@ const filterAccordions = () => {
         setSelectedProgram(selectedPrograms);
         setSelectedSemester(selectedSemesters);
     };
-    const deselectAll = () => {
-        setSelectedCampus([]);
-        setSelectedProgram({});
-        setSelectedSemester({});
-    };
-    
-    
 
     return (
         <>
@@ -535,7 +427,7 @@ const filterAccordions = () => {
             </div>
             <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
                 <div className="bg-dseublue py-2 px-2 sm:mx-8 rounded shadow mt-28">
-                    <h1 className="text-2xl text-white font-bold text-center">Exam Control</h1>
+                    <h1 className="text-2xl text-white font-bold text-center">Marks Control</h1>
                 </div>
                 <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
                     <div className="flex mb-2 space-x-3">
@@ -573,7 +465,7 @@ const filterAccordions = () => {
                             </Select>
                         </FormControl>
                     </div>
-                    <div className="flex flex-wrap gap-1 mb-2">
+                    <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
                         {filterCampus.map((campus, index) => (
                             <Chip key={index} label={campus} onDelete={() => handleTagDelete("campus", campus)} />
                         ))}
@@ -583,26 +475,18 @@ const filterAccordions = () => {
                         {filterSemester.map((semester, index) => (
                             <Chip key={index} label={semester} onDelete={() => handleTagDelete("semester", semester)} />
                         ))}
-                    </div>
+                    </Box>
 
-                    <div className="flex justify-center mb-2 space-x-4">
+                    <Box display="flex" justifyContent="center" mb={2}>
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={applyFilters}
                             // disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}
                         >
-                            SelectAll
+                            Apply
                         </Button>
-                        <Button variant="contained"
-                            color="primary"
-                            onClick={deselectAll}
-                            // disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}
-                        >
-                            Deselect
-
-                        </Button>
-                    </div>
+                    </Box>
 
                     {filterAccordions()}
                     <Box mt={2} display="flex" justifyContent="center">

@@ -185,7 +185,7 @@ export default function Registration() {
 
     return (
         <>
-            <div className="bg-[#dfdede] mt-2"></div>
+            <div className="bg-[#dfdede] z-20 relative mt-2"></div>
             <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
                 <h1 className="text-2xl text-white font-bold text-center">Queries</h1>
             </div>
