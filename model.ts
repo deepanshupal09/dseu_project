@@ -28,7 +28,10 @@ import {
     fetchCampusDetails,
     deleteExamRegisterationByRollno,
     fetchExamControl,
-    fetchEmailQuery
+    fetchEmailQuery,
+    updatePasswordByOtpAdmin,
+    verifyOTPAdmin,
+    updateOTPAdmin
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -451,6 +454,17 @@ export function otpUpdateModel(  otp: string , rollno: string,) : Promise<QueryR
         })
     })
 }
+export function otpUpdateModelAdmin(  otp: string , emailid: string,) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(updateOTPAdmin,[ otp , emailid ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
 
 export function otpVerifyModel( rollno: string) : Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
@@ -463,10 +477,33 @@ export function otpVerifyModel( rollno: string) : Promise<QueryResult<any>> {
         })
     })
 }
+export function otpVerifyModelAdmin( emailid: string) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(verifyOTPAdmin,[ emailid ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
 
 export function updatePassword( password: string, rollno: string ) : Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
         pool.query(updatePasswordByOtp,[ password, rollno ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function updatePasswordAdmin( password: string, emailid: string ) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(updatePasswordByOtpAdmin,[ password, emailid ],(error, results) => {
             if(error){
                 reject(error);
             } else{

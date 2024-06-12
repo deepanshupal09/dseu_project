@@ -95,13 +95,23 @@ export const fetchEmailIdByRollno: string = `
 export const updateOTP: string = `
   UPDATE users SET otp = $1 WHERE rollno = $2;
 `;
+export const updateOTPAdmin: string = `
+  UPDATE admin SET otp = $1 WHERE emailid = $2;
+`;
 
 export const verifyOTP: string = `
-  SELECT otp FROM users WHERE rollno = $1; 
+  SELECT otp FROM admin WHERE rollno = $1; 
+`;
+export const verifyOTPAdmin: string = `
+  SELECT otp FROM admin WHERE emailid = $1; 
 `;
 
 export const updatePasswordByOtp: string = `
   UPDATE users SET password = $1 WHERE rollno = $2;
+`;
+
+export const updatePasswordByOtpAdmin: string = `
+  UPDATE admin SET password = $1 WHERE emailid = $2;
 `;
 
 export const fetchStudentByProgramAndSemester: string =`

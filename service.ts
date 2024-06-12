@@ -28,7 +28,10 @@ import {
     fetchCampus,
     deleteExamRegisteration,
     fetchExamControlModal,
-    fetchEmailID
+    fetchEmailID,
+    updatePasswordAdmin,
+    otpVerifyModelAdmin,
+    otpUpdateModelAdmin
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -451,9 +454,31 @@ export function otpUpdateService(otp:string, rollno: string) : Promise<any> {
         })
     })
 }
+
+export function otpUpdateServiceAdmin(otp:string, emailid: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        otpUpdateModelAdmin(otp, emailid).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in otp udation: ",error);
+            reject("Internal server error in otp updation");
+        })
+    })
+}
+
 export function otpVerifyService( rollno: string) : Promise<any> {
     return new Promise((resolve,reject) => {
         otpVerifyModel(rollno).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in otp validation: ",error);
+            reject("Internal server error in otp validation");
+        })
+    })
+}
+export function otpVerifyServiceAdmin( emailid: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        otpVerifyModelAdmin(emailid).then((result) => {
             resolve(result);
         }).catch((error) => {
             console.log("Error in otp validation: ",error);
@@ -466,6 +491,18 @@ export async function updateThePassword(password:string, rollno: string) : Promi
     const hash = await bcrypt.hash(password, 10);
     return new Promise((resolve,reject) => {
         updatePassword(hash, rollno).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in password updation: ",error);
+            reject("Internal server error in password updation");
+        })
+    })
+}
+
+export async function updateThePasswordAdmin(password:string, emailid: string) : Promise<any> {
+    const hash = await bcrypt.hash(password, 10);
+    return new Promise((resolve,reject) => {
+        updatePasswordAdmin(hash, emailid).then((result) => {
             resolve(result);
         }).catch((error) => {
             console.log("Error in password updation: ",error);
