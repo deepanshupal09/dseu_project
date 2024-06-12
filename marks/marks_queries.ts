@@ -48,3 +48,10 @@ export const fetchMarksAggregate: string = `
   INNER JOIN courses AS c ON im.course_code=c.course_code 
   WHERE im.academic_year = $2 AND im.rollno = $1;
 `;
+
+
+export const fetchUsersByCourseCode: string =`
+    SELECT er.rollno, u.name FROM exam_registeration AS er 
+    INNER JOIN users AS u ON er.rollno=u.rollno
+    WHERE er.course_code=$1;
+`;
