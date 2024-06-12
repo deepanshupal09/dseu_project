@@ -26,7 +26,10 @@ import {
   fetchTheExamControl,
   deleteExam,
   fetchAllExamControlDetailsService,
-  resetStudentService
+  resetStudentService,
+  otpVerifyServiceAdmin,
+  updateThePasswordAdmin,
+  otpUpdateServiceAdmin
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -422,6 +425,37 @@ const sendEmail = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+const sendEmailAdmin = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const emailid: string = req.headers.emailid as string;
+    const otp = generateOTP(); 
+
+    await otpUpdateServiceAdmin(otp,emailid);
+    // const email = await fetchTheEmailId(rollno);
+    
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: emailid,
+      subject: 'OTP for Password Change',
+      text: `Your OTP for password change is ${otp}. Please ignore this email if you did not request a password change.`, 
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send({ message: 'Internal Server Error!' });
+      } else {
+        console.log('Email sent successfully!');
+        res.status(200).send({message: 'Email sent successfully!'});
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching email:', error);
+    res.status(404).send({email: 'Email not found!'});
+  }
+});
+
 const sendUserDetailsEmail = asyncHandler(async (req: Request, res: Response) => {
   try {
     const rollno: string = req.headers.rollno as string;
@@ -506,11 +540,44 @@ const updatePasswordByOtp = (req: Request, res: Response)=>{
   }
 }
 
+const updatePasswordByOtpAdmin = (req: Request, res: Response)=>{
+  try{
+    const {emailid, password} = req.headers;
+    console.log("rollno, ",emailid, "password: ",password)
+    updateThePasswordAdmin(password as string, emailid as string).then((results)=> {
+      res.status(200).send({message: "Password updated successfully!"});
+    }).catch((error)=>{
+      res.status(500).send({message: "Internal server error in password updation 1"});
+    })
+  }
+  catch(error){
+    res.status(500).send({message: "Internal server error in password updation 2"});
+  }
+}
+
 const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
   try{
     const{rollno, otp} = req.headers; 
     console.log(otp);
     const storedOTPResult = await otpVerifyService(rollno as string);
+    const storedOTP: string = storedOTPResult.rows[0]?.otp;
+    console.log(storedOTP);
+
+    if(otp === storedOTP ){
+      res.status(200).send({message: "OTP verified successfully!"});
+    } else{
+      res.status(400).send({message: "Invalid OTP"});
+    }
+  }
+  catch(error){
+    res.status(500).send({message: 'Internal server error in verifying otp and password!'});
+  }
+})
+const verifyOtpAndPasswordAdmin = (async(req: Request, res: Response)=>{
+  try{
+    const{emailid, otp} = req.headers; 
+    console.log(otp);
+    const storedOTPResult = await otpVerifyServiceAdmin(emailid as string);
     const storedOTP: string = storedOTPResult.rows[0]?.otp;
     console.log(storedOTP);
 
@@ -713,5 +780,8 @@ export {
   fetchExamControl,
   deleteExamRegistrationByRollno,
   fetchAllExamControlDetailsController,
-  resetStudentController
+  resetStudentController,
+  sendEmailAdmin,
+  updatePasswordByOtpAdmin,
+  verifyOtpAndPasswordAdmin
 };
