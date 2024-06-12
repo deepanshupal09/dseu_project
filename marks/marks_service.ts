@@ -13,7 +13,8 @@ import { fetchStudentDetailsFromInternal,
      toggleMarksControlModal,
      fetchMarksInternalModal,
      fetchMarksExternalModal,
-     fetchMarksAggregateModal
+     fetchMarksAggregateModal,
+     fetchStudentsCourseCodeModal
 } from "./marks_model";
 
 export function fetchTheStudentDetailsFromInternal(details:any): Promise<any> {
@@ -321,6 +322,17 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
 export function toggleMarksControlService(details:any) : Promise<any>{
     return new Promise((resolve, reject) => {
         toggleMarksControlModal(details).then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+
+export function fetchStudentsCourseCodeService(course_code:string) : Promise<any>{
+    return new Promise((resolve, reject) => {
+        fetchStudentsCourseCodeModal(course_code).then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);

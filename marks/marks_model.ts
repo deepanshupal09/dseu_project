@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -402,6 +402,20 @@ export function fetchMarksAggregateModal(
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
         pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchStudentsCourseCodeModal(
+    course_code:string,
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchUsersByCourseCode, [course_code], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
             } else{

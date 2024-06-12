@@ -5,7 +5,8 @@ import { fetchTheStudentDetailsFromInternal,
     handleStudentDetailsFromExternal,
     handleStudentDetailsFromAggregate,
     toggleMarksControlService,
-    fetchMarksService
+    fetchMarksService,
+    fetchStudentsCourseCodeService
 } from "./marks_service";
 
 const fetchStudentDetailsFromInternalController= (req: Request, res: Response):void => {
@@ -111,6 +112,20 @@ const fetchMarksController = (req:Request, res:Response)=>{
   }
 }
 
+const fetchStudentsCourseCodeController = (req:Request, res:Response)=>{
+  try{
+    const course_code: string = req.headers.coursecode as string;
+    fetchStudentsCourseCodeService(course_code).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send("internal server error at student fetch");
+    })
+  } catch(error){
+    res.send("internal server error at student fetch 2");
+  }
+}
+
 export {
     fetchStudentDetailsFromInternalController,
     handleStudentDetailsFromInternalController,
@@ -118,5 +133,6 @@ export {
     handleStudentDetailsFromExternalController,
     handleStudentDetailsFromAggregateController,
     toggleMarksControlController,
-    fetchMarksController
+    fetchMarksController,
+    fetchStudentsCourseCodeController
 }
