@@ -52,6 +52,7 @@ export default function Registration() {
     const [semesterRenderList, setSemesterRenderList] = useState<string[]>([]);
     const [examControlDetails, setExamControlDetails] = useState<CampusData2[]>([]);
     const [reloadDetails, setReloadDetails] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         getAuthAdmin().then(async (t: any) => {
@@ -101,8 +102,11 @@ export default function Registration() {
                     setCampusRenderList(Array.from(uniqueCampuses));
                     setProgramRenderList(Array.from(uniquePrograms));
                     setSemesterRenderList(Array.from(uniqueSemesters));
+                    setLoading(false);
                 })
                 .catch((error) => {
+                    console.log(error);
+                    setLoading(false);
                     
                 });
         }
@@ -585,14 +589,14 @@ const filterAccordions = () => {
                         ))}
                     </div>
 
-                    <div className="flex justify-center mb-2 space-x-4">
+                    <div className="flex justify-center mt-4 space-x-4">
                         <Button
                             variant="contained"
                             color="primary"
                             onClick={applyFilters}
                             // disabled={filterCampus.length === 0 && filterProgram.length === 0 && filterSemester.length === 0}
                         >
-                            SelectAll
+                            Select All
                         </Button>
                         <Button variant="contained"
                             color="primary"
@@ -604,7 +608,13 @@ const filterAccordions = () => {
                         </Button>
                     </div>
 
-                    {filterAccordions()}
+                    <div className=" mt-5 text-center">
+                        {loading ? (
+                            <CircularProgress className="mx-auto" />
+                        ) : (
+                            filterAccordions()
+                        )}
+                    </div>
                     <Box mt={2} display="flex" justifyContent="center">
                         <Button variant="contained" color="primary" onClick={() => handleOpenCloseClick("false")} disabled={Object.keys(selectedSemester).length === 0}>
                             Close
