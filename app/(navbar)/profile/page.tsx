@@ -122,7 +122,7 @@ export default function Home() {
           user.program !== original?.program ||
           user?.program !== original?.program
         ) {
-          deleteAuth();
+          await deleteAuth();
           router.push("/")
 
         }
