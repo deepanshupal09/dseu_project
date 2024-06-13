@@ -56,7 +56,7 @@ export default function Home() {
     useEffect(() => {
         // if(token!=="") {
         if (user?.campus !== undefined) {
-            fetchExamControl(token, user?.campus, user?.program, user?.semester.toString())
+            fetchExamControl(token, user?.campus, user?.program, user?.semester.toString(), user?.program_type)
                 .then((res) => {
                     setExamControl(res.exam_control);
                 })

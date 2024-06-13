@@ -484,7 +484,7 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
     }
 }
 
-export async function fetchExamControl(token: string, campus: string, program: string, semester: string) {
+export async function fetchExamControl(token: string, campus: string, program: string, semester: string, program_type: string) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamControl`, {
             method: "GET",
@@ -495,6 +495,7 @@ export async function fetchExamControl(token: string, campus: string, program: s
                 campus: campus,
                 semester: semester,
                 program: program,
+                programtype: program_type
             },
         });
 

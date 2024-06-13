@@ -106,7 +106,8 @@ export default function Home() {
           token,
           user?.campus,
           user?.program,
-          user?.semester.toString()
+          user?.semester.toString(),
+          user?.program_type
         )
           .then((res) => {
             //
