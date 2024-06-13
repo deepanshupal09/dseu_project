@@ -69,7 +69,7 @@ export const fetchCoursesByRollNo: string = `
     SELECT sc.program, sc.course_code, c.course_name, sc.semester, sc.course_type
     FROM semester_course sc
     JOIN courses c ON sc.course_code = c.course_code, user_info ui
-    WHERE sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
+    WHERE ui.program_type = sc.program_type AND sc.program = ui.program and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
   )
   SELECT sc.program, sc.course_name, sc.course_code, sc.semester, sc.course_type
   FROM semester_courses sc;
@@ -84,7 +84,7 @@ export const fetchCoursesByProgramAndSemester: string = `
     SELECT sc.program, sc.course_code, c.course_name, sc.semester, sc.course_type
     FROM semester_course sc
     JOIN courses c ON sc.course_code = c.course_code, user_info ui
-    WHERE sc.program = $2 and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
+    WHERE sc.program_type = ui.program_type AND sc.program = $2 and sc.campus = ui.campus AND sc.semester <= ui.semester AND sc.semester % 2 = ui.semester % 2 AND sc.program_type = ui.program_type
   )
   SELECT sc.program, sc.course_name, sc.course_code, sc.semester, sc.course_type
   FROM semester_courses sc;
@@ -112,7 +112,7 @@ export const fetchExamRegistrationByRollNo: string = `
     FROM exam_registeration er 
     INNER JOIN courses c ON er.course_code = c.course_code 
     INNER JOIN users u ON er.rollno = u.rollno
-    INNER JOIN semester_course sc ON er.course_code = sc.course_code AND u.program = sc.program AND u.campus = sc.campus
+    INNER JOIN semester_course sc ON er.course_code = sc.course_code AND u.program_type = sc.program_type AND u.program = sc.program AND u.campus = sc.campus
     WHERE er.rollno=$1;
 `;
 
