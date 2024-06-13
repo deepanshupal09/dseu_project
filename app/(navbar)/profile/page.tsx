@@ -33,6 +33,7 @@ import {
 } from "@mui/material";
 import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
+import { useRouter } from "next/router";
 
 export interface StudentDetails {
   name: string;
@@ -69,6 +70,7 @@ export default function Home() {
   const [examControl, setExamControl] = useState<boolean>(false);
   const [edit, setEdit] = useState(false);
   const [reload, setReload] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // if(token!=="") {
@@ -121,6 +123,8 @@ export default function Home() {
           user?.program !== original?.program
         ) {
           deleteAuth();
+          router.push("/")
+
         }
       }
     } catch (error) {
