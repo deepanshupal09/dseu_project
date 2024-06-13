@@ -100,7 +100,7 @@ export const updateOTPAdmin: string = `
 `;
 
 export const verifyOTP: string = `
-  SELECT otp FROM admin WHERE rollno = $1; 
+  SELECT otp FROM users WHERE rollno = $1; 
 `;
 export const verifyOTPAdmin: string = `
   SELECT otp FROM admin WHERE emailid = $1; 

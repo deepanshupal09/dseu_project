@@ -571,6 +571,7 @@ const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
     res.status(500).send({message: 'Internal server error in verifying otp and password!'});
   }
 })
+
 const verifyOtpAndPasswordAdmin = (async(req: Request, res: Response)=>{
   try{
     const{emailid, otp} = req.headers; 
