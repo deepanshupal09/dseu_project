@@ -33,7 +33,7 @@ import {
 } from "@mui/material";
 import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export interface StudentDetails {
   name: string;
