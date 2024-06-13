@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from './controller';
+import * as marks_controller from "./marks/marks_controller";
 
 const router = Router();
 router.get("/",(req,res)=>{
