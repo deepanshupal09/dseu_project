@@ -17,16 +17,15 @@ export default function Nav() {
 
     useEffect(() => {
         getAuthAdmin().then(async (t: any) => {
-          if (t) {
-            const data = await parseJwt(t.value);
-            // 
-            if (data?.user?.role==='super') {
-                setOptions([...options,"Exam Control", "Edit Student Details"])
+            if (t) {
+                const data = await parseJwt(t.value);
+                //
+                if (data?.user?.role === "super") {
+                    setOptions([...options, "Exam Control", "Edit Student Details"]);
+                }
             }
-          }
         });
-      }, []);
-
+    }, []);
 
     return (
         <>
