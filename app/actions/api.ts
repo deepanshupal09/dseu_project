@@ -640,3 +640,26 @@ export async function resetStudent(token: string,rollno: string, name: string) {
         throw error;
     }
 }
+
+export async function fetchAllExamControlDetails(token: string){
+    try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllExamControlDetailsController`, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                token : token,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json(); 
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
