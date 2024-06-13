@@ -195,7 +195,7 @@ export const deleteExamRegisterationByRollno: string = `
 // `;
 
 export const fetchExamControl: string = `
-  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND semester=$3;
+  SELECT DISTINCT exam_control FROM semester_course WHERE campus=$1 AND program=$2 AND program_type=$4 AND semester=$3;
 `;
 
 export const fetchAllExamControlDetailsQuery: string = `

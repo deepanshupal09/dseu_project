@@ -680,8 +680,10 @@ const fetchExamControl = (req: Request, res: Response) => {
     const program:string = req.headers.program as string;
     // const program_type:string = req.headers.program_type as string;
     const semester: number = parseInt(req.headers.semester as string); 
-    console.log("campus: ",campus, program, semester)
-    fetchTheExamControl(campus, program, semester).then((results)=>{
+    const programtype = (req.headers.programtype as string); 
+
+    console.log("campus: ",campus, program, semester,programtype)
+    fetchTheExamControl(campus, program, semester,programtype).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.error('Error in updateMultipleUsers: ', error);

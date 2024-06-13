@@ -591,9 +591,9 @@ export async function updateTheExam(users: Array<{ campus:string, program:string
 //     });
 // }
 
-export function fetchTheExamControl(campus:string, program:string, semester:number): Promise<any> {
+export function fetchTheExamControl(campus:string, program:string, semester:number, programtype:string): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchExamControlModal(campus, program, semester).then((results)=>{
+        fetchExamControlModal(campus, program, semester, programtype).then((results)=>{
             console.log("exam control:", results.rows);
             resolve(results.rows[0]);
         }).catch((error) => {
