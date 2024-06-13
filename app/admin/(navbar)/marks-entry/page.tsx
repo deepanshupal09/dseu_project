@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -7,11 +7,24 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
   fetchCoursesBySemester,
   fetchExamRegistrationByProgramAndSemester,
+  fetchExternalMarks,
+  fetchInternalMarks,
+  fetchStudentByCourseCode,
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { useData } from "@/contexts/DataContext";
-import { Box, Tab, Tabs } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import MarksTable from "./MarksTable";
 
 interface ProgramList {
@@ -82,9 +95,9 @@ export default function Marks() {
   const [courseList, setCourseList] = useState<string[]>([]);
   const [courseCodes, setCourseCodes] = useState<Course[]>([]);
   const [studentList, setStudentList] = useState<StudentType[]>([]);
-  const [internalMarks, setInternalMarks] = useState<StudentType[]>([]); 
-  const [externalMarks, setExternalMarks] = useState<StudentType[]>([]); 
-  const [finalMarks, setFinalMarks] = useState<StudentType[]>([]); 
+  const [internalMarks, setInternalMarks] = useState<StudentType[]>([]);
+  const [externalMarks, setExternalMarks] = useState<StudentType[]>([]);
+  const [finalMarks, setFinalMarks] = useState<StudentType[]>([]);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
   const [selectedProgramCategory, setSelectedProgramCategory] =
     useState<string>("");
@@ -92,9 +105,11 @@ export default function Marks() {
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const { data } = useData();
   const [value, setValue] = React.useState(0);
+  const [subjectType, setSubjectType] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
@@ -167,20 +182,28 @@ export default function Marks() {
     selectedCourse,
   ]);
 
+  // useEffect(() => {
+  //   if (selectedCourse !== "") {
+
+  //   }
+
+  // },[selectedCourse, value])
+
   const handleApplyFilters = async () => {
     if (selectedCourse !== "") {
       const course_code = courseCodes.find(
         (course) => course.course_name === selectedCourse
       )?.course_code;
       if (course_code) {
-        // console.log("here ")
         try {
-          const res = await fetchExamRegistrationByProgramAndSemester(
+          const res = await fetchStudentByCourseCode(
             token,
+            course_code,
             selectedCampus,
             selectedProgramCategory,
             selectedProgram,
-            selectedSemester
+            selectedSemester,
+            "2023-2024"
           );
           const formattedStudentList: StudentType[] = res.map(
             (student: Student, index: number) => ({
@@ -190,12 +213,72 @@ export default function Marks() {
               marks: "",
             })
           );
-          console.log(formattedStudentList)
+          // if (res.length > 0) {
+          // }
+          console.log(formattedStudentList);
           setStudentList(formattedStudentList);
         } catch (error) {}
       }
+    } else {
+      setStudentList([]);
     }
   };
+
+  useEffect(() => {
+    if (subjectType === 1) {
+      if (value === 0) {
+        const course_code = courseCodes.find(
+          (course) => course.course_name === selectedCourse
+        )?.course_code;
+        if (course_code) {
+          const details = {
+            campus: selectedCampus,
+            program_type: selectedProgramCategory,
+            program: selectedProgram,
+            semester: selectedSemester,
+            academic_year: "2023-2024",
+            course_code: course_code,
+            rollno: studentList.map((student) => student.rollno),
+          };
+          fetchInternalMarks(token, details)
+            .then((res) => {
+              console.log("res: ", res);
+            })
+            .catch((error) => {
+              console.log("error: ", error);
+            });
+        }
+      } else {
+        const course_code = courseCodes.find(
+          (course) => course.course_name === selectedCourse
+        )?.course_code;
+        if (course_code) {
+          const details = {
+            campus: selectedCampus,
+            program_type: selectedProgramCategory,
+            program: selectedProgram,
+            semester: selectedSemester,
+            academic_year: "2023-2024",
+            course_code: course_code,
+            rollno: studentList.map((student) => student.rollno),
+          };
+          fetchExternalMarks(token, details)
+            .then((res) => {
+              console.log("res: ", res);
+            })
+            .catch((error) => {
+              console.log("error: ", error);
+            });
+        }
+      }
+    }
+    if (subjectType === 2) {
+    }
+  }, [subjectType, value]);
+
+  useEffect(() => {
+    if (selectedCourse !== "") setOpen(true);
+  }, [selectedCourse]);
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
@@ -389,19 +472,56 @@ export default function Marks() {
                         onChange={handleChange}
                         aria-label="basic tabs example"
                       >
-                        <Tab label="Internal Assessment" {...a11yProps(0)} />
-                        <Tab label="External Assessment" {...a11yProps(1)} />
-                        <Tab label="Final Assessment" {...a11yProps(2)} />
+                        <Tab
+                          label="Internal Assessment"
+                          {...a11yProps(0)}
+                          key="tab-0"
+                        />
+
+                        {subjectType === 1 && (
+                          <Tab
+                            label="External Assessment"
+                            {...a11yProps(1)}
+                            key="tab-1"
+                          />
+                        )}
                       </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                      <MarksTable  maxMarks={75} students={studentList} />
+                      <MarksTable
+                        campus={selectedCampus}
+                        program_type={selectedProgramCategory}
+                        program={selectedProgram}
+                        semester={selectedSemester}
+                        course_code={
+                          courseCodes.find(
+                            (course) => course.course_name === selectedCourse
+                          )?.course_code || ""
+                        }
+                        token={token}
+                        academic_year="2023-2024"
+                        subjectType="1"
+                        maxMarks={subjectType === 1 ? 25 : 100}
+                        students={studentList}
+                      />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                      <MarksTable  maxMarks={25} students={studentList} />
-                    </CustomTabPanel>
-                    <CustomTabPanel value={value} index={2}>
-                      <MarksTable  maxMarks={100} students={studentList} />
+                      <MarksTable
+                        campus={selectedCampus}
+                        program_type={selectedProgramCategory}
+                        program={selectedProgram}
+                        semester={selectedSemester}
+                        course_code={
+                          courseCodes.find(
+                            (course) => course.course_name === selectedCourse
+                          )?.course_code || ""
+                        }
+                        token={token}
+                        academic_year="2023-2024"
+                        subjectType="2"
+                        maxMarks={75}
+                        students={studentList}
+                      />
                     </CustomTabPanel>
                   </Box>
                 </div>
@@ -410,6 +530,45 @@ export default function Marks() {
           </div>
         </div>
       </div>
+      <Dialog
+        open={open}
+        maxWidth="sm"
+        fullWidth
+        onClose={(event, reason) => {
+          if (reason !== "backdropClick") {
+            setOpen(false);
+          }
+        }}
+        disableEscapeKeyDown
+      >
+        <DialogTitle>Please Select Type of Subject</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Please select if this is subjects consists of both internal and
+            external assessment or only external assessment?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setSubjectType(1);
+              setOpen(false);
+            }}
+            color="primary"
+          >
+            Internal and External Assessment
+          </Button>
+          <Button
+            onClick={() => {
+              setSubjectType(2);
+              setOpen(false);
+            }}
+            color="primary"
+          >
+            Internal Assessment Only
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
