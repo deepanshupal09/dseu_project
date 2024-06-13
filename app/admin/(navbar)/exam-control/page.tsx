@@ -474,7 +474,7 @@ const filterAccordions = () => {
                                 <AccordionDetails>
                                     <FormControl className="mx-6" fullWidth margin="normal">
                                         <Box display="flex" flexDirection="column">
-                                            <h4>Semesters</h4>
+                                            <div className="text-left">Semesters</div>
                                             <Box>
                                                 {filteredSemesters.map((item, semesterIndex) => (
                                                     <div key={semesterIndex} className="flex items-center w-full justify-between">
