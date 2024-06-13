@@ -17,7 +17,7 @@ router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
 router.get("/fetchCampusDetails", controller.fetchCampusDetails);
 router.get("/deleteExamRegistrationByRollno",controller.deleteExamRegistrationByRollno);
 router.post("/updateExamControl", controller.updateExamControl);
-router.get("fetchAllExamControlDetailsController", controller.fetchAllExamControlDetailsController);
+router.get("/fetchAllExamControlDetailsController", controller.fetchAllExamControlDetailsController);
 router.post("/resetStudentController", controller.resetStudentController);
 router.get("/fetchExamRegistrationByRollNo",controller.fetchExamRegistrationByRollNo);
 router.get("/fetchCoursesByRollNo",controller.fetchCoursesByRollNo);
