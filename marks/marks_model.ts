@@ -15,8 +15,9 @@ export function fetchStudentDetailsFromInternal( details:{
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM internal_marks im
+            JOIN users u ON im.rollno = u.rollno
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
@@ -43,8 +44,9 @@ export function fetchStudentDetailsFromExternal( details:{
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM external_marks im
+            JOIN users u ON im.rollno = u.rollno
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
@@ -291,8 +293,9 @@ export function fetchStudentDetailsFromAggregate( details:{
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM aggregate_marks im
+            JOIN users u ON im.rollno = u.rollno
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
