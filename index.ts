@@ -121,15 +121,16 @@ app.post("/updateExamControl", controller.updateExamControl);
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
-app.get("/fetchExamControl", controller.fetchExamControl);
-app.get("/deleteExamRegisterationByRollno",controller.deleteExamRegisterationByRollno);
-app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
-app.get("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);
-app.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
-app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
-app.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
-app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
-app.get("/fetchMarksController",marks_controller.fetchMarksController);
+// app.get("/fetchExamControl", controller.fetchExamControl);
+// app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
+// app.get("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);
+// app.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
+// app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
+// app.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
+// app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
+// app.get("/fetchMarksController",marks_controller.fetchMarksController);
+app.get("/fetchCampusDetails", controller.fetchCampusDetails);
+
 
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');

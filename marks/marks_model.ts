@@ -413,9 +413,10 @@ export function fetchMarksAggregateModal(
 
 export function fetchStudentsCourseCodeModal(
     course_code:string,
+    campus: string, program_type: string, program: string, semester: string, academic_year: string
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(fetchUsersByCourseCode, [course_code], (error, results)=>{
+        pool.query(fetchUsersByCourseCode, [course_code, campus,program_type, program, semester, academic_year], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
             } else{

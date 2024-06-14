@@ -34,7 +34,8 @@ import {
     resetStudentRegistration,
     updateOTPAdmin,
     verifyOTPAdmin,
-    updatePasswordByOtpAdmin
+    updatePasswordByOtpAdmin,
+    fetchEmailQuery
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -711,7 +712,7 @@ export function resetStudentModal(
     last_modified:string
 ): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
-        pool.query(fetchExamControl,[campus, program, semester, program_type], (error, results)=>{
+        pool.query(resetStudentRegistration,[rollno,name,password,last_modified], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

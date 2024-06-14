@@ -115,7 +115,13 @@ const fetchMarksController = (req:Request, res:Response)=>{
 const fetchStudentsCourseCodeController = (req:Request, res:Response)=>{
   try{
     const course_code: string = req.headers.coursecode as string;
-    fetchStudentsCourseCodeService(course_code).then((results)=>{
+    const campus: string = req.headers.campus as string;
+    const program_type: string = req.headers.programtype as string;
+    const program: string = req.headers.program as string;
+    const semester: string = req.headers.semester as string;
+    const academic_year: string = req.headers.academicyear as string;
+
+    fetchStudentsCourseCodeService(course_code, campus,program_type,program,semester,academic_year).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);

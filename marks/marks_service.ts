@@ -330,9 +330,9 @@ export function toggleMarksControlService(details:any) : Promise<any>{
     })
 }
 
-export function fetchStudentsCourseCodeService(course_code:string) : Promise<any>{
+export function fetchStudentsCourseCodeService(course_code:string, campus: string, program_type: string, program: string, semester: string, academic_year: string) : Promise<any>{
     return new Promise((resolve, reject) => {
-        fetchStudentsCourseCodeModal(course_code).then((results)=>{
+        fetchStudentsCourseCodeModal(course_code, campus, program_type, program, semester, academic_year).then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);

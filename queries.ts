@@ -155,9 +155,7 @@ export const verifyOTP: string = `
 export const verifyOTPAdmin: string = `
   SELECT otp FROM admin WHERE emailid = $1; 
 `;
-export const verifyOTPAdmin: string = `
-  SELECT otp FROM admin WHERE emailid = $1; 
-`;
+
 
 export const updatePasswordByOtp: string = `
   UPDATE users SET password = $1 WHERE rollno = $2;

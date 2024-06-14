@@ -23,6 +23,15 @@ router.post("/resetStudentController", controller.resetStudentController);
 router.get("/fetchExamRegistrationByRollNo",controller.fetchExamRegistrationByRollNo);
 router.get("/fetchCoursesByRollNo",controller.fetchCoursesByRollNo);
 router.post("/addExamRegisterations",controller.addExamRegisterations);
+router.get("/fetchExamControl", controller.fetchExamControl);
+router.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
+router.post("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);
+router.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
+router.post("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
+router.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
+router.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
+router.get("/fetchMarksController",marks_controller.fetchMarksController);
+router.get("/fetchStudentsByCourseCode", marks_controller.fetchStudentsCourseCodeController)
 
 
 export default router;
