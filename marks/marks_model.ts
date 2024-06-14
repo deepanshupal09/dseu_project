@@ -456,7 +456,7 @@ export function resetPasswordModal(
     return new Promise((resolve, reject)=>{
         pool.query(resetPassword, [password, emailid], (error, results)=>{
             if(error) {
-                console.log("error: ", error);
+                console.log("error:  ", error);
                 reject(error)
             } else{
                 resolve(results);
