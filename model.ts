@@ -35,7 +35,11 @@ import {
     updateOTPAdmin,
     verifyOTPAdmin,
     updatePasswordByOtpAdmin,
-    fetchEmailQuery
+    fetchEmailQuery,
+    fetchAllStudents,
+    fetchAllRegisterStudents,
+    fetchAllStudentCampus,
+    fetchAllRegisterStudentCampus
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -722,3 +726,59 @@ export function resetStudentModal(
     })
 }
 
+
+
+//chart query models
+
+export function fetchAllStudentsModals(
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchAllStudents, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchAllRegisterStudentsModal(
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchAllRegisterStudents, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchAllStudentCampusModal(
+    campus:string
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchAllStudentCampus,[campus], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+export function fetchAllRegisterStudentCampusModal(
+    campus:string
+): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(fetchAllRegisterStudentCampus,[campus], (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}

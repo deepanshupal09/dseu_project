@@ -35,13 +35,17 @@ import {
     otpUpdateModelAdmin,
     otpVerifyModelAdmin,
     updatePasswordAdmin,
-    fetchEmailID
-
+    fetchEmailID,
+    fetchAllStudentsModals,
+    fetchAllRegisterStudentsModal,
+    fetchAllStudentCampusModal,
+    fetchAllRegisterStudentCampusModal
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
 import generateOTP from "./otp_generator"
 import { transporter } from "./controller";
+import { fetchAllStudentCampus } from "./queries";
 
 export function handleLogin(
     rollno: string,
@@ -696,6 +700,62 @@ export function resetStudentService(
                 reject("Internal server error in reseting student details");
         })
     })
+}
+
+export function fetchStudentService():Promise<any>{
+    return new Promise(async(resolve, reject) =>{
+        const campus=["DSEU Rajokri Campus",
+            "Sir C.V. Raman DSEU Dheerpur Campus",
+            "Aryabhatt DSEU Ashok Vihar Campus",
+            "Guru Nanak Dev DSEU Rohini Campus",
+            "Ambedkar DSEU Shakarpur Campus-I",
+            "DSEU Sirifort Campus",
+            "DSEU Dwarka Campus",
+            "DSEU Champs Okhla - II Campus",
+            "GB Pant DSEU Okhla III Campus",
+            "DSEU Pusa II Campus",
+            "Kasturba DSEU Pitampura Campus",
+            "Bhai Parmanand DSEU Shakarpur II Campus",
+            "DSEU Wazirpur-I Campus",
+            "DSEU Jaffarpur Campus",
+            "G.B. Pant DSEU Okhla I Campus",
+            "Meerabai DSEU Maharani Bagh Campus",
+            "DSEU Pusa Campus - I",
+            "DSEU Ranhola Campus",
+            "Dr.H.J. Bhabha DSEU Mayur Vihar Campus",
+            "DSEU Vivek Vihar Campus",
+            "DSEU Okhla II Campus"
+        ];
+
+        const totalStudents = await fetchAllStudentsModals();
+        const registeredStudents = await fetchAllRegisterStudentsModal();
+
+        let campusPromises = [];
+
+        for (let i = 0; i < campus.length; i++) {
+            campusPromises.push(
+                Promise.all([
+                    fetchAllStudentCampusModal(campus[i]),
+                    fetchAllRegisterStudentCampusModal(campus[i])
+                ]).then(([totalStudentCampus, registeredStudentCampus]) => {
+                    return {
+                        campusName: campus[i],
+                        totalStudentCampus: totalStudentCampus.rows[0],
+                        registeredStudentCampus: registeredStudentCampus.rows[0]
+                    };
+                })
+            );
+        }
+
+        Promise.all(campusPromises).then((campusData) => {
+            resolve({
+                totalStudents: totalStudents.rows[0],
+                registeredStudents: registeredStudents.rows[0],
+                campusData
+            });
+        })
+        .catch((error) => reject(error));
+    });
 }
 
 

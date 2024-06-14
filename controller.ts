@@ -29,7 +29,8 @@ import {
   resetStudentService,
   otpVerifyServiceAdmin,
   updateThePasswordAdmin,
-  otpUpdateServiceAdmin
+  otpUpdateServiceAdmin,
+  fetchStudentService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -754,6 +755,20 @@ const resetStudentController = (req:Request, res:Response) => {
   }
 }
 
+//chart query controller
+const fetchStudentController = (req:Request, res:Response) => {
+  try{
+    fetchStudentService().then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).json({"message":"Internal server error fetch all student details"})
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -787,5 +802,6 @@ export {
   resetStudentController,
   sendEmailAdmin,
   updatePasswordByOtpAdmin,
-  verifyOtpAndPasswordAdmin
+  verifyOtpAndPasswordAdmin,
+  fetchStudentController
 };

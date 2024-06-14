@@ -130,6 +130,7 @@ app.get("/loginByEmailId", controller.loginByEmailId);
 // app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
 // app.get("/fetchMarksController",marks_controller.fetchMarksController);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
+app.get("/fetchStudentController", controller.fetchStudentController);
 
 
 

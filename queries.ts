@@ -233,3 +233,25 @@ FROM users u
 JOIN semester_course sc ON sc.campus = u.campus AND sc.program = u.program AND sc.semester = u.semester 
 WHERE sc.campus =$1 AND sc.program = $2 AND sc.semester = $3;
 `;
+
+
+
+//charts queries
+
+export const fetchAllStudents: string=`
+  SELECT COUNT(DISTINCT rollno) FROM users;
+`;
+
+export const fetchAllRegisterStudents: string=`
+  SELECT COUNT(DISTINCT rollno) FROM exam_registeration;
+`;
+
+export const fetchAllStudentCampus: string=`
+  SELECT COUNT(DISTINCT rollno) FROM users WHERE campus=$1;
+`;
+
+export const fetchAllRegisterStudentCampus: string=`
+  SELECT COUNT(DISTINCT er.rollno) FROM exam_registeration er 
+  JOIN users u ON u.rollno=er.rollno
+  WHERE u.campus=$1;
+`;
