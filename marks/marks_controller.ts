@@ -6,7 +6,10 @@ import { fetchTheStudentDetailsFromInternal,
     handleStudentDetailsFromAggregate,
     toggleMarksControlService,
     fetchMarksService,
-    fetchStudentsCourseCodeService
+    fetchStudentsCourseCodeService,
+    fetchDepartDetailsByEmailidService,
+    resetPasswordService,
+    fetchTheStudentDetailsFromAggregate
 } from "./marks_service";
 
 const fetchStudentDetailsFromInternalController= (req: Request, res: Response):void => {
@@ -29,6 +32,20 @@ const fetchStudentDetailsFromExternalController= (req: Request, res: Response):v
       const details=req.body;
     //   console.log("semester , course_code :", semester, program);
       fetchTheStudentDetailsFromExternal(details).then((results) => {
+        res.status(200).send(results);
+      }).catch((error) => {
+        res.status(500).send("internal server fetch internal 2");
+      })
+    }
+    catch(error) {
+      res.send("Internal server error internal 3");
+    }
+}
+const fetchStudentDetailsFromAggregateController= (req: Request, res: Response):void => {
+    try{
+      const details=req.body;
+    //   console.log("semester , course_code :", semester, program);
+    fetchTheStudentDetailsFromAggregate(details).then((results) => {
         res.status(200).send(results);
       }).catch((error) => {
         res.status(500).send("internal server fetch internal 2");
@@ -112,6 +129,39 @@ const fetchMarksController = (req:Request, res:Response)=>{
   }
 }
 
+const fetchDepartDetailsByEmailidController = (req:Request, res:Response)=>{
+  try{
+    const emailid: string = req.headers.emailid as string;
+    // const academic_year: string = req.headers.academicyear as string;
+    fetchDepartDetailsByEmailidService(emailid).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send("internal server error at fetch department 1");
+    })
+  } catch(error){
+    res.send("internal server error at fetch department 2");
+  }
+}
+
+
+const resetPasswordController = (req:Request, res:Response)=>{
+  try{
+    const emailid: string = req.headers.emailid as string;
+    const password: string = req.headers.password as string;
+    // const academic_year: string = req.headers.academicyear as string;
+    resetPasswordService(password,emailid).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send("internal server error at reset password 1");
+    })
+  } catch(error){
+    res.send("internal server error at reset password 2");
+  }
+}
+
+
 const fetchStudentsCourseCodeController = (req:Request, res:Response)=>{
   try{
     const course_code: string = req.headers.coursecode as string;
@@ -140,5 +190,8 @@ export {
     handleStudentDetailsFromAggregateController,
     toggleMarksControlController,
     fetchMarksController,
-    fetchStudentsCourseCodeController
+    fetchStudentsCourseCodeController,
+    fetchDepartDetailsByEmailidController,
+    resetPasswordController,
+    fetchStudentDetailsFromAggregateController
 }

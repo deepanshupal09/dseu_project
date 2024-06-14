@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -18,6 +18,7 @@ export function fetchStudentDetailsFromInternal( details:{
             SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM internal_marks im
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            ORDER BY im.rollno
         `;
         // console.log("query:",query);
         pool.query(query, (error, results) => {
@@ -45,6 +46,7 @@ export function fetchStudentDetailsFromExternal( details:{
             SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM external_marks im
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            ORDER BY im.rollno
         `;
         // console.log("query:",query);
         pool.query(query, (error, results) => {
@@ -292,6 +294,7 @@ export function fetchStudentDetailsFromAggregate( details:{
             SELECT im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM aggregate_marks im
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            ORDER BY im.rollno
         `;
         // console.log("query:",query);
         pool.query(query, (error, results) => {
@@ -343,6 +346,7 @@ export function fetchMarksControlModal(details:{
         pool.query(fetchMarkControl, [details.campus, details.program_type, details.program, details.semester], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error);
             } else{
                 resolve(results);
             }
@@ -361,6 +365,7 @@ export function toggleMarksControlModal(details:{
         pool.query(toggleMarkControl, [details.campus, details.program_type, details.program, details.semester, details.marks_control], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error);
             } else{
                 resolve(results);
             }
@@ -376,6 +381,7 @@ export function fetchMarksInternalModal(
         pool.query(fetchMarksInternal, [rollno, academic_year], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error);
             } else{
                 resolve(results);
             }
@@ -390,6 +396,7 @@ export function fetchMarksExternalModal(
         pool.query(fetchMarksExternal, [rollno, academic_year], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error);
             } else{
                 resolve(results);
             }
@@ -404,6 +411,7 @@ export function fetchMarksAggregateModal(
         pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error)
             } else{
                 resolve(results);
             }
@@ -419,6 +427,37 @@ export function fetchStudentsCourseCodeModal(
         pool.query(fetchUsersByCourseCode, [course_code, campus,program_type, program, semester, academic_year], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
+                reject(error)
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchDepartDetailsByEmailidModal(
+    emailid:string
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchDepartDetailsByEmailid, [emailid], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+                reject(error)
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+export function resetPasswordModal(
+    password:string,
+    emailid:string
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(resetPassword, [password, emailid], (error, results)=>{
+            if(error) {
+                console.log("error: ", error);
+                reject(error)
             } else{
                 resolve(results);
             }

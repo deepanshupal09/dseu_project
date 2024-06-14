@@ -14,8 +14,11 @@ import { fetchStudentDetailsFromInternal,
      fetchMarksInternalModal,
      fetchMarksExternalModal,
      fetchMarksAggregateModal,
-     fetchStudentsCourseCodeModal
+     fetchStudentsCourseCodeModal,
+     resetPasswordModal,
+     fetchDepartDetailsByEmailidModal
 } from "./marks_model";
+import bcrypt, { hash } from "bcrypt";
 
 export function fetchTheStudentDetailsFromInternal(details:any): Promise<any> {
     console.log("Fetching course details...");
@@ -43,6 +46,21 @@ export function fetchTheStudentDetailsFromExternal(details:any): Promise<any> {
             });
     });
 }
+
+export function fetchTheStudentDetailsFromAggregate(details:any): Promise<any> {
+    console.log("Fetching course details...");
+    return new Promise((resolve, reject) => {
+        fetchStudentDetailsFromAggregate(details)
+            .then((result) => {
+                resolve(result.rows);
+            })
+            .catch((error) => {
+                console.log("Error in fetching course details: ", error);
+                reject("Internal server error in fetchStudentDetailsFromAggregate");
+            });
+    });
+}
+
 
 
 export async function handleStudentDetailsFromInternal(details: any): Promise<any> {
@@ -374,4 +392,32 @@ export function fetchMarksService(rollno:string, academic_year:string): Promise<
             reject("Internal server error in fetchMarksService");
         });
     });
+}
+
+export function fetchDepartDetailsByEmailidService(
+    emailid:string
+) : Promise<any>{
+    return new Promise((resolve, reject) => {
+        fetchDepartDetailsByEmailidModal(emailid).then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+
+export function resetPasswordService(
+    password:string,
+    emailid:string
+) : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        const hsh = await hash(password, 10);
+        resetPasswordModal(hsh, emailid).then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
 }

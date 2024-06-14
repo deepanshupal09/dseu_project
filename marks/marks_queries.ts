@@ -55,3 +55,11 @@ export const fetchUsersByCourseCode: string =`
     INNER JOIN users AS u ON er.rollno=u.rollno
     WHERE er.course_code=$1 AND u.campus=$2 AND u.program_type=$3 AND u.program=$4 AND u.semester=$5 AND er.academic_year=$6 order by er.rollno ;
 `;
+
+export const fetchDepartDetailsByEmailid: string=`
+  SELECT campus, program, program_type, semester FROM departments WHERE emailid=$1;
+`;
+
+export const resetPassword: string=`
+  UPDATE admin SET password=$1 WHERE emailid=$2;
+`;
