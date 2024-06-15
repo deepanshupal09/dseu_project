@@ -32,6 +32,7 @@ router.post("/handleStudentDetailsFromAggregateController",marks_controller.hand
 router.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
 router.get("/fetchMarksController",marks_controller.fetchMarksController);
 router.get("/fetchStudentsByCourseCode", marks_controller.fetchStudentsCourseCodeController)
+router.post("/fetchStudentDetailsFromAggregateController",marks_controller.fetchStudentDetailsFromAggregateController);
 
 
 export default router;
