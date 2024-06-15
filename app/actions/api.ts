@@ -811,6 +811,46 @@ export async function fetchInternalMarks(
     throw error;
   }
 }
+
+export async function fetchAggregateMarks(
+  token: string,
+  details: {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: string;
+    academic_year: string;
+    course_code: string;
+    rollno: Array<string>;
+  }
+) {
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromAggregateController`,
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          token: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(details),
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 export async function fetchExternalMarks(
   token: string,
   details: {
@@ -929,6 +969,45 @@ export async function updateInternalMarks(
 }
 
 export async function updateExternalMarks(
+  token: string,
+  details: {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: string;
+    course_code: string;
+    academic_year: string;
+    rollno: Array<string>;
+    marks: Array<string>;
+    freeze_marks: boolean;
+  }
+) {
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromExternalController`,
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          token: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(details),
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function updateAggregateMarks(
   token: string,
   details: {
     campus: string;
