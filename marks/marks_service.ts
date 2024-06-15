@@ -62,7 +62,6 @@ export function fetchTheStudentDetailsFromAggregate(details:any): Promise<any> {
 }
 
 
-
 export async function handleStudentDetailsFromInternal(details: any): Promise<any> {
     return fetchMarksControlModal(details)
         .then((controlResult) => {

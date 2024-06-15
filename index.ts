@@ -122,7 +122,7 @@ app.post("/updateExamControl", controller.updateExamControl);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
 // app.get("/fetchExamControl", controller.fetchExamControl);
-// app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
+app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
 // app.get("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);
 // app.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
 // app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
