@@ -69,6 +69,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                 return new Promise((resolve, reject) => {
                     fetchStudentDetailsFromInternal(details)
                         .then((fetchResult) => {
+                            console.log("hello: ",fetchResult.rows);
                             if (fetchResult.rows.length === 0) {
                                 console.log("Inserting student details...");
 

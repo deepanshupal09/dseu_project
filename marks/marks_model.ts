@@ -79,9 +79,9 @@ export function updateStudentDetailsFromInternal(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE internal_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE internal_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
 
-
+            console.log("query: ",query);
             pool.query(query, (error, results) => {
                 if (error) {
                     reject(error);
@@ -112,7 +112,7 @@ export function updateStudentDetailsFromExternal(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE external_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE external_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
 
             // console.log("query:", query);
 
@@ -266,7 +266,7 @@ export function updateStudentDetailsFromAggregate(details: {
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE aggregate_marks SET campus = '${details.campus}', program_type = '${details.program_type}', program = '${details.program}', semester = ${details.semester}, course_code = '${details.course_code}', academic_year = '${details.academic_year}', marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', created_at = '${details.created_at}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}';`;
+            let query = `UPDATE aggregate_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
 
             // console.log("query:", query);
 
