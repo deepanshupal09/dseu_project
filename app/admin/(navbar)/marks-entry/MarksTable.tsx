@@ -30,7 +30,7 @@ import { saveAs } from "file-saver";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
-import { fetchInternalMarks, updateExternalMarks, updateInternalMarks } from "@/app/actions/api";
+import { fetchInternalMarks, updateAggregateMarks, updateExternalMarks, updateInternalMarks } from "@/app/actions/api";
 
 interface FileData {
   fileName: string;
@@ -275,11 +275,58 @@ export default function MarksTable({
         errors.push({ ...student, error: "Marks can not be negative!" });
       }
     });
+    setErrors(errors);
     if (errors.length > 0) {
       setErrorDialog(true);
+    } else {
+      if (maxMarks === 25) {
+        const details = {
+          campus: campus,
+          program_type: program_type,
+          program: program,
+          semester: semester,
+          course_code: course_code,
+          academic_year: academic_year,
+          rollno: studentList.map(student => student.rollno),
+          marks: studentList.map(student => student.marks),
+          freeze_marks: true,
+        }
+        const res = await updateInternalMarks(token, details);
+        console.log("res: ", res)
+      }
+      if (maxMarks === 75) {
+        const details = {
+          campus: campus,
+          program_type: program_type,
+          program: program,
+          semester: semester,
+          course_code: course_code,
+          academic_year: academic_year,
+          rollno: studentList.map(student => student.rollno),
+          marks: studentList.map(student => student.marks),
+          freeze_marks: true,
+        }
+        const res = await updateExternalMarks(token, details);
+        console.log("res: ", res)
+      }
+  
+      if (maxMarks === 100) {
+        const details = {
+          campus: campus,
+          program_type: program_type,
+          program: program,
+          semester: semester,
+          course_code: course_code,
+          academic_year: academic_year,
+          rollno: studentList.map(student => student.rollno),
+          marks: studentList.map(student => student.marks),
+          freeze_marks: true,
+        }
+        const res = await updateAggregateMarks(token, details);
+        console.log("res: ", res)
+      }
     }
     // console.log("error: ", errors)
-    setErrors(errors);
   }
 
   async function handleSaveChanges() {
@@ -295,7 +342,7 @@ export default function MarksTable({
         marks: studentList.map(student => student.marks),
         freeze_marks: false,
       }
-      const res = await updateInternalMarks(token,details);
+      const res = await updateInternalMarks(token, details);
       console.log("res: ", res)
     }
     if (maxMarks === 75) {
@@ -310,7 +357,23 @@ export default function MarksTable({
         marks: studentList.map(student => student.marks),
         freeze_marks: false,
       }
-      const res = await updateExternalMarks(token,details);
+      const res = await updateExternalMarks(token, details);
+      console.log("res: ", res)
+    }
+
+    if (maxMarks === 100) {
+      const details = {
+        campus: campus,
+        program_type: program_type,
+        program: program,
+        semester: semester,
+        course_code: course_code,
+        academic_year: academic_year,
+        rollno: studentList.map(student => student.rollno),
+        marks: studentList.map(student => student.marks),
+        freeze_marks: false,
+      }
+      const res = await updateAggregateMarks(token, details);
       console.log("res: ", res)
     }
   }
@@ -369,9 +432,8 @@ export default function MarksTable({
         )}
       </div>
       <div
-        className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
-          dragActive ? "bg-slate-100" : ""
-        }`}
+        className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${dragActive ? "bg-slate-100" : ""
+          }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}

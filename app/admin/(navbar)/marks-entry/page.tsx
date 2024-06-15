@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
+  fetchAggregateMarks,
   fetchCoursesBySemester,
   fetchExamRegistrationByProgramAndSemester,
   fetchExternalMarks,
@@ -17,10 +18,12 @@ import { useData } from "@/contexts/DataContext";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
   Tab,
   Tabs,
   Typography,
@@ -110,6 +113,9 @@ export default function Marks() {
     setValue(newValue);
   };
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(false)
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
@@ -126,9 +132,9 @@ export default function Marks() {
           response.map((e) => temp.push(e.course_name));
           setCourseList(temp);
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
-  }, [selectedProgram, selectedSemester]);
+  }, [selectedProgram, selectedSemester, selectedProgramCategory, selectedCampus]);
 
   useEffect(() => {
     setSelectedProgramCategory("");
@@ -196,6 +202,7 @@ export default function Marks() {
       )?.course_code;
       if (course_code) {
         try {
+          setLoading(true)
           const res = await fetchStudentByCourseCode(
             token,
             course_code,
@@ -213,11 +220,16 @@ export default function Marks() {
               marks: "",
             })
           );
+          setLoading(false)
           // if (res.length > 0) {
           // }
           console.log(formattedStudentList);
           setStudentList(formattedStudentList);
-        } catch (error) {}
+        } catch (error) {
+
+          setLoading(false)
+
+        }
       }
     } else {
       setStudentList([]);
@@ -240,13 +252,28 @@ export default function Marks() {
             course_code: course_code,
             rollno: studentList.map((student) => student.rollno),
           };
-          fetchInternalMarks(token, details)
-            .then((res) => {
-              console.log("res: ", res);
-            })
-            .catch((error) => {
-              console.log("error: ", error);
-            });
+          if (studentList.length > 0) {
+            setLoading(true)
+            fetchInternalMarks(token, details)
+              .then((res) => {
+                if (res.length > 0) {
+                  const students: StudentType[] = res.map((student: any, index: number) => ({
+                    sno: index + 1,
+                    rollno: student.rollno,
+                    name: student.name,
+                    marks: student.marks
+                  }));
+                  setStudentList(students)
+                } else {
+                  handleApplyFilters();
+                }
+                setLoading(false)
+              })
+              .catch((error) => {
+                setLoading(false)
+                console.log("error: ", error);
+              });
+          }
         }
       } else {
         const course_code = courseCodes.find(
@@ -262,17 +289,73 @@ export default function Marks() {
             course_code: course_code,
             rollno: studentList.map((student) => student.rollno),
           };
-          fetchExternalMarks(token, details)
-            .then((res) => {
-              console.log("res: ", res);
-            })
-            .catch((error) => {
-              console.log("error: ", error);
-            });
+          if (studentList.length > 0) {
+
+            setLoading(true)
+            fetchExternalMarks(token, details)
+              .then((res) => {
+                console.log("res: ", res);
+                if (res.length > 0) {
+                  const students: StudentType[] = res.map((student: any, index: number) => ({
+                    sno: index + 1,
+                    rollno: student.rollno,
+                    name: student.name,
+                    marks: student.marks
+                  }));
+                  setStudentList(students)
+                } else {
+                  handleApplyFilters();
+                }
+                setLoading(false)
+              })
+              .catch((error) => {
+                setLoading(false)
+                console.log("error: ", error);
+              });
+          }
         }
       }
     }
     if (subjectType === 2) {
+      const course_code = courseCodes.find(
+        (course) => course.course_name === selectedCourse
+      )?.course_code;
+      if (course_code) {
+        const details = {
+          campus: selectedCampus,
+          program_type: selectedProgramCategory,
+          program: selectedProgram,
+          semester: selectedSemester,
+          academic_year: "2023-2024",
+          course_code: course_code,
+          rollno: studentList.map((student) => student.rollno),
+        };
+        if (studentList.length > 0) {
+
+          setLoading(true)
+          fetchAggregateMarks(token, details)
+            .then((res) => {
+              if (res.length > 0) {
+                console.log("res: ", res);
+                const students: StudentType[] = res.map((student: any, index: number) => ({
+                  sno: index + 1,
+                  rollno: student.rollno,
+                  name: student.name,
+                  marks: student.marks
+                }));
+                setStudentList(students)
+
+              } else {
+                handleApplyFilters();
+              }
+              setLoading(false)
+            })
+            .catch((error) => {
+              setLoading(false)
+              console.log("error: ", error);
+            });
+        }
+      }
     }
   }, [subjectType, value]);
 
@@ -418,7 +501,7 @@ export default function Marks() {
                   data[selectedCampus] &&
                   data[selectedCampus][selectedProgramCategory] &&
                   data[selectedCampus][selectedProgramCategory][
-                    selectedProgram
+                  selectedProgram
                   ] &&
                   data[selectedCampus][selectedProgramCategory][
                     selectedProgram
@@ -488,40 +571,50 @@ export default function Marks() {
                       </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                      <MarksTable
-                        campus={selectedCampus}
-                        program_type={selectedProgramCategory}
-                        program={selectedProgram}
-                        semester={selectedSemester}
-                        course_code={
-                          courseCodes.find(
-                            (course) => course.course_name === selectedCourse
-                          )?.course_code || ""
-                        }
-                        token={token}
-                        academic_year="2023-2024"
-                        subjectType="1"
-                        maxMarks={subjectType === 1 ? 25 : 100}
-                        students={studentList}
-                      />
+                      <div className="w-full h-full flex justify-center items-center">
+                        {loading && <CircularProgress className="mx-auto" />}
+                      </div>
+                      {!loading && (
+                        <MarksTable
+                          campus={selectedCampus}
+                          program_type={selectedProgramCategory}
+                          program={selectedProgram}
+                          semester={selectedSemester}
+                          course_code={
+                            courseCodes.find(
+                              (course) => course.course_name === selectedCourse
+                            )?.course_code || ""
+                          }
+                          token={token}
+                          academic_year="2023-2024"
+                          subjectType="1"
+                          maxMarks={subjectType === 1 ? 25 : 100}
+                          students={studentList}
+                        />
+                      )}
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                      <MarksTable
-                        campus={selectedCampus}
-                        program_type={selectedProgramCategory}
-                        program={selectedProgram}
-                        semester={selectedSemester}
-                        course_code={
-                          courseCodes.find(
-                            (course) => course.course_name === selectedCourse
-                          )?.course_code || ""
-                        }
-                        token={token}
-                        academic_year="2023-2024"
-                        subjectType="2"
-                        maxMarks={75}
-                        students={studentList}
-                      />
+                      <div className="w-full h-full flex justify-center items-center">
+                        {loading && <CircularProgress className="mx-auto" />}
+                      </div>
+                      {!loading && (
+                        <MarksTable
+                          campus={selectedCampus}
+                          program_type={selectedProgramCategory}
+                          program={selectedProgram}
+                          semester={selectedSemester}
+                          course_code={
+                            courseCodes.find(
+                              (course) => course.course_name === selectedCourse
+                            )?.course_code || ""
+                          }
+                          token={token}
+                          academic_year="2023-2024"
+                          subjectType="2"
+                          maxMarks={75}
+                          students={studentList}
+                        />
+                      )}
                     </CustomTabPanel>
                   </Box>
                 </div>
@@ -569,6 +662,14 @@ export default function Marks() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={alert}
+        autoHideDuration={6000}
+        onClose={() => {
+          setAlert(false);
+        }}
+        message={message}
+      />
     </>
   );
 }
