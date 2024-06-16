@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -461,6 +461,34 @@ export function resetPasswordModal(
             if(error) {
                 console.log("error:  ", error);
                 reject(error)
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+export function fetchFreezeDetailsModel(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchFreezeDetailsQuery, (error, results)=>{
+            if(error) {
+                console.log("error:  ", error);
+                reject(error)
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+export function getEmailidAdminModel(campus:string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(getEmailidAdminQuery,[campus], (error, results)=>{
+            if(error){
+                console.log("error: ", error);
+                reject(error);
             } else{
                 resolve(results);
             }

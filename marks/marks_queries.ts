@@ -63,3 +63,21 @@ export const fetchDepartDetailsByEmailid: string=`
 export const resetPassword: string=`
   UPDATE admin SET password=$1 WHERE emailid=$2;
 `;
+
+export const fetchFreezeDetailsQuery: string=`
+  SELECT ag.campus, ag.program_type, ag.program, ag.semester, c.course_name FROM 
+  (SELECT DISTINCT 
+    campus, 
+    program_type, 
+    program, 
+    semester,
+    academic_year,
+    course_code
+  FROM aggregate_marks WHERE freeze_marks = false) ag
+  JOIN courses c ON ag.course_code = c.course_code;
+`;
+
+
+export const getEmailidAdminQuery: string=`
+  SELECT emailid FROM admin WHERE campus=$1;
+`;

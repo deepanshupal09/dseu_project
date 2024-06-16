@@ -16,9 +16,19 @@ import { fetchStudentDetailsFromInternal,
      fetchMarksAggregateModal,
      fetchStudentsCourseCodeModal,
      resetPasswordModal,
-     fetchDepartDetailsByEmailidModal
+     fetchDepartDetailsByEmailidModal,
+     fetchFreezeDetailsModel,
+     getEmailidAdminModel
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
+
+export interface FreezeData {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: number;
+    course_name: string;
+}
 
 export function fetchTheStudentDetailsFromInternal(details:any): Promise<any> {
     console.log("Fetching course details...");
@@ -421,3 +431,45 @@ export function resetPasswordService(
         })
     })
 }
+
+export function fetchFreezeDetailsService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchFreezeDetailsModel().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+
+
+
+export function getEmailidAdminService(): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let emailIds: string[] = [];
+            const freezeData: FreezeData[] = await fetchFreezeDetailsService();
+            const campuses = new Set(freezeData.map((data: FreezeData) => data.campus));
+            for (let campus of campuses) {
+                const result: QueryResult<any> = await getEmailidAdminModel(campus); 
+                
+                for (let i = 0; i < (result.rowCount as number) ; i++){
+                    const emailId = result.rows[i].emailid;
+                    // console.log("emailid",emailId)
+                    emailIds.push(emailId); 
+                }
+            }
+            const campusEmailids = emailIds.join(', ');
+
+            resolve(campusEmailids);
+        } catch (error) {
+            console.log("Campus email Error:", error);
+            reject(error); 
+        }
+    });
+}
+
+
+
+

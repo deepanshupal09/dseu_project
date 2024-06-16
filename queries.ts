@@ -255,3 +255,4 @@ export const fetchAllRegisterStudentCampus: string=`
   JOIN users u ON u.rollno=er.rollno
   WHERE u.campus=$1;
 `;
+

@@ -131,6 +131,8 @@ app.post("/handleStudentDetailsFromInternalController",marks_controller.handleSt
 // app.get("/fetchMarksController",marks_controller.fetchMarksController);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 app.get("/fetchStudentController", controller.fetchStudentController);
+app.get("/fetchFreezeDetailsController",marks_controller.fetchFreezeDetailsController);
+app.get("/sendEmailMarksController",marks_controller.sendEmailMarksController);
 
 
 

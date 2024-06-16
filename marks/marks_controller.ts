@@ -9,8 +9,14 @@ import { fetchTheStudentDetailsFromInternal,
     fetchStudentsCourseCodeService,
     fetchDepartDetailsByEmailidService,
     resetPasswordService,
-    fetchTheStudentDetailsFromAggregate
+    fetchTheStudentDetailsFromAggregate,
+    fetchFreezeDetailsService,
+    getEmailidAdminService,
 } from "./marks_service";
+import nodemailer from "nodemailer";
+import asyncHandler from "express-async-handler";
+import dotenv from "dotenv";
+dotenv.config();
 
 const fetchStudentDetailsFromInternalController= (req: Request, res: Response):void => {
     try{
@@ -182,6 +188,64 @@ const fetchStudentsCourseCodeController = (req:Request, res:Response)=>{
   }
 }
 
+
+const fetchFreezeDetailsController = (req:Request, res:Response)=>{
+  try{
+    fetchFreezeDetailsService().then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send("internal server error at freeze details 1");
+    })
+  } catch(error){
+    res.send("internal server error at freeze details 2");
+  }
+}
+
+export const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_MAIL, // generated ethereal user
+    pass: process.env.SMTP_PASSWORD, // generated ethereal password
+  },
+});
+
+//have to get campus
+const sendEmailMarksController = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const email = await getEmailidAdminService();
+    console.log("emails: ",email);
+
+
+    //need to change the subject and text
+
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      bcc: email,
+      subject: 'all is well',
+      text: `testing mail`, 
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).send({ message: 'Internal Server Error!' });
+      } else {
+        console.log('Email sent successfully!');
+        res.status(200).send({message: 'Email sent successfully!'});
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching email:', error);
+    res.status(404).send({email: 'Email not found!'});
+  }
+});
+
+
+
 export {
     fetchStudentDetailsFromInternalController,
     handleStudentDetailsFromInternalController,
@@ -193,5 +257,7 @@ export {
     fetchStudentsCourseCodeController,
     fetchDepartDetailsByEmailidController,
     resetPasswordController,
-    fetchStudentDetailsFromAggregateController
+    fetchStudentDetailsFromAggregateController,
+    fetchFreezeDetailsController,
+    sendEmailMarksController
 }
