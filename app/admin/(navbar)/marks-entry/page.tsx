@@ -7,14 +7,18 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
   fetchAggregateMarks,
   fetchCoursesBySemester,
+  fetchDepartDetailsByEmailid,
   fetchExamRegistrationByProgramAndSemester,
   fetchExternalMarks,
   fetchInternalMarks,
   fetchStudentByCourseCode,
+  updateAggregateMarks,
+  updateExternalMarks,
+  updateInternalMarks,
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
-import { useData } from "@/contexts/DataContext";
+import { ProgramListByTypeType, TransformedType, transformData, useData } from "@/contexts/DataContext";
 import {
   Box,
   Button,
@@ -29,6 +33,7 @@ import {
   Typography,
 } from "@mui/material";
 import MarksTable from "./MarksTable";
+import { useRouter } from "next/navigation";
 
 interface ProgramList {
   [key: string]: string[];
@@ -106,16 +111,21 @@ export default function Marks() {
     useState<string>("");
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
-  const { data } = useData();
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<string>("");
+  const [data, setData] = useState<TransformedType>();
   const [value, setValue] = React.useState(0);
-  const [subjectType, setSubjectType] = useState(0);
+  const [subjectType, setSubjectType] = useState(1);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(false)
-  const [message, setMessage] = useState("")
+  const [alert, setAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [freeze, setFreeze] = useState(false);
+  const router = useRouter();
+
+  const academicYear: string[] = ["2023-2024"];
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
@@ -132,28 +142,41 @@ export default function Marks() {
           response.map((e) => temp.push(e.course_name));
           setCourseList(temp);
         })
-        .catch((error) => { });
+        .catch((error) => {});
     }
-  }, [selectedProgram, selectedSemester, selectedProgramCategory, selectedCampus]);
+  }, [
+    selectedProgram,
+    selectedSemester,
+    selectedProgramCategory,
+    selectedCampus,
+  ]);
 
   useEffect(() => {
     setSelectedProgramCategory("");
     setSelectedProgram("");
     setSelectedSemester("");
     setSelectedCourse("");
+    setSelectedAcademicYear("");
   }, [selectedCampus]);
   useEffect(() => {
     setSelectedProgram("");
     setSelectedSemester("");
     setSelectedCourse("");
+    setSelectedAcademicYear("");
   }, [selectedProgramCategory]);
   useEffect(() => {
     setSelectedSemester("");
     setSelectedCourse("");
+    setSelectedAcademicYear("");
   }, [selectedProgram]);
   useEffect(() => {
     setSelectedCourse("");
+    setSelectedAcademicYear("");
   }, [selectedSemester]);
+
+  useEffect(() => {
+    setSelectedAcademicYear("");
+  }, [selectedCourse]);
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -161,7 +184,7 @@ export default function Marks() {
         setToken(t.value);
         const data = await parseJwt(t.value);
         setUser(data.user);
-        if (data.user.role === "admin") {
+        if (data.user.role === "admin" || data.user.role === "dep") {
           setSelectedCampus(data.user.campus);
         }
       }
@@ -174,7 +197,8 @@ export default function Marks() {
       selectedProgramCategory !== "" &&
       selectedProgram !== "" &&
       selectedSemester !== "" &&
-      selectedCourse !== ""
+      selectedCourse !== "" &&
+      selectedAcademicYear !== ""
     ) {
       handleApplyFilters();
     } else {
@@ -186,7 +210,37 @@ export default function Marks() {
     selectedProgramCategory,
     selectedSemester,
     selectedCourse,
+    selectedAcademicYear,
   ]);
+
+  useEffect(() => {
+    console.log("user: ", user)
+    if (user) {
+      fetchDepartDetailsByEmailid(token,user.emailid).then((data)=>{
+        console.log("data: ", data)
+        const campusList: string[] = Array.from(
+          new Set(data.map((entry:any) => entry.campus))
+        );
+        const programTypeList: string[] = Array.from(
+          new Set(data.map((entry:any) => entry.program_type))
+        );
+        const programListByType:ProgramListByTypeType = {}
+        data.map((entry:any) => {
+          if (!programListByType[entry.program_type]) {
+            programListByType[entry.program_type] = [];
+            programListByType[entry.program_type].push(entry.program)
+          } else {
+            if(!programListByType[entry.program_type].includes(entry.program)) {
+              programListByType[entry.program_type].push(entry.program)
+            }
+          }
+        })
+
+        const transfomedData = transformData(data);
+        setData(transfomedData);
+      })
+    }
+  },[user])
 
   // useEffect(() => {
   //   if (selectedCourse !== "") {
@@ -202,7 +256,7 @@ export default function Marks() {
       )?.course_code;
       if (course_code) {
         try {
-          setLoading(true)
+          setLoading(true);
           const res = await fetchStudentByCourseCode(
             token,
             course_code,
@@ -212,6 +266,7 @@ export default function Marks() {
             selectedSemester,
             "2023-2024"
           );
+          console.log("res: ", res);
           const formattedStudentList: StudentType[] = res.map(
             (student: Student, index: number) => ({
               sno: index + 1,
@@ -220,15 +275,60 @@ export default function Marks() {
               marks: "",
             })
           );
-          setLoading(false)
+
+          const freezeStatus = await fetchFreeze(
+            formattedStudentList.map((student) => student.rollno)
+          );
+          setFreeze(freezeStatus);
+          if (!freezeStatus) {
+            setOpen(true);
+            setStudentList(formattedStudentList);
+          } else {
+            const internal = await fetchInternalMarks(token, {
+              campus: selectedCampus,
+              program_type: selectedProgramCategory,
+              program: selectedProgram,
+              semester: selectedSemester,
+              academic_year: selectedAcademicYear,
+              course_code: course_code,
+              rollno: formattedStudentList.map((student) => student.rollno),
+            });
+            console.log("internal: ", internal);
+            let marks;
+            if (internal && internal.length > 0 && internal[0].freeze_marks) {
+              setSubjectType(1);
+              console.log(
+                "subject type: ",
+                1,
+                formattedStudentList.map((student) => student.rollno)
+              );
+              marks = await fetchStudentMarks(
+                1,
+                0,
+                formattedStudentList.map((student) => student.rollno)
+              );
+            } else {
+              setSubjectType(2);
+              // console.log("subject type: ", 2)
+              console.log(
+                "subject type: ",
+                2,
+                formattedStudentList.map((student) => student.rollno)
+              );
+              marks = await fetchStudentMarks(
+                2,
+                0,
+                formattedStudentList.map((student) => student.rollno)
+              );
+            }
+            setStudentList(marks);
+          }
+          setLoading(false);
           // if (res.length > 0) {
           // }
           console.log(formattedStudentList);
-          setStudentList(formattedStudentList);
         } catch (error) {
-
-          setLoading(false)
-
+          setLoading(false);
         }
       }
     } else {
@@ -236,132 +336,125 @@ export default function Marks() {
     }
   };
 
-  useEffect(() => {
-    if (subjectType === 1) {
-      if (value === 0) {
-        const course_code = courseCodes.find(
-          (course) => course.course_name === selectedCourse
-        )?.course_code;
-        if (course_code) {
-          const details = {
-            campus: selectedCampus,
-            program_type: selectedProgramCategory,
-            program: selectedProgram,
-            semester: selectedSemester,
-            academic_year: "2023-2024",
-            course_code: course_code,
-            rollno: studentList.map((student) => student.rollno),
-          };
-          if (studentList.length > 0) {
-            setLoading(true)
-            fetchInternalMarks(token, details)
-              .then((res) => {
-                if (res.length > 0) {
-                  const students: StudentType[] = res.map((student: any, index: number) => ({
-                    sno: index + 1,
-                    rollno: student.rollno,
-                    name: student.name,
-                    marks: student.marks
-                  }));
-                  setStudentList(students)
-                } else {
-                  handleApplyFilters();
-                }
-                setLoading(false)
-              })
-              .catch((error) => {
-                setLoading(false)
-                console.log("error: ", error);
-              });
-          }
-        }
-      } else {
-        const course_code = courseCodes.find(
-          (course) => course.course_name === selectedCourse
-        )?.course_code;
-        if (course_code) {
-          const details = {
-            campus: selectedCampus,
-            program_type: selectedProgramCategory,
-            program: selectedProgram,
-            semester: selectedSemester,
-            academic_year: "2023-2024",
-            course_code: course_code,
-            rollno: studentList.map((student) => student.rollno),
-          };
-          if (studentList.length > 0) {
-
-            setLoading(true)
-            fetchExternalMarks(token, details)
-              .then((res) => {
-                console.log("res: ", res);
-                if (res.length > 0) {
-                  const students: StudentType[] = res.map((student: any, index: number) => ({
-                    sno: index + 1,
-                    rollno: student.rollno,
-                    name: student.name,
-                    marks: student.marks
-                  }));
-                  setStudentList(students)
-                } else {
-                  handleApplyFilters();
-                }
-                setLoading(false)
-              })
-              .catch((error) => {
-                setLoading(false)
-                console.log("error: ", error);
-              });
-          }
-        }
-      }
+  async function fetchFreeze(students: Array<string>): Promise<boolean> {
+    const course_code = courseCodes.find(
+      (course) => course.course_name === selectedCourse
+    )?.course_code;
+    if (!course_code) {
+      console.log("No course code found for selected course");
+      return false;
     }
-    if (subjectType === 2) {
-      const course_code = courseCodes.find(
-        (course) => course.course_name === selectedCourse
-      )?.course_code;
-      if (course_code) {
-        const details = {
-          campus: selectedCampus,
-          program_type: selectedProgramCategory,
-          program: selectedProgram,
-          semester: selectedSemester,
-          academic_year: "2023-2024",
-          course_code: course_code,
-          rollno: studentList.map((student) => student.rollno),
-        };
-        if (studentList.length > 0) {
-
-          setLoading(true)
-          fetchAggregateMarks(token, details)
-            .then((res) => {
-              if (res.length > 0) {
-                console.log("res: ", res);
-                const students: StudentType[] = res.map((student: any, index: number) => ({
-                  sno: index + 1,
-                  rollno: student.rollno,
-                  name: student.name,
-                  marks: student.marks
-                }));
-                setStudentList(students)
-
-              } else {
-                handleApplyFilters();
-              }
-              setLoading(false)
-            })
-            .catch((error) => {
-              setLoading(false)
-              console.log("error: ", error);
-            });
-        }
-      }
+    if (students.length > 0) {
+      console.log("No students");
+      return false;
     }
-  }, [subjectType, value]);
+
+    const details = {
+      campus: selectedCampus,
+      program_type: selectedProgramCategory,
+      program: selectedProgram,
+      semester: selectedSemester,
+      academic_year: selectedAcademicYear,
+      course_code: course_code,
+      rollno: students,
+    };
+
+    const res = await fetchAggregateMarks(token, details);
+    if (res && res.length > 0) {
+      return res[0].freeze_marks;
+    } else {
+      return false;
+    }
+  }
+
+  async function fetchStudentMarks(
+    subjectType: number,
+    value: number,
+    rollno: Array<string>
+  ) {
+    console.log(
+      `fetch student marks: subjectType: ${subjectType}, value: ${value}`
+    );
+
+    if (rollno.length === 0) {
+      console.log("No students available to fetch marks for");
+      return [];
+    }
+
+    const course_code = courseCodes.find(
+      (course) => course.course_name === selectedCourse
+    )?.course_code;
+    if (!course_code) {
+      console.log("No course code found for selected course");
+      return [];
+    }
+
+    const details = {
+      campus: selectedCampus,
+      program_type: selectedProgramCategory,
+      program: selectedProgram,
+      semester: selectedSemester,
+      academic_year: selectedAcademicYear,
+      course_code: course_code,
+      rollno: rollno,
+    };
+
+    console.log("Details for fetching marks:", details);
+
+    try {
+      setLoading(true);
+      let res = [];
+
+      if (subjectType === 1) {
+        if (value === 0) {
+          console.log("Fetching internal marks...");
+          res = await fetchInternalMarks(token, details);
+        } else {
+          console.log("Fetching external marks...");
+          res = await fetchExternalMarks(token, details);
+        }
+      } else if (subjectType === 2) {
+        console.log("Fetching aggregate marks...");
+        res = await fetchAggregateMarks(token, details);
+      }
+
+      setLoading(false);
+
+      if (!res || res.length === 0) {
+        console.log("No marks data returned from API");
+        return [];
+      }
+
+      console.log("Marks data returned:", res);
+
+      return res.map((student: any, index: number) => ({
+        sno: index + 1,
+        rollno: student.rollno,
+        name: student.name,
+        marks: student.marks,
+      }));
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching marks:", error);
+      return [];
+    }
+  }
 
   useEffect(() => {
-    if (selectedCourse !== "") setOpen(true);
-  }, [selectedCourse]);
+    fetchStudentMarks(
+      subjectType,
+      value,
+      studentList.map((student) => student.rollno)
+    ).then((students) => {
+      if (students && students.length > 0) {
+        setStudentList(students);
+      }
+    });
+  }, [value, subjectType]);
+
+  // useEffect(() => {
+  //   if (selectedCourse !== "" && !freeze) setOpen(true);
+  // }, [selectedCourse,freeze]);
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
@@ -387,7 +480,18 @@ export default function Marks() {
 
   const handleChangeCourse = (event: SelectChangeEvent) => {
     setSelectedCourse(event.target.value);
+    setSelectedAcademicYear("");
   };
+
+  const handleChangeAcademicYear = (event: SelectChangeEvent) => {
+    setSelectedAcademicYear(event.target.value);
+  };
+
+
+
+  useEffect(() => {
+    console.log("FREEZE: ", freeze)
+  },[freeze])
 
   return (
     <>
@@ -501,7 +605,7 @@ export default function Marks() {
                   data[selectedCampus] &&
                   data[selectedCampus][selectedProgramCategory] &&
                   data[selectedCampus][selectedProgramCategory][
-                  selectedProgram
+                    selectedProgram
                   ] &&
                   data[selectedCampus][selectedProgramCategory][
                     selectedProgram
@@ -535,13 +639,38 @@ export default function Marks() {
                   ))}
               </Select>
             </FormControl>
+            <FormControl
+              size="small"
+              className="w-full md:w-1/3 sm:w-auto mt-5"
+            >
+              <InputLabel id="academic-year-label">Academic Year</InputLabel>
+              <Select
+                labelId="year-label"
+                id="year"
+                value={selectedAcademicYear}
+                label="Academic Year"
+                onChange={handleChangeAcademicYear}
+              >
+                {selectedCampus !== "" &&
+                  selectedProgramCategory !== "" &&
+                  selectedProgram !== "" &&
+                  selectedSemester !== "" &&
+                  selectedCourse !== "" &&
+                  academicYear.map((year, index) => (
+                    <MenuItem key={index} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
           </div>
         )}
         <div></div>
         <div className="my-10">
           <div className="text-2xl font-medium">
-            {selectedCourse === "" && "No Course Selected"}
-            {selectedCourse !== "" && (
+            {selectedAcademicYear === "" && "No Course Selected"}
+            {selectedAcademicYear !== "" && studentList.length === 0 && "No Students Available "}
+            {selectedAcademicYear !== "" && studentList.length > 0 &&  (
               <div className="space-y-5 px-2">
                 <div className="space-y-4">
                   <div className="flex justify-between">
@@ -578,6 +707,9 @@ export default function Marks() {
                         <MarksTable
                           campus={selectedCampus}
                           program_type={selectedProgramCategory}
+                          freeze={freeze}
+                          setFreeze={setFreeze}
+                          superAdmin={user?.role === "super"}
                           program={selectedProgram}
                           semester={selectedSemester}
                           course_code={
@@ -586,7 +718,7 @@ export default function Marks() {
                             )?.course_code || ""
                           }
                           token={token}
-                          academic_year="2023-2024"
+                          academic_year={selectedAcademicYear}
                           subjectType="1"
                           maxMarks={subjectType === 1 ? 25 : 100}
                           students={studentList}
@@ -603,13 +735,16 @@ export default function Marks() {
                           program_type={selectedProgramCategory}
                           program={selectedProgram}
                           semester={selectedSemester}
+                          freeze={freeze}
+                          superAdmin={user?.role === "super"}
+                          setFreeze={setFreeze}
                           course_code={
                             courseCodes.find(
                               (course) => course.course_name === selectedCourse
                             )?.course_code || ""
                           }
                           token={token}
-                          academic_year="2023-2024"
+                          academic_year={selectedAcademicYear}
                           subjectType="2"
                           maxMarks={75}
                           students={studentList}
@@ -643,8 +778,18 @@ export default function Marks() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
+            onClick={async () => {
               setSubjectType(1);
+              const students = await fetchStudentMarks(
+                1,
+                value,
+                studentList.map((student) => student.rollno)
+              );
+              console.log("students: ", students);
+              if (students && students?.length > 0) {
+                console.log("students: ", students);
+                setStudentList(students);
+              }
               setOpen(false);
             }}
             color="primary"
@@ -652,8 +797,17 @@ export default function Marks() {
             Internal and External Assessment
           </Button>
           <Button
-            onClick={() => {
+            onClick={async () => {
               setSubjectType(2);
+              const students = await fetchStudentMarks(
+                2,
+                value,
+                studentList.map((student) => student.rollno)
+              );
+              console.log("students: ", students);
+              if (students && students?.length > 0) {
+                setStudentList(students);
+              }
               setOpen(false);
             }}
             color="primary"

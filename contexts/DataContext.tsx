@@ -24,7 +24,7 @@ type CampusDetailType = {
 interface DataContextProps {
   data: TransformedType | null;
 }
-type ProgramListByTypeType = {
+export type ProgramListByTypeType = {
   [key: string]: string[];
 }
 
@@ -34,13 +34,39 @@ type DataType = {
   programListByType: ProgramListByTypeType
 } 
 
+export function transformData(data: CampusDetailType[]): TransformedType {
+  let result: TransformedType = {};
+
+  data.forEach(item => {
+    if (!result[item.campus]) {
+      result[item.campus] = {};
+    }
+    if (!result[item.campus][item.program_type]) {
+      result[item.campus][item.program_type] = {};
+    }
+    if (!result[item.campus][item.program_type][item.program]) {
+      result[item.campus][item.program_type][item.program] = [];
+    }
+    result[item.campus][item.program_type][item.program].push(item.semester.toString());
+  });
+  for (let campus in result) {
+    for (let programType in result[campus]) {
+      for (let program in result[campus][programType]) {
+        result[campus][programType][program].sort((a, b) => parseInt(a) - parseInt(b));
+      }
+    }
+  }
+
+  return result;
+}
+
 const DataContext = createContext<DataContextProps | undefined>(undefined);
 
 interface DataProviderProps {
   children: ReactNode;
 }
 
-type TransformedType = {
+export type TransformedType = {
   [campus: string]: {
     [programType: string]: {
       [program: string]: string[];
@@ -53,33 +79,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [data, setData] = useState<TransformedType|null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  
 
-  
-  function transformData(data: CampusDetailType[]): TransformedType {
-    let result: TransformedType = {};
-  
-    data.forEach(item => {
-      if (!result[item.campus]) {
-        result[item.campus] = {};
-      }
-      if (!result[item.campus][item.program_type]) {
-        result[item.campus][item.program_type] = {};
-      }
-      if (!result[item.campus][item.program_type][item.program]) {
-        result[item.campus][item.program_type][item.program] = [];
-      }
-      result[item.campus][item.program_type][item.program].push(item.semester.toString());
-    });
-    for (let campus in result) {
-      for (let programType in result[campus]) {
-        for (let program in result[campus][programType]) {
-          result[campus][programType][program].sort((a, b) => parseInt(a) - parseInt(b));
-        }
-      }
-    }
-  
-    return result;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
