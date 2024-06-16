@@ -18,7 +18,8 @@ import { fetchStudentDetailsFromInternal,
      resetPasswordModal,
      fetchDepartDetailsByEmailidModal,
      fetchFreezeDetailsModel,
-     getEmailidAdminModel
+     getEmailidAdminModel,
+     fetchMarkControlDetailsModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -471,5 +472,14 @@ export function getEmailidAdminService(): Promise<any> {
 }
 
 
-
+export function fetchMarkControlDetailsService(details:any) : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchMarkControlDetailsModal(details).then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
 

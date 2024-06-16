@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -486,6 +486,25 @@ export function fetchFreezeDetailsModel(): Promise<QueryResult<any>> {
 export function getEmailidAdminModel(campus:string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
         pool.query(getEmailidAdminQuery,[campus], (error, results)=>{
+            if(error){
+                console.log("error: ", error);
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+export function fetchMarkControlDetailsModal(details:{
+    campus:string,
+    program:string,
+    semester:number,
+    marks_control:boolean
+}): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarkControlDetailsQuery,[details.campus, details.program, details.semester, details.marks_control], (error, results)=>{
             if(error){
                 console.log("error: ", error);
                 reject(error);

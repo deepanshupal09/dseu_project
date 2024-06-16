@@ -19,6 +19,10 @@ export const fetchMarkControl:string = `
   SELECT marks_control FROM departments WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4; 
 `;
 
+export const fetchMarkControlDetailsQuery:string = `
+  SELECT DISTINCT campus, program, semester, marks_control FROM departments; 
+`;
+
 
 export const toggleMarkControl:string =`
   UPDATE departments SET marks_control=$5 WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4;

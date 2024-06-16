@@ -12,6 +12,7 @@ import { fetchTheStudentDetailsFromInternal,
     fetchTheStudentDetailsFromAggregate,
     fetchFreezeDetailsService,
     getEmailidAdminService,
+    fetchMarkControlDetailsService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -245,6 +246,20 @@ const sendEmailMarksController = asyncHandler(async (req: Request, res: Response
 });
 
 
+const fetchMarkControlDetailsController = (req:Request, res:Response)=>{
+  try{
+    const details= req.body;
+    fetchMarkControlDetailsService(details).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send("internal server error at freeze details 1");
+    })
+  } catch(error){
+    res.send("internal server error at freeze details 2");
+  }
+}
+
 
 export {
     fetchStudentDetailsFromInternalController,
@@ -259,5 +274,6 @@ export {
     resetPasswordController,
     fetchStudentDetailsFromAggregateController,
     fetchFreezeDetailsController,
-    sendEmailMarksController
+    sendEmailMarksController,
+    fetchMarkControlDetailsController
 }

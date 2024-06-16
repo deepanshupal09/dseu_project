@@ -133,6 +133,7 @@ app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 app.get("/fetchStudentController", controller.fetchStudentController);
 app.get("/fetchFreezeDetailsController",marks_controller.fetchFreezeDetailsController);
 app.get("/sendEmailMarksController",marks_controller.sendEmailMarksController);
+app.get("/fetchMarkControlDetailsController",marks_controller.fetchMarkControlDetailsController);
 
 
 
