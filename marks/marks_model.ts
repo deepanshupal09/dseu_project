@@ -21,7 +21,7 @@ export function fetchStudentDetailsFromInternal( details:{
             WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
-        // console.log("query:",query);
+        console.log("INTERNAL query:",query);
         pool.query(query, (error, results) => {
             if (error) {
                 reject(error);
