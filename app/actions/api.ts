@@ -800,11 +800,6 @@ export async function fetchInternalMarks(
       }
     );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -838,18 +833,12 @@ export async function fetchAggregateMarks(
       }
     );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
     throw error;
   }
 }
-
 
 export async function fetchExternalMarks(
   token: string,
@@ -876,11 +865,6 @@ export async function fetchExternalMarks(
         body: JSON.stringify(details),
       }
     );
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
 
     const data = await response.json();
     return data;
@@ -916,11 +900,6 @@ export async function fetchStudentByCourseCode(
       }
     );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -943,6 +922,7 @@ export async function updateInternalMarks(
   }
 ) {
   try {
+    console.log("body: ", details);
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromInternalController`,
       {
@@ -955,11 +935,6 @@ export async function updateInternalMarks(
         body: JSON.stringify(details),
       }
     );
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
 
     const data = await response.json();
     return data;
@@ -996,11 +971,6 @@ export async function updateExternalMarks(
       }
     );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -1022,6 +992,7 @@ export async function updateAggregateMarks(
   }
 ) {
   try {
+    console.log("this api ");
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromAggregateController`,
       {
@@ -1035,10 +1006,32 @@ export async function updateAggregateMarks(
       }
     );
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(errorMessage);
-    }
+    console.log("response: ", response);
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function fetchDepartDetailsByEmailid(token: string,  email: string) {
+  try {
+    console.log("this api ");
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/admin/fetchDepartDetailsByEmailid`,
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          token: token,
+          "Content-Type": "application/json",
+          emailid: email,
+        },
+      }
+    );
+
+    console.log("response: ", response);
 
     const data = await response.json();
     return data;

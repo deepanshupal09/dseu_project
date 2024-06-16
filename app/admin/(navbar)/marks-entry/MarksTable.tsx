@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import Button, { ButtonProps } from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -11,6 +11,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,7 +31,16 @@ import { saveAs } from "file-saver";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
-import { fetchInternalMarks, updateAggregateMarks, updateExternalMarks, updateInternalMarks } from "@/app/actions/api";
+import {
+  fetchAggregateMarks,
+  fetchExternalMarks,
+  fetchInternalMarks,
+  updateAggregateMarks,
+  updateExternalMarks,
+  updateInternalMarks,
+} from "@/app/actions/api";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface FileData {
   fileName: string;
@@ -52,6 +62,22 @@ type Error = {
   error: string;
 };
 
+type propsType = {
+  students: StudentType[];
+  maxMarks: number;
+  subjectType: string;
+  campus: string;
+  program: string;
+  program_type: string;
+  semester: string;
+  course_code: string;
+  academic_year: string;
+  token: string;
+  freeze: boolean;
+  setFreeze: React.Dispatch<React.SetStateAction<boolean>>;
+  superAdmin: boolean;
+};
+
 export default function MarksTable({
   students,
   maxMarks,
@@ -62,19 +88,11 @@ export default function MarksTable({
   semester,
   course_code,
   academic_year,
-  token
-}: {
-  students: StudentType[];
-  maxMarks: number;
-  subjectType: string;
-  campus: string;
-  program: string;
-  program_type: string;
-  semester: string;
-  course_code: string;
-  academic_year: string;
-  token: string
-}) {
+  token,
+  freeze,
+  setFreeze,
+  superAdmin,
+}: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [fileData, setFileData] = useState<FileData | null>(null);
@@ -85,14 +103,79 @@ export default function MarksTable({
   const [errors, setErrors] = useState<Error[]>([]);
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  async function fetchStudentMarks(
+    subjectType: number,
+    value: number,
+    rollno: Array<string>
+  ) {
+    console.log(
+      `fetch student marks: subjectType: ${subjectType}, value: ${value}`
+    );
+
+    if (rollno.length === 0) {
+      console.log("No students available to fetch marks for");
+      return [];
+    }
+
+    const details = {
+      campus: campus,
+      program_type: program_type,
+      program: program,
+      semester: semester,
+      academic_year: academic_year,
+      course_code: course_code,
+      rollno: rollno,
+    };
+
+    console.log("Details for fetching marks:", details);
+
+    try {
+      setLoading(true);
+      let res = [];
+
+      if (subjectType === 1) {
+        if (value === 0) {
+          console.log("Fetching internal marks...");
+          res = await fetchInternalMarks(token, details);
+        } else {
+          console.log("Fetching external marks...");
+          res = await fetchExternalMarks(token, details);
+        }
+      } else if (subjectType === 2) {
+        console.log("Fetching aggregate marks...");
+        res = await fetchAggregateMarks(token, details);
+      }
+
+      setLoading(false);
+
+      if (!res || res.length === 0) {
+        console.log("No marks data returned from API");
+        return [];
+      }
+
+      console.log("Marks data returned:", res);
+
+      return res.map((student: any, index: number) => ({
+        sno: index + 1,
+        rollno: student.rollno,
+        name: student.name,
+        marks: student.marks,
+      }));
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching marks:", error);
+      return [];
+    }
+  }
 
   useEffect(() => {
     setStudentList(students);
   }, [students]);
-
-
 
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -254,7 +337,67 @@ export default function MarksTable({
     setPage(0);
   };
 
-  async function handleApplyChanges() {
+  useEffect(() => {
+    console.log("freeze: ", freeze);
+  }, [freeze]);
+
+  async function handleUnFreeze() {
+    const rollno = studentList.map((student) => student.rollno);
+    setLoading(true);
+    const internal = await fetchStudentMarks(1, 0, rollno);
+    const external = await fetchStudentMarks(1, 1, rollno);
+    const aggregate = await fetchStudentMarks(2, 0, rollno);
+
+    const details = {
+      campus: campus,
+      program_type: program_type,
+      program: program,
+      semester: semester,
+      academic_year: academic_year,
+      course_code: course_code,
+      rollno: rollno,
+      freeze_marks: false,
+    };
+
+    const detailsInternal = {
+      ...details,
+      marks: internal.map((internal_marks: any) => internal_marks.marks),
+    };
+    const detailsExternal = {
+      ...details,
+      marks: external.map((external_marks: any) => external_marks.marks),
+    };
+    const detailsAggregate = {
+      ...details,
+      marks: aggregate.map((aggregate_marks: any) => aggregate_marks.marks),
+    };
+
+    try {
+      console.log("1");
+      if (internal.length > 0) {
+        const res = await updateInternalMarks(token, detailsInternal);
+      }
+      console.log("2");
+      if (external.length > 0) {
+        const res = await updateExternalMarks(token, detailsExternal);
+      }
+      console.log("3");
+      if (aggregate.length > 0) {
+        const res = await updateAggregateMarks(token, detailsAggregate);
+      }
+      setAlert(true);
+      setFreeze(false);
+      setMessage("Marks Unfrozen Successfully!");
+    } catch (error) {
+      setAlert(true);
+      setMessage("Internal Server Error!");
+    } finally {
+      setLoading(false);
+      router.refresh();
+    }
+  }
+
+  async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
       if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "A") {
@@ -279,6 +422,48 @@ export default function MarksTable({
     if (errors.length > 0) {
       setErrorDialog(true);
     } else {
+      setLoading(true);
+      let res;
+      try {
+        const details = {
+          campus: campus,
+          program_type: program_type,
+          program: program,
+          semester: semester,
+          course_code: course_code,
+          academic_year: academic_year,
+          rollno: studentList.map((student) => student.rollno),
+          marks: studentList.map((student) => student.marks),
+          freeze_marks: true,
+        };
+        if (maxMarks === 25) {
+          res = await updateInternalMarks(token, details);
+        }
+        if (maxMarks === 75) {
+          res = await updateExternalMarks(token, details);
+        }
+        if (maxMarks === 100) {
+          res = await updateAggregateMarks(token, details);
+        }
+        setAlert(true);
+        setMessage(res.message);
+        setLoading(false);
+        setFreeze(true);
+        setAnchorEl(null);
+        console.log("res: ", res);
+      } catch (error) {
+        setLoading(false);
+        setAlert(true);
+        setMessage("Internal Server Error!");
+      }
+    }
+    // console.log("error: ", errors)
+  }
+
+  async function handleSaveChanges() {
+    setLoading(true);
+    let res;
+    try {
       if (maxMarks === 25) {
         const details = {
           campus: campus,
@@ -287,12 +472,11 @@ export default function MarksTable({
           semester: semester,
           course_code: course_code,
           academic_year: academic_year,
-          rollno: studentList.map(student => student.rollno),
-          marks: studentList.map(student => student.marks),
-          freeze_marks: true,
-        }
-        const res = await updateInternalMarks(token, details);
-        console.log("res: ", res)
+          rollno: studentList.map((student) => student.rollno),
+          marks: studentList.map((student) => student.marks),
+          freeze_marks: false,
+        };
+        res = await updateInternalMarks(token, details);
       }
       if (maxMarks === 75) {
         const details = {
@@ -302,14 +486,12 @@ export default function MarksTable({
           semester: semester,
           course_code: course_code,
           academic_year: academic_year,
-          rollno: studentList.map(student => student.rollno),
-          marks: studentList.map(student => student.marks),
-          freeze_marks: true,
-        }
-        const res = await updateExternalMarks(token, details);
-        console.log("res: ", res)
+          rollno: studentList.map((student) => student.rollno),
+          marks: studentList.map((student) => student.marks),
+          freeze_marks: false,
+        };
+        res = await updateExternalMarks(token, details);
       }
-  
       if (maxMarks === 100) {
         const details = {
           campus: campus,
@@ -318,72 +500,32 @@ export default function MarksTable({
           semester: semester,
           course_code: course_code,
           academic_year: academic_year,
-          rollno: studentList.map(student => student.rollno),
-          marks: studentList.map(student => student.marks),
-          freeze_marks: true,
-        }
-        const res = await updateAggregateMarks(token, details);
-        console.log("res: ", res)
+          rollno: studentList.map((student) => student.rollno),
+          marks: studentList.map((student) => student.marks),
+          freeze_marks: false,
+        };
+        res = await updateAggregateMarks(token, details);
+        console.log("res: ", res);
       }
-    }
-    // console.log("error: ", errors)
-  }
-
-  async function handleSaveChanges() {
-    if (maxMarks === 25) {
-      const details = {
-        campus: campus,
-        program_type: program_type,
-        program: program,
-        semester: semester,
-        course_code: course_code,
-        academic_year: academic_year,
-        rollno: studentList.map(student => student.rollno),
-        marks: studentList.map(student => student.marks),
-        freeze_marks: false,
-      }
-      const res = await updateInternalMarks(token, details);
-      console.log("res: ", res)
-    }
-    if (maxMarks === 75) {
-      const details = {
-        campus: campus,
-        program_type: program_type,
-        program: program,
-        semester: semester,
-        course_code: course_code,
-        academic_year: academic_year,
-        rollno: studentList.map(student => student.rollno),
-        marks: studentList.map(student => student.marks),
-        freeze_marks: false,
-      }
-      const res = await updateExternalMarks(token, details);
-      console.log("res: ", res)
-    }
-
-    if (maxMarks === 100) {
-      const details = {
-        campus: campus,
-        program_type: program_type,
-        program: program,
-        semester: semester,
-        course_code: course_code,
-        academic_year: academic_year,
-        rollno: studentList.map(student => student.rollno),
-        marks: studentList.map(student => student.marks),
-        freeze_marks: false,
-      }
-      const res = await updateAggregateMarks(token, details);
-      console.log("res: ", res)
+      setLoading(false);
+      setAlert(true);
+      setMessage(res.message);
+    } catch (error) {
+      setLoading(false);
+      setAlert(true);
+      setMessage("Internal Server Error!");
     }
   }
-
 
   const handleMarksChange = (event: any, index: number) => {
     const newStudentList = [...studentList];
     newStudentList[index].marks = event.target.value;
     setStudentList(newStudentList);
   };
+
+  useEffect(() => {
+    console.log("loading: ", loading);
+  }, [loading]);
 
   return (
     <div className="space-y-5">
@@ -404,84 +546,116 @@ export default function MarksTable({
               horizontal: "right",
             }}
           >
-            <MenuItem onClick={handleClear}>
+            <MenuItem disabled={freeze} onClick={handleClear}>
               <ListItemIcon>
                 <ClearAll fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Clear" />
             </MenuItem>
-            <MenuItem onClick={downloadTemplate}>
+            <MenuItem disabled={freeze} onClick={downloadTemplate}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Download template" />
             </MenuItem>
-            <MenuItem onClick={handleSaveChanges}>
+            <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
-                <Save fontSize="small" />
+                {loading ? (
+                  <CircularProgress
+                    className="text-gray-400  "
+                    size={"1.2rem"}
+                  />
+                ) : (
+                  <Save fontSize="small" />
+                )}
               </ListItemIcon>
               <ListItemText primary="Save Changes" />
             </MenuItem>
-            <MenuItem onClick={handleApplyChanges}>
+            <MenuItem disabled={loading || freeze} onClick={handleFreezeMarks}>
               <ListItemIcon>
-                <CloudUpload fontSize="small" />
+                {loading ? (
+                  <CircularProgress
+                    className="text-gray-400  "
+                    size={"1.2rem"}
+                  />
+                ) : (
+                  <CloudUpload fontSize="small" />
+                )}
               </ListItemIcon>
               <ListItemText primary="Freeze Changes" />
             </MenuItem>
           </Menu>
         )}
       </div>
-      <div
-        className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${dragActive ? "bg-slate-100" : ""
+      {!freeze && (
+        <div
+          className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
+            dragActive ? "bg-slate-100" : ""
           }`}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-      >
-        {!fileData && (
-          <>
-            <div className="text-lg text-gray-700 font-medium">
-              Drag and drop your CSV here...
-            </div>
-            <div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => fileInput.current?.click()}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
+          {!fileData && (
+            <>
+              <div className="text-lg text-gray-700 font-medium">
+                Drag and drop your CSV here...
+              </div>
+              <div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => fileInput.current?.click()}
+                >
+                  Browse files
+                </Button>
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept=".csv"
+                  style={{ display: "none" }}
+                  onChange={handleFileInputChange}
+                />
+              </div>
+            </>
+          )}
+          {fileData && (
+            <div className=" text-lg p-4 border relative rounded-2xl ">
+              <div
+                onClick={() => {
+                  setFileData(null);
+                }}
               >
-                Browse files
-              </Button>
-              <input
-                ref={fileInput}
-                type="file"
-                accept=".csv"
-                style={{ display: "none" }}
-                onChange={handleFileInputChange}
-              />
+                <Cancel className="scale-75 absolute cursor-pointer  -right-[5px] -top-[7px] text-gray-400" />{" "}
+              </div>
+              {fileData.fileName}
             </div>
-          </>
-        )}
-        {fileData && (
-          <div className=" text-lg p-4 border relative rounded-2xl ">
-            <div
-              onClick={() => {
-                setFileData(null);
-              }}
-            >
-              <Cancel className="scale-75 absolute cursor-pointer  -right-[5px] -top-[7px] text-gray-400" />{" "}
-            </div>
-            {fileData.fileName}
+          )}
+        </div>
+      )}
+      <div className="w-full flex justify-end">
+        {!freeze ? (
+          <Button
+            endIcon={<ArrowDropDown className="scale-125" />}
+            onClick={handleMenuOpen}
+          >
+            Actions
+          </Button>
+        ) : (
+          <div className="flex gap-x-3">
+            <Button startIcon={<Download />} variant="contained">
+              Download PDF
+            </Button>
+            {superAdmin && (
+              <>
+                <Button variant="contained" onClick={handleUnFreeze}>
+                  Unfreeze
+                </Button>
+              </>
+            )}
           </div>
         )}
-      </div>
-      <div className="w-full flex justify-end">
-        <Button
-          endIcon={<ArrowDropDown className="scale-125" />}
-          onClick={handleMenuOpen}
-        >
-          Actions
-        </Button>
       </div>
       <div>
         <div>
@@ -516,13 +690,20 @@ export default function MarksTable({
                           return (
                             <TableCell key={column.id} align={column.align}>
                               {column.id === "marks" ? (
-                                <TextField
-                                  value={value}
-                                  onChange={(e) =>
-                                    handleMarksChange(e, rowIndex)
-                                  }
-                                  size="small"
-                                />
+                                <>
+                                  {!freeze ? (
+                                    <TextField
+                                      value={value}
+                                      disabled={freeze}
+                                      onChange={(e) =>
+                                        handleMarksChange(e, rowIndex)
+                                      }
+                                      size="small"
+                                    />
+                                  ) : (
+                                    <>{value}</>
+                                  )}
+                                </>
                               ) : column.format && typeof value === "number" ? (
                                 column.format(value)
                               ) : (
