@@ -41,6 +41,8 @@ import {
 } from "@/app/actions/api";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import DownloadPDFButton from "./DownloadPDFButton";
+import logo from "@/app/images/dseulogo.png";
 
 interface FileData {
   fileName: string;
@@ -644,9 +646,17 @@ export default function MarksTable({
           </Button>
         ) : (
           <div className="flex gap-x-3">
-            <Button startIcon={<Download />} variant="contained">
-              Download PDF
-            </Button>
+            {/* <DownloadPDFButton
+              academicYear={academic_year}
+              campusName={campus}
+              courseName={"course name"}
+              course_code={course_code}
+              logo={logo.src}
+              maximumMarks={maxMarks.toString()}
+              programName={program}
+              semester={semester}
+              sheet_type={maxMarks}
+            /> */}
             {superAdmin && (
               <>
                 <Button variant="contained" onClick={handleUnFreeze}>
