@@ -21,13 +21,13 @@ export default function Nav() {
                 const data = await parseJwt(t.value);
                 //
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Marks Entry","Exam Control", "Edit Student Details"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Marks Entry","Bridge Courses","Exam Control", "Edit Student Details"]);
                 }
                 if (data?.user?.role === "dep") {
-                    setOptions(["Marks Entry"]);
+                    setOptions(["Marks Entry", "Bridge Courses"]);
                 }
                 if (data?.user?.role === "admin") {
-                    setOptions(["Registration Chart", "Admit Card", "Query","Marks Entry"]);
+                    setOptions(["Registration Chart", "Admit Card", "Query"]);
                 }
             }
         });
