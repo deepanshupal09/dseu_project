@@ -111,6 +111,7 @@ const handleStudentDetailsFromAggregateController = (req: Request, res: Response
 const toggleMarksControlController = (req:Request, res:Response)=>{
   try{
     const details=req.body;
+    // console.log("789",details);
     toggleMarksControlService(details).then((results)=>{
       res.status(200).send({message:"Marks control toggled!"});
     }).catch((error)=>{
