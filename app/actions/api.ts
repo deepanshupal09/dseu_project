@@ -1039,3 +1039,50 @@ export async function fetchDepartDetailsByEmailid(token: string,  email: string)
     throw error;
   }
 }
+
+export async function fetchToggleMarks(body: { campus: string; program: string; semester: number; marks_control: boolean }[], token: string) {
+    
+  try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/toggleMarksControlController`, {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+              "Content-Type": "application/json",
+              token: token,
+          },
+          body: JSON.stringify(body),
+          
+      });
+
+      const data = await response.json();
+      return data;
+
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function fetchAllMarksControl(token: string){
+  try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarkControlDetailsController`, {
+          method: "GET",
+          mode: "cors",
+          headers: {
+              token : token,
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage);
+      }
+
+      const data = await response.json(); 
+      return data;
+  } catch (error) {
+      throw error;
+  }
+}
+
