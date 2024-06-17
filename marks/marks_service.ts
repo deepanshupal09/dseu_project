@@ -493,9 +493,9 @@ export function getEmailidAdminService(): Promise<any> {
 }
 
 
-export function fetchMarkControlDetailsService(details:any) : Promise<any>{
+export function fetchMarkControlDetailsService() : Promise<any>{
     return new Promise(async(resolve, reject) => {
-        fetchMarkControlDetailsModal(details).then((results)=>{
+        fetchMarkControlDetailsModal().then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);

@@ -29,7 +29,7 @@ router.post("/fetchStudentDetailsFromInternalController",marks_controller.fetchS
 router.post("/handleStudentDetailsFromExternalController",marks_controller.handleStudentDetailsFromExternalController);
 router.post("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
 router.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
-router.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
+router.post("/toggleMarksControlController",marks_controller.toggleMarksControlController);
 router.get("/fetchMarksController",marks_controller.fetchMarksController);
 router.get("/fetchStudentsByCourseCode", marks_controller.fetchStudentsCourseCodeController)
 router.post("/fetchStudentDetailsFromAggregateController",marks_controller.fetchStudentDetailsFromAggregateController);

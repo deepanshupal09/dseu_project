@@ -35,7 +35,7 @@ export const fetchMarkControlDetailsQuery:string = `
 
 
 export const toggleMarkControl:string =`
-  UPDATE departments SET marks_control=$5 WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4;
+  UPDATE departments SET marks_control=$5 WHERE campus=$1 AND program=$2 AND semester=$3;
 `;
 
 export const fetchMarksInternal: string = `

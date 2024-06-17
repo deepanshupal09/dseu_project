@@ -249,8 +249,8 @@ const sendEmailMarksController = asyncHandler(async (req: Request, res: Response
 
 const fetchMarkControlDetailsController = (req:Request, res:Response)=>{
   try{
-    const details= req.body;
-    fetchMarkControlDetailsService(details).then((results)=>{
+    // const details= req.body;
+    fetchMarkControlDetailsService().then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);
