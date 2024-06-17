@@ -14,6 +14,16 @@ export const insertStudentDetailsToAggregateQuery:string = `
       ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *;
 `;
+export const updateStudentDetailsToAggregateQuery:string = `
+    UPDATE aggregate_marks SET marks=$8, freeze_marks=$9, modified_at=$10 WHERE 
+        rollno=$1, 
+        campus=$2, 
+        program_type=$3, 
+        program=$4,  
+        semester=$5,  
+        academic_year=$6, 
+        course_code=$7 ;
+`;
 
 export const fetchMarkControl:string = `
   SELECT marks_control FROM departments WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4; 

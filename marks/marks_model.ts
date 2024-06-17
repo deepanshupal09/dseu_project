@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery } from "./marks_queries";
 
 
 export function fetchStudentDetailsFromInternal( details:{
@@ -327,6 +327,33 @@ export function insertIntoAggregateMarks(aggregateDetails:{
     // console.log("model rollno: ",rollno)
     return new Promise((resolve, reject) => {
         pool.query(insertStudentDetailsToAggregateQuery, [aggregateDetails.rollno,aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.marks, aggregateDetails.semester, aggregateDetails.freeze_marks, aggregateDetails.created_at, aggregateDetails.modified_at, aggregateDetails.academic_year, aggregateDetails.course_code  ], (error, results) => {
+            if (error) {
+                console.log("eror: ", error)    
+                reject(error);
+            } else {
+                // console.log("error mode: ",results)
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function updateIntoAggregateMarks(aggregateDetails:{
+    rollno: string
+    campus: string, 
+    program_type:string, 
+    program:string, 
+    marks:string, 
+    semester:number, 
+    freeze_marks:boolean, 
+    modified_at:string, 
+    academic_year:string, 
+    course_code:string
+}
+): Promise<QueryResult<any>> {
+    // console.log("model rollno: ",rollno)
+    return new Promise((resolve, reject) => {
+        pool.query(updateStudentDetailsToAggregateQuery, [aggregateDetails.rollno,aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.semester, aggregateDetails.academic_year, aggregateDetails.course_code, aggregateDetails.marks, aggregateDetails.freeze_marks, aggregateDetails.modified_at  ], (error, results) => {
             if (error) {
                 console.log("eror: ", error)    
                 reject(error);

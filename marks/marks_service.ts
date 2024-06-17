@@ -19,7 +19,8 @@ import { fetchStudentDetailsFromInternal,
      fetchDepartDetailsByEmailidModal,
      fetchFreezeDetailsModel,
      getEmailidAdminModel,
-     fetchMarkControlDetailsModal
+     fetchMarkControlDetailsModal,
+     updateIntoAggregateMarks
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -134,7 +135,8 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     created_at: new Date().toISOString(),
                                                     modified_at: new Date().toISOString(),
                                                     academic_year: details.academic_year,
-                                                    course_code: details.course_code
+                                                    course_code: details.course_code,
+                                                
                                                 }
 
                                                 if (rollnoMarksMap.get(externalResults[i].rollno) === 'A' && externalResults[i].marks === 'A') {
@@ -147,15 +149,29 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                 }
 
-                                                insertIntoAggregateMarks(aggregateDetails)
-                                                .then((insertResult) => {
-                                                    console.log("aggregate_marks populated successfully!");
-                                                    resolve(insertResult.rows);
+                                                fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
+                                                    if (aggreResults.rows.length === 0) {
+                                                        insertIntoAggregateMarks(aggregateDetails)
+                                                        .then((insertResult) => {
+                                                            console.log("aggregate_marks populated successfully!");
+                                                            resolve(insertResult.rows);
+                                                        })
+                                                        .catch((insertError) => {
+                                                            console.log("Error in populating aggregate_marks: ", insertError);
+                                                            reject("Internal server error in insertIntoAggregateMarks");
+                                                        });
+                                                    } else{
+                                                        updateIntoAggregateMarks(aggregateDetails).then((updateResult)=>{
+                                                            console.log("update result:", updateResult);
+                                                            resolve("Updated Aggregate");
+                                                        }).catch((error)=>{
+                                                            console.log("update aggregate error: ",error);
+                                                            reject("Internal server error in updateIntoAggregateMarks");
+                                                        })
+                                                    }
+
                                                 })
-                                                .catch((insertError) => {
-                                                    console.log("Error in populating aggregate_marks: ", insertError);
-                                                    reject("Internal server error in insertIntoAggregateMarks");
-                                                });
+
                                             }
                                         }
                                     }
@@ -251,16 +267,28 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                 }
 
+                                                fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
+                                                    if (aggreResults.rows.length === 0) {
+                                                        insertIntoAggregateMarks(aggregateDetails)
+                                                        .then((insertResult) => {
+                                                            console.log("aggregate_marks populated successfully!");
+                                                            resolve(insertResult.rows);
+                                                        })
+                                                        .catch((insertError) => {
+                                                            console.log("Error in populating aggregate_marks: ", insertError);
+                                                            reject("Internal server error in insertIntoAggregateMarks");
+                                                        });
+                                                    } else{
+                                                        updateIntoAggregateMarks(aggregateDetails).then((updateResult)=>{
+                                                            console.log("update result:", updateResult);
+                                                            resolve("Updated Aggregate");
+                                                        }).catch((error)=>{
+                                                            console.log("update aggregate error: ",error);
+                                                            reject("Internal server error in updateIntoAggregateMarks");
+                                                        })
+                                                    }
 
-                                                insertIntoAggregateMarks(aggregateDetails)
-                                                .then((insertResult) => {
-                                                    console.log("aggregate_marks populated successfully!");
-                                                    resolve(insertResult.rows);
                                                 })
-                                                .catch((insertError) => {
-                                                    console.log("Error in populating aggregate_marks: ", insertError);
-                                                    reject("Internal server error in insertIntoAggregateMarks");
-                                                });
                                             }
                                         }
                                     }
