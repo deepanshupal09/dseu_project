@@ -268,7 +268,7 @@ export function updateStudentDetailsFromAggregate(details: {
         for (let i = 0; i < details.rollno.length; i++) {
             let query = `UPDATE aggregate_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
 
-            // console.log("query:", query);
+            console.log("query:", query);
 
             pool.query(query, (error, results) => {
                 if (error) {

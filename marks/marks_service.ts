@@ -100,7 +100,6 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                     });
                             } else {
                                 console.log("Updating student details...");
-                                if(fetchResult.rows[0].freeze_marks === false){
                                     const currentTime = new Date().toISOString();
                                     details.modified_at = currentTime;
                                     updateStudentDetailsFromInternal(details)
@@ -112,9 +111,6 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                             console.log("Error in updating student details: ", updateError);
                                             reject("Internal server error in updateStudentDetailsFromInternal");
                                         });
-                                } else{
-                                    resolve("Internal marks are freezed!");
-                                }
                             }
                         
                             fetchTheStudentDetailsFromExternal(details).then((externalResults)=>{
@@ -211,7 +207,6 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                 const currentTime = new Date().toISOString();
                                 
                                 details.modified_at = currentTime;
-                                if(fetchResult.rows[0].freeze_marks === false){
                                     updateStudentDetailsFromExternal(details)
                                     .then((updateResult) => {
                                             console.log("updated successfully!");
@@ -221,9 +216,6 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                             console.log("Error in updating student details: ", updateError);
                                             reject("Internal server error in updateStudentDetailsFromInternal");
                                         });
-                                } else{
-                                    resolve("Internal marks are freezed!");
-                                }
                             }
                             fetchTheStudentDetailsFromInternal(details).then((internalResults)=>{
                                 if(internalResults && internalResults.length>0 && internalResults[0].freeze_marks === true){
@@ -292,6 +284,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
 }
 
 export async function handleStudentDetailsFromAggregate(details: any): Promise<any> {
+    console.log("aggregate update: ", details)
     return fetchMarksControlModal(details)
         .then((controlResult) => {
             if (!controlResult.rows[0].marks_control) {
@@ -317,7 +310,7 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
                                 console.log("Updating student details...");
 
                                 const currentTime = new Date().toISOString();
-                                if(fetchResult.rows[0].freeze_marks === false){
+                                console.log("fetch Result: ", fetchResult)
                                     updateStudentDetailsFromAggregate(details)
                                     .then((updateResult) => {
                                             details.modified_at = currentTime;
@@ -328,7 +321,7 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
                                             console.log("Error in updating student details: ", updateError);
                                             reject("Internal server error in updateStudentDetailsFromInternal");
                                         });
-                                }
+                                
                             }
                         })
                         .catch((fetchError) => {

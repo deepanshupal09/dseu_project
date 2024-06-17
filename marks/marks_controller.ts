@@ -55,11 +55,11 @@ const fetchStudentDetailsFromAggregateController= (req: Request, res: Response):
     fetchTheStudentDetailsFromAggregate(details).then((results) => {
         res.status(200).send(results);
       }).catch((error) => {
-        res.status(500).send("internal server fetch internal 2");
+        res.status(500).send({message:"internal server fetch internal 2"});
       })
     }
     catch(error) {
-      res.send("Internal server error internal 3");
+      res.send({message:"Internal server error internal 3"});
     }
 }
 
@@ -139,15 +139,16 @@ const fetchMarksController = (req:Request, res:Response)=>{
 const fetchDepartDetailsByEmailidController = (req:Request, res:Response)=>{
   try{
     const emailid: string = req.headers.emailid as string;
+    console.log(1,req.headers)
     // const academic_year: string = req.headers.academicyear as string;
     fetchDepartDetailsByEmailidService(emailid).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);
-      res.status(500).send("internal server error at fetch department 1");
+      res.status(500).send({message:"internal server error at fetch department 1"});
     })
   } catch(error){
-    res.send("internal server error at fetch department 2");
+    res.send({message:"internal server error at fetch department 2"});
   }
 }
 
@@ -161,10 +162,10 @@ const resetPasswordController = (req:Request, res:Response)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);
-      res.status(500).send("internal server error at reset password 1");
+      res.status(500).send({message:"internal server error at reset password 1"});
     })
   } catch(error){
-    res.send("internal server error at reset password 2");
+    res.send({message:"internal server error at reset password 2"});
   }
 }
 
