@@ -151,6 +151,15 @@ export default function Marks() {
     selectedCampus,
   ]);
 
+
+  // useEffect(()=>{
+  //    fetchStudentMarks(subjectType, value, studentList.map(student => student.rollno)).then((res)=>{
+  //      
+  //     setStudentList(res);
+  //     // setFreeze(res[0].freeze_marks)
+  //    })
+  // },[value])
+
   useEffect(() => {
     setSelectedProgramCategory("");
     setSelectedProgram("");
@@ -192,6 +201,7 @@ export default function Marks() {
   }, []);
 
   useEffect(() => {
+    console.log(`campus: ${selectedCampus} program: ${selectedProgram} programcatergory: ${selectedProgramCategory} semester: ${selectedSemester} academic year ${selectedAcademicYear}`)
     if (
       selectedCampus !== "" &&
       selectedProgramCategory !== "" &&
@@ -200,6 +210,7 @@ export default function Marks() {
       selectedCourse !== "" &&
       selectedAcademicYear !== ""
     ) {
+      console.log("inside if")
       handleApplyFilters();
     } else {
       setStudentList([]);
@@ -214,10 +225,10 @@ export default function Marks() {
   ]);
 
   useEffect(() => {
-    console.log("user: ", user)
+    
     if (user) {
       fetchDepartDetailsByEmailid(token,user.emailid).then((data)=>{
-        console.log("data: ", data)
+        
         const campusList: string[] = Array.from(
           new Set(data.map((entry:any) => entry.campus))
         );
@@ -264,9 +275,9 @@ export default function Marks() {
             selectedProgramCategory,
             selectedProgram,
             selectedSemester,
-            "2023-2024"
+            selectedAcademicYear,
           );
-          console.log("res: ", res);
+          
           const formattedStudentList: StudentType[] = res.map(
             (student: Student, index: number) => ({
               sno: index + 1,
@@ -275,6 +286,8 @@ export default function Marks() {
               marks: "",
             })
           );
+
+          
 
           const freezeStatus = await fetchFreeze(
             formattedStudentList.map((student) => student.rollno)
@@ -293,15 +306,10 @@ export default function Marks() {
               course_code: course_code,
               rollno: formattedStudentList.map((student) => student.rollno),
             });
-            console.log("internal: ", internal);
+            
             let marks;
             if (internal && internal.length > 0 && internal[0].freeze_marks) {
               setSubjectType(1);
-              console.log(
-                "subject type: ",
-                1,
-                formattedStudentList.map((student) => student.rollno)
-              );
               marks = await fetchStudentMarks(
                 1,
                 0,
@@ -309,12 +317,7 @@ export default function Marks() {
               );
             } else {
               setSubjectType(2);
-              // console.log("subject type: ", 2)
-              console.log(
-                "subject type: ",
-                2,
-                formattedStudentList.map((student) => student.rollno)
-              );
+              // 
               marks = await fetchStudentMarks(
                 2,
                 0,
@@ -326,7 +329,7 @@ export default function Marks() {
           setLoading(false);
           // if (res.length > 0) {
           // }
-          console.log(formattedStudentList);
+          
         } catch (error) {
           setLoading(false);
         }
@@ -336,16 +339,17 @@ export default function Marks() {
     }
   };
 
-  async function fetchFreeze(students: Array<string>): Promise<boolean> {
+  async function fetchFreeze(rollno: Array<string>): Promise<boolean> {
+    // 
     const course_code = courseCodes.find(
       (course) => course.course_name === selectedCourse
     )?.course_code;
     if (!course_code) {
-      console.log("No course code found for selected course");
+      
       return false;
     }
-    if (students.length > 0) {
-      console.log("No students");
+    if (rollno.length === 0) {
+      
       return false;
     }
 
@@ -356,10 +360,11 @@ export default function Marks() {
       semester: selectedSemester,
       academic_year: selectedAcademicYear,
       course_code: course_code,
-      rollno: students,
+      rollno: rollno,
     };
 
     const res = await fetchAggregateMarks(token, details);
+    
     if (res && res.length > 0) {
       return res[0].freeze_marks;
     } else {
@@ -372,12 +377,9 @@ export default function Marks() {
     value: number,
     rollno: Array<string>
   ) {
-    console.log(
-      `fetch student marks: subjectType: ${subjectType}, value: ${value}`
-    );
 
     if (rollno.length === 0) {
-      console.log("No students available to fetch marks for");
+      
       return [];
     }
 
@@ -385,7 +387,7 @@ export default function Marks() {
       (course) => course.course_name === selectedCourse
     )?.course_code;
     if (!course_code) {
-      console.log("No course code found for selected course");
+      
       return [];
     }
 
@@ -399,7 +401,7 @@ export default function Marks() {
       rollno: rollno,
     };
 
-    console.log("Details for fetching marks:", details);
+    
 
     try {
       setLoading(true);
@@ -407,25 +409,26 @@ export default function Marks() {
 
       if (subjectType === 1) {
         if (value === 0) {
-          console.log("Fetching internal marks...");
+          
           res = await fetchInternalMarks(token, details);
         } else {
-          console.log("Fetching external marks...");
+          
           res = await fetchExternalMarks(token, details);
         }
       } else if (subjectType === 2) {
-        console.log("Fetching aggregate marks...");
+        
         res = await fetchAggregateMarks(token, details);
       }
 
       setLoading(false);
 
       if (!res || res.length === 0) {
-        console.log("No marks data returned from API");
+        
         return [];
       }
 
-      console.log("Marks data returned:", res);
+      
+      setFreeze(res[0].freeze_marks)
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -448,34 +451,38 @@ export default function Marks() {
     ).then((students) => {
       if (students && students.length > 0) {
         setStudentList(students);
+      } else {
+        const newStudentList:StudentType[] = studentList.map((student) => {return {...student, marks: ''}});
+        setFreeze(false);
+        setStudentList(newStudentList)
       }
     });
   }, [value, subjectType]);
-
-  // useEffect(() => {
-  //   if (selectedCourse !== "" && !freeze) setOpen(true);
-  // }, [selectedCourse,freeze]);
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
     setSelectedProgramCategory("");
     setSelectedProgram("");
     setSelectedSemester("");
+    setSelectedAcademicYear("");
   };
 
   const handleChangeProgramCategory = (event: SelectChangeEvent) => {
     setSelectedProgramCategory(event.target.value);
     setSelectedProgram("");
     setSelectedSemester("");
+    setSelectedAcademicYear("");
   };
 
   const handleChangeProgram = (event: SelectChangeEvent) => {
     setSelectedProgram(event.target.value);
     setSelectedSemester("");
+    setSelectedAcademicYear("");
   };
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value);
+    setSelectedAcademicYear("");
   };
 
   const handleChangeCourse = (event: SelectChangeEvent) => {
@@ -490,7 +497,7 @@ export default function Marks() {
 
 
   useEffect(() => {
-    console.log("FREEZE: ", freeze)
+    
   },[freeze])
 
   return (
@@ -785,9 +792,9 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              console.log("students: ", students);
+              
               if (students && students?.length > 0) {
-                console.log("students: ", students);
+                
                 setStudentList(students);
               }
               setOpen(false);
@@ -804,7 +811,7 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              console.log("students: ", students);
+              
               if (students && students?.length > 0) {
                 setStudentList(students);
               }

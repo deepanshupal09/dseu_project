@@ -339,9 +339,7 @@ export default function MarksTable({
     setPage(0);
   };
 
-  useEffect(() => {
-    console.log("freeze: ", freeze);
-  }, [freeze]);
+  
 
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
@@ -524,10 +522,6 @@ export default function MarksTable({
     newStudentList[index].marks = event.target.value;
     setStudentList(newStudentList);
   };
-
-  useEffect(() => {
-    console.log("loading: ", loading);
-  }, [loading]);
 
   return (
     <div className="space-y-5">
