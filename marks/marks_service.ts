@@ -163,7 +163,8 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 
 
                                                 fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
-                                                    if (aggreResults.rows.length === 0) {
+                                                    // console.log("agreeResults: ",aggreResults)
+                                                    if (aggreResults.length === 0) {
                                                         insertIntoAggregateMarks(aggregateDetails)
                                                         .then((insertResult) => {
                                                             console.log("aggregate_marks populated successfully!");
@@ -292,7 +293,9 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 }
 
                                                 fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
-                                                    if (aggreResults.rows.length === 0) {
+                                                    // console.log("agreeResults: ",aggreResults)
+
+                                                    if (aggreResults.length === 0) {
                                                         insertIntoAggregateMarks(aggregateDetails)
                                                         .then((insertResult) => {
                                                             console.log("aggregate_marks populated successfully!");
