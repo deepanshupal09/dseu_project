@@ -18,7 +18,12 @@ import {
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
-import { ProgramListByTypeType, TransformedType, transformData, useData } from "@/contexts/DataContext";
+import {
+  ProgramListByTypeType,
+  TransformedType,
+  transformData,
+  useData,
+} from "@/contexts/DataContext";
 import {
   Box,
   Button,
@@ -116,7 +121,17 @@ export default function Marks() {
   const [value, setValue] = React.useState(0);
   const [subjectType, setSubjectType] = useState(1);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    if (!save) {
+      const res = window.confirm(
+        "You have unsaved changes, Please save them before switching tabs or these unsaved changes will be lost!"
+      );
+      if (!res) {
+        setValue(newValue);
+        setSave(true);
+      }
+    } else {
+      setValue(newValue);
+    }
   };
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -124,8 +139,29 @@ export default function Marks() {
   const [message, setMessage] = useState("");
   const [freeze, setFreeze] = useState(false);
   const router = useRouter();
+  const [globalFreeze, setGlobalFreeze] = useState(false);
+  const [save, setSave] = useState(false);
 
   const academicYear: string[] = ["2023-2024"];
+
+  useEffect(() => {
+    const unloadCallback = (event:any) => {
+      if (!save) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+
+    if (!save) {
+      window.addEventListener('beforeunload', unloadCallback);
+    } else {
+      window.removeEventListener('beforeunload', unloadCallback);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', unloadCallback);
+    };
+  }, [save]);
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
@@ -151,10 +187,15 @@ export default function Marks() {
     selectedCampus,
   ]);
 
+  useEffect(() => {
+    if (freeze) {
+      setSave(true);
+    }
+  }, [freeze]);
 
   // useEffect(()=>{
   //    fetchStudentMarks(subjectType, value, studentList.map(student => student.rollno)).then((res)=>{
-  //      
+  //
   //     setStudentList(res);
   //     // setFreeze(res[0].freeze_marks)
   //    })
@@ -201,7 +242,9 @@ export default function Marks() {
   }, []);
 
   useEffect(() => {
-    console.log(`campus: ${selectedCampus} program: ${selectedProgram} programcatergory: ${selectedProgramCategory} semester: ${selectedSemester} academic year ${selectedAcademicYear}`)
+    console.log(
+      `campus: ${selectedCampus} program: ${selectedProgram} programcatergory: ${selectedProgramCategory} semester: ${selectedSemester} academic year ${selectedAcademicYear}`
+    );
     if (
       selectedCampus !== "" &&
       selectedProgramCategory !== "" &&
@@ -210,7 +253,7 @@ export default function Marks() {
       selectedCourse !== "" &&
       selectedAcademicYear !== ""
     ) {
-      console.log("inside if")
+      console.log("inside if");
       handleApplyFilters();
     } else {
       setStudentList([]);
@@ -225,33 +268,33 @@ export default function Marks() {
   ]);
 
   useEffect(() => {
-    
     if (user) {
-      fetchDepartDetailsByEmailid(token,user.emailid).then((data)=>{
-        
+      fetchDepartDetailsByEmailid(token, user.emailid).then((data) => {
         const campusList: string[] = Array.from(
-          new Set(data.map((entry:any) => entry.campus))
+          new Set(data.map((entry: any) => entry.campus))
         );
         const programTypeList: string[] = Array.from(
-          new Set(data.map((entry:any) => entry.program_type))
+          new Set(data.map((entry: any) => entry.program_type))
         );
-        const programListByType:ProgramListByTypeType = {}
-        data.map((entry:any) => {
+        const programListByType: ProgramListByTypeType = {};
+        data.map((entry: any) => {
           if (!programListByType[entry.program_type]) {
             programListByType[entry.program_type] = [];
-            programListByType[entry.program_type].push(entry.program)
+            programListByType[entry.program_type].push(entry.program);
           } else {
-            if(!programListByType[entry.program_type].includes(entry.program)) {
-              programListByType[entry.program_type].push(entry.program)
+            if (
+              !programListByType[entry.program_type].includes(entry.program)
+            ) {
+              programListByType[entry.program_type].push(entry.program);
             }
           }
-        })
+        });
 
         const transfomedData = transformData(data);
         setData(transfomedData);
-      })
+      });
     }
-  },[user])
+  }, [user]);
 
   // useEffect(() => {
   //   if (selectedCourse !== "") {
@@ -275,9 +318,9 @@ export default function Marks() {
             selectedProgramCategory,
             selectedProgram,
             selectedSemester,
-            selectedAcademicYear,
+            selectedAcademicYear
           );
-          
+
           const formattedStudentList: StudentType[] = res.map(
             (student: Student, index: number) => ({
               sno: index + 1,
@@ -287,12 +330,11 @@ export default function Marks() {
             })
           );
 
-          
-
           const freezeStatus = await fetchFreeze(
             formattedStudentList.map((student) => student.rollno)
           );
           setFreeze(freezeStatus);
+          setGlobalFreeze(freezeStatus);
           if (!freezeStatus) {
             setOpen(true);
             setStudentList(formattedStudentList);
@@ -306,7 +348,7 @@ export default function Marks() {
               course_code: course_code,
               rollno: formattedStudentList.map((student) => student.rollno),
             });
-            
+
             let marks;
             if (internal && internal.length > 0 && internal[0].freeze_marks) {
               setSubjectType(1);
@@ -317,7 +359,7 @@ export default function Marks() {
               );
             } else {
               setSubjectType(2);
-              // 
+              //
               marks = await fetchStudentMarks(
                 2,
                 0,
@@ -329,7 +371,6 @@ export default function Marks() {
           setLoading(false);
           // if (res.length > 0) {
           // }
-          
         } catch (error) {
           setLoading(false);
         }
@@ -340,16 +381,14 @@ export default function Marks() {
   };
 
   async function fetchFreeze(rollno: Array<string>): Promise<boolean> {
-    // 
+    //
     const course_code = courseCodes.find(
       (course) => course.course_name === selectedCourse
     )?.course_code;
     if (!course_code) {
-      
       return false;
     }
     if (rollno.length === 0) {
-      
       return false;
     }
 
@@ -363,8 +402,10 @@ export default function Marks() {
       rollno: rollno,
     };
 
+    setLoading(true);
     const res = await fetchAggregateMarks(token, details);
-    
+    setLoading(false);
+
     if (res && res.length > 0) {
       return res[0].freeze_marks;
     } else {
@@ -377,9 +418,7 @@ export default function Marks() {
     value: number,
     rollno: Array<string>
   ) {
-
     if (rollno.length === 0) {
-      
       return [];
     }
 
@@ -387,7 +426,6 @@ export default function Marks() {
       (course) => course.course_name === selectedCourse
     )?.course_code;
     if (!course_code) {
-      
       return [];
     }
 
@@ -401,34 +439,31 @@ export default function Marks() {
       rollno: rollno,
     };
 
-    
-
     try {
       setLoading(true);
       let res = [];
 
       if (subjectType === 1) {
         if (value === 0) {
-          
           res = await fetchInternalMarks(token, details);
-        } else {
-          
+        }
+        if (value == 1) {
           res = await fetchExternalMarks(token, details);
         }
+        if (value === 2) {
+          res = await fetchAggregateMarks(token, details);
+        }
       } else if (subjectType === 2) {
-        
         res = await fetchAggregateMarks(token, details);
       }
 
       setLoading(false);
 
       if (!res || res.length === 0) {
-        
         return [];
       }
 
-      
-      setFreeze(res[0].freeze_marks)
+      setFreeze(res[0].freeze_marks);
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -452,9 +487,11 @@ export default function Marks() {
       if (students && students.length > 0) {
         setStudentList(students);
       } else {
-        const newStudentList:StudentType[] = studentList.map((student) => {return {...student, marks: ''}});
+        const newStudentList: StudentType[] = studentList.map((student) => {
+          return { ...student, marks: "" };
+        });
         setFreeze(false);
-        setStudentList(newStudentList)
+        setStudentList(newStudentList);
       }
     });
   }, [value, subjectType]);
@@ -494,11 +531,7 @@ export default function Marks() {
     setSelectedAcademicYear(event.target.value);
   };
 
-
-
-  useEffect(() => {
-    
-  },[freeze])
+  useEffect(() => {}, [freeze]);
 
   return (
     <>
@@ -676,8 +709,10 @@ export default function Marks() {
         <div className="my-10">
           <div className="text-2xl font-medium">
             {selectedAcademicYear === "" && "No Course Selected"}
-            {selectedAcademicYear !== "" && studentList.length === 0 && "No Students Available "}
-            {selectedAcademicYear !== "" && studentList.length > 0 &&  (
+            {selectedAcademicYear !== "" &&
+              studentList.length === 0 &&
+              "No Students Available "}
+            {selectedAcademicYear !== "" && studentList.length > 0 && (
               <div className="space-y-5 px-2">
                 <div className="space-y-4">
                   <div className="flex justify-between">
@@ -691,17 +726,25 @@ export default function Marks() {
                         onChange={handleChange}
                         aria-label="basic tabs example"
                       >
-                        <Tab
-                          label="Internal Assessment"
-                          {...a11yProps(0)}
-                          key="tab-0"
-                        />
-
-                        {subjectType === 1 && (
+                        {
                           <Tab
-                            label="External Assessment"
+                            label="Continuous Assessment"
                             {...a11yProps(1)}
                             key="tab-1"
+                          />
+                        }
+                        {subjectType === 1 && (
+                          <Tab
+                            label="End Of Semester Assessment"
+                            {...a11yProps(0)}
+                            key="tab-0"
+                          />
+                        )}
+                        {globalFreeze && !(subjectType === 2) && (
+                          <Tab
+                            label="Aggregate Marks"
+                            {...a11yProps(2)}
+                            key="tab-2"
                           />
                         )}
                       </Tabs>
@@ -719,6 +762,8 @@ export default function Marks() {
                           superAdmin={user?.role === "super"}
                           program={selectedProgram}
                           semester={selectedSemester}
+                          setGlobalFreeze={setGlobalFreeze}
+                          setSave={setSave}
                           course_code={
                             courseCodes.find(
                               (course) => course.course_name === selectedCourse
@@ -727,7 +772,8 @@ export default function Marks() {
                           token={token}
                           academic_year={selectedAcademicYear}
                           subjectType="1"
-                          maxMarks={subjectType === 1 ? 25 : 100}
+                          setValue={setValue}
+                          maxMarks={subjectType === 1 ? 75 : 100}
                           students={studentList}
                         />
                       )}
@@ -742,9 +788,11 @@ export default function Marks() {
                           program_type={selectedProgramCategory}
                           program={selectedProgram}
                           semester={selectedSemester}
+                          setGlobalFreeze={setGlobalFreeze}
                           freeze={freeze}
                           superAdmin={user?.role === "super"}
                           setFreeze={setFreeze}
+                          setSave={setSave}
                           course_code={
                             courseCodes.find(
                               (course) => course.course_name === selectedCourse
@@ -752,8 +800,38 @@ export default function Marks() {
                           }
                           token={token}
                           academic_year={selectedAcademicYear}
+                          maxMarks={25}
+                          setValue={setValue}
                           subjectType="2"
-                          maxMarks={75}
+                          students={studentList}
+                        />
+                      )}
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={2}>
+                      <div className="w-full h-full flex justify-center items-center">
+                        {loading && <CircularProgress className="mx-auto" />}
+                      </div>
+                      {!loading && (
+                        <MarksTable
+                          campus={selectedCampus}
+                          program_type={selectedProgramCategory}
+                          program={selectedProgram}
+                          semester={selectedSemester}
+                          setGlobalFreeze={setGlobalFreeze}
+                          freeze={freeze}
+                          superAdmin={user?.role === "super"}
+                          setValue={setValue}
+                          setFreeze={setFreeze}
+                          setSave={setSave}
+                          course_code={
+                            courseCodes.find(
+                              (course) => course.course_name === selectedCourse
+                            )?.course_code || ""
+                          }
+                          token={token}
+                          academic_year={selectedAcademicYear}
+                          maxMarks={100}
+                          subjectType="2"
                           students={studentList}
                         />
                       )}
@@ -779,8 +857,9 @@ export default function Marks() {
         <DialogTitle>Please Select Type of Subject</DialogTitle>
         <DialogContent>
           <Typography>
-            Please select if this is subjects consists of both internal and
-            external assessment or only external assessment?
+            Please select if this is subjects consists of both{" "}
+            <strong>Continuous and End of Semester Assessment</strong> or only{" "}
+            <strong>Continuous Assessment</strong>?
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -792,16 +871,15 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              
+
               if (students && students?.length > 0) {
-                
                 setStudentList(students);
               }
               setOpen(false);
             }}
             color="primary"
           >
-            Internal and External Assessment
+            Continuous and End of Semester Assessment
           </Button>
           <Button
             onClick={async () => {
@@ -811,7 +889,7 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              
+
               if (students && students?.length > 0) {
                 setStudentList(students);
               }
@@ -819,7 +897,7 @@ export default function Marks() {
             }}
             color="primary"
           >
-            Internal Assessment Only
+            Continuous Assessment
           </Button>
         </DialogActions>
       </Dialog>

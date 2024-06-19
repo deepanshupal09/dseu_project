@@ -1006,7 +1006,6 @@ export async function updateAggregateMarks(
       }
     );
 
-    console.log("response: ", response);
 
     const data = await response.json();
     return data;
@@ -1030,8 +1029,6 @@ export async function fetchDepartDetailsByEmailid(token: string,  email: string)
         },
       }
     );
-
-    console.log("response: ", response);
 
     const data = await response.json();
     return data;

@@ -41,8 +41,7 @@ import {
 } from "@/app/actions/api";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
-import DownloadPDFButton from "./DownloadPDFButton";
-import logo from "@/app/images/dseulogo.png";
+import logo from "@/app/images/dseu.png";
 
 interface FileData {
   fileName: string;
@@ -77,6 +76,9 @@ type propsType = {
   token: string;
   freeze: boolean;
   setFreeze: React.Dispatch<React.SetStateAction<boolean>>;
+  setGlobalFreeze: React.Dispatch<React.SetStateAction<boolean>>;
+  setSave: React.Dispatch<React.SetStateAction<boolean>>;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
   superAdmin: boolean;
 };
 
@@ -93,6 +95,9 @@ export default function MarksTable({
   token,
   freeze,
   setFreeze,
+  setGlobalFreeze,
+  setSave,
+  setValue,
   superAdmin,
 }: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
@@ -242,7 +247,7 @@ export default function MarksTable({
           const rows = csvContent.split("\n");
 
           // Skip the header row
-          const studentData = rows.slice(1);
+          const studentData = rows.slice(1, -1);
           const newData = studentList;
 
           console.log(studentData);
@@ -339,8 +344,6 @@ export default function MarksTable({
     setPage(0);
   };
 
-  
-
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
     setLoading(true);
@@ -386,6 +389,8 @@ export default function MarksTable({
         const res = await updateAggregateMarks(token, detailsAggregate);
       }
       setAlert(true);
+      setGlobalFreeze(false);
+      setValue(0);
       setFreeze(false);
       setMessage("Marks Unfrozen Successfully!");
     } catch (error) {
@@ -436,15 +441,23 @@ export default function MarksTable({
           marks: studentList.map((student) => student.marks),
           freeze_marks: true,
         };
-        if (maxMarks === 25) {
-          res = await updateInternalMarks(token, details);
-        }
+        let globalFreeze = false;
         if (maxMarks === 75) {
+          res = await updateInternalMarks(token, details);
+          const marks = await fetchExternalMarks(token, details);
+          globalFreeze = marks[0].freeze_marks;
+        }
+        if (maxMarks === 25) {
           res = await updateExternalMarks(token, details);
+          const marks = await fetchInternalMarks(token, details);
+          globalFreeze = marks[0].freeze_marks;
         }
         if (maxMarks === 100) {
           res = await updateAggregateMarks(token, details);
+          globalFreeze = true;
         }
+
+        setGlobalFreeze(globalFreeze);
         setAlert(true);
         setMessage(res.message);
         setLoading(false);
@@ -464,7 +477,7 @@ export default function MarksTable({
     setLoading(true);
     let res;
     try {
-      if (maxMarks === 25) {
+      if (maxMarks === 75) {
         const details = {
           campus: campus,
           program_type: program_type,
@@ -478,7 +491,7 @@ export default function MarksTable({
         };
         res = await updateInternalMarks(token, details);
       }
-      if (maxMarks === 75) {
+      if (maxMarks === 25) {
         const details = {
           campus: campus,
           program_type: program_type,
@@ -509,6 +522,7 @@ export default function MarksTable({
       }
       setLoading(false);
       setAlert(true);
+      setSave(true);
       setMessage(res.message);
     } catch (error) {
       setLoading(false);
@@ -682,6 +696,7 @@ export default function MarksTable({
                 {studentList
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, rowIndex) => {
+                    const actualIndex = page * rowsPerPage + rowIndex; // This calculates the actual index in the studentList
                     return (
                       <TableRow
                         hover
@@ -699,9 +714,10 @@ export default function MarksTable({
                                     <TextField
                                       value={value}
                                       disabled={freeze}
-                                      onChange={(e) =>
-                                        handleMarksChange(e, rowIndex)
-                                      }
+                                      onChange={(e) => {
+                                        handleMarksChange(e, actualIndex);
+                                        setSave(false);
+                                      }}
                                       size="small"
                                     />
                                   ) : (
