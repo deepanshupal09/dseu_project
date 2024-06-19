@@ -17,5 +17,4 @@ router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
 router.get("/fetchMarksController",marks_controller.fetchMarksController);
 
 
-
 export default router;
