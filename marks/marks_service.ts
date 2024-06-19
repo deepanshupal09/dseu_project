@@ -139,15 +139,28 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 
                                                 }
 
-                                                if (rollnoMarksMap.get(externalResults[i].rollno) === 'A' && externalResults[i].marks === 'A') {
-                                                    aggregateDetails.marks = 'A';
-                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) === 'A' && externalResults[i].marks !== 'A') {
-                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(externalResults[i].marks)).toString();
-                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'A' && externalResults[i].marks === 'A') {
-                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
-                                                } else {
+                                                if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U'){
+                                                    if (rollnoMarksMap.get(externalResults[i].rollno) === 'X' && externalResults[i].marks === 'X') {
+                                                        aggregateDetails.marks = 'X';
+                                                    } else if(rollnoMarksMap.get(externalResults[i].rollno) === 'X' && externalResults[i].marks !== 'X') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(externalResults[i].marks)).toString();
+                                                    } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'X' && externalResults[i].marks === 'X') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
+                                                    } 
+                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'X' && externalResults[i].marks !== 'X'){
+                                                    if (rollnoMarksMap.get(externalResults[i].rollno) === 'U' && externalResults[i].marks === 'U') {
+                                                        aggregateDetails.marks = 'U';
+                                                    } else if(rollnoMarksMap.get(externalResults[i].rollno) === 'U' && externalResults[i].marks !== 'U') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(externalResults[i].marks)).toString();
+                                                    } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks === 'U') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
+                                                    }
+                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'X' && externalResults[i].marks !== 'X' && rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U') {
                                                     aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                 }
+
+
+                                                
 
                                                 fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
                                                     if (aggreResults.rows.length === 0) {
@@ -257,13 +270,24 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     course_code: details.course_code
                                                 }
 
-                                                if (rollnoMarksMap.get(internalResults[i].rollno).trim() === 'A' && internalResults[i].marks.trim() === 'A') {
-                                                    aggregateDetails.marks = 'A';
-                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) === 'A' && internalResults[i].marks !== 'A') {
-                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(internalResults[i].marks)).toString();
-                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) !== 'A' && internalResults[i].marks === 'A') {
-                                                    aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
-                                                } else {
+                                                //for absent X
+                                                if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'U' && internalResults[i].marks.trim() !== 'U'){
+                                                    if (rollnoMarksMap.get(internalResults[i].rollno).trim() === 'X' && internalResults[i].marks.trim() === 'X') {
+                                                        aggregateDetails.marks = 'X';
+                                                    } else if(rollnoMarksMap.get(internalResults[i].rollno) === 'X' && internalResults[i].marks !== 'X') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(internalResults[i].marks)).toString();
+                                                    } else if(rollnoMarksMap.get(internalResults[i].rollno) !== 'X' && internalResults[i].marks === 'X') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
+                                                    } 
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'X' && internalResults[i].marks.trim() !== 'X'){
+                                                    if (rollnoMarksMap.get(internalResults[i].rollno).trim() === 'U' && internalResults[i].marks.trim() === 'U') {
+                                                        aggregateDetails.marks = 'U';
+                                                    } else if(rollnoMarksMap.get(internalResults[i].rollno) === 'U' && internalResults[i].marks !== 'U') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(internalResults[i].marks)).toString();
+                                                    } else if(rollnoMarksMap.get(internalResults[i].rollno) !== 'U' && internalResults[i].marks === 'U') {
+                                                        aggregateDetails.marks = (parseFloat('0') + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
+                                                    }
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'X' && internalResults[i].marks.trim() !== 'X' && rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'U' && internalResults[i].marks.trim() !== 'U') {
                                                     aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                 }
 
@@ -391,15 +415,58 @@ export function fetchStudentsCourseCodeService(course_code:string, campus: strin
     })
 }
 
-export function fetchMarksService(rollno:string, academic_year:string): Promise<any> {
+
+export function fetchMarksService(rollno: string, academic_year: string): Promise<any> {
     return new Promise((resolve, reject) => {
         Promise.all([
-            fetchMarksInternalModal(rollno,academic_year),
-            fetchMarksExternalModal(rollno,academic_year),
-            fetchMarksAggregateModal(rollno,academic_year)
+            fetchMarksInternalModal(rollno, academic_year),
+            fetchMarksExternalModal(rollno, academic_year),
+            fetchMarksAggregateModal(rollno, academic_year)
         ])
         .then(([internalResults, externalResults, aggregateResults]) => {
             if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0) {
+                const getGrade = (marks: string, credit: number): string => {
+                    let marksFloat = parseFloat(marks);
+                    if (credit === 0) {
+                        return marksFloat >= 33 ? 'S' : 'N';
+                    }
+                    if (marksFloat >= 90 && marksFloat <= 100) return 'O';
+                    if (marksFloat >= 80 && marksFloat < 90) return 'A+';
+                    if (marksFloat >= 70 && marksFloat < 80) return 'A';
+                    if (marksFloat >= 60 && marksFloat < 70) return 'B+';
+                    if (marksFloat >= 50 && marksFloat < 60) return 'B';
+                    if (marksFloat >= 45 && marksFloat < 50) return 'C';
+                    if (marksFloat >= 33 && marksFloat < 45) return 'P';
+                    if (marksFloat >= 0 && marksFloat < 33) return 'F';
+                    if(marks == 'X'){
+                        return 'X';
+                    }
+                    if(marks == 'U'){
+                        return 'U';
+                    }
+                    return 'F';
+                };
+
+                const getGradePoint = (grade: string): string => {
+                    switch (grade) {
+                        case 'O': return '10';
+                        case 'A+': return '9';
+                        case 'A': return '8';
+                        case 'B+': return '7';
+                        case 'B': return '6';
+                        case 'C': return '5';
+                        case 'P': return '4';
+                        case 'F': return '0';
+                        case 'U': return '0';
+                        case 'W': return '0';
+                        case 'X': return '0';
+                        case 'S': return ' ';
+                        case 'N': return ' ';
+                        default: return '0'; 
+                    }
+                };
+                
+                let sgpa=0, totalEarnedCredit=0;
                 const result = {
                     rollno: rollno,
                     academic_year: academic_year,
@@ -407,15 +474,43 @@ export function fetchMarksService(rollno:string, academic_year:string): Promise<
                     program_type: aggregateResults.rows[0].program_type,
                     program: aggregateResults.rows[0].program,
                     semester: aggregateResults.rows[0].semester,
-                    internal_marks: internalResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks})),
-                    external_marks: externalResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks})),
-                    aggregate_marks: aggregateResults.rows.map(row => ({course_code: row.course_code, course_name:row.course_name, credit:row.credit, marks: row.marks}))
+                    internal_marks: internalResults.rows.map(row => ({
+                        course_code: row.course_code,
+                        course_name: row.course_name,
+                        credit: row.credit,
+                        marks: row.marks,
+                        grade: getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit)
+                    })),
+                    external_marks: externalResults.rows.map(row => ({
+                        course_code: row.course_code,
+                        course_name: row.course_name,
+                        credit: row.credit,
+                        marks: row.marks,
+                        grade: getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit)
+                    })),
+                    aggregate_marks: aggregateResults.rows.map(row => {
+                        let grade = getGrade(row.marks, row.credit);
+                        let gradePoint = getGradePoint(grade);
+                        let earnedCredit = gradePoint !== '0' ? row.credit : 0;
+                        totalEarnedCredit+=parseInt(earnedCredit);
+                        sgpa += (parseInt(gradePoint)*parseInt(earnedCredit))
+                        return {
+                            course_code: row.course_code,
+                            course_name: row.course_name,
+                            credit: row.credit,
+                            marks: row.marks,
+                            grade: grade,
+                            grade_point: gradePoint,
+                            credit_earned: earnedCredit
+                        };
+                    }),
+                    sgpa_result: totalEarnedCredit === 0 ? 0 : (sgpa/totalEarnedCredit)
                 };
                 resolve(result);
             } else {
-                fetchMarksInternalModal(rollno,academic_year).then((results)=>{
+                fetchMarksInternalModal(rollno, academic_year).then((results) => {
                     console.log("results:", results);
-                })
+                });
                 reject("No data found for the given roll number and academic year");
             }
         })

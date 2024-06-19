@@ -128,7 +128,7 @@ app.post("/handleStudentDetailsFromInternalController",marks_controller.handleSt
 // app.get("/fetchStudentDetailsFromExternalController",marks_controller.fetchStudentDetailsFromExternalController);
 // app.post("/handleStudentDetailsFromAggregateController",marks_controller.handleStudentDetailsFromAggregateController);
 // app.get("/toggleMarksControlController",marks_controller.toggleMarksControlController);
-// app.get("/fetchMarksController",marks_controller.fetchMarksController);
+app.get("/fetchMarksController",marks_controller.fetchMarksController);
 app.get("/fetchCampusDetails", controller.fetchCampusDetails);
 app.get("/fetchStudentController", controller.fetchStudentController);
 app.get("/fetchFreezeDetailsController",marks_controller.fetchFreezeDetailsController);
