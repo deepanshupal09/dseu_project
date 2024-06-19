@@ -432,7 +432,11 @@ export function fetchMarksService(rollno: string, academic_year: string): Promis
             fetchMarksAggregateModal(rollno, academic_year)
         ])
         .then(([internalResults, externalResults, aggregateResults]) => {
-            if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0) {
+            if(aggregateResults.rows.length > 0 && !aggregateResults.rows[0].freeze_marks){
+                resolve("Marks not evaluated yet.");
+                return;
+            }
+            if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0 && aggregateResults.rows[0].freeze_marks==true) {
                 const getGrade = (marks: string, credit: number): string => {
                     let marksFloat = parseFloat(marks);
                     if (credit === 0) {

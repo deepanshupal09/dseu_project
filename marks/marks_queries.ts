@@ -55,7 +55,7 @@ export const fetchMarksExternal: string = `
   WHERE im.academic_year = $2 AND im.rollno = $1;
 `;
 export const fetchMarksAggregate: string = `
-  SELECT DISTINCT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester, sc.credit, c.course_name
+  SELECT DISTINCT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester, sc.credit, c.course_name, im.freeze_marks
   FROM aggregate_marks AS im
   JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
   JOIN semester_course AS sc ON im.course_code=sc.course_code
