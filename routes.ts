@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as controller from './controller';
+import * as marks_controller from "./marks/marks_controller";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router.post("/addExamRegisterations",controller.addExamRegisterations);
 router.get("/fetchExamControl", controller.fetchExamControl);
 router.get("/getUserByRollno", controller.getUserByRollno);
 router.post("/updateDetailsByRollno",controller.updateDetailsByRollno);
-
+router.get("/fetchMarksController",marks_controller.fetchMarksController);
 
 
 
