@@ -16,12 +16,12 @@ export const insertStudentDetailsToAggregateQuery:string = `
 `;
 export const updateStudentDetailsToAggregateQuery:string = `
     UPDATE aggregate_marks SET marks=$8, freeze_marks=$9, modified_at=$10 WHERE 
-        rollno=$1, 
-        campus=$2, 
-        program_type=$3, 
-        program=$4,  
-        semester=$5,  
-        academic_year=$6, 
+        rollno=$1 AND
+        campus=$2 AND
+        program_type=$3 AND
+        program=$4 AND 
+        semester=$5 AND
+        academic_year=$6 AND
         course_code=$7 ;
 `;
 

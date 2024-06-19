@@ -339,7 +339,7 @@ export function insertIntoAggregateMarks(aggregateDetails:{
 }
 
 export function updateIntoAggregateMarks(aggregateDetails:{
-    rollno: string
+    rollno: string,
     campus: string, 
     program_type:string, 
     program:string, 
