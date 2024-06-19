@@ -389,16 +389,21 @@ export function toggleMarksControlModal(details:{
     program:string,
     semester:number,
     marks_control:boolean
-}): Promise<QueryResult<any>> {
+}[]): Promise<QueryResult<any>> {
+    console.log(124,details);
     return new Promise((resolve, reject)=>{
-        pool.query(toggleMarkControl, [details.campus, details.program, details.semester, details.marks_control], (error, results)=>{
-            if(error) {
-                console.log("error: ", error);
-                reject(error);
-            } else{
-                resolve(results);
-            }
-        });
+
+        details.map((detail)=>{
+            pool.query(toggleMarkControl, [detail.campus, detail.program, detail.semester, detail.marks_control], (error, results)=>{
+                if(error) {
+                    console.log("error: ", error);
+                    reject(error);
+                } else{
+                    resolve(results);
+                }
+            });
+            
+        })
     });
 }
 

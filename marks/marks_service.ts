@@ -394,6 +394,7 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
 
 
 export function toggleMarksControlService(details:any) : Promise<any>{
+    // console.log(890,details);
     return new Promise((resolve, reject) => {
         toggleMarksControlModal(details).then((results)=>{
             resolve(results.rows);
