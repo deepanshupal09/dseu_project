@@ -18,12 +18,7 @@ import {
 } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
-import {
-  ProgramListByTypeType,
-  TransformedType,
-  transformData,
-  useData,
-} from "@/contexts/DataContext";
+import { ProgramListByTypeType, TransformedType, transformData, useData } from "@/contexts/DataContext";
 import {
   Box,
   Button,
@@ -39,6 +34,8 @@ import {
 } from "@mui/material";
 import MarksTable from "./MarksTable";
 import { useRouter } from "next/navigation";
+import BridgeCourses from "../bridge-courses/page";
+import BridgeCoursesTable from "./BridgeCourses";
 
 interface ProgramList {
   [key: string]: string[];
@@ -112,8 +109,7 @@ export default function Marks() {
   const [externalMarks, setExternalMarks] = useState<StudentType[]>([]);
   const [finalMarks, setFinalMarks] = useState<StudentType[]>([]);
   const [selectedCampus, setSelectedCampus] = useState<string>("");
-  const [selectedProgramCategory, setSelectedProgramCategory] =
-    useState<string>("");
+  const [selectedProgramCategory, setSelectedProgramCategory] = useState<string>("");
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<string>("");
@@ -140,38 +136,33 @@ export default function Marks() {
   const [freeze, setFreeze] = useState(false);
   const router = useRouter();
   const [globalFreeze, setGlobalFreeze] = useState(false);
-  const [save, setSave] = useState(false);
+  const [save, setSave] = useState(true);
+  const bridgeCourseList = ["Applied Mathematics-II", "Basic Sciences (Applied Chemistry)", "Basic Sciences (Applied Physics)"];
 
   const academicYear: string[] = ["2023-2024"];
 
   useEffect(() => {
-    const unloadCallback = (event:any) => {
+    const unloadCallback = (event: any) => {
       if (!save) {
         event.preventDefault();
-        event.returnValue = '';
+        event.returnValue = "";
       }
     };
 
     if (!save) {
-      window.addEventListener('beforeunload', unloadCallback);
+      window.addEventListener("beforeunload", unloadCallback);
     } else {
-      window.removeEventListener('beforeunload', unloadCallback);
+      window.removeEventListener("beforeunload", unloadCallback);
     }
 
     return () => {
-      window.removeEventListener('beforeunload', unloadCallback);
+      window.removeEventListener("beforeunload", unloadCallback);
     };
   }, [save]);
 
   useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
-      fetchCoursesBySemester(
-        token,
-        selectedCampus,
-        selectedProgram,
-        selectedSemester,
-        selectedProgramCategory
-      )
+      fetchCoursesBySemester(token, selectedCampus, selectedProgram, selectedSemester, selectedProgramCategory)
         .then((response: Course[]) => {
           const temp: string[] = [];
           setCourseCodes(response);
@@ -180,12 +171,7 @@ export default function Marks() {
         })
         .catch((error) => {});
     }
-  }, [
-    selectedProgram,
-    selectedSemester,
-    selectedProgramCategory,
-    selectedCampus,
-  ]);
+  }, [selectedProgram, selectedSemester, selectedProgramCategory, selectedCampus]);
 
   useEffect(() => {
     if (freeze) {
@@ -193,13 +179,10 @@ export default function Marks() {
     }
   }, [freeze]);
 
-  // useEffect(()=>{
-  //    fetchStudentMarks(subjectType, value, studentList.map(student => student.rollno)).then((res)=>{
-  //
-  //     setStudentList(res);
-  //     // setFreeze(res[0].freeze_marks)
-  //    })
-  // },[value])
+  useEffect(() => {
+    console.log("value: ", value)
+  },[value])
+
 
   useEffect(() => {
     setSelectedProgramCategory("");
@@ -253,38 +236,24 @@ export default function Marks() {
       selectedCourse !== "" &&
       selectedAcademicYear !== ""
     ) {
-      console.log("inside if");
       handleApplyFilters();
     } else {
       setStudentList([]);
     }
-  }, [
-    selectedCampus,
-    selectedProgram,
-    selectedProgramCategory,
-    selectedSemester,
-    selectedCourse,
-    selectedAcademicYear,
-  ]);
+  }, [selectedCampus, selectedProgram, selectedProgramCategory, selectedSemester, selectedCourse, selectedAcademicYear]);
 
   useEffect(() => {
     if (user) {
       fetchDepartDetailsByEmailid(token, user.emailid).then((data) => {
-        const campusList: string[] = Array.from(
-          new Set(data.map((entry: any) => entry.campus))
-        );
-        const programTypeList: string[] = Array.from(
-          new Set(data.map((entry: any) => entry.program_type))
-        );
+        const campusList: string[] = Array.from(new Set(data.map((entry: any) => entry.campus)));
+        const programTypeList: string[] = Array.from(new Set(data.map((entry: any) => entry.program_type)));
         const programListByType: ProgramListByTypeType = {};
         data.map((entry: any) => {
           if (!programListByType[entry.program_type]) {
             programListByType[entry.program_type] = [];
             programListByType[entry.program_type].push(entry.program);
           } else {
-            if (
-              !programListByType[entry.program_type].includes(entry.program)
-            ) {
+            if (!programListByType[entry.program_type].includes(entry.program)) {
               programListByType[entry.program_type].push(entry.program);
             }
           }
@@ -305,9 +274,7 @@ export default function Marks() {
 
   const handleApplyFilters = async () => {
     if (selectedCourse !== "") {
-      const course_code = courseCodes.find(
-        (course) => course.course_name === selectedCourse
-      )?.course_code;
+      const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
       if (course_code) {
         try {
           setLoading(true);
@@ -321,18 +288,14 @@ export default function Marks() {
             selectedAcademicYear
           );
 
-          const formattedStudentList: StudentType[] = res.map(
-            (student: Student, index: number) => ({
-              sno: index + 1,
-              rollno: student.rollno,
-              name: student.name,
-              marks: "",
-            })
-          );
+          const formattedStudentList: StudentType[] = res.map((student: Student, index: number) => ({
+            sno: index + 1,
+            rollno: student.rollno,
+            name: student.name,
+            marks: "",
+          }));
 
-          const freezeStatus = await fetchFreeze(
-            formattedStudentList.map((student) => student.rollno)
-          );
+          const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
           setFreeze(freezeStatus);
           setGlobalFreeze(freezeStatus);
           if (!freezeStatus) {
@@ -382,9 +345,7 @@ export default function Marks() {
 
   async function fetchFreeze(rollno: Array<string>): Promise<boolean> {
     //
-    const course_code = courseCodes.find(
-      (course) => course.course_name === selectedCourse
-    )?.course_code;
+    const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
     if (!course_code) {
       return false;
     }
@@ -413,18 +374,12 @@ export default function Marks() {
     }
   }
 
-  async function fetchStudentMarks(
-    subjectType: number,
-    value: number,
-    rollno: Array<string>
-  ) {
+  async function fetchStudentMarks(subjectType: number, value: number, rollno: Array<string>) {
     if (rollno.length === 0) {
       return [];
     }
 
-    const course_code = courseCodes.find(
-      (course) => course.course_name === selectedCourse
-    )?.course_code;
+    const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
     if (!course_code) {
       return [];
     }
@@ -502,6 +457,7 @@ export default function Marks() {
     setSelectedProgram("");
     setSelectedSemester("");
     setSelectedAcademicYear("");
+    setValue(0);
   };
 
   const handleChangeProgramCategory = (event: SelectChangeEvent) => {
@@ -509,26 +465,31 @@ export default function Marks() {
     setSelectedProgram("");
     setSelectedSemester("");
     setSelectedAcademicYear("");
+    setValue(0);
   };
 
   const handleChangeProgram = (event: SelectChangeEvent) => {
     setSelectedProgram(event.target.value);
     setSelectedSemester("");
     setSelectedAcademicYear("");
+    setValue(0);
   };
 
   const handleChangeSemester = (event: SelectChangeEvent) => {
     setSelectedSemester(event.target.value);
     setSelectedAcademicYear("");
+    setValue(0);
   };
 
   const handleChangeCourse = (event: SelectChangeEvent) => {
     setSelectedCourse(event.target.value);
     setSelectedAcademicYear("");
+    setValue(0);
   };
 
   const handleChangeAcademicYear = (event: SelectChangeEvent) => {
     setSelectedAcademicYear(event.target.value);
+    setValue(0);
   };
 
   useEffect(() => {}, [freeze]);
@@ -537,21 +498,14 @@ export default function Marks() {
     <>
       <div className="bg-[#dfdede] mt-2"></div>
       <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
-        <h1 className="text-2xl text-white font-bold text-center">
-          Marks Entry{" "}
-        </h1>
+        <h1 className="text-2xl text-white font-bold text-center">Marks Entry </h1>
       </div>
       <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
-        <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">
-          SELECT
-        </h2>
+        <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">SELECT</h2>
         {data && (
           <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
             {user?.role === "super" && (
-              <FormControl
-                size="small"
-                className="w-full md:w-1/3 sm:w-auto mt-5"
-              >
+              <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
                 <InputLabel id="program-category-label">Campus</InputLabel>
                 <Select
                   labelId="program-category-label"
@@ -569,13 +523,8 @@ export default function Marks() {
                 </Select>
               </FormControl>
             )}
-            <FormControl
-              size="small"
-              className="w-full md:w-1/3 sm:w-auto mt-5"
-            >
-              <InputLabel id="program-category-label">
-                Program category
-              </InputLabel>
+            <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
+              <InputLabel id="program-category-label">Program category</InputLabel>
               <Select
                 labelId="program-category-label"
                 id="program-category"
@@ -594,10 +543,7 @@ export default function Marks() {
                   ))}
               </Select>
             </FormControl>
-            <FormControl
-              size="small"
-              className="w-full md:w-1/3 sm:w-auto mt-5"
-            >
+            <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
               <InputLabel id="select-program-label">Select Program</InputLabel>
               <Select
                 labelId="select-program-label"
@@ -613,19 +559,14 @@ export default function Marks() {
                   data &&
                   data[selectedCampus] &&
                   data[selectedCampus][selectedProgramCategory] &&
-                  Object.keys(
-                    data[selectedCampus][selectedProgramCategory]
-                  )?.map((program, index) => (
+                  Object.keys(data[selectedCampus][selectedProgramCategory])?.map((program, index) => (
                     <MenuItem key={index} value={program}>
                       {program}
                     </MenuItem>
                   ))}
               </Select>
             </FormControl>
-            <FormControl
-              size="small"
-              className="w-full md:w-1/3 sm:w-auto mt-5"
-            >
+            <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
               <InputLabel id="semester-label">Semester</InputLabel>
               <Select
                 labelId="semester-label"
@@ -644,30 +585,17 @@ export default function Marks() {
                   data &&
                   data[selectedCampus] &&
                   data[selectedCampus][selectedProgramCategory] &&
-                  data[selectedCampus][selectedProgramCategory][
-                    selectedProgram
-                  ] &&
-                  data[selectedCampus][selectedProgramCategory][
-                    selectedProgram
-                  ]?.map((semester, index) => (
+                  data[selectedCampus][selectedProgramCategory][selectedProgram] &&
+                  data[selectedCampus][selectedProgramCategory][selectedProgram]?.map((semester, index) => (
                     <MenuItem key={index} value={semester}>
                       {semester}
                     </MenuItem>
                   ))}
               </Select>
             </FormControl>
-            <FormControl
-              size="small"
-              className="w-full md:w-1/3 sm:w-auto mt-5"
-            >
+            <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
               <InputLabel id="course-label">Course</InputLabel>
-              <Select
-                labelId="course-label"
-                id="course"
-                value={selectedCourse}
-                label="Course"
-                onChange={handleChangeCourse}
-              >
+              <Select labelId="course-label" id="course" value={selectedCourse} label="Course" onChange={handleChangeCourse}>
                 {selectedCampus !== "" &&
                   selectedProgramCategory !== "" &&
                   selectedProgram !== "" &&
@@ -679,10 +607,7 @@ export default function Marks() {
                   ))}
               </Select>
             </FormControl>
-            <FormControl
-              size="small"
-              className="w-full md:w-1/3 sm:w-auto mt-5"
-            >
+            <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
               <InputLabel id="academic-year-label">Academic Year</InputLabel>
               <Select
                 labelId="year-label"
@@ -709,9 +634,7 @@ export default function Marks() {
         <div className="my-10">
           <div className="text-2xl font-medium">
             {selectedAcademicYear === "" && "No Course Selected"}
-            {selectedAcademicYear !== "" &&
-              studentList.length === 0 &&
-              "No Students Available "}
+            {selectedAcademicYear !== "" && studentList.length === 0 && "No Students Available "}
             {selectedAcademicYear !== "" && studentList.length > 0 && (
               <div className="space-y-5 px-2">
                 <div className="space-y-4">
@@ -721,31 +644,14 @@ export default function Marks() {
 
                   <Box sx={{ width: "100%" }}>
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                      <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        aria-label="basic tabs example"
-                      >
-                        {
-                          <Tab
-                            label="Continuous Assessment"
-                            {...a11yProps(1)}
-                            key="tab-1"
-                          />
-                        }
-                        {subjectType === 1 && (
-                          <Tab
-                            label="End Of Semester Assessment"
-                            {...a11yProps(0)}
-                            key="tab-0"
-                          />
+                      <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                        {(!globalFreeze || subjectType === 1) && (
+                          <Tab label="Continuous Assessment" {...a11yProps(1)} key="tab-1" />
                         )}
-                        {globalFreeze && !(subjectType === 2) && (
-                          <Tab
-                            label="Aggregate Marks"
-                            {...a11yProps(2)}
-                            key="tab-2"
-                          />
+                        {subjectType === 1 && <Tab label="End Of Semester Assessment" {...a11yProps(0)} key="tab-0" />}
+                        {globalFreeze && <Tab label="Aggregate Marks" {...a11yProps(2)} key="tab-2" />}
+                        {bridgeCourseList.includes(selectedCourse) && (
+                          <Tab label="Bridge Courses" {...a11yProps(globalFreeze?subjectType===1?3:2:subjectType===1?2:1)} key={`tab-${globalFreeze?subjectType===1?3:2:subjectType===1?2:1}`} />
                         )}
                       </Tabs>
                     </Box>
@@ -764,11 +670,7 @@ export default function Marks() {
                           semester={selectedSemester}
                           setGlobalFreeze={setGlobalFreeze}
                           setSave={setSave}
-                          course_code={
-                            courseCodes.find(
-                              (course) => course.course_name === selectedCourse
-                            )?.course_code || ""
-                          }
+                          course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
                           token={token}
                           academic_year={selectedAcademicYear}
                           subjectType="1"
@@ -793,11 +695,7 @@ export default function Marks() {
                           superAdmin={user?.role === "super"}
                           setFreeze={setFreeze}
                           setSave={setSave}
-                          course_code={
-                            courseCodes.find(
-                              (course) => course.course_name === selectedCourse
-                            )?.course_code || ""
-                          }
+                          course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
                           token={token}
                           academic_year={selectedAcademicYear}
                           maxMarks={25}
@@ -807,34 +705,38 @@ export default function Marks() {
                         />
                       )}
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={2}>
+                    {globalFreeze && (
+                      <CustomTabPanel value={value} index={2}>
+                        <div className="w-full h-full flex justify-center items-center">
+                          {loading && <CircularProgress className="mx-auto" />}
+                        </div>
+                        {!loading && (
+                          <MarksTable
+                            campus={selectedCampus}
+                            program_type={selectedProgramCategory}
+                            program={selectedProgram}
+                            semester={selectedSemester}
+                            setGlobalFreeze={setGlobalFreeze}
+                            freeze={freeze}
+                            superAdmin={user?.role === "super"}
+                            setValue={setValue}
+                            setFreeze={setFreeze}
+                            setSave={setSave}
+                            course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
+                            token={token}
+                            academic_year={selectedAcademicYear}
+                            maxMarks={100}
+                            subjectType="2"
+                            students={studentList}
+                          />
+                        )}
+                      </CustomTabPanel>
+                    )}
+                    <CustomTabPanel value={value} index={globalFreeze?subjectType===1?3:2:subjectType===1?2:1}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
-                      {!loading && (
-                        <MarksTable
-                          campus={selectedCampus}
-                          program_type={selectedProgramCategory}
-                          program={selectedProgram}
-                          semester={selectedSemester}
-                          setGlobalFreeze={setGlobalFreeze}
-                          freeze={freeze}
-                          superAdmin={user?.role === "super"}
-                          setValue={setValue}
-                          setFreeze={setFreeze}
-                          setSave={setSave}
-                          course_code={
-                            courseCodes.find(
-                              (course) => course.course_name === selectedCourse
-                            )?.course_code || ""
-                          }
-                          token={token}
-                          academic_year={selectedAcademicYear}
-                          maxMarks={100}
-                          subjectType="2"
-                          students={studentList}
-                        />
-                      )}
+                      {!loading && <BridgeCoursesTable academicYear={selectedAcademicYear} course={selectedCourse} campus={selectedCampus} />}
                     </CustomTabPanel>
                   </Box>
                 </div>
@@ -857,8 +759,7 @@ export default function Marks() {
         <DialogTitle>Please Select Type of Subject</DialogTitle>
         <DialogContent>
           <Typography>
-            Please select if this is subjects consists of both{" "}
-            <strong>Continuous and End of Semester Assessment</strong> or only{" "}
+            Please select if this is subjects consists of both <strong>Continuous and End of Semester Assessment</strong> or only{" "}
             <strong>Continuous Assessment</strong>?
           </Typography>
         </DialogContent>
