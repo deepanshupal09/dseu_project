@@ -1,5 +1,22 @@
 import { Request, Response } from "express";
-import { fetchTheStudentDetailsFromInternal, insertBridgeDetailsService, handleStudentDetailsFromInternal, fetchTheStudentDetailsFromExternal, handleStudentDetailsFromExternal, handleStudentDetailsFromAggregate, toggleMarksControlService, fetchMarksService, fetchStudentsCourseCodeService, fetchDepartDetailsByEmailidService, resetPasswordService, fetchTheStudentDetailsFromAggregate, fetchFreezeDetailsService, getEmailidAdminService, fetchMarkControlDetailsService } from "./marks_service";
+import {
+    fetchTheStudentDetailsFromInternal,
+    insertBridgeDetailsService,
+    handleStudentDetailsFromInternal,
+    fetchTheStudentDetailsFromExternal,
+    handleStudentDetailsFromExternal,
+    handleStudentDetailsFromAggregate,
+    toggleMarksControlService,
+    fetchMarksService,
+    fetchStudentsCourseCodeService,
+    fetchDepartDetailsByEmailidService,
+    resetPasswordService,
+    fetchTheStudentDetailsFromAggregate,
+    fetchFreezeDetailsService,
+    getEmailidAdminService,
+    fetchMarkControlDetailsService,
+    checkDepartmentService,
+} from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
 import dotenv from "dotenv";
@@ -11,6 +28,18 @@ const insertBridgeDetails = (req: Request, res: Response): void => {
     insertBridgeDetailsService(listOfStudents)
         .then(() => {
             res.send(200).send({ message: "bridge courses send successfully" });
+        })
+        .catch((error: any) => {
+            res.status(500).send({ message: error.message });
+        });
+};
+
+const checkDepartment = (req: Request, res: Response): void => {
+    const rollno = req.body.rollno;
+    const depEmail = req.body.depEmail;
+    checkDepartmentService(depEmail, rollno)
+        .then((name) => {
+            res.send(200).send({ name: name });
         })
         .catch((error: any) => {
             res.status(500).send({ message: error.message });
@@ -290,4 +319,5 @@ export {
     fetchFreezeDetailsController,
     sendEmailMarksController,
     fetchMarkControlDetailsController,
+    checkDepartment,
 };

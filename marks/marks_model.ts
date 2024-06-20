@@ -22,6 +22,39 @@ export function insertBridgeDetailsModel(student: any) {
         });
     });
 }
+export function checkDepartmentModel(rollno: any, email: any) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT 
+                u.name
+            FROM 
+                users u
+            JOIN 
+                departments d ON u.campus = d.campus 
+                              AND u.program = d.program 
+                              AND u.semester = d.semester
+            WHERE 
+                u.rollno = $1 
+                AND d.email = $2
+        `;
+
+        const values = [rollno, email];
+
+        console.log("INTERNAL query:", query);
+
+        pool.query(query, values, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.rows.length > 0) {
+                    resolve(results.rows[0].name);
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    });
+}
 
 export function fetchStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {

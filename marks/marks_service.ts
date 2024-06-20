@@ -23,6 +23,7 @@ import {
     fetchMarkControlDetailsModal,
     updateIntoAggregateMarks,
     insertBridgeDetailsModel,
+    checkDepartmentModel,
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -33,6 +34,19 @@ export interface FreezeData {
     semester: number;
     course_name: string;
 }
+export function checkDepartmentService(rollno: any, depEmail: any) {
+    return new Promise((resolve, reject) => {
+        checkDepartmentModel(rollno, depEmail)
+            .then((name) => {
+                resolve(name);
+            })
+            .catch((error: any) => {
+                console.log("Error in INTERNAL fetching course details: ", error);
+                reject("Internal server error in fetchStudentDetailsFromInternal");
+            });
+    });
+}
+
 export function insertBridgeDetailsService(listOfStudents: any[]) {
     return new Promise((resolve, reject) => {
         const promises = listOfStudents.map((student) => insertBridgeDetailsModel(student));
