@@ -2,26 +2,37 @@ import { QueryResult } from "pg";
 import pool from "../db";
 import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery } from "./marks_queries";
 
+export function insertBridgeDetailsModel(student: any) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            INSERT INTO bridge_course (rollno, course_code, marks, academic_year)
+            VALUES ($1, $2, $3, $4)
+        `;
 
-export function fetchStudentDetailsFromInternal( details:{
-    campus:string,
-    program_type: string, 
-    program:string, 
-    semester: number,
-    academic_year:string,
-    course_code:string,
-    rollno: Array<string>
+        const values = [student.rollno, student.course_code, student.marks, student.academic_year];
+
+        console.log("INTERNAL query:", query);
+
+        pool.query(query, values, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
 }
-): Promise<QueryResult<any>> {
+
+export function fetchStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM internal_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
-        console.log("INTERNAL query:",query);
+        console.log("INTERNAL query:", query);
         pool.query(query, (error, results) => {
             if (error) {
                 reject(error);
@@ -32,22 +43,13 @@ export function fetchStudentDetailsFromInternal( details:{
     });
 }
 
-export function fetchStudentDetailsFromExternal( details:{
-    campus:string,
-    program_type: string, 
-    program:string, 
-    semester: number,
-    academic_year:string,
-    course_code:string,
-    rollno: Array<string>
-}
-): Promise<QueryResult<any>> {
+export function fetchStudentDetailsFromExternal(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM external_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
         // console.log("query:",query);
@@ -61,18 +63,7 @@ export function fetchStudentDetailsFromExternal( details:{
     });
 }
 
-export function updateStudentDetailsFromInternal(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function updateStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         // console.log("created: ", details.created_at);
@@ -81,7 +72,7 @@ export function updateStudentDetailsFromInternal(details: {
         for (let i = 0; i < details.rollno.length; i++) {
             let query = `UPDATE internal_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
 
-            console.log("query: ",query);
+            console.log("query: ", query);
             pool.query(query, (error, results) => {
                 if (error) {
                     reject(error);
@@ -93,19 +84,7 @@ export function updateStudentDetailsFromInternal(details: {
     });
 }
 
-
-export function updateStudentDetailsFromExternal(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function updateStudentDetailsFromExternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         // console.log("created: ", details.created_at);
@@ -127,20 +106,7 @@ export function updateStudentDetailsFromExternal(details: {
     });
 }
 
-
-export function insertStudentDetailsFromInternal(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    created_at: string,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function insertStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; created_at: string; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         console.log("created: ", details.created_at);
@@ -153,7 +119,7 @@ export function insertStudentDetailsFromInternal(details: {
         }
 
         // Remove the last comma and add a semicolon to end the query
-        query = query.slice(0, -1) + ';';
+        query = query.slice(0, -1) + ";";
 
         // console.log("query:", query);
 
@@ -167,20 +133,7 @@ export function insertStudentDetailsFromInternal(details: {
     });
 }
 
-
-export function insertStudentDetailsFromExternal(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    created_at: string,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function insertStudentDetailsFromExternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; created_at: string; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         console.log("created: ", details.created_at);
@@ -193,7 +146,7 @@ export function insertStudentDetailsFromExternal(details: {
         }
 
         // Remove the last comma and add a semicolon to end the query
-        query = query.slice(0, -1) + ';';
+        query = query.slice(0, -1) + ";";
 
         // console.log("query:", query);
 
@@ -207,20 +160,7 @@ export function insertStudentDetailsFromExternal(details: {
     });
 }
 
-
-export function insertStudentDetailsIntoAggregate(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    created_at: string,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function insertStudentDetailsIntoAggregate(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; created_at: string; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         console.log("created: ", details.created_at);
@@ -233,7 +173,7 @@ export function insertStudentDetailsIntoAggregate(details: {
         }
 
         // Remove the last comma and add a semicolon to end the query
-        query = query.slice(0, -1) + ';';
+        query = query.slice(0, -1) + ";";
 
         // console.log("query:", query);
 
@@ -247,19 +187,7 @@ export function insertStudentDetailsIntoAggregate(details: {
     });
 }
 
-export function updateStudentDetailsFromAggregate(details: {
-    campus: string,
-    program_type: string, 
-    program: string, 
-    semester: number,
-    course_code: string,
-    academic_year: string,
-    rollno: Array<string>,
-    marks: Array<string>,
-    freeze_marks: boolean,
-    created_at: string,
-    modified_at: string,
-}): Promise<QueryResult<any>> {
+export function updateStudentDetailsFromAggregate(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; created_at: string; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
         console.log("created: ", details.created_at);
@@ -281,22 +209,13 @@ export function updateStudentDetailsFromAggregate(details: {
     });
 }
 
-export function fetchStudentDetailsFromAggregate( details:{
-    campus:string,
-    program_type: string, 
-    program:string, 
-    semester: number,
-    academic_year:string,
-    course_code:string,
-    rollno: Array<string>
-}
-): Promise<QueryResult<any>> {
+export function fetchStudentDetailsFromAggregate(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
             FROM aggregate_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map(roll => `'${roll}'`).join(", ")})
+            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
             ORDER BY im.rollno
         `;
         // console.log("query:",query);
@@ -310,25 +229,12 @@ export function fetchStudentDetailsFromAggregate( details:{
     });
 }
 
-export function insertIntoAggregateMarks(aggregateDetails:{
-    rollno: string
-    campus: string, 
-    program_type:string, 
-    program:string, 
-    marks:string, 
-    semester:number, 
-    freeze_marks:boolean, 
-    created_at:string, 
-    modified_at:string, 
-    academic_year:string, 
-    course_code:string
-}
-): Promise<QueryResult<any>> {
+export function insertIntoAggregateMarks(aggregateDetails: { rollno: string; campus: string; program_type: string; program: string; marks: string; semester: number; freeze_marks: boolean; created_at: string; modified_at: string; academic_year: string; course_code: string }): Promise<QueryResult<any>> {
     // console.log("model rollno: ",rollno)
     return new Promise((resolve, reject) => {
-        pool.query(insertStudentDetailsToAggregateQuery, [aggregateDetails.rollno,aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.marks, aggregateDetails.semester, aggregateDetails.freeze_marks, aggregateDetails.created_at, aggregateDetails.modified_at, aggregateDetails.academic_year, aggregateDetails.course_code  ], (error, results) => {
+        pool.query(insertStudentDetailsToAggregateQuery, [aggregateDetails.rollno, aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.marks, aggregateDetails.semester, aggregateDetails.freeze_marks, aggregateDetails.created_at, aggregateDetails.modified_at, aggregateDetails.academic_year, aggregateDetails.course_code], (error, results) => {
             if (error) {
-                console.log("eror: ", error)    
+                console.log("eror: ", error);
                 reject(error);
             } else {
                 // console.log("error mode: ",results)
@@ -338,24 +244,12 @@ export function insertIntoAggregateMarks(aggregateDetails:{
     });
 }
 
-export function updateIntoAggregateMarks(aggregateDetails:{
-    rollno: string,
-    campus: string, 
-    program_type:string, 
-    program:string, 
-    marks:string, 
-    semester:number, 
-    freeze_marks:boolean, 
-    modified_at:string, 
-    academic_year:string, 
-    course_code:string
-}
-): Promise<QueryResult<any>> {
+export function updateIntoAggregateMarks(aggregateDetails: { rollno: string; campus: string; program_type: string; program: string; marks: string; semester: number; freeze_marks: boolean; modified_at: string; academic_year: string; course_code: string }): Promise<QueryResult<any>> {
     // console.log("model rollno: ",rollno)
     return new Promise((resolve, reject) => {
-        pool.query(updateStudentDetailsToAggregateQuery, [aggregateDetails.rollno,aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.semester, aggregateDetails.academic_year, aggregateDetails.course_code, aggregateDetails.marks, aggregateDetails.freeze_marks, aggregateDetails.modified_at  ], (error, results) => {
+        pool.query(updateStudentDetailsToAggregateQuery, [aggregateDetails.rollno, aggregateDetails.campus, aggregateDetails.program_type, aggregateDetails.program, aggregateDetails.semester, aggregateDetails.academic_year, aggregateDetails.course_code, aggregateDetails.marks, aggregateDetails.freeze_marks, aggregateDetails.modified_at], (error, results) => {
             if (error) {
-                console.log("eror: ", error)    
+                console.log("eror: ", error);
                 reject(error);
             } else {
                 // console.log("error mode: ",results)
@@ -365,181 +259,152 @@ export function updateIntoAggregateMarks(aggregateDetails:{
     });
 }
 
-
-export function fetchMarksControlModal(details:{
-    campus:string,
-    program_type:string,
-    program:string,
-    semester:number
-}): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarkControl, [details.campus, details.program_type, details.program, details.semester], (error, results)=>{
-            if(error) {
+export function fetchMarksControlModal(details: { campus: string; program_type: string; program: string; semester: number }): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarkControl, [details.campus, details.program_type, details.program, details.semester], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
-            } else{
+            } else {
                 resolve(results);
             }
         });
     });
 }
 
-export function toggleMarksControlModal(details:{
-    campus:string,
-    program:string,
-    semester:number,
-    marks_control:boolean
-}[]): Promise<QueryResult<any>> {
-    console.log(124,details);
-    return new Promise((resolve, reject)=>{
-
-        details.map((detail)=>{
-            pool.query(toggleMarkControl, [detail.campus, detail.program, detail.semester, detail.marks_control], (error, results)=>{
-                if(error) {
+export function toggleMarksControlModal(
+    details: {
+        campus: string;
+        program: string;
+        semester: number;
+        marks_control: boolean;
+    }[]
+): Promise<QueryResult<any>> {
+    console.log(124, details);
+    return new Promise((resolve, reject) => {
+        details.map((detail) => {
+            pool.query(toggleMarkControl, [detail.campus, detail.program, detail.semester, detail.marks_control], (error, results) => {
+                if (error) {
                     console.log("error: ", error);
                     reject(error);
-                } else{
+                } else {
                     resolve(results);
                 }
             });
-            
-        })
+        });
     });
 }
 
-export function fetchMarksInternalModal(
-    rollno:string,
-    academic_year:string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results)=>{
-            if(error) {
+export function fetchMarksInternalModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
-            } else{
+            } else {
                 resolve(results);
             }
         });
     });
 }
-export function fetchMarksExternalModal(
-    rollno:string,
-    academic_year:string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results)=>{
-            if(error) {
+export function fetchMarksExternalModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
-            } else{
+            } else {
                 resolve(results);
             }
         });
     });
 }
-export function fetchMarksAggregateModal(
-    rollno:string,
-    academic_year:string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results)=>{
-            if(error) {
+export function fetchMarksAggregateModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
-                reject(error)
-            } else{
+                reject(error);
+            } else {
                 resolve(results);
             }
         });
     });
 }
 
-export function fetchStudentsCourseCodeModal(
-    course_code:string,
-    campus: string, program_type: string, program: string, semester: string, academic_year: string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchUsersByCourseCode, [course_code, campus,program_type, program, semester, academic_year], (error, results)=>{
-            if(error) {
+export function fetchStudentsCourseCodeModal(course_code: string, campus: string, program_type: string, program: string, semester: string, academic_year: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchUsersByCourseCode, [course_code, campus, program_type, program, semester, academic_year], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
-                reject(error)
-            } else{
+                reject(error);
+            } else {
                 resolve(results);
             }
         });
     });
 }
 
-export function fetchDepartDetailsByEmailidModal(
-    emailid:string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchDepartDetailsByEmailid, [emailid], (error, results)=>{
-            if(error) {
+export function fetchDepartDetailsByEmailidModal(emailid: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchDepartDetailsByEmailid, [emailid], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
-                reject(error)
-            } else{
+                reject(error);
+            } else {
                 resolve(results);
             }
         });
     });
 }
-export function resetPasswordModal(
-    password:string,
-    emailid:string
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(resetPassword, [password, emailid], (error, results)=>{
-            if(error) {
+export function resetPasswordModal(password: string, emailid: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(resetPassword, [password, emailid], (error, results) => {
+            if (error) {
                 console.log("error:  ", error);
-                reject(error)
-            } else{
+                reject(error);
+            } else {
                 resolve(results);
             }
         });
     });
 }
-
 
 export function fetchFreezeDetailsModel(): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchFreezeDetailsQuery, (error, results)=>{
-            if(error) {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchFreezeDetailsQuery, (error, results) => {
+            if (error) {
                 console.log("error:  ", error);
-                reject(error)
-            } else{
+                reject(error);
+            } else {
                 resolve(results);
             }
         });
     });
 }
 
-
-export function getEmailidAdminModel(campus:string): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(getEmailidAdminQuery,[campus], (error, results)=>{
-            if(error){
+export function getEmailidAdminModel(campus: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(getEmailidAdminQuery, [campus], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
-            } else{
+            } else {
                 resolve(results);
             }
         });
     });
 }
-
 
 export function fetchMarkControlDetailsModal(): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarkControlDetailsQuery, (error, results)=>{
-            if(error){
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarkControlDetailsQuery, (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
-            } else{
+            } else {
                 resolve(results);
             }
         });
     });
 }
-
-
-
