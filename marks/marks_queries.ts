@@ -41,26 +41,28 @@ export const toggleMarkControl:string =`
 export const fetchMarksInternal: string = `
   SELECT DISTINCT im.course_code, im.marks, sc.credit, c.course_name
   FROM internal_marks AS im
-  JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code
-  WHERE im.academic_year = $2 AND im.rollno = $1;
+  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
 `;
+
 export const fetchMarksExternal: string = `
   SELECT DISTINCT im.course_code, im.marks ,sc.credit, c.course_name
   FROM external_marks AS im
-  JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code
-  WHERE im.academic_year = $2 AND im.rollno = $1;
+  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
 `;
+
 export const fetchMarksAggregate: string = `
   SELECT DISTINCT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester, sc.credit, c.course_name, im.freeze_marks
   FROM aggregate_marks AS im
-  JOIN users AS u ON im.rollno = u.rollno AND im.campus=u.campus AND im.program_type = u.program_type AND im.program= u.program AND im.semester = u.semester
+  JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code 
-  WHERE im.academic_year = $2 AND im.rollno = $1;
+  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
 `;
 
 

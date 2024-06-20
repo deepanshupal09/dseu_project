@@ -409,10 +409,11 @@ export function toggleMarksControlModal(details:{
 
 export function fetchMarksInternalModal(
     rollno:string,
-    academic_year:string
+    academic_year:string,
+    semester:number
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results)=>{
+        pool.query(fetchMarksInternal, [rollno, academic_year, semester], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
                 reject(error);
@@ -424,10 +425,11 @@ export function fetchMarksInternalModal(
 }
 export function fetchMarksExternalModal(
     rollno:string,
-    academic_year:string
+    academic_year:string,
+    semester:number
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results)=>{
+        pool.query(fetchMarksExternal, [rollno, academic_year, semester], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
                 reject(error);
@@ -439,10 +441,11 @@ export function fetchMarksExternalModal(
 }
 export function fetchMarksAggregateModal(
     rollno:string,
-    academic_year:string
+    academic_year:string,
+    semester:number
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results)=>{
+        pool.query(fetchMarksAggregate, [rollno, academic_year,semester], (error, results)=>{
             if(error) {
                 console.log("error: ", error);
                 reject(error)

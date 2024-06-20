@@ -126,7 +126,8 @@ const fetchMarksController = (req:Request, res:Response)=>{
   try{
     const rollno: string = req.headers.rollno as string;
     const academic_year: string = req.headers.academicyear as string;
-    fetchMarksService(rollno, academic_year).then((results)=>{
+    const semester: number = parseInt(req.headers.semester as string);
+    fetchMarksService(rollno, academic_year, semester).then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);
