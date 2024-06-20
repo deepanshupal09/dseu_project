@@ -157,22 +157,21 @@ const toggleMarksControlController = (req: Request, res: Response) => {
     }
 };
 
-const fetchMarksController = (req: Request, res: Response) => {
-    try {
-        const rollno: string = req.headers.rollno as string;
-        const academic_year: string = req.headers.academicyear as string;
-        fetchMarksService(rollno, academic_year)
-            .then((results) => {
-                res.status(200).send(results);
-            })
-            .catch((error) => {
-                console.log("error:", error);
-                res.status(500).send({ message: "internal server error at marks fetch 1" });
-            });
-    } catch (error) {
-        res.send({ message: "internal server error at marks fetch 2" });
-    }
-};
+const fetchMarksController = (req:Request, res:Response)=>{
+  try{
+    const rollno: string = req.headers.rollno as string;
+    const academic_year: string = req.headers.academicyear as string;
+    const semester: number = parseInt(req.headers.semester as string);
+    fetchMarksService(rollno, academic_year, semester).then((results)=>{
+      res.status(200).send(results);
+    }).catch((error)=>{
+      console.log("error:",error);
+      res.status(500).send({message:"internal server error at marks fetch 1"});
+    })
+  } catch(error){
+    res.send({message:"internal server error at marks fetch 2"});
+  }
+}
 
 const fetchDepartDetailsByEmailidController = (req: Request, res: Response) => {
     try {

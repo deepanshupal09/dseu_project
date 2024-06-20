@@ -328,10 +328,14 @@ export function toggleMarksControlModal(
     });
 }
 
-export function fetchMarksInternalModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results) => {
-            if (error) {
+export function fetchMarksInternalModal(
+    rollno:string,
+    academic_year:string,
+    semester:number
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksInternal, [rollno, academic_year, semester], (error, results)=>{
+            if(error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
@@ -340,10 +344,14 @@ export function fetchMarksInternalModal(rollno: string, academic_year: string): 
         });
     });
 }
-export function fetchMarksExternalModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results) => {
-            if (error) {
+export function fetchMarksExternalModal(
+    rollno:string,
+    academic_year:string,
+    semester:number
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksExternal, [rollno, academic_year, semester], (error, results)=>{
+            if(error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
@@ -352,10 +360,14 @@ export function fetchMarksExternalModal(rollno: string, academic_year: string): 
         });
     });
 }
-export function fetchMarksAggregateModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results) => {
-            if (error) {
+export function fetchMarksAggregateModal(
+    rollno:string,
+    academic_year:string,
+    semester:number
+): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksAggregate, [rollno, academic_year,semester], (error, results)=>{
+            if(error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
