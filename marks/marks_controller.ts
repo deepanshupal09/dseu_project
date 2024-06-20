@@ -320,4 +320,5 @@ export {
     sendEmailMarksController,
     fetchMarkControlDetailsController,
     checkDepartment,
+    insertBridgeDetails,
 };
