@@ -36,6 +36,7 @@ const insertBridgeDetails = (req: Request, res: Response): void => {
 
 const fetchBridgeDetails = (req: Request, res: Response): void => {
     const { email, course_code, academic_year } = req.body;
+    // console.log("body: ", req.body)
     fetchBridgeDetailsService(email, course_code, academic_year)
         .then((list: any) => {
             res.status(200).send(list);
