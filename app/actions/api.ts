@@ -21,20 +21,17 @@ export async function signup(body: any) {
 }
 
 export async function addExamRegisterations(body: any, token: string) {
-  const res = await fetch(
-    `${process.env.BACKEND_URL}/api/data/addExamRegisterations`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
+  const res = await fetch(`${process.env.BACKEND_URL}/api/data/addExamRegisterations`, {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
 
-      headers: {
-        "Content-Type": "application/json",
-        token: token,
-      },
-      body: JSON.stringify(body),
-    }
-  )
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+    body: JSON.stringify(body),
+  })
     .then((res) => {
       return res;
     })
@@ -43,20 +40,17 @@ export async function addExamRegisterations(body: any, token: string) {
     });
 }
 export async function addExamRegisterationsAdmin(body: any, token: string) {
-  const res = await fetch(
-    `${process.env.BACKEND_URL}/api/admin/addExamRegisterations`,
-    {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
+  const res = await fetch(`${process.env.BACKEND_URL}/api/admin/addExamRegisterations`, {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
 
-      headers: {
-        "Content-Type": "application/json",
-        token: token,
-      },
-      body: JSON.stringify(body),
-    }
-  )
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+    body: JSON.stringify(body),
+  })
     .then(async (res) => {
       const data = await res.json();
       return data;
@@ -68,19 +62,16 @@ export async function addExamRegisterationsAdmin(body: any, token: string) {
 
 export async function fetchCoursesByRollNo(rollno: string, token: string) {
   try {
-    const res = await fetch(
-      `${process.env.BACKEND_URL}/api/data/fetchCoursesByRollNo`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
+    const res = await fetch(`${process.env.BACKEND_URL}/api/data/fetchCoursesByRollNo`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
 
     const data = await res.json();
 
@@ -91,19 +82,16 @@ export async function fetchCoursesByRollNo(rollno: string, token: string) {
 }
 export async function fetchCoursesByRollNoAdmin(rollno: string, token: string) {
   try {
-    const res = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchCoursesByRollNo`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
+    const res = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesByRollNo`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
 
     const data = await res.json();
 
@@ -138,19 +126,16 @@ export async function login(headers: {}) {
 
 export async function fetchExamRegisterations(rollno: string, token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/data/fetchExamRegistrationByRollNo`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          rollno: rollno,
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamRegistrationByRollNo`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        token: token,
+      },
+    });
 
     if (!response.ok) {
       return response.status;
@@ -162,24 +147,18 @@ export async function fetchExamRegisterations(rollno: string, token: string) {
     throw error;
   }
 }
-export async function fetchExamRegisterationsByRollNo(
-  rollno: string,
-  token: string
-) {
+export async function fetchExamRegisterationsByRollNo(rollno: string, token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByRollNo`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          rollno: rollno,
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByRollNo`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        token: token,
+      },
+    });
 
     if (!response.ok) {
       return response.status;
@@ -218,19 +197,16 @@ export async function sendEmail(rollno: string) {
 
 export async function verifyOtpAndPassword(rollno: string, otp: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/verifyOtpAndPassword`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          rollno: rollno,
-          otp: otp,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/verifyOtpAndPassword`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        otp: otp,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -245,19 +221,16 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
 }
 export async function updatePasswordByOtp(rollno: string, password: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/updatePasswordByOtp`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          rollno: rollno,
-          password: password,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/updatePasswordByOtp`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        rollno: rollno,
+        password: password,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -304,21 +277,18 @@ export async function fetchExamRegistrationByProgramAndSemester(
   semester: string
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByProgramAndSemester`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          campus: campus,
-          programType: program_type,
-          program: program,
-          semester: semester,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByProgramAndSemester`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        campus: campus,
+        programType: program_type,
+        program: program,
+        semester: semester,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -341,21 +311,18 @@ export async function fetchCoursesBySemester(
 ) {
   try {
     //
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchCoursesBySemester`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          campus: campus,
-          program: program,
-          semester: semester,
-          programtype: program_type,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesBySemester`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        campus: campus,
+        program: program,
+        semester: semester,
+        programtype: program_type,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -369,26 +336,19 @@ export async function fetchCoursesBySemester(
     throw error;
   }
 }
-export async function fetchExamRegistrationByCourseCode(
-  token: string,
-  campus: string,
-  course_code: string
-) {
+export async function fetchExamRegistrationByCourseCode(token: string, campus: string, course_code: string) {
   try {
     //
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByCourseCode`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          coursecode: course_code,
-          campus: campus,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByCourseCode`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        coursecode: course_code,
+        campus: campus,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -407,18 +367,15 @@ export async function fetchCourseDetailsByCourseCode(
   coursedetails: { campus: string; program: string; coursecode: string[] }
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchCourseDetailsByCourseCode`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(coursedetails),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCourseDetailsByCourseCode`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(coursedetails),
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -433,18 +390,15 @@ export async function fetchCourseDetailsByCourseCode(
 }
 export async function fetchDetailsByCampus(token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchCampusDetails`,
-      {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCampusDetails`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error(errorMessage);
@@ -479,18 +433,15 @@ export async function updateDetails(user: StudentDetails, token: string) {
       year_of_admission: user.year_of_admission,
       date_of_birth: user.date_of_birth,
     };
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/updateDetailsByRollno`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateDetailsByRollno`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -526,18 +477,15 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
       year_of_admission: user.year_of_admission,
       date_of_birth: user.date_of_birth,
     };
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/data/updateDetailsByRollno`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/data/updateDetailsByRollno`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -551,29 +499,20 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
   }
 }
 
-export async function fetchExamControl(
-  token: string,
-  campus: string,
-  program: string,
-  semester: string,
-  program_type: string
-) {
+export async function fetchExamControl(token: string, campus: string, program: string, semester: string, program_type: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/data/fetchExamControl`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          campus: campus,
-          semester: semester,
-          program: program,
-          programtype: program_type,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/data/fetchExamControl`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        campus: campus,
+        semester: semester,
+        program: program,
+        programtype: program_type,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -589,18 +528,15 @@ export async function fetchExamControl(
 
 export async function getUserByRollNo(rollno: string, token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/getUserByRollno`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/getUserByRollno`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -615,18 +551,15 @@ export async function getUserByRollNo(rollno: string, token: string) {
 }
 export async function fetchUserByRollno(rollno: string, token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/data/getUserByRollno`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/data/getUserByRollno`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -641,16 +574,13 @@ export async function fetchUserByRollno(rollno: string, token: string) {
 }
 export async function fetchCampusDetailsGlobal() {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/fetchCampusDetails`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/fetchCampusDetails`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -666,18 +596,15 @@ export async function fetchCampusDetailsGlobal() {
 
 export async function deleteExamRegistration(rollno: string, token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/deleteExamRegistrationByRollno`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/deleteExamRegistrationByRollno`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -700,19 +627,16 @@ export async function fetchUpdateExamControl(
   token: string
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/updateExamControl`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateExamControl`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
 
     const data = await response.json();
     return data;
@@ -720,26 +644,19 @@ export async function fetchUpdateExamControl(
     throw error;
   }
 }
-export async function resetStudent(
-  token: string,
-  rollno: string,
-  name: string
-) {
+export async function resetStudent(token: string, rollno: string, name: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/resetStudentController`,
-      {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          rollno: rollno,
-          name: name,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/resetStudentController`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+        name: name,
+      },
+    });
 
     const data = await response.json();
     return data;
@@ -750,17 +667,14 @@ export async function resetStudent(
 
 export async function fetchAllExamControlDetails(token: string) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchAllExamControlDetailsController`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllExamControlDetailsController`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       const errorMessage = await response.text();
@@ -787,18 +701,15 @@ export async function fetchInternalMarks(
   }
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromInternalController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromInternalController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -820,18 +731,15 @@ export async function fetchAggregateMarks(
   }
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromAggregateController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromAggregateController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -853,18 +761,15 @@ export async function fetchExternalMarks(
   }
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromExternalController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchStudentDetailsFromExternalController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -882,23 +787,20 @@ export async function fetchStudentByCourseCode(
   academic_year: string
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchStudentsByCourseCode`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-          coursecode: course_code,
-          campus: campus,
-          programtype: program_type,
-          program: program,
-          semester: semester,
-          academicyear: academic_year,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchStudentsByCourseCode`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+        coursecode: course_code,
+        campus: campus,
+        programtype: program_type,
+        program: program,
+        semester: semester,
+        academicyear: academic_year,
+      },
+    });
 
     const data = await response.json();
     return data;
@@ -923,18 +825,15 @@ export async function updateInternalMarks(
 ) {
   try {
     console.log("body: ", details);
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromInternalController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromInternalController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -958,18 +857,15 @@ export async function updateExternalMarks(
   }
 ) {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromExternalController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromExternalController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -993,20 +889,15 @@ export async function updateAggregateMarks(
 ) {
   try {
     console.log("this api ");
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromAggregateController`,
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      }
-    );
-
-    console.log("response: ", response);
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromAggregateController`, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(details),
+    });
 
     const data = await response.json();
     return data;
@@ -1015,23 +906,18 @@ export async function updateAggregateMarks(
   }
 }
 
-export async function fetchDepartDetailsByEmailid(token: string,  email: string) {
+export async function fetchDepartDetailsByEmailid(token: string, email: string) {
   try {
     console.log("this api ");
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/admin/fetchDepartDetailsByEmailid`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          token: token,
-          "Content-Type": "application/json",
-          emailid: email,
-        },
-      }
-    );
-
-    console.log("response: ", response);
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchDepartDetailsByEmailid`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+        emailid: email,
+      },
+    });
 
     const data = await response.json();
     return data;
@@ -1040,52 +926,132 @@ export async function fetchDepartDetailsByEmailid(token: string,  email: string)
   }
 }
 
-export async function fetchToggleMarks(body: { campus: string; program: string; semester: number; marks_control: boolean }[], token: string) {
-    
+export async function fetchToggleMarks(
+  body: { campus: string; program: string; semester: number; marks_control: boolean }[],
+  token: string
+) {
   try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/toggleMarksControlController`, {
-          method: "POST",
-          mode: "cors",
-          cache: "no-cache",
-          headers: {
-              "Content-Type": "application/json",
-              token: token,
-          },
-          body: JSON.stringify(body),
-          
-      });
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/toggleMarksControlController`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
 
-      const data = await response.json();
-      return data;
-
+    const data = await response.json();
+    return data;
   } catch (error) {
-      throw error;
+    throw error;
   }
 }
 
-export async function fetchAllMarksControl(token: string){
+export async function fetchAllMarksControl(token: string) {
   try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarkControlDetailsController`, {
-          method: "GET",
-          mode: "cors",
-          headers: {
-              token : token,
-              "Content-Type": "application/json",
-          },
-      });
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarkControlDetailsController`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        token: token,
+        "Content-Type": "application/json",
+      },
+    });
 
-      if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(errorMessage);
-      }
+    // if (!response.ok) {
+    //     const errorMessage = await response.text();
+    //     throw new Error(errorMessage);
+    // }
 
-      const data = await response.json(); 
-      return data;
+    const data = await response.json();
+    return data;
   } catch (error) {
-      throw error;
+    throw error;
   }
 }
 
+export async function checkDepartment(token: string, rollno: string, depEmail: string) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/checkDepartment`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        rollno: rollno,
+        email: depEmail,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function insertIntoBridgeMarks(
+  token: string,
+  listOfStudents: { rollno: string; course_code: string; marks: string; academic_year: string; name: string }[]
+) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/insertBridgeDetails`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify({ students: listOfStudents }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function fetchBridgeDetails(token: string, email: string, course_code: string, academic_year: string) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchBridgeDetails`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify({ email: email, course_code: course_code, academic_year: academic_year }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function deleteBridgeDetails (token: string, rollno: string, course_code: string, academic_year: string) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/deleteBridgeDetails`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify({ rollno: rollno, course_code: course_code, academic_year: academic_year }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 export async function fetchMarksController(academicYear:string, semester:string, rollno:string, token: string,){
   try {
       const response = await fetch(`${process.env.BACKEND_URL}/fetchMarksController`, {

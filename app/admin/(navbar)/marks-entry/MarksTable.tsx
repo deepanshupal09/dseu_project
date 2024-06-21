@@ -10,23 +10,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import {
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Menu,
-  Snackbar,
-} from "@mui/material";
-import {
-  ArrowDropDown,
-  Cancel,
-  ClearAll,
-  CloudUpload,
-  Download,
-  Save,
-} from "@mui/icons-material";
+import { CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Menu, Snackbar } from "@mui/material";
+import { ArrowDropDown, Cancel, ClearAll, CloudUpload, Download, Save } from "@mui/icons-material";
 import { saveAs } from "file-saver";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -41,8 +26,7 @@ import {
 } from "@/app/actions/api";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
-import DownloadPDFButton from "./DownloadPDFButton";
-import logo from "@/app/images/dseulogo.png";
+import logo from "@/app/images/dseu.png";
 
 interface FileData {
   fileName: string;
@@ -77,7 +61,11 @@ type propsType = {
   token: string;
   freeze: boolean;
   setFreeze: React.Dispatch<React.SetStateAction<boolean>>;
+  setGlobalFreeze: React.Dispatch<React.SetStateAction<boolean>>;
+  setSave: React.Dispatch<React.SetStateAction<boolean>>;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
   superAdmin: boolean;
+  marksControl: boolean;
 };
 
 export default function MarksTable({
@@ -93,7 +81,11 @@ export default function MarksTable({
   token,
   freeze,
   setFreeze,
+  setGlobalFreeze,
+  setSave,
+  setValue,
   superAdmin,
+  marksControl
 }: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -110,14 +102,8 @@ export default function MarksTable({
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-  async function fetchStudentMarks(
-    subjectType: number,
-    value: number,
-    rollno: Array<string>
-  ) {
-    console.log(
-      `fetch student marks: subjectType: ${subjectType}, value: ${value}`
-    );
+  async function fetchStudentMarks(subjectType: number, value: number, rollno: Array<string>) {
+    console.log(`fetch student marks: subjectType: ${subjectType}, value: ${value}`);
 
     if (rollno.length === 0) {
       console.log("No students available to fetch marks for");
@@ -212,12 +198,7 @@ export default function MarksTable({
 
   const downloadTemplate = () => {
     const headers = ["S. No", "Roll No", "Name", "Marks"];
-    const rows = studentList.map((student) => [
-      student.sno,
-      student.rollno,
-      student.name,
-      "",
-    ]);
+    const rows = studentList.map((student) => [student.sno, student.rollno, student.name, ""]);
 
     let csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
 
@@ -242,25 +223,21 @@ export default function MarksTable({
           const rows = csvContent.split("\n");
 
           // Skip the header row
-          const studentData = rows.slice(1);
+          const studentData = rows.slice(1, -1);
           const newData = studentList;
 
           console.log(studentData);
 
           if (studentData.length !== newData.length) {
             setAlert(true);
-            setMessage(
-              "Invalid CSV format(Missing rows)! Please download the CSV template from actions menu"
-            );
+            setMessage("Invalid CSV format(Missing rows)! Please download the CSV template from actions menu");
             setFileData(null);
           } else {
             console.log("students : ", newData);
             let missing = 0;
             studentData.map((row) => {
               const rollno = row.split(",")[1];
-              let exists = studentList.some(
-                (student) => student.rollno === rollno
-              );
+              let exists = studentList.some((student) => student.rollno === rollno);
               if (!exists) {
                 missing++;
               }
@@ -268,30 +245,25 @@ export default function MarksTable({
 
             if (missing > 0) {
               setAlert(true);
-              setMessage(
-                "Invalid CSV format(Missing Roll No)! Please download the CSV template from actions menu"
-              );
+              setMessage("Invalid CSV format(Missing Roll No)! Please download the CSV template from actions menu");
               setFileData(null);
             } else {
               const updatedStudentList = studentData.map((row, index) => {
                 const columns = row.split(",");
                 return {
-                  name:
-                    studentList.find((student) => student.rollno === columns[1])
-                      ?.name || "Unknown",
+                  name: studentList.find((student) => student.rollno === columns[1])?.name || "Unknown",
                   rollno: columns[1],
                   marks: columns[3],
                   sno: -1,
                 };
               });
-              updatedStudentList.sort((a, b) =>
-                a.rollno.localeCompare(b.rollno)
-              );
+              updatedStudentList.sort((a, b) => a.rollno.localeCompare(b.rollno));
               updatedStudentList.map((student, index) => {
                 student.sno = index + 1;
               });
 
               setStudentList(updatedStudentList);
+              setSave(false);
             }
             // const;
           }
@@ -301,9 +273,7 @@ export default function MarksTable({
     } else {
       setAlert(true);
       setFileData(null);
-      setMessage(
-        "Invalid CSV format! Please download the CSV template from actions menu"
-      );
+      setMessage("Invalid CSV format! Please download the CSV template from actions menu");
     }
   };
 
@@ -332,14 +302,10 @@ export default function MarksTable({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  
 
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
@@ -386,6 +352,8 @@ export default function MarksTable({
         const res = await updateAggregateMarks(token, detailsAggregate);
       }
       setAlert(true);
+      setGlobalFreeze(false);
+      setValue(0);
       setFreeze(false);
       setMessage("Marks Unfrozen Successfully!");
     } catch (error) {
@@ -400,7 +368,7 @@ export default function MarksTable({
   async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
-      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "A") {
+      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
         if (student.marks?.trim() === "") {
           errors.push({ ...student, error: `Marks can not be empty` });
         } else {
@@ -424,6 +392,7 @@ export default function MarksTable({
     } else {
       setLoading(true);
       let res;
+      console.log("1");
       try {
         const details = {
           campus: campus,
@@ -436,15 +405,25 @@ export default function MarksTable({
           marks: studentList.map((student) => student.marks),
           freeze_marks: true,
         };
-        if (maxMarks === 25) {
-          res = await updateInternalMarks(token, details);
-        }
+        console.log("2");
+        let globalFreeze = false;
         if (maxMarks === 75) {
+          res = await updateInternalMarks(token, details);
+          const marks = await fetchExternalMarks(token, details);
+          if (marks && marks.length > 0) globalFreeze = marks[0].freeze_marks;
+        }
+        if (maxMarks === 25) {
           res = await updateExternalMarks(token, details);
+          const marks = await fetchInternalMarks(token, details);
+          if (marks && marks.length > 0) globalFreeze = marks[0].freeze_marks;
         }
         if (maxMarks === 100) {
           res = await updateAggregateMarks(token, details);
+          globalFreeze = true;
         }
+        console.log("res: ", res);
+
+        setGlobalFreeze(globalFreeze);
         setAlert(true);
         setMessage(res.message);
         setLoading(false);
@@ -464,7 +443,7 @@ export default function MarksTable({
     setLoading(true);
     let res;
     try {
-      if (maxMarks === 25) {
+      if (maxMarks === 75) {
         const details = {
           campus: campus,
           program_type: program_type,
@@ -478,7 +457,7 @@ export default function MarksTable({
         };
         res = await updateInternalMarks(token, details);
       }
-      if (maxMarks === 75) {
+      if (maxMarks === 25) {
         const details = {
           campus: campus,
           program_type: program_type,
@@ -509,6 +488,7 @@ export default function MarksTable({
       }
       setLoading(false);
       setAlert(true);
+      setSave(true);
       setMessage(res.message);
     } catch (error) {
       setLoading(false);
@@ -556,27 +536,13 @@ export default function MarksTable({
             </MenuItem>
             <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
-                {loading ? (
-                  <CircularProgress
-                    className="text-gray-400  "
-                    size={"1.2rem"}
-                  />
-                ) : (
-                  <Save fontSize="small" />
-                )}
+                {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <Save fontSize="small" />}
               </ListItemIcon>
               <ListItemText primary="Save Changes" />
             </MenuItem>
             <MenuItem disabled={loading || freeze} onClick={handleFreezeMarks}>
               <ListItemIcon>
-                {loading ? (
-                  <CircularProgress
-                    className="text-gray-400  "
-                    size={"1.2rem"}
-                  />
-                ) : (
-                  <CloudUpload fontSize="small" />
-                )}
+                {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <CloudUpload fontSize="small" />}
               </ListItemIcon>
               <ListItemText primary="Freeze Changes" />
             </MenuItem>
@@ -595,24 +561,12 @@ export default function MarksTable({
         >
           {!fileData && (
             <>
-              <div className="text-lg text-gray-700 font-medium">
-                Drag and drop your CSV here...
-              </div>
+              <div className="text-lg text-gray-700 font-medium">Drag and drop your CSV here...</div>
               <div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => fileInput.current?.click()}
-                >
+                <Button variant="contained" color="primary" onClick={() => fileInput.current?.click()}>
                   Browse files
                 </Button>
-                <input
-                  ref={fileInput}
-                  type="file"
-                  accept=".csv"
-                  style={{ display: "none" }}
-                  onChange={handleFileInputChange}
-                />
+                <input ref={fileInput} type="file" accept=".csv" style={{ display: "none" }} onChange={handleFileInputChange} />
               </div>
             </>
           )}
@@ -632,10 +586,7 @@ export default function MarksTable({
       )}
       <div className="w-full flex justify-end">
         {!freeze ? (
-          <Button
-            endIcon={<ArrowDropDown className="scale-125" />}
-            onClick={handleMenuOpen}
-          >
+          <Button endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
             Actions
           </Button>
         ) : (
@@ -668,57 +619,48 @@ export default function MarksTable({
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
+                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
                       {column.label}
                     </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {studentList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, rowIndex) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.sno}
-                      >
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.id === "marks" ? (
-                                <>
-                                  {!freeze ? (
-                                    <TextField
-                                      value={value}
-                                      disabled={freeze}
-                                      onChange={(e) =>
-                                        handleMarksChange(e, rowIndex)
-                                      }
-                                      size="small"
-                                    />
-                                  ) : (
-                                    <>{value}</>
-                                  )}
-                                </>
-                              ) : column.format && typeof value === "number" ? (
-                                column.format(value)
-                              ) : (
-                                value
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                {studentList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => {
+                  const actualIndex = page * rowsPerPage + rowIndex; // This calculates the actual index in the studentList
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.sno}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.id === "marks" ? (
+                              <>
+                                {!freeze && marksControl ? (
+                                  <TextField
+                                    value={value}
+                                    disabled={freeze}
+                                    onChange={(e) => {
+                                      handleMarksChange(e, actualIndex);
+                                      setSave(false);
+                                    }}
+                                    size="small"
+                                  />
+                                ) : (
+                                  <>{value}</>
+                                )}
+                              </>
+                            ) : column.format && typeof value === "number" ? (
+                              column.format(value)
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
@@ -733,21 +675,14 @@ export default function MarksTable({
           />
         </div>
       </div>
-      <Dialog
-        open={errorDialog}
-        maxWidth="md"
-        fullWidth
-        onClose={() => setErrorDialog(false)}
-      >
+      <Dialog open={errorDialog} maxWidth="md" fullWidth onClose={() => setErrorDialog(false)}>
         <DialogTitle>Errors in Marks Entry</DialogTitle>
         <DialogContent>
           {/* <Typography variant="body1">Errors:</Typography> */}
           {errors.map((error, index) => (
             <Typography key={index}>
-              {`[${index}]: `} Error at{" "}
-              <span className="font-bold">S.No {error.sno}</span> ,Name{" "}
-              <span className="font-bold"> {error.name}</span>,{" "}
-              <span className="font-bold">{error.error}</span>
+              {`[${index}]: `} Error at <span className="font-bold">S.No {error.sno}</span> ,Name{" "}
+              <span className="font-bold"> {error.name}</span>, <span className="font-bold">{error.error}</span>
             </Typography>
           ))}
         </DialogContent>

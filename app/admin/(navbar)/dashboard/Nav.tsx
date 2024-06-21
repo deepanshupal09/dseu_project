@@ -21,7 +21,7 @@ export default function Nav() {
                 const data = await parseJwt(t.value);
                 //
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard", "Edit Student Details","Exam Control", "Query","Registration Chart", "Admit Card","Marks Control","Marks Entry","Bridge Courses"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Marks Entry","Exam Control","Marks Control", "Edit Student Details"]);
                 }
                 if (data?.user?.role === "dep") {
                     setOptions(["Marks Entry", "Bridge Courses"]);
