@@ -16,6 +16,7 @@ import {
     getEmailidAdminService,
     fetchMarkControlDetailsService,
     checkDepartmentService,
+    fetchBridgeDetailsService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -27,6 +28,17 @@ const insertBridgeDetails = (req: Request, res: Response): void => {
     insertBridgeDetailsService(listOfStudents)
         .then(() => {
             res.status(200).send({ message: "Operation Successfull!" });
+        })
+        .catch((error: any) => {
+            res.status(500).send({ message: "Internal Server Error" });
+        });
+};
+
+const fetchBridgeDetails = (req: Request, res: Response): void => {
+    const { email, course_code, academic_year } = req.body;
+    fetchBridgeDetailsService(email, course_code, academic_year)
+        .then((list: any) => {
+            res.status(200).send(list);
         })
         .catch((error: any) => {
             res.status(500).send({ message: "Internal Server Error" });
@@ -156,21 +168,23 @@ const toggleMarksControlController = (req: Request, res: Response) => {
     }
 };
 
-const fetchMarksController = (req:Request, res:Response)=>{
-  try{
-    const rollno: string = req.headers.rollno as string;
-    const academic_year: string = req.headers.academicyear as string;
-    const semester: number = parseInt(req.headers.semester as string);
-    fetchMarksService(rollno, academic_year, semester).then((results)=>{
-      res.status(200).send(results);
-    }).catch((error)=>{
-      console.log("error:",error);
-      res.status(500).send({message:"internal server error at marks fetch 1"});
-    })
-  } catch(error){
-    res.send({message:"internal server error at marks fetch 2"});
-  }
-}
+const fetchMarksController = (req: Request, res: Response) => {
+    try {
+        const rollno: string = req.headers.rollno as string;
+        const academic_year: string = req.headers.academicyear as string;
+        const semester: number = parseInt(req.headers.semester as string);
+        fetchMarksService(rollno, academic_year, semester)
+            .then((results) => {
+                res.status(200).send(results);
+            })
+            .catch((error) => {
+                console.log("error:", error);
+                res.status(500).send({ message: "internal server error at marks fetch 1" });
+            });
+    } catch (error) {
+        res.send({ message: "internal server error at marks fetch 2" });
+    }
+};
 
 const fetchDepartDetailsByEmailidController = (req: Request, res: Response) => {
     try {
@@ -319,4 +333,5 @@ export {
     fetchMarkControlDetailsController,
     checkDepartment,
     insertBridgeDetails,
+    fetchBridgeDetails,
 };

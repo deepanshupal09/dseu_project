@@ -36,5 +36,6 @@ router.get("/fetchMarkControlDetailsController", marks_controller.fetchMarkContr
 router.get("/fetchDepartDetailsByEmailid", marks_controller.fetchDepartDetailsByEmailidController);
 router.get("/checkDepartment", marks_controller.checkDepartment);
 router.post("/insertBridgeDetails", marks_controller.insertBridgeDetails);
+router.post("/fetchBridgeDetails", marks_controller.fetchBridgeDetails);
 
 export default router;

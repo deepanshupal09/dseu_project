@@ -2,6 +2,30 @@ import { QueryResult } from "pg";
 import pool from "../db";
 import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery } from "./marks_queries";
 
+export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT b.rollno,b.marks, u.name
+            FROM bridge b
+            JOIN users u ON b.rollno = u.rollno
+            JOIN department d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
+            WHERE d.email = ? AND b.course_code = ? AND b.academic_year = ?;
+        `;
+
+        const values = [email, course_code, academic_year];
+
+        console.log("INTERNAL query:", query);
+
+        pool.query(query, values, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
 export function insertBridgeDetailsModel(student: any) {
     return new Promise((resolve, reject) => {
         const query = `
@@ -46,7 +70,6 @@ export function checkDepartmentModel(rollno: any, email: any) {
         const values = [rollno, email];
 
         // console.log("INTERNAL query:", query,values);
-        
 
         pool.query(query, values, (error, results) => {
             if (error) {
@@ -335,14 +358,10 @@ export function toggleMarksControlModal(
     });
 }
 
-export function fetchMarksInternalModal(
-    rollno:string,
-    academic_year:string,
-    semester:number
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksInternal, [rollno, academic_year, semester], (error, results)=>{
-            if(error) {
+export function fetchMarksInternalModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksInternal, [rollno, academic_year, semester], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
@@ -351,14 +370,10 @@ export function fetchMarksInternalModal(
         });
     });
 }
-export function fetchMarksExternalModal(
-    rollno:string,
-    academic_year:string,
-    semester:number
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksExternal, [rollno, academic_year, semester], (error, results)=>{
-            if(error) {
+export function fetchMarksExternalModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksExternal, [rollno, academic_year, semester], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
@@ -367,14 +382,10 @@ export function fetchMarksExternalModal(
         });
     });
 }
-export function fetchMarksAggregateModal(
-    rollno:string,
-    academic_year:string,
-    semester:number
-): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksAggregate, [rollno, academic_year,semester], (error, results)=>{
-            if(error) {
+export function fetchMarksAggregateModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchMarksAggregate, [rollno, academic_year, semester], (error, results) => {
+            if (error) {
                 console.log("error: ", error);
                 reject(error);
             } else {
