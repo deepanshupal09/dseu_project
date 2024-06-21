@@ -34,7 +34,6 @@ import {
 } from "@mui/material";
 import MarksTable from "./MarksTable";
 import { useRouter } from "next/navigation";
-import BridgeCourses from "../bridge-courses/page";
 import BridgeCoursesTable from "./BridgeCourses";
 
 interface ProgramList {
