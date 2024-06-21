@@ -25,6 +25,7 @@ import {
     insertBridgeDetailsModel,
     checkDepartmentModel,
     fetchBridgeDetailsModel,
+    deleteBridgeDetailsModel,
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -53,6 +54,18 @@ export function fetchBridgeDetailsService(email: string, course_code: string, ac
         fetchBridgeDetailsModel(email, course_code, academic_year)
             .then((result: any) => {
                 resolve(result.rows);
+            })
+            .catch((error: any) => {
+                console.log("Error in INTERNAL fetching course details: ", error);
+                reject("Internal server error in fetchStudentDetailsFromInternal");
+            });
+    });
+}
+export function deleteBridgeDetailsService(rollno: string, course_code: string, academic_year: string) {
+    return new Promise((resolve, reject) => {
+        deleteBridgeDetailsModel(rollno, course_code, academic_year)
+            .then((result: any) => {
+                resolve(true);
             })
             .catch((error: any) => {
                 console.log("Error in INTERNAL fetching course details: ", error);

@@ -17,6 +17,7 @@ import {
     fetchMarkControlDetailsService,
     checkDepartmentService,
     fetchBridgeDetailsService,
+    deleteBridgeDetailsService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -37,6 +38,16 @@ const insertBridgeDetails = (req: Request, res: Response): void => {
 const fetchBridgeDetails = (req: Request, res: Response): void => {
     const { email, course_code, academic_year } = req.body;
     fetchBridgeDetailsService(email, course_code, academic_year)
+        .then((list: any) => {
+            res.status(200).send(list);
+        })
+        .catch((error: any) => {
+            res.status(500).send({ message: "Internal Server Error" });
+        });
+};
+const deleteBridgeDetails = (req: Request, res: Response): void => {
+    const { rollno, course_code, academic_year } = req.body;
+    deleteBridgeDetailsService(rollno, course_code, academic_year)
         .then((list: any) => {
             res.status(200).send(list);
         })

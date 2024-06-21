@@ -26,6 +26,27 @@ export function fetchBridgeDetailsModel(email: string, course_code: string, acad
     });
 }
 
+export function deleteBridgeDetailsModel(rollno: string, course_code: string, academic_year: string) {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM bride_course
+        WHERE rollno = $1 
+        AND course_code = $2 
+        AND academic_year = $3;`;
+
+        const values = [rollno, course_code, academic_year];
+
+        console.log("INTERNAL query:", query);
+
+        pool.query(query, values, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+
 export function insertBridgeDetailsModel(student: any) {
     return new Promise((resolve, reject) => {
         const query = `
