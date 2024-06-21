@@ -49,8 +49,8 @@ const fetchBridgeDetails = (req: Request, res: Response): void => {
 const deleteBridgeDetails = (req: Request, res: Response): void => {
     const { rollno, course_code, academic_year } = req.body;
     deleteBridgeDetailsService(rollno, course_code, academic_year)
-        .then((list: any) => {
-            res.status(200).send(list);
+        .then(() => {
+            res.status(200).send("Deleted successfully");
         })
         .catch((error: any) => {
             res.status(500).send({ message: "Internal Server Error" });
@@ -346,4 +346,5 @@ export {
     checkDepartment,
     insertBridgeDetails,
     fetchBridgeDetails,
+    deleteBridgeDetails,
 };

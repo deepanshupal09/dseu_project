@@ -37,5 +37,6 @@ router.get("/fetchDepartDetailsByEmailid", marks_controller.fetchDepartDetailsBy
 router.get("/checkDepartment", marks_controller.checkDepartment);
 router.post("/insertBridgeDetails", marks_controller.insertBridgeDetails);
 router.post("/fetchBridgeDetails", marks_controller.fetchBridgeDetails);
+router.post("/deleteBridgeDetails", marks_controller.deleteBridgeDetails);
 
 export default router;
