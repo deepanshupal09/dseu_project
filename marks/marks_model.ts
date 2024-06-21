@@ -9,7 +9,7 @@ export function fetchBridgeDetailsModel(email: string, course_code: string, acad
             FROM bridge b
             JOIN users u ON b.rollno = u.rollno
             JOIN department d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
-            WHERE d.email = ? AND b.course_code = ? AND b.academic_year = ?;
+            WHERE d.emailid = ? AND b.course_code = ? AND b.academic_year = ?;
         `;
 
         const values = [email, course_code, academic_year];
