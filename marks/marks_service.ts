@@ -449,7 +449,7 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
         ])
         .then(([internalResults, externalResults, aggregateResults]) => {
             if(aggregateResults.rows.length > 0 && !aggregateResults.rows[0].freeze_marks){
-                resolve("Marks not evaluated yet.");
+                resolve({message:"Marks not evaluated yet."});
                 return;
             }
             if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0 && aggregateResults.rows[0].freeze_marks==true) {
