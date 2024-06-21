@@ -24,22 +24,21 @@ dotenv.config();
 
 const insertBridgeDetails = (req: Request, res: Response): void => {
     const listOfStudents = req.body.students;
-    const email = req.body.email;
     insertBridgeDetailsService(listOfStudents)
         .then(() => {
-            res.send(200).send({ message: "bridge courses send successfully" });
+            res.status(200).send({ message: "Operation Successfull!" });
         })
         .catch((error: any) => {
-            res.status(500).send({ message: error.message });
+            res.status(500).send({ message: "Internal Server Error" });
         });
 };
 
 const checkDepartment = (req: Request, res: Response): void => {
-    const rollno = req.body.rollno;
-    const depEmail = req.body.depEmail;
-    checkDepartmentService(depEmail, rollno)
+    const rollno = req.headers.rollno;
+    const depEmail = req.headers.email;
+    checkDepartmentService(rollno, depEmail)
         .then((name) => {
-            res.send(200).send({ name: name });
+            res.status(200).send({ name: name });
         })
         .catch((error: any) => {
             res.status(500).send({ message: error.message });

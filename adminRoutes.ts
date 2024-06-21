@@ -33,8 +33,8 @@ router.post("/toggleMarksControlController", marks_controller.toggleMarksControl
 router.get("/fetchStudentsByCourseCode", marks_controller.fetchStudentsCourseCodeController);
 router.post("/fetchStudentDetailsFromAggregateController", marks_controller.fetchStudentDetailsFromAggregateController);
 router.get("/fetchMarkControlDetailsController", marks_controller.fetchMarkControlDetailsController);
-router.post("/fetchDepartDetailsByEmailid", marks_controller.fetchDepartDetailsByEmailidController);
-router.post("/checkDepartment", marks_controller.checkDepartment);
+router.get("/fetchDepartDetailsByEmailid", marks_controller.fetchDepartDetailsByEmailidController);
+router.get("/checkDepartment", marks_controller.checkDepartment);
 router.post("/insertBridgeDetails", marks_controller.insertBridgeDetails);
 
 export default router;

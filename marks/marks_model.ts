@@ -7,6 +7,9 @@ export function insertBridgeDetailsModel(student: any) {
         const query = `
             INSERT INTO bridge_course (rollno, course_code, marks, academic_year)
             VALUES ($1, $2, $3, $4)
+            ON CONFLICT (rollno, course_code, academic_year)
+            DO UPDATE SET
+                marks = EXCLUDED.marks
         `;
 
         const values = [student.rollno, student.course_code, student.marks, student.academic_year];
@@ -22,6 +25,7 @@ export function insertBridgeDetailsModel(student: any) {
         });
     });
 }
+
 export function checkDepartmentModel(rollno: any, email: any) {
     return new Promise((resolve, reject) => {
         const query = `
@@ -32,20 +36,23 @@ export function checkDepartmentModel(rollno: any, email: any) {
             JOIN 
                 departments d ON u.campus = d.campus 
                               AND u.program = d.program 
+                              AND u.program_type = d.program_type
                               AND u.semester = d.semester
             WHERE 
                 u.rollno = $1 
-                AND d.email = $2
+                AND d.emailid = $2
         `;
 
         const values = [rollno, email];
 
-        console.log("INTERNAL query:", query);
+        // console.log("INTERNAL query:", query,values);
+        
 
         pool.query(query, values, (error, results) => {
             if (error) {
                 reject(error);
             } else {
+                // console.log("rows: ", results.rows)
                 if (results.rows.length > 0) {
                     resolve(results.rows[0].name);
                 } else {

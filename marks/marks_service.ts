@@ -56,6 +56,7 @@ export function insertBridgeDetailsService(listOfStudents: any[]) {
                 resolve(true);
             })
             .catch((error: any) => {
+                console.log("Error at insert Bridge details service: ", error.message)
                 reject(error.message);
             });
     });
