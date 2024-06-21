@@ -65,6 +65,7 @@ type propsType = {
   setSave: React.Dispatch<React.SetStateAction<boolean>>;
   setValue: React.Dispatch<React.SetStateAction<number>>;
   superAdmin: boolean;
+  marksControl: boolean;
 };
 
 export default function MarksTable({
@@ -84,6 +85,7 @@ export default function MarksTable({
   setSave,
   setValue,
   superAdmin,
+  marksControl
 }: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -366,7 +368,7 @@ export default function MarksTable({
   async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
-      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "A") {
+      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
         if (student.marks?.trim() === "") {
           errors.push({ ...student, error: `Marks can not be empty` });
         } else {
@@ -634,7 +636,7 @@ export default function MarksTable({
                           <TableCell key={column.id} align={column.align}>
                             {column.id === "marks" ? (
                               <>
-                                {!freeze ? (
+                                {!freeze && marksControl ? (
                                   <TextField
                                     value={value}
                                     disabled={freeze}

@@ -6,6 +6,8 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
   fetchAggregateMarks,
+  fetchAllExamControlDetails,
+  fetchAllMarksControl,
   fetchCoursesBySemester,
   fetchDepartDetailsByEmailid,
   fetchExamRegistrationByProgramAndSemester,
@@ -97,6 +99,13 @@ function a11yProps(index: number) {
   };
 }
 
+type marksControlType = {
+  campus: string;
+  program: string;
+  semester: number;
+  marks_control: boolean;
+};
+
 export default function Marks() {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [token, setToken] = useState<string>("");
@@ -137,6 +146,8 @@ export default function Marks() {
   const [globalFreeze, setGlobalFreeze] = useState(false);
   const [save, setSave] = useState(true);
   const bridgeCourseList = ["Applied Mathematics-II", "Basic Sciences (Applied Chemistry)", "Basic Sciences (Applied Physics)"];
+  const [allMarksControl, setAllMarksControl] = useState<marksControlType[]>([]);
+  const [marksControl, setMarksControl] = useState(false);
 
   const academicYear: string[] = ["2023-2024"];
 
@@ -160,6 +171,19 @@ export default function Marks() {
   }, [save]);
 
   useEffect(() => {
+    if (token) {
+      fetchAllMarksControl(token)
+        .then((res: marksControlType[]) => {
+          console.log("marks control: ", res);
+          setAllMarksControl(res);
+        })
+        .catch((error) => {
+          console.log("Error fetching marks control: ", error);
+        });
+    }
+  }, [token]);
+
+  useEffect(() => {
     if (user && selectedProgram !== "" && selectedSemester !== "") {
       fetchCoursesBySemester(token, selectedCampus, selectedProgram, selectedSemester, selectedProgramCategory)
         .then((response: Course[]) => {
@@ -179,9 +203,8 @@ export default function Marks() {
   }, [freeze]);
 
   useEffect(() => {
-    console.log("value: ", value)
-  },[value])
-
+    console.log("value: ", value);
+  }, [value]);
 
   useEffect(() => {
     setSelectedProgramCategory("");
@@ -271,6 +294,14 @@ export default function Marks() {
 
   // },[selectedCourse, value])
 
+  function getMarksControl(campus: string, program: string, semester: number) {
+    const result = allMarksControl.find(
+      (item) => item.campus === campus && item.program === program && item.semester === semester
+    );
+
+    return result ? result.marks_control : null; // or return a default value if not found
+  }
+
   const handleApplyFilters = async () => {
     if (selectedCourse !== "") {
       const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
@@ -293,6 +324,11 @@ export default function Marks() {
             name: student.name,
             marks: "",
           }));
+
+          const control = getMarksControl(selectedCampus, selectedProgram, parseInt(selectedSemester));
+          if (control) {
+            setMarksControl(control);
+          }
 
           const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
           setFreeze(freezeStatus);
@@ -650,7 +686,11 @@ export default function Marks() {
                         {subjectType === 1 && <Tab label="End Of Semester Assessment" {...a11yProps(0)} key="tab-0" />}
                         {globalFreeze && <Tab label="Aggregate Marks" {...a11yProps(2)} key="tab-2" />}
                         {bridgeCourseList.includes(selectedCourse) && (
-                          <Tab label="Bridge Courses" {...a11yProps(globalFreeze?subjectType===1?3:2:subjectType===1?2:1)} key={`tab-${globalFreeze?subjectType===1?3:2:subjectType===1?2:1}`} />
+                          <Tab
+                            label="Bridge Courses"
+                            {...a11yProps(globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1)}
+                            key={`tab-${globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1}`}
+                          />
                         )}
                       </Tabs>
                     </Box>
@@ -671,6 +711,7 @@ export default function Marks() {
                           setSave={setSave}
                           course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
                           token={token}
+                          marksControl={marksControl}
                           academic_year={selectedAcademicYear}
                           subjectType="1"
                           setValue={setValue}
@@ -689,6 +730,7 @@ export default function Marks() {
                           program_type={selectedProgramCategory}
                           program={selectedProgram}
                           semester={selectedSemester}
+                          marksControl={marksControl}
                           setGlobalFreeze={setGlobalFreeze}
                           freeze={freeze}
                           superAdmin={user?.role === "super"}
@@ -714,6 +756,7 @@ export default function Marks() {
                             campus={selectedCampus}
                             program_type={selectedProgramCategory}
                             program={selectedProgram}
+                            marksControl={marksControl}
                             semester={selectedSemester}
                             setGlobalFreeze={setGlobalFreeze}
                             freeze={freeze}
@@ -731,11 +774,13 @@ export default function Marks() {
                         )}
                       </CustomTabPanel>
                     )}
-                    <CustomTabPanel value={value} index={globalFreeze?subjectType===1?3:2:subjectType===1?2:1}>
+                    <CustomTabPanel value={value} index={globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
-                      {!loading && <BridgeCoursesTable academicYear={selectedAcademicYear} course={selectedCourse} campus={selectedCampus} />}
+                      {!loading && (
+                        <BridgeCoursesTable marksControl={marksControl} academicYear={selectedAcademicYear} course={selectedCourse} campus={selectedCampus} />
+                      )}
                     </CustomTabPanel>
                   </Box>
                 </div>

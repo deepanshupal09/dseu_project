@@ -1,9 +1,30 @@
-import { getUserByRollNo } from "@/app/actions/api";
+import { checkDepartment, deleteBridgeDetails, fetchBridgeDetails, getUserByRollNo, insertIntoBridgeMarks } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { useData } from "@/contexts/DataContext";
 import { Add, Delete, DeleteForever } from "@mui/icons-material";
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Button, Fab } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Button,
+  Fab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  DialogActions,
+  Snackbar,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -37,7 +58,26 @@ interface Row {
   marks: string;
 }
 
-function BridgeCoursesTable({ academicYear, campus, course }: { academicYear: string; campus: string; course: string }) {
+type Error = {
+  rollno: string;
+  name: string;
+  marks: string;
+  course: string;
+  academicYear: string;
+  error: string;
+};
+
+function BridgeCoursesTable({
+  academicYear,
+  campus,
+  course,
+  marksControl,
+}: {
+  academicYear: string;
+  campus: string;
+  course: string;
+  marksControl: boolean;
+}) {
   const [rows, setRows] = useState<Row[]>([{ rollno: "", name: "", course: "", academicYear: "", marks: "" }]);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<string>("");
@@ -49,6 +89,40 @@ function BridgeCoursesTable({ academicYear, campus, course }: { academicYear: st
     "Basic Sciences (Applied Chemistry)": "FC-1-CH051",
     "Basic Sciences (Applied Physics)": "FC-1-PH051",
   };
+  const [errors, setErrors] = useState<Error[]>([]);
+  const [errorDialog, setErrorDialog] = useState(false);
+  const [del, setDel] = useState(false)
+  const [delIndex, setDelIndex] = useState(0)
+  const [alert, setAlert] = useState(false);
+  const [message, setMessage] = useState("");
+  const [columns, setColumns] = useState([
+    { id: "name", label: "Name", minWidth: 100 },
+    { id: "rollno", label: "Roll No", minWidth: 70 },
+    { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
+  ]);
+  useEffect(() => {
+    if (marksControl && marksControl === true && !columns.find(column => column.id === "actions") ) {
+      let newColumns = columns;
+      newColumns.push({ id: "actions", label: "Actions", minWidth: 100 });
+      setColumns(newColumns);
+    }
+  }, []);
+
+  useEffect(()=>{
+    if (user) {
+      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear).then(res=>{
+        console.log("brige details: ", res)
+        const newRows = res.map((row: { rollno: string, marks: string, name: string }) => {
+          return { ...row, academicYear: academicYear, course: course }; 
+        });
+        setRows(newRows);
+      }).catch(error=>{
+        console.log("error fetching bridge details")
+      })
+    }
+  },[user])
+
+
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -70,33 +144,81 @@ function BridgeCoursesTable({ academicYear, campus, course }: { academicYear: st
     setRows([...rows, { rollno: "", name: "", course: "", academicYear: "", marks: "" }]);
   };
 
-  const deleteRow = (index: number) => {
+  const deleteRow = async(index: number) => {
     const newRows = rows.filter((_, idx) => idx !== index);
+    try {
+      const res = await deleteBridgeDetails(token, rows[delIndex].rollno, course_code[rows[delIndex].course], academicYear)
+      setAlert(true)
+      setMessage(res.message)
+      setDel(false)
+    } catch(error) {
+      setAlert(true)
+      setDel(false)
+      setMessage("Internal Server Error")
+    }
+
     setRows(newRows);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = rows.map((row) => {
       return {
         ...row,
-        academicYear: academicYear,
-        course: course_code[course],
+        academic_year: academicYear,
+        course_code: course_code[course],
       };
     });
+  
     console.log("handle Submit", data);
+    const newErrors:Error[] = [];
+    const rollNoTracker: { [key: string]: boolean } = {};
+  
+    data.forEach((row) => {
+      if (row.name === "") {
+        newErrors.push({ ...row, error: "Invalid roll no." });
+      } else if (row.marks.trim() === "") {
+        newErrors.push({ ...row, error: "Marks can not be empty!" });
+      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+        newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
+      } else if (parseInt(row.marks) > 100) {
+        newErrors.push({ ...row, error: `Marks can not be greater than 100` });
+      } else if (parseInt(row.marks) < 0) {
+        newErrors.push({ ...row, error: `Marks can not be negative!` });
+      } else if (rollNoTracker[row.rollno]) {
+        newErrors.push({ ...row, error: "Duplicate Roll No." });
+      } else {
+        rollNoTracker[row.rollno] = true;
+      }
+    });
+  
+    setErrors(newErrors);
+    if (newErrors.length > 0) {
+      setErrorDialog(true);
+    } else {
+      try {
+        const res = await insertIntoBridgeMarks(token, data);
+        setAlert(true);
+        setMessage(res.message);
+      } catch (error) {
+        setAlert(true);
+        setMessage("Internal Server Error");
+      }
+    }
   };
+  
 
   const handleSearch = async (rollno: string, index: number) => {
     console.log("Searching for rollno:", rollno);
     if (user) {
       try {
         console.log(1);
-        const res = await getUserByRollNo(rollno, token);
+        const res = await checkDepartment(token, rollno, user.emailid);
         console.log(2);
-        console.log("res: ", res);
+        console.log("res: ", res.name);
         const newRows = [...rows];
-        if (res && res.length > 0) {
-          newRows[index].name = res[0].name;
+        // console.log("res")
+        if (res.name) {
+          newRows[index].name = res.name;
         } else {
           newRows[index].name = "";
         }
@@ -115,79 +237,129 @@ function BridgeCoursesTable({ academicYear, campus, course }: { academicYear: st
 
   return (
     <div>
-      {rows.map((row, index) => (
-        <div key={index} className="flex w-full flex-col md:flex-row items-center md:space-x-4 mb-4">
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <TextField
-              id={`rollno-${index}`}
-              size="small"
-              required
-              value={row.rollno}
-              label="Roll No"
-              onChange={(e) => {
-                handleChangeRow(index, "rollno", e.target.value);
-                debouncedHandleSearch(e.target.value, index);
-              }}
-            ></TextField>
-          </FormControl>
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <TextField
-              id={`name-${index}`}
-              size="small"
-              disabled
-              value={row.name}
-              label="Name"
-              onChange={(e) => handleChangeRow(index, "name", e.target.value)}
-            ></TextField>
-          </FormControl>
-          {/* <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <InputLabel id={`academic-year-label-${index}`}>Academic Year</InputLabel>
-            <Select
-              labelId={`academic-year-label-${index}`}
-              id={`academic_year-${index}`}
-              value={row.academicYear}
-              label="Academic Year"
-              required
-              onChange={(e) => handleChangeRow(index, "academicYear", e.target.value)}
-            >
-              {academic_year.map((year, idx) => (
-                <MenuItem key={idx} value={year}>
-                  {year}
-                </MenuItem>
+      <TableContainer>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell key={column.id} align="left" style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
               ))}
-            </Select>
-          </FormControl> */}
-          <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
-            <TextField
-              id={`marks-${index}`}
-              size="small"
-              required
-              value={row.marks}
-              label="Marks (Out of 100)"
-              onChange={(e) => handleChangeRow(index, "marks", e.target.value)}
-            ></TextField>
-          </FormControl>
-          <div>
-            <Button
-              onClick={() => deleteRow(index)}
-              disabled={rows.length === 1}
-              variant="text"
-              color="error"
-              className="mt-5 "
-              aria-label="add"
-            >
-              <DeleteForever />
-            </Button>
-          </div>
-        </div>
-      ))}
-      <Button variant="contained" color="primary" onClick={addRow}>
-        Add Row
-      </Button>
-      <div className="w-full flex justify-center" onClick={handleSubmit}>
-        {" "}
-        <Button variant="contained">SUBMIT</Button>{" "}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                <TableCell align="left">{row.name}</TableCell>
+                <TableCell align="left">
+                  {marksControl ? (
+                    <>
+                      {" "}
+                      <TextField
+                        id={`rollno-${index}`}
+                        size="small"
+                        required
+                        value={row.rollno}
+                        onChange={(e) => {
+                          handleChangeRow(index, "rollno", e.target.value);
+                          debouncedHandleSearch(e.target.value, index);
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>{row.rollno}</>
+                  )}
+                </TableCell>
+                <TableCell align="left">
+                  {marksControl ? (
+                    <>
+                      <TextField
+                        id={`marks-${index}`}
+                        size="small"
+                        required
+                        value={row.marks}
+                        onChange={(e) => handleChangeRow(index, "marks", e.target.value)}
+                      />
+                    </>
+                  ) : (
+                    <> {row.marks} </>
+                  )}
+                </TableCell>
+                {marksControl && (
+                  <>
+                    <TableCell align="left">
+                      <Button
+                        onClick={() => {
+                          setDel(true)
+                          setDelIndex(index)
+                        }}
+                        disabled={rows.length === 1}
+                        variant="text"
+                        color="error"
+                        aria-label="delete"
+                      >
+                        <DeleteForever />
+                      </Button>
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {marksControl && (
+        <Button variant="contained" color="primary" className="mt-5" onClick={addRow}>
+          Add Row
+        </Button>
+      )}
+      <div className="w-full flex justify-center mt-4">
+        {marksControl && (
+          <Button variant="contained" onClick={handleSubmit}>
+            SUBMIT
+          </Button>
+        )}
       </div>
+      <Dialog open={errorDialog} maxWidth="md" fullWidth onClose={() => setErrorDialog(false)}>
+        <DialogTitle>Errors in Marks Entry</DialogTitle>
+        <DialogContent>
+          {errors.map((error, index) => (
+            <Typography key={index}>
+              {`[${index}]: `} Error at <span className="font-bold">Roll No {error.rollno}</span>
+              {error.error !== "Invalid roll no." && (
+                <>
+                  {" "}
+                  , Name <span className="font-bold"> {error.name}</span>
+                </>
+              )}
+              , <span className="font-bold">{error.error}</span>
+            </Typography>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDialog(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={del}  onClose={() => setDel(false)}>
+        <DialogTitle>Delete Confirmation</DialogTitle>
+        <DialogContent>
+            <Typography >
+            Are you sure you want to permanently delete these marks for Roll No: <strong> {rows[delIndex]?.rollno}</strong>, Name: <strong>{rows[delIndex]?.name}</strong> ? This action cannot be undone.
+            </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{deleteRow(delIndex)}} variant="contained" color="error">
+            Delete
+          </Button>
+          <Button onClick={() => setDel(false)} variant="text" color="error">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar open={alert} autoHideDuration={6000} onClose={() => setAlert(false)} message={message} />
     </div>
   );
 }
