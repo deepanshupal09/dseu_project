@@ -517,35 +517,44 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
                         course_code: row.course_code,
                         course_name: row.course_name,
                         credit: row.credit,
-                        marks: row.marks,
+                        marks: row.marks.trim(),
                         grade: getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit)
                     })),
                     external_marks: externalResults.rows.map(row => ({
                         course_code: row.course_code,
                         course_name: row.course_name,
                         credit: row.credit,
-                        marks: row.marks,
+                        marks: row.marks.trim(),
                         grade: getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit)
                     })),
                     aggregate_marks: aggregateResults.rows.map(row => {
-                        let grade = getGrade(row.marks, row.credit);
-                        let gradePoint = getGradePoint(grade);
+                        let marks = row.marks.trim(); 
+                        let grade = getGrade(marks, row.credit);
+                        let gradePoint='0';
+                        if(getGradePoint(grade)!==' '){
+                            gradePoint = getGradePoint(grade);
+                        }else{
+                            gradePoint='0';
+                        }
                         let earnedCredit = gradePoint !== '0' ? row.credit : 0;
                         totalEarnedCredit+=parseInt(earnedCredit);
-                        sgpa += (parseInt(gradePoint)*parseInt(earnedCredit))
+                        sgpa += (parseFloat(gradePoint)*parseFloat(earnedCredit))
                         return {
                             course_code: row.course_code,
                             course_name: row.course_name,
                             credit: row.credit,
-                            marks: row.marks,
+                            marks: marks,
                             grade: grade,
                             grade_point: gradePoint,
-                            credit_earned: earnedCredit
+                            credit_earned: earnedCredit,
+                            sgpa:sgpa,
+                            yo:parseFloat(gradePoint),
+                            he:parseFloat(earnedCredit)
                         };
                     }),
                     Credits_earned: totalEarnedCredit,
-                    sgpa_result: totalEarnedCredit === 0 ? 0 : (sgpa/totalEarnedCredit),
-                    sgpa_grade: getGradeSGPA((totalEarnedCredit === 0 ? 0 : (sgpa/totalEarnedCredit)))
+                    sgpa_result: totalEarnedCredit === 0 ? 0 : (sgpa / totalEarnedCredit),
+                    sgpa_grade: getGradeSGPA((totalEarnedCredit === 0 ? 0 : (sgpa / totalEarnedCredit)))
                 };
                 resolve(result);
             } else {
