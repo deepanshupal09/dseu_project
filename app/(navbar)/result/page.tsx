@@ -151,7 +151,7 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Father's name: <span className="font-semibold">{user.father}</span>
+              {"Father's name: "} <span className="font-semibold">{user.father}</span>
             </div>
           </div>
           <div className="flex">
@@ -159,7 +159,7 @@ export default function Home() {
               Enrollment no: <span className="font-semibold">{user.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Mother's name: <span className="font-semibold">{user.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
             </div>
           </div>
         </>
@@ -172,7 +172,7 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Father's name: <span className="font-semibold">{user.father}</span>
+              {"Father's name: "} <span className="font-semibold">{user.father}</span>
             </div>
           </div>
           <div className="flex">
@@ -190,7 +190,7 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Mother's name: <span className="font-semibold">{user.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
             </div>
           </div>
           <div className="flex">
@@ -208,7 +208,7 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Guardian's name: <span className="font-semibold">{user.guardian}</span>
+              {"Guardian's name"}: <span className="font-semibold">{user.guardian}</span>
             </div>
           </div>
           <div className="flex">
