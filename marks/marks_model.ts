@@ -28,7 +28,7 @@ export function fetchBridgeDetailsModel(email: string, course_code: string, acad
 
 export function deleteBridgeDetailsModel(rollno: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
-        const query = `DELETE FROM bride_course
+        const query = `DELETE FROM bridge_course
         WHERE rollno = $1 
         AND course_code = $2 
         AND academic_year = $3;`;

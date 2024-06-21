@@ -50,7 +50,7 @@ const deleteBridgeDetails = (req: Request, res: Response): void => {
     const { rollno, course_code, academic_year } = req.body;
     deleteBridgeDetailsService(rollno, course_code, academic_year)
         .then(() => {
-            res.status(200).send("Deleted successfully");
+            res.status(200).send({message: "Deleted successfully"});
         })
         .catch((error: any) => {
             res.status(500).send({ message: "Internal Server Error" });

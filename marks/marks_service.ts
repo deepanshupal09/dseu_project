@@ -134,7 +134,7 @@ export function fetchTheStudentDetailsFromAggregate(details: any): Promise<any> 
 export async function handleStudentDetailsFromInternal(details: any): Promise<any> {
     return fetchMarksControlModal(details)
         .then((controlResult) => {
-            if (!controlResult.rows[0].marks_control) {
+            if (controlResult.rows[0].marks_control) {
                 return new Promise((resolve, reject) => {
                     fetchStudentDetailsFromInternal(details)
                         .then((fetchResult) => {
@@ -272,7 +272,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
 export async function handleStudentDetailsFromExternal(details: any): Promise<any> {
     return fetchMarksControlModal(details)
         .then((controlResult) => {
-            if (!controlResult.rows[0].marks_control) {
+            if (controlResult.rows[0].marks_control) {
                 return new Promise((resolve, reject) => {
                     fetchStudentDetailsFromExternal(details)
                         .then((fetchResult) => {
@@ -414,7 +414,7 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
     console.log("aggregate update: ", details);
     return fetchMarksControlModal(details)
         .then((controlResult) => {
-            if (!controlResult.rows[0].marks_control) {
+            if (controlResult.rows[0].marks_control) {
                 return new Promise((resolve, reject) => {
                     fetchStudentDetailsFromAggregate(details)
                         .then((fetchResult) => {
