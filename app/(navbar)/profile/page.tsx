@@ -49,6 +49,7 @@ export interface StudentDetails {
   father: string;
   gender: string;
   guardian: string | null; // Optional field which can be null
+  relation: string|null;
   last_modified: string;
   mother: string;
   password: string;

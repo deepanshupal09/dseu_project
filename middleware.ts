@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { useEffect } from "react";
 import { parseJwt } from "./app/actions/utils";
 
-const userRoutes = ["/dashboard", "/exam-registration", "/profile", "/help"];
+const userRoutes = ["/dashboard", "/exam-registration", "/profile", "/result","/help"];
 const adminRoutes = [
   "/admin/dashboard",
   "/admin/registration-chart",
@@ -76,6 +76,7 @@ export const config = {
     "/dashboard",
     "/profile",
     "/exam-registration",
+    "/result",
     "/help",
     "/admin/dashboard",
     "/admin/exam-control",

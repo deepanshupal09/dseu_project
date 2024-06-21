@@ -6,7 +6,7 @@ import { MenuOpen } from "@mui/icons-material";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const [activeLink, setActiveLink] = useState('');
-  const options = ["Dashboard", "Profile", "Exam Registration","Help"];
+  const options = ["Dashboard", "Profile", "Exam Registration","Result","Help"];
   useEffect(() => {
     setActiveLink(window.location.pathname);
   }, []);
@@ -28,10 +28,10 @@ export default function Navbar() {
                 );
               })}
             </div>
-            <div className="sm:hidden absolute top-[60px] w-full flex flex-col">
+            <div className="sm:hidden absolute top-[60px] w-full flex flex-col z-50">
               
               {true && ( 
-                <div className="flex flex-row items-center space-x-7 bg-white p-4 shadow-lg  ">
+                <div className="flex flex-row items-center space-x-7 bg-white p-4 z-50 ">
                   {options.map((option, index) => {
                     const path = `/${option.toLowerCase().replace(/\s+/g, '-')}`;
                     return (

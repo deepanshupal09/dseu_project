@@ -1086,3 +1086,29 @@ export async function fetchAllMarksControl(token: string){
   }
 }
 
+export async function fetchMarksController(academicYear:string, semester:string, rollno:string, token: string,){
+  try {
+      const response = await fetch(`${process.env.BACKEND_URL}/fetchMarksController`, {
+          method: "GET",
+          mode: "cors",
+          headers: {
+              token : token,
+              academicyear:academicYear,
+              semester:semester,
+              rollno:rollno,
+              "Content-Type": "application/json",
+          },
+      });
+
+      if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(errorMessage);
+      }
+
+      const data = await response.json(); 
+      return data;
+  } catch (error) {
+      throw error;
+  }
+}
+
