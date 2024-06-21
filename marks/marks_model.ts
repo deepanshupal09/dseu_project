@@ -6,10 +6,10 @@ export function fetchBridgeDetailsModel(email: string, course_code: string, acad
     return new Promise((resolve, reject) => {
         const query = `
             SELECT b.rollno,b.marks, u.name
-            FROM bridge b
+            FROM bridge_course b
             JOIN users u ON b.rollno = u.rollno
-            JOIN department d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
-            WHERE d.emailid = ? AND b.course_code = ? AND b.academic_year = ?;
+            JOIN departments d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
+            WHERE d.emailid = $1 AND b.course_code = $2 AND b.academic_year = $3;
         `;
 
         const values = [email, course_code, academic_year];
