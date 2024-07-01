@@ -24,7 +24,7 @@ export default function Nav() {
                     setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Marks Entry","Exam Control","Marks Control", "Edit Student Details"]);
                 }
                 if (data?.user?.role === "dep") {
-                    setOptions(["Marks Entry", "Bridge Courses"]);
+                    setOptions(["Marks Entry"]);
                 }
                 if (data?.user?.role === "admin") {
                     setOptions(["Registration Chart", "Admit Card", "Query"]);
