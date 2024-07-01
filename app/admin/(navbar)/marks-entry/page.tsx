@@ -703,6 +703,7 @@ export default function Marks() {
                           campus={selectedCampus}
                           program_type={selectedProgramCategory}
                           freeze={freeze}
+                          course={selectedCourse}
                           setFreeze={setFreeze}
                           superAdmin={user?.role === "super"}
                           program={selectedProgram}
@@ -733,6 +734,7 @@ export default function Marks() {
                           marksControl={marksControl}
                           setGlobalFreeze={setGlobalFreeze}
                           freeze={freeze}
+                          course={selectedCourse}
                           superAdmin={user?.role === "super"}
                           setFreeze={setFreeze}
                           setSave={setSave}
@@ -760,6 +762,7 @@ export default function Marks() {
                             semester={selectedSemester}
                             setGlobalFreeze={setGlobalFreeze}
                             freeze={freeze}
+                            course={selectedCourse}
                             superAdmin={user?.role === "super"}
                             setValue={setValue}
                             setFreeze={setFreeze}

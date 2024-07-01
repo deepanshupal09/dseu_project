@@ -27,6 +27,7 @@ import {
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import logo from "@/app/images/dseu.png";
+import GeneratePDF from "./GeneratePDF";
 
 interface FileData {
   fileName: string;
@@ -66,6 +67,7 @@ type propsType = {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   superAdmin: boolean;
   marksControl: boolean;
+  course:string;
 };
 
 export default function MarksTable({
@@ -83,9 +85,10 @@ export default function MarksTable({
   setFreeze,
   setGlobalFreeze,
   setSave,
+  course,
   setValue,
   superAdmin,
-  marksControl
+  marksControl,
 }: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -99,6 +102,20 @@ export default function MarksTable({
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const generateMarksArray = (studentList: StudentType[]): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
+    console.log(studentList);
+    
+    const marksArray = studentList.map((student) => ({
+      sno: student.sno,
+      rollno: student.rollno,
+      name: student.name,
+      marks: student.marks,
+      reappear: "Regular",
+    }));
+  
+    // console.log("converted: ", marksArray);
+    return marksArray;
+  };
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -549,7 +566,7 @@ export default function MarksTable({
           </Menu>
         )}
       </div>
-      {!freeze && (
+      {!freeze && marksControl && (
         <div
           className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
             dragActive ? "bg-slate-100" : ""
@@ -584,24 +601,23 @@ export default function MarksTable({
           )}
         </div>
       )}
-      <div className="w-full flex justify-end">
-        {!freeze ? (
+      <div className="w-full ">
+        {!freeze && marksControl ? (
           <Button endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
             Actions
           </Button>
         ) : (
-          <div className="flex gap-x-3">
-            {/* <DownloadPDFButton
-              academicYear={academic_year}
-              campusName={campus}
-              courseName={"course name"}
-              course_code={course_code}
-              logo={logo.src}
-              maximumMarks={maxMarks.toString()}
-              programName={program}
+          <div className="flex justify-end gap-x-3">
+            <GeneratePDF
+              maxMarks={maxMarks.toString()}
+              campus={campus}
+              program={program}
               semester={semester}
-              sheet_type={maxMarks}
-            /> */}
+              academicYear={academic_year}
+              courseCode={course_code}
+              courseName={course}
+              marks={generateMarksArray(studentList)}
+            />
             {superAdmin && (
               <>
                 <Button variant="contained" onClick={handleUnFreeze}>
