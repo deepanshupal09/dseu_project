@@ -127,15 +127,15 @@ export default function Home() {
 
       return (
         <tr key={index}>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{index + 1}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{index + 1}</td>
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_code}</td>
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_name}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.credit}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.credit_earned}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{internalMark ? internalMark.grade : '-'}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{externalMark ? externalMark.grade : '-'}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.grade}</td>
-          <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.grade_point}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit_earned}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{internalMark ? internalMark.grade : '-'}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{externalMark ? externalMark.grade : '-'}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade_point}</td>
         </tr>
       );
     });
@@ -324,7 +324,7 @@ export default function Home() {
                       PROVISIONAL GRADESHEET OF EOSE OF {academicYear}
                     </div>
                     <div className="text-xl font-extrabold font-serif p-1 mb-4">
-                      {user && user.program} (Semester - {studentData.semester})
+                      {user && user.program} (Batch - {user.year_of_admission})
                     </div>
                   </div>
                   <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">
@@ -334,31 +334,31 @@ export default function Home() {
                   <table className="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto">
                     <thead>
                       <tr>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "5%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                           S.No
                         </th>
                         <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "15%" }}>
                           Course Code
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "47%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "40%" }}>
                           Course Name
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "5%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                           Credits
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "5%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                           Credits Earned
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "8%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "9%" }}>
                           Letter Grade Continuous Evaluation(CA)
                         </th>
                         <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "10%" }}>
                           Letter Grade End of Semester Evaluation (EOSE)
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "5%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                           Grade
                         </th>
-                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "5%" }}>
+                        <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                           Grade Point
                         </th>
                       </tr>
@@ -398,8 +398,8 @@ export default function Home() {
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">26.5</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">{studentData.sgpa_result.toPrecision(3)}</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">{studentData.sgpa_grade}</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">8</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">A</td>
+                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">ABS</td>
                         </tr>
                       </tbody>
