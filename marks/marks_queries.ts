@@ -97,3 +97,13 @@ export const fetchFreezeDetailsQuery: string=`
 export const getEmailidAdminQuery: string=`
   SELECT emailid FROM admin WHERE campus=$1;
 `;
+
+export const fetchInternalMarksQuery: string=`
+  SELECT * FROM internal_marks;
+`;
+export const fetchExternalMarksQuery: string=`
+  SELECT * FROM external_marks;
+`;
+export const fetchAggregateMarksQuery: string=`
+  SELECT * FROM aggregate_marks;
+`;

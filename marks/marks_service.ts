@@ -20,7 +20,10 @@ import { fetchStudentDetailsFromInternal,
      fetchFreezeDetailsModel,
      getEmailidAdminModel,
      fetchMarkControlDetailsModal,
-     updateIntoAggregateMarks
+     updateIntoAggregateMarks,
+     fetchAggregateMarksModal,
+     fetchInternalMarksModal,
+     fetchExternalMarksModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -641,6 +644,36 @@ export function getEmailidAdminService(): Promise<any> {
 export function fetchMarkControlDetailsService() : Promise<any>{
     return new Promise(async(resolve, reject) => {
         fetchMarkControlDetailsModal().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+export function fetchAggregateMarksService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchAggregateMarksModal().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+export function fetchInternalMarksService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchInternalMarksModal().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+export function fetchExternalMarksService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchExternalMarksModal().then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);
