@@ -21,9 +21,7 @@ import { fetchStudentDetailsFromInternal,
      getEmailidAdminModel,
      fetchMarkControlDetailsModal,
      updateIntoAggregateMarks,
-     fetchAggregateMarksModal,
-     fetchInternalMarksModal,
-     fetchExternalMarksModal
+     fetchMarksDetailsModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -651,9 +649,10 @@ export function fetchMarkControlDetailsService() : Promise<any>{
         })
     })
 }
-export function fetchAggregateMarksService() : Promise<any>{
+
+export function fetchMarksDetailsService() : Promise<any>{
     return new Promise(async(resolve, reject) => {
-        fetchAggregateMarksModal().then((results)=>{
+        fetchMarksDetailsModal().then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);
@@ -661,24 +660,5 @@ export function fetchAggregateMarksService() : Promise<any>{
         })
     })
 }
-export function fetchInternalMarksService() : Promise<any>{
-    return new Promise(async(resolve, reject) => {
-        fetchInternalMarksModal().then((results)=>{
-            resolve(results.rows);
-        }).catch((error)=>{
-            console.log("error: ", error);
-            reject(error);
-        })
-    })
-}
-export function fetchExternalMarksService() : Promise<any>{
-    return new Promise(async(resolve, reject) => {
-        fetchExternalMarksModal().then((results)=>{
-            resolve(results.rows);
-        }).catch((error)=>{
-            console.log("error: ", error);
-            reject(error);
-        })
-    })
-}
+
 

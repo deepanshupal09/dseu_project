@@ -13,9 +13,7 @@ import { fetchTheStudentDetailsFromInternal,
     fetchFreezeDetailsService,
     getEmailidAdminService,
     fetchMarkControlDetailsService,
-    fetchExternalMarksService,
-    fetchInternalMarksService,
-    fetchAggregateMarksService,
+    fetchMarksDetailsService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -265,45 +263,20 @@ const fetchMarkControlDetailsController = (req:Request, res:Response)=>{
     res.send("internal server error at freeze details 2");
   }
 }
-const fetchExternalMarksController = (req:Request, res:Response)=>{
+const fetchMarksDetailsController = (req:Request, res:Response)=>{
   try{
     // const details= req.body;
-    fetchExternalMarksService().then((results)=>{
+    fetchMarksDetailsService().then((results)=>{
       res.status(200).send(results);
     }).catch((error)=>{
       console.log("error:",error);
-      res.status(500).send("internal server error at fetch external details 1");
+      res.status(500).send("internal server error at fetch details 1");
     })
   } catch(error){
-    res.send("internal server error at fetch external details 2");
+    res.send("internal server error at fetch details 2");
   }
 }
-const fetchInternalMarksController = (req:Request, res:Response)=>{
-  try{
-    // const details= req.body;
-    fetchInternalMarksService().then((results)=>{
-      res.status(200).send(results);
-    }).catch((error)=>{
-      console.log("error:",error);
-      res.status(500).send("internal server error at fetch internal details 1");
-    })
-  } catch(error){
-    res.send("internal server error at fetch internal details 2");
-  }
-}
-const fetchAggregateMarksController = (req:Request, res:Response)=>{
-  try{
-    // const details= req.body;
-    fetchAggregateMarksService().then((results)=>{
-      res.status(200).send(results);
-    }).catch((error)=>{
-      console.log("error:",error);
-      res.status(500).send("internal server error at fetch aggregate details 1");
-    })
-  } catch(error){
-    res.send("internal server error at fetch aggregate details 2");
-  }
-}
+
 
 
 export {
@@ -321,7 +294,5 @@ export {
     fetchFreezeDetailsController,
     sendEmailMarksController,
     fetchMarkControlDetailsController,
-    fetchExternalMarksController,
-    fetchInternalMarksController,
-    fetchAggregateMarksController
+    fetchMarksDetailsController
 }

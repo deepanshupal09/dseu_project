@@ -8,9 +8,7 @@ import { insertStudentDetailsToAggregateQuery,
     fetchFreezeDetailsQuery, getEmailidAdminQuery, 
     fetchMarkControlDetailsQuery, 
     updateStudentDetailsToAggregateQuery,
-    fetchInternalMarksQuery,
-    fetchAggregateMarksQuery,
-    fetchExternalMarksQuery
+    fetchMarksDetailsQuery
 } from "./marks_queries";
 
 
@@ -556,34 +554,9 @@ export function fetchMarkControlDetailsModal(): Promise<QueryResult<any>> {
 }
 
 
-export function fetchExternalMarksModal(): Promise<QueryResult<any>> {
+export function fetchMarksDetailsModal(): Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(fetchExternalMarksQuery, (error, results)=>{
-            if(error){
-                console.log("error: ", error);
-                reject(error);
-            } else{
-                resolve(results);
-            }
-        });
-    });
-}
-export function fetchInternalMarksModal(): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchInternalMarksQuery, (error, results)=>{
-            if(error){
-                console.log("error: ", error);
-                reject(error);
-            } else{
-                resolve(results);
-            }
-        });
-    });
-}
-
-export function fetchAggregateMarksModal(): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchAggregateMarksQuery, (error, results)=>{
+        pool.query(fetchMarksDetailsQuery, (error, results)=>{
             if(error){
                 console.log("error: ", error);
                 reject(error);

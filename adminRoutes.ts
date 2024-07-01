@@ -35,8 +35,7 @@ router.get("/fetchStudentsByCourseCode", marks_controller.fetchStudentsCourseCod
 router.post("/fetchStudentDetailsFromAggregateController",marks_controller.fetchStudentDetailsFromAggregateController);
 router.get("/fetchMarkControlDetailsController",marks_controller.fetchMarkControlDetailsController);
 router.get("/fetchDepartDetailsByEmailid",marks_controller.fetchDepartDetailsByEmailidController);
-router.get("/fetchExternalMarksController",marks_controller.fetchExternalMarksController);
-router.get("/fetchInternalMarksController",marks_controller.fetchInternalMarksController);
-router.get("/fetchAggregateMarksController",marks_controller.fetchAggregateMarksController);
+router.get("/fetchMarksDetailsController",marks_controller.fetchMarksDetailsController);
+
 
 export default router;
