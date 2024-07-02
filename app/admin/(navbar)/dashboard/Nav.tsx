@@ -19,9 +19,8 @@ export default function Nav() {
         getAuthAdmin().then(async (t: any) => {
             if (t) {
                 const data = await parseJwt(t.value);
-                //
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Marks Entry","Exam Control","Marks Control", "Edit Student Details"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details"]);
                 }
                 if (data?.user?.role === "dep") {
                     setOptions(["Marks Entry"]);

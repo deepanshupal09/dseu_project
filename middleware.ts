@@ -17,7 +17,8 @@ const superAdminRoutes = [
   "/admin/query",
   "/admin/exam-control",
   "/admin/marks-entry",
-  "/admin/marks-control"
+  "/admin/marks-control",
+  "/admin/marks-status"
 ];
 const publicRoutes = ["/", "/admin","/getuserdetails"];
 const departmentRoutes = ["/admin/marks-entry"];

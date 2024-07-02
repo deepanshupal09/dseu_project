@@ -566,7 +566,7 @@ export default function MarksTable({
           </Menu>
         )}
       </div>
-      {!freeze && marksControl && (
+      {/* {!freeze && marksControl && (
         <div
           className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
             dragActive ? "bg-slate-100" : ""
@@ -600,10 +600,10 @@ export default function MarksTable({
             </div>
           )}
         </div>
-      )}
-      <div className="w-full ">
+      )} */}
+      <div className="w-full flex justify-end ">
         {!freeze && marksControl ? (
-          <Button endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
+          <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
             Actions
           </Button>
         ) : (

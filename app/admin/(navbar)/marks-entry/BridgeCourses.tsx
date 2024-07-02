@@ -1,4 +1,10 @@
-import { checkDepartment, deleteBridgeDetails, fetchBridgeDetails, getUserByRollNo, insertIntoBridgeMarks } from "@/app/actions/api";
+import {
+  checkDepartment,
+  deleteBridgeDetails,
+  fetchBridgeDetails,
+  getUserByRollNo,
+  insertIntoBridgeMarks,
+} from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { useData } from "@/contexts/DataContext";
@@ -91,38 +97,57 @@ function BridgeCoursesTable({
   };
   const [errors, setErrors] = useState<Error[]>([]);
   const [errorDialog, setErrorDialog] = useState(false);
-  const [del, setDel] = useState(false)
-  const [delIndex, setDelIndex] = useState(0)
+  const [del, setDel] = useState(false);
+  const [delIndex, setDelIndex] = useState(0);
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("");
+  const [freeze, setFreeze] = useState(false);
   const [columns, setColumns] = useState([
     { id: "name", label: "Name", minWidth: 100 },
     { id: "rollno", label: "Roll No", minWidth: 70 },
     { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
   ]);
   useEffect(() => {
-    if (marksControl && marksControl === true && !columns.find(column => column.id === "actions") ) {
-      let newColumns = columns;
-      newColumns.push({ id: "actions", label: "Actions", minWidth: 100 });
+    console.log("use effect");
+    if (marksControl && marksControl === true && !freeze && !columns.find((column) => column.id === "actions")) {
+      console.log("inside if");
+      let newColumns = [
+        { id: "name", label: "Name", minWidth: 100 },
+        { id: "rollno", label: "Roll No", minWidth: 70 },
+        { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
+        { id: "actions", label: "Actions", minWidth: 100 },
+      ];
       setColumns(newColumns);
+    } else {
+      console.log("inside else");
+      if (columns.find((column) => column.id === "actions")) {
+        console.log("inside else if");
+        let newColumns = [
+          { id: "name", label: "Name", minWidth: 100 },
+          { id: "rollno", label: "Roll No", minWidth: 70 },
+          { id: "marks", label: "Marks (Out of 100)", minWidth: 100 }
+        ];
+        setColumns(newColumns);
+      }
     }
-  }, []);
+  }, [freeze]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (user) {
-      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear).then(res=>{
-        console.log("brige details: ", res)
-        const newRows = res.map((row: { rollno: string, marks: string, name: string }) => {
-          return { ...row, academicYear: academicYear, course: course }; 
+      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear)
+        .then((res) => {
+          console.log("brige details: ", res);
+          const newRows = res.map((row: { rollno: string; marks: string; name: string }) => {
+            return { ...row, academicYear: academicYear, course: course };
+          });
+          setRows(newRows);
+          setFreeze(res[0].freeze);
+        })
+        .catch((error) => {
+          console.log("error fetching bridge details");
         });
-        setRows(newRows);
-      }).catch(error=>{
-        console.log("error fetching bridge details")
-      })
     }
-  },[user])
-
-
+  }, [user]);
 
   useEffect(() => {
     getAuthAdmin().then(async (t: any) => {
@@ -144,17 +169,17 @@ function BridgeCoursesTable({
     setRows([...rows, { rollno: "", name: "", course: "", academicYear: "", marks: "" }]);
   };
 
-  const deleteRow = async(index: number) => {
+  const deleteRow = async (index: number) => {
     const newRows = rows.filter((_, idx) => idx !== index);
     try {
-      const res = await deleteBridgeDetails(token, rows[delIndex].rollno, course_code[rows[delIndex].course], academicYear)
-      setAlert(true)
-      setMessage(res.message)
-      setDel(false)
-    } catch(error) {
-      setAlert(true)
-      setDel(false)
-      setMessage("Internal Server Error")
+      const res = await deleteBridgeDetails(token, rows[delIndex].rollno, course_code[rows[delIndex].course], academicYear);
+      setAlert(true);
+      setMessage(res.message);
+      setDel(false);
+    } catch (error) {
+      setAlert(true);
+      setDel(false);
+      setMessage("Internal Server Error");
     }
 
     setRows(newRows);
@@ -166,13 +191,14 @@ function BridgeCoursesTable({
         ...row,
         academic_year: academicYear,
         course_code: course_code[course],
+        freeze: false,
       };
     });
-  
+
     console.log("handle Submit", data);
-    const newErrors:Error[] = [];
+    const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
-  
+
     data.forEach((row) => {
       if (row.name === "") {
         newErrors.push({ ...row, error: "Invalid roll no." });
@@ -190,7 +216,7 @@ function BridgeCoursesTable({
         rollNoTracker[row.rollno] = true;
       }
     });
-  
+
     setErrors(newErrors);
     if (newErrors.length > 0) {
       setErrorDialog(true);
@@ -205,7 +231,6 @@ function BridgeCoursesTable({
       }
     }
   };
-  
 
   const handleSearch = async (rollno: string, index: number) => {
     console.log("Searching for rollno:", rollno);
@@ -231,12 +256,126 @@ function BridgeCoursesTable({
     }
   };
 
+  const handleFreeze = async () => {
+    const data = rows.map((row) => {
+      return {
+        ...row,
+        academic_year: academicYear,
+        course_code: course_code[course],
+        freeze: true,
+      };
+    });
+
+    console.log("handle freeze", data);
+    const newErrors: Error[] = [];
+    const rollNoTracker: { [key: string]: boolean } = {};
+
+    data.forEach((row) => {
+      if (row.name === "") {
+        newErrors.push({ ...row, error: "Invalid roll no." });
+      } else if (row.marks.trim() === "") {
+        newErrors.push({ ...row, error: "Marks can not be empty!" });
+      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+        newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
+      } else if (parseInt(row.marks) > 100) {
+        newErrors.push({ ...row, error: `Marks can not be greater than 100` });
+      } else if (parseInt(row.marks) < 0) {
+        newErrors.push({ ...row, error: `Marks can not be negative!` });
+      } else if (rollNoTracker[row.rollno]) {
+        newErrors.push({ ...row, error: "Duplicate Roll No." });
+      } else {
+        rollNoTracker[row.rollno] = true;
+      }
+    });
+
+    setErrors(newErrors);
+    if (newErrors.length > 0) {
+      setErrorDialog(true);
+    } else {
+      try {
+        const res = await insertIntoBridgeMarks(token, data);
+        setAlert(true);
+        setFreeze(true);
+        setMessage(res.message);
+      } catch (error) {
+        setAlert(true);
+        setMessage("Internal Server Error");
+      }
+    }
+  };
+  const handleUnfreeze = async () => {
+    const data = rows.map((row) => {
+      return {
+        ...row,
+        academic_year: academicYear,
+        course_code: course_code[course],
+        freeze: false,
+      };
+    });
+
+    console.log("handle unfreeze", data);
+    const newErrors: Error[] = [];
+    const rollNoTracker: { [key: string]: boolean } = {};
+
+    data.forEach((row) => {
+      if (row.name === "") {
+        newErrors.push({ ...row, error: "Invalid roll no." });
+      } else if (row.marks.trim() === "") {
+        newErrors.push({ ...row, error: "Marks can not be empty!" });
+      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+        newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
+      } else if (parseInt(row.marks) > 100) {
+        newErrors.push({ ...row, error: `Marks can not be greater than 100` });
+      } else if (parseInt(row.marks) < 0) {
+        newErrors.push({ ...row, error: `Marks can not be negative!` });
+      } else if (rollNoTracker[row.rollno]) {
+        newErrors.push({ ...row, error: "Duplicate Roll No." });
+      } else {
+        rollNoTracker[row.rollno] = true;
+      }
+    });
+
+    setErrors(newErrors);
+    if (newErrors.length > 0) {
+      setErrorDialog(true);
+    } else {
+      try {
+        const res = await insertIntoBridgeMarks(token, data);
+        setAlert(true);
+        setFreeze(false);
+        setMessage(res.message);
+      } catch (error) {
+        setAlert(true);
+        setMessage("Internal Server Error");
+      }
+    }
+  };
+
   const debouncedHandleSearch = useDebouncedCallback((rollno: string, index: number) => {
     handleSearch(rollno, index);
   }, 1000);
 
   return (
     <div>
+      <div className="w-full flex space-x-3 justify-end my-4">
+        {marksControl && !freeze && (
+          <>
+            <Button variant="contained" onClick={handleSubmit}>
+              SAVE
+            </Button>
+            <Button variant="contained" onClick={handleFreeze}>
+              FREEZE
+            </Button>
+          </>
+        )}
+        {freeze && user?.role === "super" && (
+          <>
+            <Button variant="contained" onClick={handleUnfreeze}>
+              UNFREEZE
+            </Button>
+          </>
+        )}
+      </div>
       <TableContainer>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -253,7 +392,7 @@ function BridgeCoursesTable({
               <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                 <TableCell align="left">{row.name}</TableCell>
                 <TableCell align="left">
-                  {marksControl ? (
+                  {marksControl && !freeze ? (
                     <>
                       {" "}
                       <TextField
@@ -272,7 +411,7 @@ function BridgeCoursesTable({
                   )}
                 </TableCell>
                 <TableCell align="left">
-                  {marksControl ? (
+                  {marksControl && !freeze ? (
                     <>
                       <TextField
                         id={`marks-${index}`}
@@ -286,13 +425,13 @@ function BridgeCoursesTable({
                     <> {row.marks} </>
                   )}
                 </TableCell>
-                {marksControl && (
+                {marksControl && !freeze && (
                   <>
                     <TableCell align="left">
                       <Button
                         onClick={() => {
-                          setDel(true)
-                          setDelIndex(index)
+                          setDel(true);
+                          setDelIndex(index);
                         }}
                         disabled={rows.length === 1}
                         variant="text"
@@ -309,18 +448,12 @@ function BridgeCoursesTable({
           </TableBody>
         </Table>
       </TableContainer>
-      {marksControl && (
+      {marksControl && !freeze && (
         <Button variant="contained" color="primary" className="mt-5" onClick={addRow}>
           Add Row
         </Button>
       )}
-      <div className="w-full flex justify-center mt-4">
-        {marksControl && (
-          <Button variant="contained" onClick={handleSubmit}>
-            SUBMIT
-          </Button>
-        )}
-      </div>
+
       <Dialog open={errorDialog} maxWidth="md" fullWidth onClose={() => setErrorDialog(false)}>
         <DialogTitle>Errors in Marks Entry</DialogTitle>
         <DialogContent>
@@ -343,15 +476,22 @@ function BridgeCoursesTable({
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={del}  onClose={() => setDel(false)}>
+      <Dialog open={del} onClose={() => setDel(false)}>
         <DialogTitle>Delete Confirmation</DialogTitle>
         <DialogContent>
-            <Typography >
-            Are you sure you want to permanently delete these marks for Roll No: <strong> {rows[delIndex]?.rollno}</strong>, Name: <strong>{rows[delIndex]?.name}</strong> ? This action cannot be undone.
-            </Typography>
+          <Typography>
+            Are you sure you want to permanently delete these marks for Roll No: <strong> {rows[delIndex]?.rollno}</strong>, Name:{" "}
+            <strong>{rows[delIndex]?.name}</strong> ? This action cannot be undone.
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{deleteRow(delIndex)}} variant="contained" color="error">
+          <Button
+            onClick={() => {
+              deleteRow(delIndex);
+            }}
+            variant="contained"
+            color="error"
+          >
             Delete
           </Button>
           <Button onClick={() => setDel(false)} variant="text" color="error">

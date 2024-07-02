@@ -680,21 +680,21 @@ export default function Marks() {
                   <Box sx={{ width: "100%" }}>
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        {(!globalFreeze || subjectType === 1) && (
-                          <Tab label="Continuous Assessment" {...a11yProps(1)} key="tab-1" />
-                        )}
+
+                          <Tab label="Continuous Assessment" {...a11yProps(subjectType === 1? 0: 0)} key={`tab-${subjectType === 1? 0: 0}`} />
+                    
                         {subjectType === 1 && <Tab label="End Of Semester Assessment" {...a11yProps(0)} key="tab-0" />}
-                        {globalFreeze && <Tab label="Aggregate Marks" {...a11yProps(2)} key="tab-2" />}
+                        {globalFreeze && subjectType === 1 &&  <Tab label="Aggregate Marks" {...a11yProps(subjectType === 1? 2: 0)} key={`tab-${subjectType === 1? 2: 0}`} />}
                         {bridgeCourseList.includes(selectedCourse) && (
                           <Tab
                             label="Bridge Courses"
-                            {...a11yProps(globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1)}
-                            key={`tab-${globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1}`}
+                            {...a11yProps(globalFreeze ? (subjectType === 1 ? 3 : 1) : subjectType === 1 ? 2 : 1)}
+                            key={`tab-${globalFreeze ? (subjectType === 1 ? 3 : 1) : subjectType === 1 ? 2 : 1}`}
                           />
                         )}
                       </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel value={value} index={subjectType === 1? 0: 0}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
@@ -721,6 +721,7 @@ export default function Marks() {
                         />
                       )}
                     </CustomTabPanel>
+                    {subjectType === 1 && (
                     <CustomTabPanel value={value} index={1}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
@@ -748,8 +749,9 @@ export default function Marks() {
                         />
                       )}
                     </CustomTabPanel>
-                    {globalFreeze && (
-                      <CustomTabPanel value={value} index={2}>
+                    )}
+                    {globalFreeze && subjectType === 1 &&  (
+                      <CustomTabPanel value={value} index={subjectType === 1? 2: 0}>
                         <div className="w-full h-full flex justify-center items-center">
                           {loading && <CircularProgress className="mx-auto" />}
                         </div>
@@ -777,7 +779,7 @@ export default function Marks() {
                         )}
                       </CustomTabPanel>
                     )}
-                    <CustomTabPanel value={value} index={globalFreeze ? (subjectType === 1 ? 3 : 2) : subjectType === 1 ? 2 : 1}>
+                    <CustomTabPanel value={value} index={globalFreeze ? (subjectType === 1 ? 3 : 1) : subjectType === 1 ? 2 : 1}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
