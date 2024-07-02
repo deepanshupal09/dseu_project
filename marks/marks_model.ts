@@ -1,11 +1,11 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery } from "./marks_queries";
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT b.rollno,b.marks, u.name
+            SELECT b.rollno,b.marks, u.name,b.freeze
             FROM bridge_course b
             JOIN users u ON b.rollno = u.rollno
             JOIN departments d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
@@ -47,22 +47,25 @@ export function deleteBridgeDetailsModel(rollno: string, course_code: string, ac
     });
 }
 
-export function insertBridgeDetailsModel(student: any) {
+export function insertBridgeDetailsModel(student: any): Promise<any> {
     return new Promise((resolve, reject) => {
         const query = `
-            INSERT INTO bridge_course (rollno, course_code, marks, academic_year)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO bridge_course (rollno, course_code, marks, academic_year, "freeze")
+            VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (rollno, course_code, academic_year)
             DO UPDATE SET
-                marks = EXCLUDED.marks
+                marks = EXCLUDED.marks,
+                "freeze" = EXCLUDED."freeze"
         `;
 
-        const values = [student.rollno, student.course_code, student.marks, student.academic_year];
+        const values = [student.rollno, student.course_code, student.marks, student.academic_year, student.freeze];
 
         console.log("INTERNAL query:", query);
+        console.log("values: ", values)
 
         pool.query(query, values, (error, results) => {
             if (error) {
+                console.error('Error executing query:', error);
                 reject(error);
             } else {
                 resolve(results);
@@ -487,6 +490,19 @@ export function fetchMarkControlDetailsModal(): Promise<QueryResult<any>> {
                 console.log("error: ", error);
                 reject(error);
             } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchMarksDetailsModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchMarksDetailsQuery, (error, results)=>{
+            if(error){
+                console.log("error: ", error);
+                reject(error);
+            } else{
                 resolve(results);
             }
         });

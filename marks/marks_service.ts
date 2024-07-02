@@ -26,6 +26,7 @@ import {
     checkDepartmentModel,
     fetchBridgeDetailsModel,
     deleteBridgeDetailsModel,
+    fetchMarksDetailsModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 
@@ -700,4 +701,15 @@ export function fetchMarkControlDetailsService(): Promise<any> {
                 reject(error);
             });
     });
+}
+
+export function fetchMarksDetailsService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchMarksDetailsModal().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
 }

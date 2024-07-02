@@ -18,6 +18,7 @@ import {
     checkDepartmentService,
     fetchBridgeDetailsService,
     deleteBridgeDetailsService,
+    fetchMarksDetailsService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -328,6 +329,24 @@ const fetchMarkControlDetailsController = (req: Request, res: Response) => {
     }
 };
 
+const fetchMarksDetailsController = (req:Request, res:Response)=>{
+    try{
+      // const details= req.body;
+      console.log("here")
+      fetchMarksDetailsService().then((results)=>{
+        console.log("resulsets: ", results.length)
+        res.status(200).send(results);
+      }).catch((error)=>{
+        console.log("error:",error);
+        res.status(500).send("internal server error at fetch details 1");
+      })
+    } catch(error){
+      res.send("internal server error at fetch details 2");
+    }
+  }
+
+
+
 export {
     fetchStudentDetailsFromInternalController,
     handleStudentDetailsFromInternalController,
@@ -347,4 +366,5 @@ export {
     insertBridgeDetails,
     fetchBridgeDetails,
     deleteBridgeDetails,
+    fetchMarksDetailsController
 };
