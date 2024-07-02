@@ -545,12 +545,12 @@ export default function MarksTable({
               </ListItemIcon>
               <ListItemText primary="Clear" />
             </MenuItem>
-            <MenuItem disabled={freeze} onClick={downloadTemplate}>
+            {/* <MenuItem disabled={freeze} onClick={downloadTemplate}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Download template" />
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
                 {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <Save fontSize="small" />}
