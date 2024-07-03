@@ -97,14 +97,16 @@ export const fetchFreezeDetailsQuery: string=`
 export const getEmailidAdminQuery: string=`
   SELECT emailid FROM admin WHERE campus=$1;
 `;
-
-export const fetchMarksDetailsQuery: string=`
+export const fetchMarksDetailsQuery: string = `
   SELECT
+  DISTINCT
     sc.campus,
     sc.program,
+    sc.program_type,
     sc.semester,
     sc.course_code,
     c.course_name,
+    
     CASE
         WHEN im.course_code IS NULL OR im.freeze_marks = false THEN false
         ELSE true
@@ -122,10 +124,24 @@ FROM
 LEFT JOIN
     courses c ON sc.course_code = c.course_code
 LEFT JOIN
-    internal_marks im ON sc.campus = im.campus AND sc.program = im.program AND sc.semester = im.semester AND sc.course_code = im.course_code
+    internal_marks im ON sc.campus = im.campus AND sc.program_type = im.program_type AND sc.program = im.program AND sc.semester = im.semester AND sc.course_code = im.course_code
 LEFT JOIN
-    external_marks em ON sc.campus = em.campus AND sc.program = em.program AND sc.semester = em.semester AND sc.course_code = em.course_code
+    external_marks em ON sc.campus = em.campus AND sc.program_type = im.program_type AND sc.program = em.program AND sc.semester = em.semester AND sc.course_code = em.course_code
 LEFT JOIN
-    aggregate_marks am ON sc.campus = am.campus AND sc.program = am.program AND sc.semester = am.semester AND sc.course_code = am.course_code;
+    aggregate_marks am ON sc.campus = am.campus AND sc.program = am.program AND sc.semester = am.semester AND sc.course_code = am.course_code
+ORDER BY
+    sc.campus,
+    sc.program,
+    sc.program_type,
+    sc.semester,
+    sc.course_code;
 `;
 
+export const fetchBridgeStudentDetails: string=`
+    SELECT DISTINCT bc.rollno, bc.course_code, c.course_name, bc.academic_year, bc.marks, bc."freeze" 
+    FROM bridge_course AS bc
+    JOIN users AS u ON bc.rollno = u.rollno 
+    JOIN semester_course AS sc ON bc.course_code=sc.course_code
+    JOIN courses AS c ON bc.course_code=c.course_code
+    WHERE bc.academic_year = $2 AND bc.rollno = $1;
+`; 
