@@ -606,9 +606,8 @@ export default function MarksTable({
       <div className="w-full flex justify-between ">
         {!freeze && marksControl && !aggregate ? (
           <>
-            <div>
-              <Typography> U - UFM, X - Absent </Typography>
-            </div>
+            <div className="">
+            <span className="font-semibold text-lg"> U - UFM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X - Absent </span>            </div>
             <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
               Actions
             </Button>
