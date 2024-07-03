@@ -205,7 +205,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                     }
-                                                } else {
+                                                } else if(externalResults[i].marks === "U" || rollnoMarksMap.get(externalResults[i].rollno) === "U") {
                                                     aggregateDetails.marks = "U";
                                                 }
                                                 // if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U'){
@@ -341,9 +341,11 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                     }
-                                                } else {
+                                                } else if(internalResults[i].marks === "U" || rollnoMarksMap.get(internalResults[i].rollno) === "U") {
                                                     aggregateDetails.marks = "U";
                                                 }
+
+                                                
                                                 // if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'U' && internalResults[i].marks.trim() !== 'U'){
                                                 // } else if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'X' && internalResults[i].marks.trim() !== 'X'){
                                                 //     if (rollnoMarksMap.get(internalResults[i].rollno).trim() === 'U' && internalResults[i].marks.trim() === 'U') {
@@ -561,20 +563,42 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
                     program_type: aggregateResults.rows[0].program_type,
                     program: aggregateResults.rows[0].program,
                     semester: aggregateResults.rows[0].semester,
-                    internal_marks: internalResults.rows.map(row => ({
-                        course_code: row.course_code,
-                        course_name: row.course_name,
-                        credit: row.credit,
-                        marks: row.marks.trim(),
-                        grade: getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit)
-                    })),
-                    external_marks: externalResults.rows.map(row => ({
-                        course_code: row.course_code,
-                        course_name: row.course_name,
-                        credit: row.credit,
-                        marks: row.marks.trim(),
-                        grade: getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit)
-                    })),
+                    internal_marks: internalResults.rows.map(row => {
+                        let marks = row.marks.trim();
+                        let grade = getGrade(marks, row.credit);
+                        if(marks === "U"){
+                            grade = "U";
+                        } else if(marks === "X"){
+                            grade = "X";
+                        } else{
+                            grade = getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit);
+                        }
+                        return {
+                            course_code: row.course_code,
+                            course_name: row.course_name,
+                            credit: row.credit,
+                            marks: row.marks.trim(),
+                            grade: grade
+                        };
+                    }),
+                    external_marks: externalResults.rows.map(row => {
+                        let marks = row.marks.trim();
+                        let grade = getGrade(marks, row.credit);
+                        if(marks === "U"){
+                            grade = "U";
+                        } else if(marks === "X"){
+                            grade = "X";
+                        } else{
+                            grade = getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit);
+                        }
+                        return {
+                            course_code: row.course_code,
+                            course_name: row.course_name,
+                            credit: row.credit,
+                            marks: row.marks.trim(),
+                            grade: grade
+                        };
+                    }),
                     aggregate_marks: aggregateResults.rows.map(row => {
                         let marks = row.marks.trim(); 
                         let grade = getGrade(marks, row.credit);
