@@ -206,11 +206,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                     }
                                                 } else {
-                                                    if (rollnoMarksMap.get(externalResults[i].rollno) === "X") {
-                                                        aggregateDetails.marks = "0";
-                                                    } else if (rollnoMarksMap.get(externalResults[i].rollno) !== "X") {
-                                                        aggregateDetails.marks = (parseFloat("0") + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
-                                                    }
+                                                    aggregateDetails.marks = "U";
                                                 }
                                                 // if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U'){
                                                 // } else if(rollnoMarksMap.get(externalResults[i].rollno) !== 'X' && externalResults[i].marks !== 'X'){
@@ -346,11 +342,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                     }
                                                 } else {
-                                                    if (internalResults[i].marks === "X") {
-                                                        aggregateDetails.marks = "0";
-                                                    } else if (internalResults[i].marks !== "X") {
-                                                        aggregateDetails.marks = aggregateDetails.marks = (parseFloat("0") + parseFloat(internalResults[i].marks)).toString();
-                                                    }
+                                                    aggregateDetails.marks = "U";
                                                 }
                                                 // if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'U' && internalResults[i].marks.trim() !== 'U'){
                                                 // } else if(rollnoMarksMap.get(internalResults[i].rollno).trim() !== 'X' && internalResults[i].marks.trim() !== 'X'){
