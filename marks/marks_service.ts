@@ -195,7 +195,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     course_code: details.course_code,
                                                 };
 
-                                                if (externalResults[i].marks !== "U" && rollnoMarksMap.get(externalResults[i].rollno) !== "U") {
+                                                if (externalResults[i].marks !== "U") {
                                                     if (rollnoMarksMap.get(externalResults[i].rollno) === "X" && externalResults[i].marks === "X") {
                                                         aggregateDetails.marks = "X";
                                                     } else if (rollnoMarksMap.get(externalResults[i].rollno) === "X" && externalResults[i].marks !== "X") {
@@ -205,9 +205,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                     }
-                                                } else if(externalResults[i].marks === "U"){
-                                                    aggregateDetails.marks = "U";
-                                                } else if(rollnoMarksMap.get(externalResults[i].rollno) === "U"){
+                                                } else {
                                                     aggregateDetails.marks = "U";
                                                 }
                                                 // if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U'){
@@ -333,7 +331,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 };
 
                                                 //for absent X
-                                                if (rollnoMarksMap.get(internalResults[i].rollno) !== "U"  && rollnoMarksMap.get(internalResults[i].rollno) !== "U") {
+                                                if (rollnoMarksMap.get(internalResults[i].rollno) !== "U") {
                                                     if (rollnoMarksMap.get(internalResults[i].rollno) === "X" && internalResults[i].marks === "X") {
                                                         aggregateDetails.marks = "X";
                                                     } else if (rollnoMarksMap.get(internalResults[i].rollno) === "X" && internalResults[i].marks !== "X") {
@@ -343,9 +341,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                     }
-                                                } else if(internalResults[i].marks === "U") {
-                                                    aggregateDetails.marks = "U";
-                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) === "U"){
+                                                } else {
                                                     aggregateDetails.marks = "U";
                                                 }
 
@@ -575,7 +571,7 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
                         } else if(marks === "X"){
                             grade = "X";
                         } else{
-                            grade = getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit);
+                            grade = getGrade(((parseFloat(row.marks) / 75)*100).toString(), row.credit)
                         }
                         return {
                             course_code: row.course_code,
@@ -593,7 +589,7 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
                         } else if(marks === "X"){
                             grade = "X";
                         } else{
-                            grade = getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit);
+                            grade = getGrade(((parseFloat(row.marks) / 25)*100).toString(), row.credit)
                         }
                         return {
                             course_code: row.course_code,
