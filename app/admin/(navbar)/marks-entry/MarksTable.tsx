@@ -65,9 +65,10 @@ type propsType = {
   setGlobalFreeze: React.Dispatch<React.SetStateAction<boolean>>;
   setSave: React.Dispatch<React.SetStateAction<boolean>>;
   setValue: React.Dispatch<React.SetStateAction<number>>;
+  aggregate: boolean;
   superAdmin: boolean;
   marksControl: boolean;
-  course:string;
+  course: string;
 };
 
 export default function MarksTable({
@@ -86,6 +87,7 @@ export default function MarksTable({
   setGlobalFreeze,
   setSave,
   course,
+  aggregate,
   setValue,
   superAdmin,
   marksControl,
@@ -102,9 +104,11 @@ export default function MarksTable({
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const generateMarksArray = (studentList: StudentType[]): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
+  const generateMarksArray = (
+    studentList: StudentType[]
+  ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
     console.log(studentList);
-    
+
     const marksArray = studentList.map((student) => ({
       sno: student.sno,
       rollno: student.rollno,
@@ -112,7 +116,7 @@ export default function MarksTable({
       marks: student.marks,
       reappear: "Regular",
     }));
-  
+
     // console.log("converted: ", marksArray);
     return marksArray;
   };
@@ -178,9 +182,7 @@ export default function MarksTable({
     }
   }
 
-  useEffect(() => {
-    setStudentList(students);
-  }, [students]);
+
 
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -601,30 +603,44 @@ export default function MarksTable({
           )}
         </div>
       )} */}
-      <div className="w-full flex justify-end ">
-        {!freeze && marksControl ? (
-          <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
-            Actions
-          </Button>
+      <div className="w-full flex justify-between ">
+        {!freeze && marksControl && !aggregate ? (
+          <>
+            <div>
+              <Typography> U - UFM, X - Absent </Typography>
+            </div>
+            <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
+              Actions
+            </Button>
+          </>
         ) : (
-          <div className="flex justify-end gap-x-3">
-            <GeneratePDF
-              maxMarks={maxMarks.toString()}
-              campus={campus}
-              program={program}
-              semester={semester}
-              academicYear={academic_year}
-              courseCode={course_code}
-              courseName={course}
-              marks={generateMarksArray(studentList)}
-            />
-            {superAdmin && (
-              <>
-                <Button variant="contained" onClick={handleUnFreeze}>
-                  Unfreeze
-                </Button>
-              </>
-            )}
+          <div className="flex w-full  justify-between gap-x-3">
+            <div>
+              {/* <span className="font-normal text-lg">
+                
+              Please enter
+              </span> */}
+              <span className="font-semibold text-lg"> U - UFM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X - Absent </span>
+            </div>
+            <div className="space-x-3">
+              <GeneratePDF
+                maxMarks={maxMarks.toString()}
+                campus={campus}
+                program={program}
+                semester={semester}
+                academicYear={academic_year}
+                courseCode={course_code}
+                courseName={course}
+                marks={generateMarksArray(studentList)}
+              />
+              {superAdmin && (
+                <>
+                  <Button variant="contained" onClick={handleUnFreeze}>
+                    Unfreeze
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -652,7 +668,7 @@ export default function MarksTable({
                           <TableCell key={column.id} align={column.align}>
                             {column.id === "marks" ? (
                               <>
-                                {!freeze && marksControl ? (
+                                {!freeze && marksControl && !aggregate ? (
                                   <TextField
                                     value={value}
                                     disabled={freeze}

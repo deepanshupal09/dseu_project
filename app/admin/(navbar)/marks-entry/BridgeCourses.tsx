@@ -33,6 +33,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import GeneratePDF from "./GeneratePDF";
 
 interface ProgramList {
   [key: string]: string[];
@@ -90,6 +91,7 @@ function BridgeCoursesTable({
   const academic_year = ["2023-2024"];
   const [token, setToken] = useState<string>("");
   const [user, setUser] = useState<User | null>(null);
+
   const course_code: { [key: string]: string } = {
     "Applied Mathematics-II": "FC-012",
     "Basic Sciences (Applied Chemistry)": "FC-1-CH051",
@@ -125,7 +127,7 @@ function BridgeCoursesTable({
         let newColumns = [
           { id: "name", label: "Name", minWidth: 100 },
           { id: "rollno", label: "Roll No", minWidth: 70 },
-          { id: "marks", label: "Marks (Out of 100)", minWidth: 100 }
+          { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
         ];
         setColumns(newColumns);
       }
@@ -355,6 +357,23 @@ function BridgeCoursesTable({
     handleSearch(rollno, index);
   }, 1000);
 
+  const generateMarksArray = (
+    studentList: Row[]
+  ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
+    console.log(studentList);
+
+    const marksArray = studentList.map((student, index: number) => ({
+      sno: index + 1,
+      rollno: student.rollno,
+      name: student.name,
+      marks: student.marks,
+      reappear: "Regular",
+    }));
+
+    // console.log("converted: ", marksArray);
+    return marksArray;
+  };
+
   return (
     <div>
       <div className="w-full flex space-x-3 justify-end my-4">
@@ -366,6 +385,20 @@ function BridgeCoursesTable({
             <Button variant="contained" onClick={handleFreeze}>
               FREEZE
             </Button>
+          </>
+        )}
+        {freeze && (
+          <>
+            <GeneratePDF
+              maxMarks={"100"}
+              campus={campus}
+              program={""}
+              semester={""}
+              academicYear={academicYear}
+              courseCode={course_code[course]}
+              courseName={course}
+              marks={generateMarksArray(rows)}
+            />
           </>
         )}
         {freeze && user?.role === "super" && (

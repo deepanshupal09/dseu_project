@@ -331,24 +331,15 @@ export default function Marks() {
           }
 
           const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
-          setFreeze(freezeStatus);
-          setGlobalFreeze(freezeStatus);
-          if (!freezeStatus) {
+          setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
+          setGlobalFreeze(freezeStatus.aggFreeze);
+          if (!(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)) {
             setOpen(true);
             setStudentList(formattedStudentList);
           } else {
-            const internal = await fetchInternalMarks(token, {
-              campus: selectedCampus,
-              program_type: selectedProgramCategory,
-              program: selectedProgram,
-              semester: selectedSemester,
-              academic_year: selectedAcademicYear,
-              course_code: course_code,
-              rollno: formattedStudentList.map((student) => student.rollno),
-            });
-
+            // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
             let marks;
-            if (internal && internal.length > 0 && internal[0].freeze_marks) {
+            if (freezeStatus.internalFreeze || freezeStatus.externalFreeze) {
               setSubjectType(1);
               marks = await fetchStudentMarks(
                 1,
@@ -357,14 +348,15 @@ export default function Marks() {
               );
             } else {
               setSubjectType(2);
-              //
               marks = await fetchStudentMarks(
                 2,
                 0,
                 formattedStudentList.map((student) => student.rollno)
               );
             }
-            setStudentList(marks);
+            // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
+
+            setStudentList(mergeStudentLists(formattedStudentList, marks));
           }
           setLoading(false);
           // if (res.length > 0) {
@@ -378,14 +370,16 @@ export default function Marks() {
     }
   };
 
-  async function fetchFreeze(rollno: Array<string>): Promise<boolean> {
+  async function fetchFreeze(
+    rollno: Array<string>
+  ): Promise<{ internalFreeze: boolean; externalFreeze: boolean; aggFreeze: boolean }> {
     //
     const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
     if (!course_code) {
-      return false;
+      return { internalFreeze: false, externalFreeze: false, aggFreeze: false };
     }
     if (rollno.length === 0) {
-      return false;
+      return { internalFreeze: false, externalFreeze: false, aggFreeze: false };
     }
 
     const details = {
@@ -399,14 +393,26 @@ export default function Marks() {
     };
 
     setLoading(true);
-    const res = await fetchAggregateMarks(token, details);
+    const agg = await fetchAggregateMarks(token, details);
+    const internal = await fetchInternalMarks(token, details);
+    const external = await fetchExternalMarks(token, details);
     setLoading(false);
+    let aggFreeze,
+      internalFreeze,
+      externalFreeze = false;
 
-    if (res && res.length > 0) {
-      return res[0].freeze_marks;
-    } else {
-      return false;
+    if (agg && agg.length > 0) {
+      aggFreeze = agg[0].freeze_marks;
     }
+    if (internal && internal.length > 0) {
+      internalFreeze = internal[0].freeze_marks;
+    }
+    if (external && external.length > 0) {
+      externalFreeze = external[0].freeze_marks;
+    }
+    console.log("freeze statuses: ", aggFreeze, internalFreeze, externalFreeze);
+
+    return { internalFreeze: internalFreeze, externalFreeze: externalFreeze, aggFreeze: aggFreeze };
   }
 
   async function fetchStudentMarks(subjectType: number, value: number, rollno: Array<string>) {
@@ -468,6 +474,50 @@ export default function Marks() {
     }
   }
 
+  const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
+    const updatedMarks = [...marks];
+    console.log("studentList: ", formattedStudentlist, "students: ", marks);
+
+    formattedStudentlist.forEach((student) => {
+      const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
+
+      if (!isStudentInMarks) {
+        updatedMarks.push({
+          ...student,
+        });
+      }
+    });
+
+    updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+    return updatedMarks;
+  };
+
+  async function fetchStudentList(): Promise<StudentType[]> {
+    const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
+    if (course_code) {
+      const res = await fetchStudentByCourseCode(
+        token,
+        course_code,
+        selectedCampus,
+        selectedProgramCategory,
+        selectedProgram,
+        selectedSemester,
+        selectedAcademicYear
+      );
+      // console.log("res: ", res);
+
+      const formattedStudentList: StudentType[] = res.map((student: Student, index: number) => ({
+        sno: index + 1,
+        rollno: student.rollno,
+        name: student.name,
+        marks: "",
+      }));
+      return formattedStudentList;
+    } else {
+      return [];
+    }
+  }
+
   useEffect(() => {
     fetchStudentMarks(
       subjectType,
@@ -475,7 +525,12 @@ export default function Marks() {
       studentList.map((student) => student.rollno)
     ).then((students) => {
       if (students && students.length > 0) {
-        setStudentList(students);
+        fetchStudentList()
+          .then((formattedStudentList) => {
+            let temp = mergeStudentLists(formattedStudentList, students);
+            setStudentList(temp);
+          })
+          .catch((error) => {});
       } else {
         const newStudentList: StudentType[] = studentList.map((student) => {
           return { ...student, marks: "" };
@@ -680,11 +735,20 @@ export default function Marks() {
                   <Box sx={{ width: "100%" }}>
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                        <Tab
+                          label="Continuous Assessment"
+                          {...a11yProps(subjectType === 1 ? 0 : 0)}
+                          key={`tab-${subjectType === 1 ? 0 : 0}`}
+                        />
 
-                          <Tab label="Continuous Assessment" {...a11yProps(subjectType === 1? 0: 0)} key={`tab-${subjectType === 1? 0: 0}`} />
-                    
                         {subjectType === 1 && <Tab label="End Of Semester Assessment" {...a11yProps(0)} key="tab-0" />}
-                        {globalFreeze && subjectType === 1 &&  <Tab label="Aggregate Marks" {...a11yProps(subjectType === 1? 2: 0)} key={`tab-${subjectType === 1? 2: 0}`} />}
+                        {globalFreeze && subjectType === 1 && (
+                          <Tab
+                            label="Aggregate Marks"
+                            {...a11yProps(subjectType === 1 ? 2 : 0)}
+                            key={`tab-${subjectType === 1 ? 2 : 0}`}
+                          />
+                        )}
                         {bridgeCourseList.includes(selectedCourse) && (
                           <Tab
                             label="Bridge Courses"
@@ -694,7 +758,7 @@ export default function Marks() {
                         )}
                       </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={subjectType === 1? 0: 0}>
+                    <CustomTabPanel value={value} index={subjectType === 1 ? 0 : 0}>
                       <div className="w-full h-full flex justify-center items-center">
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
@@ -713,6 +777,7 @@ export default function Marks() {
                           course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
                           token={token}
                           marksControl={marksControl}
+                          aggregate={false}
                           academic_year={selectedAcademicYear}
                           subjectType="1"
                           setValue={setValue}
@@ -722,36 +787,37 @@ export default function Marks() {
                       )}
                     </CustomTabPanel>
                     {subjectType === 1 && (
-                    <CustomTabPanel value={value} index={1}>
-                      <div className="w-full h-full flex justify-center items-center">
-                        {loading && <CircularProgress className="mx-auto" />}
-                      </div>
-                      {!loading && (
-                        <MarksTable
-                          campus={selectedCampus}
-                          program_type={selectedProgramCategory}
-                          program={selectedProgram}
-                          semester={selectedSemester}
-                          marksControl={marksControl}
-                          setGlobalFreeze={setGlobalFreeze}
-                          freeze={freeze}
-                          course={selectedCourse}
-                          superAdmin={user?.role === "super"}
-                          setFreeze={setFreeze}
-                          setSave={setSave}
-                          course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
-                          token={token}
-                          academic_year={selectedAcademicYear}
-                          maxMarks={25}
-                          setValue={setValue}
-                          subjectType="2"
-                          students={studentList}
-                        />
-                      )}
-                    </CustomTabPanel>
+                      <CustomTabPanel value={value} index={1}>
+                        <div className="w-full h-full flex justify-center items-center">
+                          {loading && <CircularProgress className="mx-auto" />}
+                        </div>
+                        {!loading && (
+                          <MarksTable
+                            campus={selectedCampus}
+                            program_type={selectedProgramCategory}
+                            program={selectedProgram}
+                            semester={selectedSemester}
+                            marksControl={marksControl}
+                            setGlobalFreeze={setGlobalFreeze}
+                            freeze={freeze}
+                            course={selectedCourse}
+                            aggregate={false}
+                            superAdmin={user?.role === "super"}
+                            setFreeze={setFreeze}
+                            setSave={setSave}
+                            course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
+                            token={token}
+                            academic_year={selectedAcademicYear}
+                            maxMarks={25}
+                            setValue={setValue}
+                            subjectType="2"
+                            students={studentList}
+                          />
+                        )}
+                      </CustomTabPanel>
                     )}
-                    {globalFreeze && subjectType === 1 &&  (
-                      <CustomTabPanel value={value} index={subjectType === 1? 2: 0}>
+                    {globalFreeze && subjectType === 1 && (
+                      <CustomTabPanel value={value} index={subjectType === 1 ? 2 : 0}>
                         <div className="w-full h-full flex justify-center items-center">
                           {loading && <CircularProgress className="mx-auto" />}
                         </div>
@@ -771,6 +837,7 @@ export default function Marks() {
                             setSave={setSave}
                             course_code={courseCodes.find((course) => course.course_name === selectedCourse)?.course_code || ""}
                             token={token}
+                            aggregate={true}
                             academic_year={selectedAcademicYear}
                             maxMarks={100}
                             subjectType="2"
@@ -784,7 +851,12 @@ export default function Marks() {
                         {loading && <CircularProgress className="mx-auto" />}
                       </div>
                       {!loading && (
-                        <BridgeCoursesTable marksControl={marksControl} academicYear={selectedAcademicYear} course={selectedCourse} campus={selectedCampus} />
+                        <BridgeCoursesTable
+                          marksControl={marksControl}
+                          academicYear={selectedAcademicYear}
+                          course={selectedCourse}
+                          campus={selectedCampus}
+                        />
                       )}
                     </CustomTabPanel>
                   </Box>
@@ -823,7 +895,12 @@ export default function Marks() {
               );
 
               if (students && students?.length > 0) {
-                setStudentList(students);
+                fetchStudentList()
+                  .then((formattedStudentList) => {
+                    let temp = mergeStudentLists(formattedStudentList, students);
+                    setStudentList(temp);
+                  })
+                  .catch((error) => {});
               }
               setOpen(false);
             }}
@@ -841,7 +918,12 @@ export default function Marks() {
               );
 
               if (students && students?.length > 0) {
-                setStudentList(students);
+                fetchStudentList()
+                  .then((formattedStudentList) => {
+                    let temp = mergeStudentLists(formattedStudentList, students);
+                    setStudentList(temp);
+                  })
+                  .catch((error) => {});
               }
               setOpen(false);
             }}

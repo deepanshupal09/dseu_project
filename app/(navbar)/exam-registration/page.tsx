@@ -351,7 +351,7 @@ export default function Home() {
     const allSubjectCodes = [...selectedSubjectCodes, ...backlogSubjectCodes];
 
     try {
-      const body = { rollno: user?.rollno, course_code: allSubjectCodes };
+      const body = { rollno: user?.rollno, course_code: allSubjectCodes, semester: user?.semester };
       const res = await addExamRegisterations(body, token);
       router.push("/dashboard");
       if (typeof res !== "number") {
