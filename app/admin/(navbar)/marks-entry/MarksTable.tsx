@@ -620,12 +620,12 @@ export default function MarksTable({
               </ListItemIcon>
               <ListItemText primary="Clear" />
             </MenuItem>
-            <MenuItem disabled={freeze} onClick={downloadTemplate}>
+            {/* <MenuItem disabled={freeze} onClick={downloadTemplate}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Download template" />
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
                 {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <Save fontSize="small" />}
@@ -641,7 +641,7 @@ export default function MarksTable({
           </Menu>
         )}
       </div>
-      {!freeze && marksControl && (
+      {/* {!freeze && marksControl && (
         <div
           className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
             dragActive ? "bg-slate-100" : ""
@@ -675,12 +675,12 @@ export default function MarksTable({
             </div>
           )}
         </div>
-      )}
+      )} */}
       <div className="w-full flex justify-between ">
         {!freeze && marksControl && !aggregate ? (
           <>
             <div className="">
-            <span className="font-semibold text-lg"> U - UFM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X - Absent </span>            </div>
+            <span className="font-semibold text-lg"> Use "X" for absentees and "U" for unfair means. </span>            </div>
             <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
               Actions
             </Button>
@@ -692,7 +692,7 @@ export default function MarksTable({
                 
               Please enter
               </span> */}
-              <span className="font-semibold text-lg"> U - UFM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; X - Absent </span>
+              <span className="font-semibold text-lg"> Use "X" for absentees and "U" for unfair means. </span>
             </div>
             <div className="space-x-3">
               <GeneratePDF

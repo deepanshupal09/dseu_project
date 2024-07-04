@@ -34,10 +34,10 @@ export default function Nav() {
 
     return (
         <>
-            <div className="bg-white top-0 max-sm:w-full fixed left-0 sm:h-screen ">
+            <div className="bg-white top-0 max-sm:w-full fixed left-0 sm:h-screen  ">
                 <div className="container mx-auto mb-2">
                     <div>
-                        <div className="w-[250px] text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
+                        <div className="w-[250px]  text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
                             {options.map((option, index) => {
                                 const path = `/admin/${option.toLowerCase().replace(/\s+/g, "-")}`;
                                 return (
