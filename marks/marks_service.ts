@@ -212,7 +212,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 } else if (externalResults[i].marks !== "U" && rollnoMarksMap.get(externalResults[i].rollno) === "U"){
                                                     if (externalResults[i].marks === "X"){
                                                         console.log(5)
-                                                        aggregateDetails.marks = "0";
+                                                        aggregateDetails.marks = "U";
                                                     } else {
                                                         console.log(6)
                                                         aggregateDetails.marks = (parseFloat("0") + parseFloat(externalResults[i].marks)).toString();
@@ -220,7 +220,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 } else if (externalResults[i].marks === "U" && rollnoMarksMap.get(externalResults[i].rollno) !== "U"){
                                                     if (rollnoMarksMap.get(externalResults[i].rollno) === "X"){
                                                         console.log(7)
-                                                        aggregateDetails.marks = "0";
+                                                        aggregateDetails.marks = "U";
                                                     } else {
                                                         console.log(8)
                                                         aggregateDetails.marks = (parseFloat("0") + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
@@ -369,7 +369,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 } else if(rollnoMarksMap.get(internalResults[i].rollno) === "U" &&  internalResults[i].marks !== "U"){
                                                     if (internalResults[i].marks === "X"){
                                                         console.log(50)
-                                                        aggregateDetails.marks = "0";
+                                                        aggregateDetails.marks = "U";
                                                     } else {
                                                         console.log(60)
                                                         aggregateDetails.marks = (parseFloat("0") + parseFloat(internalResults[i].marks)).toString();
@@ -377,7 +377,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 } else if(rollnoMarksMap.get(internalResults[i].rollno) !== "U" &&  internalResults[i].marks === "U"){
                                                     if (rollnoMarksMap.get(internalResults[i].rollno) === "X"){
                                                         console.log(70)
-                                                        aggregateDetails.marks = "0";
+                                                        aggregateDetails.marks = "U";
                                                     } else {
                                                         console.log(80)
                                                         aggregateDetails.marks = (parseFloat("0") + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
