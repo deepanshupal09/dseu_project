@@ -14,16 +14,16 @@ export const insertStudentDetailsToAggregateQuery:string = `
       ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *;
 `;
-export const updateStudentDetailsToAggregateQuery:string = `
-    UPDATE aggregate_marks SET marks=$8, freeze_marks=$9, modified_at=$10 WHERE 
-        rollno=$1 AND
-        campus=$2 AND
-        program_type=$3 AND
-        program=$4 AND 
-        semester=$5 AND
-        academic_year=$6 AND
-        course_code=$7 ;
+export const updateStudentDetailsToAggregateQuery: string = `
+    INSERT INTO aggregate_marks (rollno, campus, program_type, program, semester, academic_year, course_code, marks, freeze_marks, modified_at, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $10)
+    ON CONFLICT (rollno, campus, program, semester, academic_year, course_code)
+    DO UPDATE SET
+        marks = EXCLUDED.marks,
+        freeze_marks = EXCLUDED.freeze_marks,
+        modified_at = EXCLUDED.modified_at;
 `;
+
 
 export const fetchMarkControl:string = `
   SELECT marks_control FROM departments WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4; 

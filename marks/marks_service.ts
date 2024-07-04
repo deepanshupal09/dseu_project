@@ -150,7 +150,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                 details.modified_at = currentTime;
                                 insertStudentDetailsFromInternal(details)
                                     .then((insertResult) => {
-                                        console.log("inserted successfully!");
+                                        console.log("3. inserted successfully!");
                                         resolve(insertResult.rows);
                                     })
                                     .catch((insertError) => {
@@ -179,7 +179,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                         for (let i = 0; i < details.rollno.length; i++) {
                                             rollnoMarksMap.set(details.rollno[i], details.marks[i]);
                                         }
-
+                                        console.log(rollnoMarksMap);
                                         for (let i = 0; i < externalResults.length; i++) {
                                             if (rollnoMarksMap.has(externalResults[i].rollno)) {
                                                 const aggregateDetails = {
@@ -197,15 +197,20 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 };
 
                                                 if(externalResults[i].marks === "U" && rollnoMarksMap.get(externalResults[i].rollno) === "U"){
+                                                    console.log(1)
                                                     aggregateDetails.marks = "U";
                                                 } else if(externalResults[i].marks === "U" && rollnoMarksMap.get(externalResults[i].rollno) === "X") {
+                                                    console.log(2)
                                                     aggregateDetails.marks = "U";
                                                 } else if(externalResults[i].marks === "X" && rollnoMarksMap.get(externalResults[i].rollno) === "U") {
+                                                    console.log(3)
                                                     aggregateDetails.marks = "U";
                                                 } else if(externalResults[i].marks === "X" && rollnoMarksMap.get(externalResults[i].rollno) === "X") {
+                                                    console.log(4)
                                                     aggregateDetails.marks = "X";
                                                 } else {
-                                                    aggregateDetails.marks = externalResults[i].marks === "U" || "X" ? parseFloat(rollnoMarksMap.get(externalResults[i].rollno)).toString() : rollnoMarksMap.get(externalResults[i].rollno) === "U" || "X" ? parseFloat(externalResults[i].marks).toString() : (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
+                                                    console.log(5)
+                                                    aggregateDetails.marks = externalResults[i].marks === "U" || externalResults[i].marks === "X" ? parseFloat(rollnoMarksMap.get(externalResults[i].rollno)).toString() : rollnoMarksMap.get(externalResults[i].rollno) === "U" || rollnoMarksMap.get(externalResults[i].rollno) === "X" ? parseFloat(externalResults[i].marks).toString() : (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                 }
 
 
@@ -259,27 +264,17 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                 fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
                                                     // console.log("agreeResults: ",aggreResults)
                                                     console.log(aggreResults);
-                                                    if (aggreResults.length === 0) {
-                                                        insertIntoAggregateMarks(aggregateDetails)
-                                                            .then((insertResult) => {
-                                                                console.log("aggregate_marks populated successfully!");
-                                                                resolve(insertResult.rows);
-                                                            })
-                                                            .catch((insertError) => {
-                                                                console.log("Error in populating aggregate_marks: ", insertError);
-                                                                reject("Internal server error in insertIntoAggregateMarks");
-                                                            });
-                                                    } else {
-                                                        updateIntoAggregateMarks(aggregateDetails)
-                                                            .then((updateResult) => {
-                                                                console.log("update result:", updateResult);
-                                                                resolve("Updated Aggregate");
-                                                            })
-                                                            .catch((error) => {
-                                                                console.log("update aggregate error: ", error);
-                                                                reject("Internal server error in updateIntoAggregateMarks");
-                                                            });
-                                                    }
+                                                    
+                                                    updateIntoAggregateMarks(aggregateDetails)
+                                                        .then((updateResult) => {
+                                                            console.log("update result:", updateResult);
+                                                            resolve("Updated Aggregate");
+                                                        })
+                                                        .catch((error) => {
+                                                            console.log("update aggregate error: ", error);
+                                                            reject("Internal server error in updateIntoAggregateMarks");
+                                                        });
+                                                    
                                                 });
                                             }
                                         }
@@ -318,7 +313,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                 details.modified_at = currentTime;
                                 insertStudentDetailsFromExternal(details)
                                     .then((insertResult) => {
-                                        console.log("inserted successfully!");
+                                        console.log("2. inserted successfully!");
                                         resolve(insertResult.rows);
                                     })
                                     .catch((insertError) => {
@@ -349,7 +344,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                         for (let i = 0; i < details.rollno.length; i++) {
                                             rollnoMarksMap.set(details.rollno[i], details.marks[i]);
                                         }
-
+                                        console.log(rollnoMarksMap);
                                         for (let i = 0; i < internalResults.length; i++) {
                                             if (rollnoMarksMap.has(internalResults[i].rollno)) {
                                                 const aggregateDetails = {
@@ -376,7 +371,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 } else if(internalResults[i].marks === "X" && rollnoMarksMap.get(internalResults[i].rollno) === "X") {
                                                     aggregateDetails.marks = "X";
                                                 } else {
-                                                    aggregateDetails.marks = internalResults[i].marks === "U" || "X" ? parseFloat(rollnoMarksMap.get(internalResults[i].rollno)).toString() : rollnoMarksMap.get(internalResults[i].rollno) === "U" || "X" ? parseFloat(internalResults[i].marks).toString() : (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
+                                                    aggregateDetails.marks = internalResults[i].marks === "U" || internalResults[i].marks === "X" ? parseFloat(rollnoMarksMap.get(internalResults[i].rollno)).toString() : rollnoMarksMap.get(internalResults[i].rollno) === "U" || rollnoMarksMap.get(internalResults[i].rollno) === "X" ? parseFloat(internalResults[i].marks).toString() : (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                 }
 
                                                 //for absent X
@@ -431,28 +426,18 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
 
                                                 fetchTheStudentDetailsFromAggregate(details).then((aggreResults) => {
                                                     // console.log("agreeResults: ",aggreResults)
-                                                    console.log(aggreResults);
-                                                    if (aggreResults.length === 0) {
-                                                        insertIntoAggregateMarks(aggregateDetails)
-                                                            .then((insertResult) => {
-                                                                console.log("aggregate_marks populated successfully!");
-                                                                resolve(insertResult.rows);
-                                                            })
-                                                            .catch((insertError) => {
-                                                                console.log("Error in populating aggregate_marks: ", insertError);
-                                                                reject("Internal server error in insertIntoAggregateMarks");
-                                                            });
-                                                    } else {
-                                                        updateIntoAggregateMarks(aggregateDetails)
-                                                            .then((updateResult) => {
-                                                                console.log("update result:", updateResult);
-                                                                resolve("Updated Aggregate");
-                                                            })
-                                                            .catch((error) => {
-                                                                console.log("update aggregate error: ", error);
-                                                                reject("Internal server error in updateIntoAggregateMarks");
-                                                            });
-                                                    }
+                                                    // console.log("5", details);
+                                                    console.log("ok",aggregateDetails);
+                                                   
+                                                    updateIntoAggregateMarks(aggregateDetails)
+                                                        .then((updateResult) => {
+                                                            console.log("update result:", updateResult);
+                                                            resolve("Updated Aggregate");
+                                                        })
+                                                        .catch((error) => {
+                                                            console.log("update aggregate error: ", error);
+                                                            reject("Internal server error in updateIntoAggregateMarks");
+                                                        });
                                                 });
                                             }
                                         }
@@ -492,7 +477,7 @@ export async function handleStudentDetailsFromAggregate(details: any): Promise<a
                                 details.modified_at = currentTime;
                                 insertStudentDetailsIntoAggregate(details)
                                     .then((insertResult) => {
-                                        console.log("inserted successfully!");
+                                        console.log("1. inserted successfully!");
                                         resolve(insertResult.rows);
                                     })
                                     .catch((insertError) => {
