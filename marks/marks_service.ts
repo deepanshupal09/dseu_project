@@ -555,12 +555,14 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
         ])
         .then(([internalResults, externalResults, aggregateResults, bridgeResults, examRegistration]) => {
             const allFreezeMarksTrue = aggregateResults.rows.every(row => row.freeze_marks);
-
-            if (!allFreezeMarksTrue || aggregateResults.rows.length < examRegistration.rows.length) {
+            console.log("77", examRegistration);
+            console.log("277", examRegistration.length, aggregateResults.rows.length)
+            console.log(allFreezeMarksTrue)
+            if (!allFreezeMarksTrue || aggregateResults.rows.length < examRegistration.length) {
                 resolve({ message: "Marks not evaluated yet." });
                 return;
             }
-
+            
             if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0 && allFreezeMarksTrue) {
                 const getGrade = (marks: string, credit: number): string => {
                     let marksFloat = parseFloat(marks);

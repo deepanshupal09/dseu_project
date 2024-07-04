@@ -44,7 +44,7 @@ export const fetchMarksInternal: string = `
   JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code
-  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
+  WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
 `;
 
 export const fetchMarksExternal: string = `
@@ -53,7 +53,7 @@ export const fetchMarksExternal: string = `
   JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code
-  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
+  WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
 `;
 
 export const fetchMarksAggregate: string = `
@@ -62,7 +62,7 @@ export const fetchMarksAggregate: string = `
   JOIN users AS u ON im.rollno = u.rollno 
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code 
-  WHERE im.academic_year = $2 AND im.rollno = $1 AND im.semester=$3;
+  WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
 `;
 
 
