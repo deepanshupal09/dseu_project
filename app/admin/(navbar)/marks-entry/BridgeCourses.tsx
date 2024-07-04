@@ -33,7 +33,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import GeneratePDF from "./GeneratePDF";
+import GeneratePDF from "./BridgeCoursePDF";
 
 interface ProgramList {
   [key: string]: string[];
@@ -78,11 +78,13 @@ function BridgeCoursesTable({
   academicYear,
   campus,
   course,
+  program,
   marksControl,
 }: {
   academicYear: string;
   campus: string;
   course: string;
+  program: string
   marksControl: boolean;
 }) {
   const [rows, setRows] = useState<Row[]>([{ rollno: "", name: "", course: "", academicYear: "", marks: "" }]);
@@ -392,7 +394,7 @@ function BridgeCoursesTable({
             <GeneratePDF
               maxMarks={"100"}
               campus={campus}
-              program={""}
+              program={program}
               semester={""}
               academicYear={academicYear}
               courseCode={course_code[course]}

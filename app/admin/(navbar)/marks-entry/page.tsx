@@ -862,6 +862,7 @@ export default function Marks() {
                       {!loading && (
                         <BridgeCoursesTable
                           marksControl={marksControl}
+                          program={selectedProgram}
                           academicYear={selectedAcademicYear}
                           course={selectedCourse}
                           campus={selectedCampus}
