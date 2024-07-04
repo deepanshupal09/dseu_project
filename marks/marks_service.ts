@@ -30,6 +30,7 @@ import {
     fetchBridgeStudentDetailsModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
+import { fetchTheExamRegistration } from "../service";
 
 export interface FreezeData {
     campus: string;
@@ -537,14 +538,18 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
             fetchMarksInternalModal(rollno, academic_year, semester),
             fetchMarksExternalModal(rollno, academic_year, semester),
             fetchMarksAggregateModal(rollno, academic_year, semester),
-            fetchBridgeStudentDetailsModal(rollno, academic_year)
+            fetchBridgeStudentDetailsModal(rollno, academic_year),
+            fetchTheExamRegistration(rollno)
         ])
-        .then(([internalResults, externalResults, aggregateResults, bridgeResults]) => {
-            if(aggregateResults.rows.length > 0 && !aggregateResults.rows[0].freeze_marks){
-                resolve({message:"Marks not evaluated yet."});
+        .then(([internalResults, externalResults, aggregateResults, bridgeResults, examRegistration]) => {
+            const allFreezeMarksTrue = aggregateResults.rows.every(row => row.freeze_marks);
+
+            if (!allFreezeMarksTrue || aggregateResults.rows.length < examRegistration.rows.length) {
+                resolve({ message: "Marks not evaluated yet." });
                 return;
             }
-            if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0 && aggregateResults.rows[0].freeze_marks==true) {
+
+            if (internalResults.rows.length > 0 && externalResults.rows.length > 0 && aggregateResults.rows.length > 0 && allFreezeMarksTrue) {
                 const getGrade = (marks: string, credit: number): string => {
                     let marksFloat = parseFloat(marks);
                     if (credit === 0) {
