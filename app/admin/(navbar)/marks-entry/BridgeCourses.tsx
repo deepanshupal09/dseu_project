@@ -208,11 +208,11 @@ function BridgeCoursesTable({
         newErrors.push({ ...row, error: "Invalid roll no." });
       } else if (row.marks.trim() === "") {
         newErrors.push({ ...row, error: "Marks can not be empty!" });
-      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+      } else if (isNaN(Number(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
         newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
-      } else if (parseInt(row.marks) > 100) {
+      } else if (Number(row.marks) > 100) {
         newErrors.push({ ...row, error: `Marks can not be greater than 100` });
-      } else if (parseInt(row.marks) < 0) {
+      } else if (Number(row.marks) < 0) {
         newErrors.push({ ...row, error: `Marks can not be negative!` });
       } else if (rollNoTracker[row.rollno]) {
         newErrors.push({ ...row, error: "Duplicate Roll No." });
@@ -279,11 +279,11 @@ function BridgeCoursesTable({
         newErrors.push({ ...row, error: "Invalid roll no." });
       } else if (row.marks.trim() === "") {
         newErrors.push({ ...row, error: "Marks can not be empty!" });
-      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+      } else if (isNaN(Number(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
         newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
-      } else if (parseInt(row.marks) > 100) {
+      } else if (Number(row.marks) > 100) {
         newErrors.push({ ...row, error: `Marks can not be greater than 100` });
-      } else if (parseInt(row.marks) < 0) {
+      } else if (Number(row.marks) < 0) {
         newErrors.push({ ...row, error: `Marks can not be negative!` });
       } else if (rollNoTracker[row.rollno]) {
         newErrors.push({ ...row, error: "Duplicate Roll No." });
@@ -326,11 +326,11 @@ function BridgeCoursesTable({
         newErrors.push({ ...row, error: "Invalid roll no." });
       } else if (row.marks.trim() === "") {
         newErrors.push({ ...row, error: "Marks can not be empty!" });
-      } else if (isNaN(parseInt(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
+      } else if (isNaN(Number(row.marks)) && row.marks.trim() !== "X" && row.marks.trim() !== "U") {
         newErrors.push({ ...row, error: `Marks can not be '${row.marks}'` });
-      } else if (parseInt(row.marks) > 100) {
+      } else if (Number(row.marks) > 100) {
         newErrors.push({ ...row, error: `Marks can not be greater than 100` });
-      } else if (parseInt(row.marks) < 0) {
+      } else if (Number(row.marks) < 0) {
         newErrors.push({ ...row, error: `Marks can not be negative!` });
       } else if (rollNoTracker[row.rollno]) {
         newErrors.push({ ...row, error: "Duplicate Roll No." });

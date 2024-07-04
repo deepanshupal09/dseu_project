@@ -460,21 +460,27 @@ export default function MarksTable({
   async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
-      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
+      console.log("error check: ", student, (parseInt(student.marks)))
+      if (isNaN(Number(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
+        console.log(1)
         if (student.marks?.trim() === "") {
+          console.log(2)
           errors.push({ ...student, error: `Marks can not be empty` });
         } else {
+          console.log(3)
           errors.push({
             ...student,
             error: `Marks can not be '${student.marks}'`,
           });
         }
-      } else if (parseInt(student.marks) > maxMarks) {
+      } else if (Number(student.marks) > maxMarks) {
+        console.log(4)
         errors.push({
           ...student,
           error: `Marks can not be larger than ${maxMarks}!`,
         });
-      } else if (parseInt(student.marks) < 0) {
+      } else if (Number(student.marks) < 0) {
+        console.log(5)
         errors.push({ ...student, error: "Marks can not be negative!" });
       }
     });
