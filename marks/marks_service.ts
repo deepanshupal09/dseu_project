@@ -195,7 +195,7 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     course_code: details.course_code,
                                                 };
 
-                                                if (externalResults[i].marks !== "U") {
+                                                if (externalResults[i].marks !== "U" && rollnoMarksMap.get(externalResults[i].rollno) !== "U") {
                                                     if (rollnoMarksMap.get(externalResults[i].rollno) === "X" && externalResults[i].marks === "X") {
                                                         aggregateDetails.marks = "X";
                                                     } else if (rollnoMarksMap.get(externalResults[i].rollno) === "X" && externalResults[i].marks !== "X") {
@@ -205,7 +205,19 @@ export async function handleStudentDetailsFromInternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(externalResults[i].rollno)) + parseFloat(externalResults[i].marks)).toString();
                                                     }
-                                                } else {
+                                                } else if (externalResults[i].marks !== "U" && rollnoMarksMap.get(externalResults[i].rollno) === "U"){
+                                                    if (externalResults[i].marks === "X"){
+                                                        aggregateDetails.marks = "0";
+                                                    } else {
+                                                        aggregateDetails.marks = (parseFloat("0") + parseFloat(externalResults[i].marks)).toString();
+                                                    }
+                                                } else if (externalResults[i].marks === "U" && rollnoMarksMap.get(externalResults[i].rollno) !== "U"){
+                                                    if (rollnoMarksMap.get(externalResults[i].rollno) === "X"){
+                                                        aggregateDetails.marks = "0";
+                                                    } else {
+                                                        aggregateDetails.marks = (parseFloat("0") + parseFloat(rollnoMarksMap.get(externalResults[i].rollno))).toString();
+                                                    }
+                                                } else if(externalResults[i].marks === "U" && rollnoMarksMap.get(externalResults[i].rollno) === "U"){
                                                     aggregateDetails.marks = "U";
                                                 }
                                                 // if(rollnoMarksMap.get(externalResults[i].rollno) !== 'U' && externalResults[i].marks !== 'U'){
@@ -331,7 +343,7 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                 };
 
                                                 //for absent X
-                                                if (rollnoMarksMap.get(internalResults[i].rollno) !== "U") {
+                                                if (rollnoMarksMap.get(internalResults[i].rollno) !== "U" && internalResults[i].marks !== "U") {
                                                     if (rollnoMarksMap.get(internalResults[i].rollno) === "X" && internalResults[i].marks === "X") {
                                                         aggregateDetails.marks = "X";
                                                     } else if (rollnoMarksMap.get(internalResults[i].rollno) === "X" && internalResults[i].marks !== "X") {
@@ -341,7 +353,19 @@ export async function handleStudentDetailsFromExternal(details: any): Promise<an
                                                     } else {
                                                         aggregateDetails.marks = (parseFloat(rollnoMarksMap.get(internalResults[i].rollno)) + parseFloat(internalResults[i].marks)).toString();
                                                     }
-                                                } else {
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) === "U" &&  internalResults[i].marks !== "U"){
+                                                    if (internalResults[i].marks === "X"){
+                                                        aggregateDetails.marks = "0";
+                                                    } else {
+                                                        aggregateDetails.marks = (parseFloat("0") + parseFloat(internalResults[i].marks)).toString();
+                                                    } 
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) !== "U" &&  internalResults[i].marks === "U"){
+                                                    if (rollnoMarksMap.get(internalResults[i].rollno) === "X"){
+                                                        aggregateDetails.marks = "0";
+                                                    } else {
+                                                        aggregateDetails.marks = (parseFloat("0") + parseFloat(rollnoMarksMap.get(internalResults[i].rollno))).toString();
+                                                    } 
+                                                } else if(rollnoMarksMap.get(internalResults[i].rollno) === "U" &&  internalResults[i].marks === "U"){
                                                     aggregateDetails.marks = "U";
                                                 }
 

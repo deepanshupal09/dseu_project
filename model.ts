@@ -394,13 +394,17 @@ export function insertExamRegisterations(registeration: {
         let end:number;
         let academic_year: string;
 
+        
+
         if (registeration.semester % 2 == 0) {
             startYear = endYear - 1;
             academic_year = `${startYear}-${endYear}`;
+            console.log(1);
         } else {
             startYear = endYear;
             end= startYear+1;
             academic_year = `${startYear}-${end}`;
+            console.log(2);
         }
 
         console.log("academic year: ",academic_year);

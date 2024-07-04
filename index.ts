@@ -104,7 +104,7 @@ app.post("/upload", upload.single("image"), async (req: Request, res: Response) 
 app.get("/login", controller.login);
 app.post("/signup", controller.signup);
 app.post("/addUsers", controller.addUsers);
-// app.get("/getUserByRollno", controller.getUserByRollno);
+app.get("/addExamRegisterations", controller.addExamRegisterations);
 app.get("/fetchCoursesBySemester", controller.fetchCoursesBySemester);
 app.get("/fetchCoursesByRollNo", controller.fetchCoursesByRollNo);
 // app.get("/fetchProgramByProgramType", controller.fetchProgramByProgramType);
