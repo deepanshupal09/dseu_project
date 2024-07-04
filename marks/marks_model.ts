@@ -124,6 +124,7 @@ export function fetchStudentDetailsFromInternal(details: { campus: string; progr
             if (error) {
                 reject(error);
             } else {
+                console.log("internal result: ", results.rows)
                 resolve(results);
             }
         });
@@ -153,11 +154,18 @@ export function fetchStudentDetailsFromExternal(details: { campus: string; progr
 export function updateStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
-        // console.log("created: ", details.created_at);
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE internal_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
+            let query = `
+                INSERT INTO internal_marks (rollno, campus, program_type, program, semester, course_code, academic_year, marks, freeze_marks, modified_at)
+                VALUES ('${details.rollno[i]}', '${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.marks[i]}', '${details.freeze_marks}', '${details.modified_at}')
+                ON CONFLICT (rollno, campus, program, semester, course_code, academic_year)
+                DO UPDATE SET
+                    marks = EXCLUDED.marks,
+                    freeze_marks = EXCLUDED.freeze_marks,
+                    modified_at = EXCLUDED.modified_at;
+            `;
 
             console.log("query: ", query);
             pool.query(query, (error, results) => {
@@ -171,17 +179,24 @@ export function updateStudentDetailsFromInternal(details: { campus: string; prog
     });
 }
 
+
 export function updateStudentDetailsFromExternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         console.log("details: ", details);
-        // console.log("created: ", details.created_at);
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE external_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
+            let query = `
+                INSERT INTO external_marks (rollno, campus, program_type, program, semester, course_code, academic_year, marks, freeze_marks, modified_at)
+                VALUES ('${details.rollno[i]}', '${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.marks[i]}', '${details.freeze_marks}', '${details.modified_at}')
+                ON CONFLICT (rollno, campus, program, semester, course_code, academic_year)
+                DO UPDATE SET
+                    marks = EXCLUDED.marks,
+                    freeze_marks = EXCLUDED.freeze_marks,
+                    modified_at = EXCLUDED.modified_at;
+            `;
 
-            // console.log("query:", query);
-
+            console.log("query: ", query);
             pool.query(query, (error, results) => {
                 if (error) {
                     reject(error);
@@ -192,6 +207,7 @@ export function updateStudentDetailsFromExternal(details: { campus: string; prog
         }
     });
 }
+
 
 export function insertStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; course_code: string; academic_year: string; rollno: Array<string>; marks: Array<string>; freeze_marks: boolean; created_at: string; modified_at: string }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
@@ -281,7 +297,15 @@ export function updateStudentDetailsFromAggregate(details: { campus: string; pro
         console.log("modified: ", details.modified_at);
 
         for (let i = 0; i < details.rollno.length; i++) {
-            let query = `UPDATE aggregate_marks SET marks = '${details.marks[i]}', freeze_marks = '${details.freeze_marks}', modified_at = '${details.modified_at}' WHERE rollno = '${details.rollno[i]}' AND campus = '${details.campus}' AND course_code = '${details.course_code}' AND program = '${details.program}' AND semester = ${details.semester} AND program_type = '${details.program_type}' AND academic_year = '${details.academic_year}';`;
+            let query = `
+                INSERT INTO aggregate_marks (rollno, campus, program_type, program, semester, course_code, academic_year, marks, freeze_marks, created_at, modified_at)
+                VALUES ('${details.rollno[i]}', '${details.campus}', '${details.program_type}', '${details.program}', ${details.semester}, '${details.course_code}', '${details.academic_year}', '${details.marks[i]}', '${details.freeze_marks}', '${details.created_at}', '${details.modified_at}')
+                ON CONFLICT (rollno, campus, program, semester, course_code, academic_year)
+                DO UPDATE SET
+                    marks = EXCLUDED.marks,
+                    freeze_marks = EXCLUDED.freeze_marks,
+                    modified_at = EXCLUDED.modified_at;
+            `;
 
             console.log("query:", query);
 
@@ -295,6 +319,7 @@ export function updateStudentDetailsFromAggregate(details: { campus: string; pro
         }
     });
 }
+
 
 export function fetchStudentDetailsFromAggregate(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
@@ -421,7 +446,7 @@ export function fetchMarksAggregateModal(rollno: string, academic_year: string, 
 
 export function fetchStudentsCourseCodeModal(course_code: string, campus: string, program_type: string, program: string, semester: string, academic_year: string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        pool.query(fetchUsersByCourseCode, [course_code, campus, program_type, program, semester, academic_year], (error, results) => {
+        pool.query(fetchUsersByCourseCode, [course_code, campus, program_type, program, academic_year], (error, results) => {
             if (error) {
                 console.log("error: ", error);
                 reject(error);
