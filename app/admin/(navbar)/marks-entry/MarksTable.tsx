@@ -183,8 +183,6 @@ export default function MarksTable({
     }
   }
 
-
-
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
@@ -327,7 +325,6 @@ export default function MarksTable({
     setPage(0);
   };
 
-  
   const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
     const updatedMarks = [...marks];
     console.log("updated initial: ", formattedStudentlist, "students: ", marks);
@@ -342,36 +339,29 @@ export default function MarksTable({
         });
       }
     });
-    
+
     updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
-    updatedMarks.map((student,index:number) => {
-      student.sno = index+1;
-    })
+    updatedMarks.map((student, index: number) => {
+      student.sno = index + 1;
+    });
     console.log("updated: ", updatedMarks);
     return updatedMarks;
   };
 
-   async function fetchStudentList(): Promise<StudentType[]> {
-    const res = await fetchStudentByCourseCode(
-        token,
-        course_code,
-        campus,
-        program_type,
-        program,
-        semester,
-        academic_year)
+  async function fetchStudentList(): Promise<StudentType[]> {
+    const res = await fetchStudentByCourseCode(token, course_code, campus, program_type, program, semester, academic_year);
 
-      const formattedStudentList: StudentType[] = res.map((student:any, index: number) => ({
-        sno: index + 1,
-        rollno: student.rollno,
-        name: student.name,
-        marks: "",
-      }));
-      return formattedStudentList;
+    const formattedStudentList: StudentType[] = res.map((student: any, index: number) => ({
+      sno: index + 1,
+      rollno: student.rollno,
+      name: student.name,
+      marks: "",
+    }));
+    return formattedStudentList;
   }
 
-  function convertToStudentType(students: any):StudentType[] {
-    const formattedStudentList: StudentType[] = students.map((student:any, index: number) => ({
+  function convertToStudentType(students: any): StudentType[] {
+    const formattedStudentList: StudentType[] = students.map((student: any, index: number) => ({
       sno: index + 1,
       rollno: student.rollno,
       name: student.name,
@@ -379,7 +369,6 @@ export default function MarksTable({
     }));
     return formattedStudentList;
   }
-
 
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
@@ -395,11 +384,11 @@ export default function MarksTable({
 
     const formattedStudentList = await fetchStudentList();
 
-    let mergedInternal = mergeStudentLists(formattedStudentList,internalMarks);
-    let mergedExternal = mergeStudentLists(formattedStudentList,externalMarks);
-    let mergedAggregate = mergeStudentLists(formattedStudentList,aggregateMarks); 
-    
-    console.log("merged internal,external,aggregate", mergedInternal,mergedExternal, mergedAggregate)
+    let mergedInternal = mergeStudentLists(formattedStudentList, internalMarks);
+    let mergedExternal = mergeStudentLists(formattedStudentList, externalMarks);
+    let mergedAggregate = mergeStudentLists(formattedStudentList, aggregateMarks);
+
+    console.log("merged internal,external,aggregate", mergedInternal, mergedExternal, mergedAggregate);
 
     const details = {
       campus: campus,
@@ -453,9 +442,9 @@ export default function MarksTable({
   }
 
   useEffect(() => {
-    console.log("students 1: ", students)
-    setStudentList(students)
-  },[students])
+    console.log("students 1: ", students);
+    setStudentList(students);
+  }, [students]);
 
   async function handleFreezeMarks() {
     let errors: Error[] = [];
@@ -680,7 +669,10 @@ export default function MarksTable({
         {!freeze && marksControl && !aggregate ? (
           <>
             <div className="">
-            <span className="font-semibold text-lg"> Use {"X"} for absentees and {"U"} for unfair means. </span>            </div>
+              <span className="font-semibold text-lg">
+                Use {'"X"'} for absentees and {'"U"'} for unfair means.{" "}
+              </span>
+            </div>
             <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
               Actions
             </Button>
@@ -692,7 +684,10 @@ export default function MarksTable({
                 
               Please enter
               </span> */}
-              <span className="font-semibold text-lg"> Use {"\"X\""} for absentees and {"\"U\""} for unfair means. </span>
+              <span className="font-semibold text-lg">
+                {" "}
+                Use {'"X"'} for absentees and {'"U"'} for unfair means.{" "}
+              </span>
             </div>
             <div className="space-x-3">
               <GeneratePDF
