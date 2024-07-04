@@ -355,6 +355,7 @@ export default function Marks() {
               );
             }
             // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
+            console.log("marks: ", marks)
 
             setStudentList(mergeStudentLists(formattedStudentList, marks));
           }
@@ -455,11 +456,13 @@ export default function Marks() {
 
       setLoading(false);
 
+
       if (!res || res.length === 0) {
         return [];
       }
 
       setFreeze(res[0].freeze_marks);
+      console.log("first: ", res)
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -474,9 +477,9 @@ export default function Marks() {
     }
   }
 
-  const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
+   const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
     const updatedMarks = [...marks];
-    console.log("studentList: ", formattedStudentlist, "students: ", marks);
+    console.log("updated initial: ", formattedStudentlist, "students: ", marks);
 
     formattedStudentlist.forEach((student) => {
       const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
@@ -484,15 +487,20 @@ export default function Marks() {
       if (!isStudentInMarks) {
         updatedMarks.push({
           ...student,
+          marks: "",
         });
       }
     });
-
+    
     updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+    updatedMarks.map((student,index:number) => {
+      student.sno = index+1;
+    })
+    console.log("updated: ", updatedMarks);
     return updatedMarks;
   };
 
-  async function fetchStudentList(): Promise<StudentType[]> {
+   async function fetchStudentList(): Promise<StudentType[]> {
     const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
     if (course_code) {
       const res = await fetchStudentByCourseCode(
@@ -528,6 +536,7 @@ export default function Marks() {
         fetchStudentList()
           .then((formattedStudentList) => {
             let temp = mergeStudentLists(formattedStudentList, students);
+            console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp)
             setStudentList(temp);
           })
           .catch((error) => {});

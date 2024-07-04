@@ -20,6 +20,7 @@ import {
   fetchAggregateMarks,
   fetchExternalMarks,
   fetchInternalMarks,
+  fetchStudentByCourseCode,
   updateAggregateMarks,
   updateExternalMarks,
   updateInternalMarks,
@@ -326,12 +327,79 @@ export default function MarksTable({
     setPage(0);
   };
 
+  
+  const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
+    const updatedMarks = [...marks];
+    console.log("updated initial: ", formattedStudentlist, "students: ", marks);
+
+    formattedStudentlist.forEach((student) => {
+      const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
+
+      if (!isStudentInMarks) {
+        updatedMarks.push({
+          ...student,
+          marks: "",
+        });
+      }
+    });
+    
+    updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+    updatedMarks.map((student,index:number) => {
+      student.sno = index+1;
+    })
+    console.log("updated: ", updatedMarks);
+    return updatedMarks;
+  };
+
+   async function fetchStudentList(): Promise<StudentType[]> {
+    const res = await fetchStudentByCourseCode(
+        token,
+        course_code,
+        campus,
+        program_type,
+        program,
+        semester,
+        academic_year)
+
+      const formattedStudentList: StudentType[] = res.map((student:any, index: number) => ({
+        sno: index + 1,
+        rollno: student.rollno,
+        name: student.name,
+        marks: "",
+      }));
+      return formattedStudentList;
+  }
+
+  function convertToStudentType(students: any):StudentType[] {
+    const formattedStudentList: StudentType[] = students.map((student:any, index: number) => ({
+      sno: index + 1,
+      rollno: student.rollno,
+      name: student.name,
+      marks: student.marks,
+    }));
+    return formattedStudentList;
+  }
+
+
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
     setLoading(true);
+
     const internal = await fetchStudentMarks(1, 0, rollno);
     const external = await fetchStudentMarks(1, 1, rollno);
     const aggregate = await fetchStudentMarks(2, 0, rollno);
+
+    let internalMarks = convertToStudentType(internal);
+    let externalMarks = convertToStudentType(external);
+    let aggregateMarks = convertToStudentType(aggregate);
+
+    const formattedStudentList = await fetchStudentList();
+
+    let mergedInternal = mergeStudentLists(formattedStudentList,internalMarks);
+    let mergedExternal = mergeStudentLists(formattedStudentList,externalMarks);
+    let mergedAggregate = mergeStudentLists(formattedStudentList,aggregateMarks); 
+    
+    console.log("merged internal,external,aggregate", mergedInternal,mergedExternal, mergedAggregate)
 
     const details = {
       campus: campus,
@@ -346,15 +414,15 @@ export default function MarksTable({
 
     const detailsInternal = {
       ...details,
-      marks: internal.map((internal_marks: any) => internal_marks.marks),
+      marks: mergedInternal.map((internal_marks: any) => internal_marks.marks),
     };
     const detailsExternal = {
       ...details,
-      marks: external.map((external_marks: any) => external_marks.marks),
+      marks: mergedExternal.map((external_marks: any) => external_marks.marks),
     };
     const detailsAggregate = {
       ...details,
-      marks: aggregate.map((aggregate_marks: any) => aggregate_marks.marks),
+      marks: mergedAggregate.map((aggregate_marks: any) => aggregate_marks.marks),
     };
 
     try {
@@ -383,6 +451,11 @@ export default function MarksTable({
       router.refresh();
     }
   }
+
+  useEffect(() => {
+    console.log("students 1: ", students)
+    setStudentList(students)
+  },[students])
 
   async function handleFreezeMarks() {
     let errors: Error[] = [];
@@ -547,12 +620,12 @@ export default function MarksTable({
               </ListItemIcon>
               <ListItemText primary="Clear" />
             </MenuItem>
-            {/* <MenuItem disabled={freeze} onClick={downloadTemplate}>
+            <MenuItem disabled={freeze} onClick={downloadTemplate}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Download template" />
-            </MenuItem> */}
+            </MenuItem>
             <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
                 {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <Save fontSize="small" />}
@@ -568,7 +641,7 @@ export default function MarksTable({
           </Menu>
         )}
       </div>
-      {/* {!freeze && marksControl && (
+      {!freeze && marksControl && (
         <div
           className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
             dragActive ? "bg-slate-100" : ""
@@ -602,7 +675,7 @@ export default function MarksTable({
             </div>
           )}
         </div>
-      )} */}
+      )}
       <div className="w-full flex justify-between ">
         {!freeze && marksControl && !aggregate ? (
           <>
