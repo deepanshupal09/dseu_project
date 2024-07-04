@@ -388,6 +388,7 @@ export function insertExamRegisterations(registeration: {
     return new Promise((resolve, reject) => {
 
         const last_modified: Date = new Date();
+        console.log("regist",registeration)
 
         const endYear: number = last_modified.getFullYear();
         let startYear: number;
@@ -397,10 +398,12 @@ export function insertExamRegisterations(registeration: {
         
 
         if (registeration.semester % 2 == 0) {
+            console.log(1, registeration.semester)
             startYear = endYear - 1;
             academic_year = `${startYear}-${endYear}`;
             console.log(1);
         } else {
+            console.log(2, registeration.semester);
             startYear = endYear;
             end= startYear+1;
             academic_year = `${startYear}-${end}`;
