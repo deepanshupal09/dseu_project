@@ -316,7 +316,7 @@ const GeneratePDF: React.FC<ResultDocumentProps> = ({
                               <Text style={styles.bold}>Course Name: </Text>
                             </View>
                             <View>
-                              <Text>{courseName}</Text>
+                              <Text>{courseName}{"("}Bridge Course{")"}</Text>
                             </View>
                           </View>
                         </View>
