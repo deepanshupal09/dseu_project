@@ -895,17 +895,14 @@ export default function Marks() {
               );
 
               if (students && students?.length > 0) {
-                fetchStudentList()
-                  .then((formattedStudentList) => {
-                    let temp = mergeStudentLists(formattedStudentList, students);
+               
+                    let temp = mergeStudentLists(studentList, students);
                     setStudentList(temp);
-                  })
-                  .catch((error) => {});
               }
               setOpen(false);
             }}
             color="primary"
-          >
+            >
             Continuous and End of Semester Assessment
           </Button>
           <Button
@@ -916,19 +913,18 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-
+              console.log("here")
+              
               if (students && students?.length > 0) {
-                fetchStudentList()
-                  .then((formattedStudentList) => {
-                    let temp = mergeStudentLists(formattedStudentList, students);
+                console.log("here 1")
+                    let temp = mergeStudentLists(studentList, students);
+                    console.log("here 2: ", temp)
                     setStudentList(temp);
-                  })
-                  .catch((error) => {});
               }
               setOpen(false);
             }}
             color="primary"
-          >
+            >
             Continuous Assessment
           </Button>
         </DialogActions>
