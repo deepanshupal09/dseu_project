@@ -8,7 +8,7 @@ import { Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material
 import { fetchUserByRollno, fetchMarksController } from "../../actions/api";
 import ReactToPrint from "react-to-print";
 import logo from "../../images/dseu.png";
-import result_info from "../../images/result_info.png";
+import result_info_updated from "../../images/result_info_updated.png";
 import Image from "next/image";
 import { SelectChangeEvent } from "@mui/material/Select"; 
 
@@ -38,6 +38,15 @@ interface AggregateMark {
   credit_earned: number;
 }
 
+interface BridgeMark {
+  course_code: string;
+  course_name: string;
+  credit: number;
+  marks: string;
+  grade: string;
+  grade_point: string;
+}
+
 interface StudentData {
   rollno: string;
   academic_year: string;
@@ -48,6 +57,7 @@ interface StudentData {
   internal_marks: InternalMark[];
   external_marks: ExternalMark[];
   aggregate_marks: AggregateMark[];
+  bridge_marks: BridgeMark[];
   sgpa_result: number;
   Credits_earned: string;
   sgpa_grade: string;
@@ -120,11 +130,11 @@ export default function Home() {
 
   const renderTableRows = () => {
     if (!studentData) return null;
-
-    return studentData.aggregate_marks.map((aggregateMark, index) => {
+  
+    const normalCourseRows = studentData.aggregate_marks.map((aggregateMark, index) => {
       const internalMark = studentData.internal_marks.find(mark => mark.course_code === aggregateMark.course_code);
       const externalMark = studentData.external_marks.find(mark => mark.course_code === aggregateMark.course_code);
-
+  
       return (
         <tr key={index}>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{index + 1}</td>
@@ -139,9 +149,23 @@ export default function Home() {
         </tr>
       );
     });
+  
+    const bridgeCourseRows = studentData.bridge_marks?.map((bridgeMark, index) => (
+      <tr key={`bridge-${index}`}>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">{studentData.aggregate_marks.length + index + 1}</td>
+        <td className="px-2 py-3 border border-black text-left text-xs font-medium">{bridgeMark.course_code}</td>
+        <td className="px-2 py-3 border border-black text-left text-xs font-medium">{bridgeMark.course_name}</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade}</td>
+        <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade_point}</td>
+      </tr>
+    )) || [];
+  
+    return [...normalCourseRows, ...bridgeCourseRows];
   };
-
-
   const renderParentInfo = () => {
     if (user?.father && user?.mother) {
       return (
@@ -395,7 +419,7 @@ export default function Home() {
                       <tbody className="bg-white">
                         <tr className="border border-black">
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">{studentData.Credits_earned}</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">26.5</td>
+                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">{studentData.sgpa_result.toPrecision(3)}</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">{studentData.sgpa_grade}</td>
                           <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
@@ -407,10 +431,9 @@ export default function Home() {
                     <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
                   </div>
                   
-                  {/* Uncomment the below section if you need to include an image */}
-                  {/* <div className="print-only hidden overflow-y-auto h-auto">
-                    <Image src={result_info} alt="Grade Scheme used for calculating result." layout="responsive" objectFit="contain" />
-                  </div> */}
+                   <div className="print-only overflow-y-auto h-auto break-before-page break-after-avoid">
+                    <Image src={result_info_updated} alt="Grade Scheme used for calculating result." layout="responsive" objectFit="contain" />
+                  </div> 
                 </div>
               </div>
             </div>
