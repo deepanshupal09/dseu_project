@@ -30,13 +30,19 @@ export const fetchMarkControl:string = `
 `;
 
 export const fetchMarkControlDetailsQuery:string = `
-  SELECT DISTINCT campus, program, semester, marks_control FROM departments; 
+  SELECT DISTINCT campus, program, semester, marks_control, result_control FROM departments; 
 `;
 
 
 export const toggleMarkControl:string =`
   UPDATE departments SET marks_control=$4 WHERE campus=$1 AND program=$2 AND semester=$3;
 `;
+
+export const toggleResultControl:string =`
+  UPDATE departments SET result_control=$4 WHERE campus=$1 AND program=$2 AND semester=$3;
+`;
+
+
 
 export const fetchMarksInternal: string = `
   SELECT DISTINCT im.course_code, im.marks, sc.credit, c.course_name

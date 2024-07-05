@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl } from "./marks_queries";
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
@@ -396,6 +396,29 @@ export function toggleMarksControlModal(
     return new Promise((resolve, reject) => {
         details.map((detail) => {
             pool.query(toggleMarkControl, [detail.campus, detail.program, detail.semester, detail.marks_control], (error, results) => {
+                if (error) {
+                    console.log("error: ", error);
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    });
+}
+
+export function toggleResultControlModal(
+    details: {
+        campus: string;
+        program: string;
+        semester: number;
+        result_control: boolean;
+    }[]
+): Promise<QueryResult<any>> {
+    console.log(124, details);
+    return new Promise((resolve, reject) => {
+        details.map((detail) => {
+            pool.query(toggleResultControl, [detail.campus, detail.program, detail.semester, detail.result_control], (error, results) => {
                 if (error) {
                     console.log("error: ", error);
                     reject(error);

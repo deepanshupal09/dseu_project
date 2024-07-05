@@ -39,5 +39,6 @@ router.post("/insertBridgeDetails", marks_controller.insertBridgeDetails);
 router.post("/fetchBridgeDetails", marks_controller.fetchBridgeDetails);
 router.post("/deleteBridgeDetails", marks_controller.deleteBridgeDetails);
 router.get("/fetchMarksDetailsController",marks_controller.fetchMarksDetailsController);
+router.post("/toggleResultControlController",marks_controller.toggleResultControlController);
 
 export default router;

@@ -19,6 +19,7 @@ import {
     fetchBridgeDetailsService,
     deleteBridgeDetailsService,
     fetchMarksDetailsService,
+    toggleResultControlService,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -170,6 +171,22 @@ const toggleMarksControlController = (req: Request, res: Response) => {
         const details = req.body;
         // console.log("789",details);
         toggleMarksControlService(details)
+            .then((results) => {
+                res.status(200).send({ message: "Marks control toggled!" });
+            })
+            .catch((error) => {
+                res.status(500).send({ message: "internal server error at toggle marks control 1" });
+            });
+    } catch (error) {
+        res.send({ message: "internal server error at toggle marks control 2" });
+    }
+};
+
+const toggleResultControlController = (req: Request, res: Response) => {
+    try {
+        const details = req.body;
+        // console.log("789",details);
+        toggleResultControlService(details)
             .then((results) => {
                 res.status(200).send({ message: "Marks control toggled!" });
             })
@@ -366,5 +383,6 @@ export {
     insertBridgeDetails,
     fetchBridgeDetails,
     deleteBridgeDetails,
-    fetchMarksDetailsController
+    fetchMarksDetailsController,
+    toggleResultControlController
 };

@@ -27,7 +27,8 @@ import {
     fetchBridgeDetailsModel,
     deleteBridgeDetailsModel,
     fetchMarksDetailsModal,
-    fetchBridgeStudentDetailsModal
+    fetchBridgeStudentDetailsModal,
+    toggleResultControlModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -521,6 +522,20 @@ export function toggleMarksControlService(details: any): Promise<any> {
     // console.log(890,details);
     return new Promise((resolve, reject) => {
         toggleMarksControlModal(details)
+            .then((results) => {
+                resolve(results.rows);
+            })
+            .catch((error) => {
+                console.log("error: ", error);
+                reject(error);
+            });
+    });
+}
+
+export function toggleResultControlService(details: any): Promise<any> {
+    // console.log(890,details);
+    return new Promise((resolve, reject) => {
+        toggleResultControlModal(details)
             .then((results) => {
                 resolve(results.rows);
             })
