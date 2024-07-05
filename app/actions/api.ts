@@ -994,7 +994,7 @@ export async function checkDepartment(token: string, rollno: string, depEmail: s
 }
 export async function insertIntoBridgeMarks(
   token: string,
-  listOfStudents: { rollno: string; course_code: string; marks: string; academic_year: string; name: string }[]
+  listOfStudents: { rollno: string; course_code: string; marks: string; academic_year: string; name: string, freeze: boolean }[]
 ) {
   try {
     const response = await fetch(`${process.env.BACKEND_URL}/api/admin/insertBridgeDetails`, {
@@ -1075,6 +1075,53 @@ export async function fetchMarksController(academicYear:string, semester:string,
       return data;
   } catch (error) {
       throw error;
+  }
+}
+export async function fetchMarksDetailsController(token: string){
+  try {
+    console.log("first")
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarksDetailsController`, {
+          method: "GET",
+          mode: "cors",
+          headers: {
+              token : token,
+              "Content-Type": "application/json",
+          },
+      });
+      
+      if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        
+        const data = await response.json(); 
+        // console.log("res: ", data)
+      return data;
+  } catch (error) {
+      throw error;
+  }
+}
+
+export async function fetchToggleResult(
+  body: { campus: string; program: string; semester: number; result_control: boolean }[],
+  token: string
+) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/toggleResultControlController`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
   }
 }
 

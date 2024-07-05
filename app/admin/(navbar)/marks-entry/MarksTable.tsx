@@ -20,6 +20,7 @@ import {
   fetchAggregateMarks,
   fetchExternalMarks,
   fetchInternalMarks,
+  fetchStudentByCourseCode,
   updateAggregateMarks,
   updateExternalMarks,
   updateInternalMarks,
@@ -27,6 +28,7 @@ import {
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 import logo from "@/app/images/dseu.png";
+import GeneratePDF from "./GeneratePDF";
 
 interface FileData {
   fileName: string;
@@ -64,8 +66,10 @@ type propsType = {
   setGlobalFreeze: React.Dispatch<React.SetStateAction<boolean>>;
   setSave: React.Dispatch<React.SetStateAction<boolean>>;
   setValue: React.Dispatch<React.SetStateAction<number>>;
+  aggregate: boolean;
   superAdmin: boolean;
   marksControl: boolean;
+  course: string;
 };
 
 export default function MarksTable({
@@ -83,9 +87,11 @@ export default function MarksTable({
   setFreeze,
   setGlobalFreeze,
   setSave,
+  course,
+  aggregate,
   setValue,
   superAdmin,
-  marksControl
+  marksControl,
 }: propsType) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -99,6 +105,22 @@ export default function MarksTable({
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const generateMarksArray = (
+    studentList: StudentType[]
+  ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
+    console.log(studentList);
+
+    const marksArray = studentList.map((student) => ({
+      sno: student.sno,
+      rollno: student.rollno,
+      name: student.name,
+      marks: student.marks,
+      reappear: "Regular",
+    }));
+
+    // console.log("converted: ", marksArray);
+    return marksArray;
+  };
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -161,9 +183,7 @@ export default function MarksTable({
     }
   }
 
-  useEffect(() => {
-    setStudentList(students);
-  }, [students]);
+
 
   const handleMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -307,12 +327,79 @@ export default function MarksTable({
     setPage(0);
   };
 
+  
+  const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
+    const updatedMarks = [...marks];
+    console.log("updated initial: ", formattedStudentlist, "students: ", marks);
+
+    formattedStudentlist.forEach((student) => {
+      const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
+
+      if (!isStudentInMarks) {
+        updatedMarks.push({
+          ...student,
+          marks: "",
+        });
+      }
+    });
+    
+    updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
+    updatedMarks.map((student,index:number) => {
+      student.sno = index+1;
+    })
+    console.log("updated: ", updatedMarks);
+    return updatedMarks;
+  };
+
+   async function fetchStudentList(): Promise<StudentType[]> {
+    const res = await fetchStudentByCourseCode(
+        token,
+        course_code,
+        campus,
+        program_type,
+        program,
+        semester,
+        academic_year)
+
+      const formattedStudentList: StudentType[] = res.map((student:any, index: number) => ({
+        sno: index + 1,
+        rollno: student.rollno,
+        name: student.name,
+        marks: "",
+      }));
+      return formattedStudentList;
+  }
+
+  function convertToStudentType(students: any):StudentType[] {
+    const formattedStudentList: StudentType[] = students.map((student:any, index: number) => ({
+      sno: index + 1,
+      rollno: student.rollno,
+      name: student.name,
+      marks: student.marks,
+    }));
+    return formattedStudentList;
+  }
+
+
   async function handleUnFreeze() {
     const rollno = studentList.map((student) => student.rollno);
     setLoading(true);
+
     const internal = await fetchStudentMarks(1, 0, rollno);
     const external = await fetchStudentMarks(1, 1, rollno);
     const aggregate = await fetchStudentMarks(2, 0, rollno);
+
+    let internalMarks = convertToStudentType(internal);
+    let externalMarks = convertToStudentType(external);
+    let aggregateMarks = convertToStudentType(aggregate);
+
+    const formattedStudentList = await fetchStudentList();
+
+    let mergedInternal = mergeStudentLists(formattedStudentList,internalMarks);
+    let mergedExternal = mergeStudentLists(formattedStudentList,externalMarks);
+    let mergedAggregate = mergeStudentLists(formattedStudentList,aggregateMarks); 
+    
+    console.log("merged internal,external,aggregate", mergedInternal,mergedExternal, mergedAggregate)
 
     const details = {
       campus: campus,
@@ -327,15 +414,15 @@ export default function MarksTable({
 
     const detailsInternal = {
       ...details,
-      marks: internal.map((internal_marks: any) => internal_marks.marks),
+      marks: mergedInternal.map((internal_marks: any) => internal_marks.marks),
     };
     const detailsExternal = {
       ...details,
-      marks: external.map((external_marks: any) => external_marks.marks),
+      marks: mergedExternal.map((external_marks: any) => external_marks.marks),
     };
     const detailsAggregate = {
       ...details,
-      marks: aggregate.map((aggregate_marks: any) => aggregate_marks.marks),
+      marks: mergedAggregate.map((aggregate_marks: any) => aggregate_marks.marks),
     };
 
     try {
@@ -365,24 +452,35 @@ export default function MarksTable({
     }
   }
 
+  useEffect(() => {
+    console.log("students 1: ", students)
+    setStudentList(students)
+  },[students])
+
   async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
-      if (isNaN(parseInt(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
+      console.log("error check: ", student, (parseInt(student.marks)))
+      if (isNaN(Number(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
+        console.log(1)
         if (student.marks?.trim() === "") {
+          console.log(2)
           errors.push({ ...student, error: `Marks can not be empty` });
         } else {
+          console.log(3)
           errors.push({
             ...student,
             error: `Marks can not be '${student.marks}'`,
           });
         }
-      } else if (parseInt(student.marks) > maxMarks) {
+      } else if (Number(student.marks) > maxMarks) {
+        console.log(4)
         errors.push({
           ...student,
           error: `Marks can not be larger than ${maxMarks}!`,
         });
-      } else if (parseInt(student.marks) < 0) {
+      } else if (Number(student.marks) < 0) {
+        console.log(5)
         errors.push({ ...student, error: "Marks can not be negative!" });
       }
     });
@@ -528,12 +626,12 @@ export default function MarksTable({
               </ListItemIcon>
               <ListItemText primary="Clear" />
             </MenuItem>
-            <MenuItem disabled={freeze} onClick={downloadTemplate}>
+            {/* <MenuItem disabled={freeze} onClick={downloadTemplate}>
               <ListItemIcon>
                 <Download fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Download template" />
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem disabled={loading || freeze} onClick={handleSaveChanges}>
               <ListItemIcon>
                 {loading ? <CircularProgress className="text-gray-400  " size={"1.2rem"} /> : <Save fontSize="small" />}
@@ -549,7 +647,7 @@ export default function MarksTable({
           </Menu>
         )}
       </div>
-      {!freeze && (
+      {/* {!freeze && marksControl && (
         <div
           className={`w-full h-[25vh] bordered rounded-3xl space-y-3 text-sm font-normal flex flex-col justify-center items-center ${
             dragActive ? "bg-slate-100" : ""
@@ -583,32 +681,44 @@ export default function MarksTable({
             </div>
           )}
         </div>
-      )}
-      <div className="w-full flex justify-end">
-        {!freeze ? (
-          <Button endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
-            Actions
-          </Button>
+      )} */}
+      <div className="w-full flex justify-between ">
+        {!freeze && marksControl && !aggregate ? (
+          <>
+            <div className="">
+            <span className="font-semibold text-lg">Use {"\"X\""} for absentees and {"\"U\""} for unfair means. </span>            </div>
+            <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
+              Actions
+            </Button>
+          </>
         ) : (
-          <div className="flex gap-x-3">
-            {/* <DownloadPDFButton
-              academicYear={academic_year}
-              campusName={campus}
-              courseName={"course name"}
-              course_code={course_code}
-              logo={logo.src}
-              maximumMarks={maxMarks.toString()}
-              programName={program}
-              semester={semester}
-              sheet_type={maxMarks}
-            /> */}
-            {superAdmin && (
-              <>
-                <Button variant="contained" onClick={handleUnFreeze}>
-                  Unfreeze
-                </Button>
-              </>
-            )}
+          <div className="flex w-full  justify-between gap-x-3">
+            <div>
+              {/* <span className="font-normal text-lg">
+                
+              Please enter
+              </span> */}
+              <span className="font-semibold text-lg"> Use {"\"X\""} for absentees and {"\"U\""} for unfair means. </span>
+            </div>
+            <div className="space-x-3">
+              <GeneratePDF
+                maxMarks={maxMarks.toString()}
+                campus={campus}
+                program={program}
+                semester={semester}
+                academicYear={academic_year}
+                courseCode={course_code}
+                courseName={course}
+                marks={generateMarksArray(studentList)}
+              />
+              {superAdmin && (
+                <>
+                  <Button variant="contained" onClick={handleUnFreeze}>
+                    Unfreeze
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -636,7 +746,7 @@ export default function MarksTable({
                           <TableCell key={column.id} align={column.align}>
                             {column.id === "marks" ? (
                               <>
-                                {!freeze && marksControl ? (
+                                {!freeze && marksControl && !aggregate ? (
                                   <TextField
                                     value={value}
                                     disabled={freeze}

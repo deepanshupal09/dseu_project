@@ -60,4 +60,16 @@
   cursor: no-drop;
 }
 
+/* ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px
+}
+::-webkit-scrollbar-track-piece {
+background: #eee
+} 
+::-webkit-scrollbar-thumb {
+background: #ccc
+} 
+ */
+
 
