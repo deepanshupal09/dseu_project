@@ -560,7 +560,7 @@ export function fetchCourseDetails( courseDetails:{
             SELECT sc.course_code, sc.course_type, sc.credit, c.course_name,sc.semester
             FROM semester_course sc
             JOIN courses c ON sc.course_code = c.course_code
-            WHERE sc.campus='${courseDetails.campus}' AND sc.course_code IN (${courseDetails.coursecode.map(coursecode => `'${coursecode}'`).join(", ")})
+            WHERE sc.campus='${courseDetails.campus}' AND sc.program='${courseDetails.program}' AND sc.course_code IN (${courseDetails.coursecode.map(coursecode => `'${coursecode}'`).join(", ")})
         `;
         console.log("query:",query);
         pool.query(query, (error, results) => {
