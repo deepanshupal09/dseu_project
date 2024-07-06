@@ -564,7 +564,7 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
     return fetchResultControlModal(rollno).then((resultControl) => {
         console.log("yo :", resultControl.rows[0].result_control);
         if (!resultControl.rows[0].result_control){
-            return Promise.resolve("Result not available!");
+            return Promise.resolve(resultControl.rows[0].result_control);
         } else {
             return new Promise((resolve, reject) => {
                 Promise.all([
