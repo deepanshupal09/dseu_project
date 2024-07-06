@@ -29,6 +29,12 @@ export const fetchMarkControl:string = `
   SELECT marks_control FROM departments WHERE campus=$1 AND program_type=$2 AND program=$3 AND semester=$4; 
 `;
 
+export const fetchResultControlQuery:string = `
+  SELECT d.result_control FROM departments d
+  JOIN Users u ON d.campus = u.campus AND d.program = u.program AND d.semester = u.semester
+  WHERE u.rollno = $1; 
+`;
+
 export const fetchMarkControlDetailsQuery:string = `
   SELECT DISTINCT campus, program, semester, marks_control, result_control FROM departments; 
 `;
