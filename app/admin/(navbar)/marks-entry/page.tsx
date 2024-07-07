@@ -22,6 +22,7 @@ import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { ProgramListByTypeType, TransformedType, transformData, useData } from "@/contexts/DataContext";
 import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -149,7 +150,7 @@ export default function Marks() {
   const [allMarksControl, setAllMarksControl] = useState<marksControlType[]>([]);
   const [marksControl, setMarksControl] = useState(false);
 
-  const academicYear: string[] = ["2023-2024"];
+  const academicYear: string[] = ["2023-2024","2024-2025"];
 
   useEffect(() => {
     const unloadCallback = (event: any) => {
@@ -331,34 +332,40 @@ export default function Marks() {
           }
 
           const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
+          console.log("agg freeze, ", freezeStatus.aggFreeze, "hello ",freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)
           setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
           setGlobalFreeze(freezeStatus.aggFreeze);
-          if (!(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)) {
-            setOpen(true);
+          if(!marksControl) {
             setStudentList(formattedStudentList);
           } else {
-            // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
-            let marks;
-            if (freezeStatus.internalFreeze || freezeStatus.externalFreeze) {
-              setSubjectType(1);
-              marks = await fetchStudentMarks(
-                1,
-                0,
-                formattedStudentList.map((student) => student.rollno)
-              );
+            if (!(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)) {
+              setOpen(true);
+              setStudentList(formattedStudentList);
             } else {
-              setSubjectType(2);
-              marks = await fetchStudentMarks(
-                2,
-                0,
-                formattedStudentList.map((student) => student.rollno)
-              );
+              // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
+              let marks;
+              if (freezeStatus.internalFreeze || freezeStatus.externalFreeze) {
+                setSubjectType(1);
+                marks = await fetchStudentMarks(
+                  1,
+                  0,
+                  formattedStudentList.map((student) => student.rollno)
+                );
+              } else {
+                setSubjectType(2);
+                marks = await fetchStudentMarks(
+                  2,
+                  0,
+                  formattedStudentList.map((student) => student.rollno)
+                );
+              }
+              // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
+              console.log("marks: ", marks)
+  
+              setStudentList(mergeStudentLists(formattedStudentList, marks));
             }
-            // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
-            console.log("marks: ", marks)
-
-            setStudentList(mergeStudentLists(formattedStudentList, marks));
           }
+
           setLoading(false);
           // if (res.length > 0) {
           // }
@@ -402,15 +409,20 @@ export default function Marks() {
       internalFreeze,
       externalFreeze = false;
 
-    if (agg && agg.length > 0) {
+    if (agg && agg.length > 0 && agg[0].freeze_marks !== undefined) {
       aggFreeze = agg[0].freeze_marks;
     }
-    if (internal && internal.length > 0) {
+    if (internal && internal.length > 0 && internal[0].freeze_marks !== undefined) {
       internalFreeze = internal[0].freeze_marks;
     }
-    if (external && external.length > 0) {
+    if (external && external.length > 0 && external[0].freeze_marks !== undefined) {
       externalFreeze = external[0].freeze_marks;
     }
+    if (aggFreeze === undefined) aggFreeze = false;
+
+    if (externalFreeze === undefined) externalFreeze = false;
+
+    if (internalFreeze === undefined) internalFreeze = false;
     console.log("freeze statuses: ", aggFreeze, internalFreeze, externalFreeze);
 
     return { internalFreeze: internalFreeze, externalFreeze: externalFreeze, aggFreeze: aggFreeze };
@@ -734,6 +746,7 @@ export default function Marks() {
           <div className="text-2xl font-medium">
             {selectedAcademicYear === "" && "No Course Selected"}
             {selectedAcademicYear !== "" && studentList.length === 0 && "No Students Available "}
+            {selectedAcademicYear !== "" && !marksControl && <Alert className="my-4 " severity="error">Marks entry is closed for this course.</Alert>}            
             {selectedAcademicYear !== "" && studentList.length > 0 && (
               <div className="space-y-5 px-2">
                 <div className="space-y-4">

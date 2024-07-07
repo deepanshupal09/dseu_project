@@ -618,12 +618,12 @@ export async function deleteExamRegistration(rollno: string, token: string) {
   }
 }
 export async function fetchUpdateExamControl(
-  body: {
+  body: {users: {
     campus: string;
     program: string;
     semester: number;
     exam_control: boolean;
-  }[],
+  }[], email_control: boolean},
   token: string
 ) {
   try {

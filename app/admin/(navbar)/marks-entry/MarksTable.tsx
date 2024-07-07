@@ -686,7 +686,7 @@ export default function MarksTable({
         {!freeze && marksControl && !aggregate ? (
           <>
             <div className="">
-            <span className="font-semibold text-lg">Use {"\"X\""} for absentees and {"\"U\""} for unfair means. </span>            </div>
+            <span className="font-semibold text-lg">Use {"\"X\""} for absentee and {"\"U\""} for unfair means. </span>            </div>
             <Button className="" endIcon={<ArrowDropDown className="scale-125" />} onClick={handleMenuOpen}>
               Actions
             </Button>
@@ -698,7 +698,7 @@ export default function MarksTable({
                 
               Please enter
               </span> */}
-              <span className="font-semibold text-lg"> Use {"\"X\""} for absentees and {"\"U\""} for unfair means. </span>
+              <span className="font-semibold text-lg"> Use {"\"X\""} for absentee and {"\"U\""} for unfair means. </span>
             </div>
             <div className="space-x-3">
               <GeneratePDF
@@ -711,7 +711,7 @@ export default function MarksTable({
                 courseName={course}
                 marks={generateMarksArray(studentList)}
               />
-              {superAdmin && (
+              {superAdmin && marksControl && (
                 <>
                   <Button variant="contained" onClick={handleUnFreeze}>
                     Unfreeze
