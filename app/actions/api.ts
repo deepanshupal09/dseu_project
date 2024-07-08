@@ -950,25 +950,30 @@ export async function fetchToggleMarks(
 }
 
 export async function fetchAllMarksControl(token: string) {
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarkControlDetailsController`, {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        token: token,
-        "Content-Type": "application/json",
-      },
-    });
+  if (token !== "") {
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarkControlDetailsController`, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          token: token,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      // if (!response.ok) {
+      //     const errorMessage = await response.text();
+      //     throw new Error(errorMessage);
+      // }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
 
-    // if (!response.ok) {
-    //     const errorMessage = await response.text();
-    //     throw new Error(errorMessage);
-    // }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
+  } else {
+    return [];
   }
 }
 

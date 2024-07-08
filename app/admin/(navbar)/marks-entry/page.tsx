@@ -295,7 +295,7 @@ export default function Marks() {
 
   // },[selectedCourse, value])
 
-  function getMarksControl(campus: string, program: string, semester: number) {
+  function getMarksControl(campus: string, program: string, semester: number, allMarksControl: marksControlType[]) {
     const result = allMarksControl.find(
       (item) => item.campus === campus && item.program === program && item.semester === semester
     );
@@ -326,18 +326,33 @@ export default function Marks() {
             marks: "",
           }));
 
-          const control = getMarksControl(selectedCampus, selectedProgram, parseInt(selectedSemester));
-          if (control) {
-            setMarksControl(control);
+          const allMarks = await fetchAllMarksControl(token);
+          // console.log("freeze ", allMarks);
+          let control;
+          if (allMarks.length > 0) {
+            control = getMarksControl(selectedCampus, selectedProgram, parseInt(selectedSemester), allMarks);
+
+            if (control) {
+              setMarksControl(control);
+            }
+            setAllMarksControl(allMarks);
           }
 
           const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
-          console.log("agg freeze, ", freezeStatus.aggFreeze, "hello ",freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)
+          console.log(
+            "agg freeze, ",
+            freezeStatus.aggFreeze,
+            "hello ",
+            freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze
+          );
           setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
           setGlobalFreeze(freezeStatus.aggFreeze);
-          if(!marksControl) {
+          if (!control) {
+            console.log("freeze 1");
+            setFreeze(true);
             setStudentList(formattedStudentList);
           } else {
+            console.log("freeze 2");
             if (!(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)) {
               setOpen(true);
               setStudentList(formattedStudentList);
@@ -360,8 +375,8 @@ export default function Marks() {
                 );
               }
               // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
-              console.log("marks: ", marks)
-  
+              console.log("marks: ", marks);
+
               setStudentList(mergeStudentLists(formattedStudentList, marks));
             }
           }
@@ -468,13 +483,12 @@ export default function Marks() {
 
       setLoading(false);
 
-
       if (!res || res.length === 0) {
         return [];
       }
 
       setFreeze(res[0].freeze_marks);
-      console.log("first: ", res)
+      console.log("first: ", res);
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -489,7 +503,7 @@ export default function Marks() {
     }
   }
 
-   const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
+  const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
     const updatedMarks = [...marks];
     console.log("updated initial: ", formattedStudentlist, "students: ", marks);
 
@@ -503,16 +517,16 @@ export default function Marks() {
         });
       }
     });
-    
+
     updatedMarks.sort((a, b) => parseInt(a.rollno) - parseInt(b.rollno));
-    updatedMarks.map((student,index:number) => {
-      student.sno = index+1;
-    })
+    updatedMarks.map((student, index: number) => {
+      student.sno = index + 1;
+    });
     console.log("updated: ", updatedMarks);
     return updatedMarks;
   };
 
-   async function fetchStudentList(): Promise<StudentType[]> {
+  async function fetchStudentList(): Promise<StudentType[]> {
     const course_code = courseCodes.find((course) => course.course_name === selectedCourse)?.course_code;
     if (course_code) {
       const res = await fetchStudentByCourseCode(
@@ -544,21 +558,29 @@ export default function Marks() {
       value,
       studentList.map((student) => student.rollno)
     ).then((students) => {
-      if (students && students.length > 0) {
-        fetchStudentList()
-          .then((formattedStudentList) => {
-            let temp = mergeStudentLists(formattedStudentList, students);
-            console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp)
-            setStudentList(temp);
-          })
-          .catch((error) => {});
-      } else {
-        const newStudentList: StudentType[] = studentList.map((student) => {
-          return { ...student, marks: "" };
-        });
-        setFreeze(false);
-        setStudentList(newStudentList);
-      }
+      fetchAllMarksControl(token).then((allMarks) => {
+        const fetchedControl = getMarksControl(selectedCampus, selectedProgram, parseInt(selectedSemester), allMarks);
+        // console.log("freeze fetched control: ", fetchedControl)
+        // if (fetchedControl) {
+          setMarksControl(fetchedControl||false);
+        // }
+        setAllMarksControl(allMarks);
+        if (students && students.length > 0) {
+          fetchStudentList()
+            .then((formattedStudentList) => {
+              let temp = mergeStudentLists(formattedStudentList, students);
+              console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp);
+              setStudentList(temp);
+            })
+            .catch((error) => {});
+        } else {
+          const newStudentList: StudentType[] = studentList.map((student) => {
+            return { ...student, marks: "" };
+          });
+          setFreeze(false);
+          setStudentList(newStudentList);
+        }
+      });
     });
   }, [value, subjectType]);
 
@@ -603,7 +625,9 @@ export default function Marks() {
     setValue(0);
   };
 
-  useEffect(() => {}, [freeze]);
+  // useEffect(() => {
+  //   console.log("Cfreeze marksontrol ",marksControl )
+  // }, [marksControl]);
 
   return (
     <>
@@ -746,7 +770,11 @@ export default function Marks() {
           <div className="text-2xl font-medium">
             {selectedAcademicYear === "" && "No Course Selected"}
             {selectedAcademicYear !== "" && studentList.length === 0 && "No Students Available "}
-            {selectedAcademicYear !== "" && !marksControl && <Alert className="my-4 " severity="error">Marks entry is closed for this course.</Alert>}            
+            {selectedAcademicYear !== "" && !marksControl && (
+              <Alert className="my-4 " severity="error">
+                Marks entry is closed for this course.
+              </Alert>
+            )}
             {selectedAcademicYear !== "" && studentList.length > 0 && (
               <div className="space-y-5 px-2">
                 <div className="space-y-4">
@@ -918,14 +946,13 @@ export default function Marks() {
               );
 
               if (students && students?.length > 0) {
-               
-                    let temp = mergeStudentLists(studentList, students);
-                    setStudentList(temp);
+                let temp = mergeStudentLists(studentList, students);
+                setStudentList(temp);
               }
               setOpen(false);
             }}
             color="primary"
-            >
+          >
             Continuous and End of Semester Assessment
           </Button>
           <Button
@@ -936,18 +963,18 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              console.log("here")
-              
+              console.log("here");
+
               if (students && students?.length > 0) {
-                console.log("here 1")
-                    let temp = mergeStudentLists(studentList, students);
-                    console.log("here 2: ", temp)
-                    setStudentList(temp);
+                console.log("here 1");
+                let temp = mergeStudentLists(studentList, students);
+                console.log("here 2: ", temp);
+                setStudentList(temp);
               }
               setOpen(false);
             }}
             color="primary"
-            >
+          >
             Continuous Assessment
           </Button>
         </DialogActions>
