@@ -150,7 +150,7 @@ export default function Marks() {
   const [allMarksControl, setAllMarksControl] = useState<marksControlType[]>([]);
   const [marksControl, setMarksControl] = useState(false);
 
-  const academicYear: string[] = ["2023-2024","2024-2025"];
+  const academicYear: string[] = ["2023-2024"];
 
   useEffect(() => {
     const unloadCallback = (event: any) => {

@@ -109,18 +109,22 @@ export default function Home() {
   const handleSubmit = () => {
     if (academicYear && user && semester) {
       fetchMarksController(academicYear, semester, user.rollno, token)
-        .then((res: StudentData | { message: string }) => {
+        .then((res: StudentData | { message: string } | boolean) => {
           console.log(res);
-          if (
-            ("message" in res && res.message === "Marks not evaluated yet.") ||
-            ("message" in res && res.message === "No data found for the given roll number and academic year")
-          ) {
-            setIsMarksEvaluated(false);
+  
+          if (typeof res === 'boolean') {
+            setIsMarksEvaluated(res);
             setStudentData(null);
+          } else if ('message' in res) {
+            if (res.message === "Marks not evaluated yet." || res.message === "No data found for the given roll number and academic year") {
+              setIsMarksEvaluated(false);
+              setStudentData(null);
+            }
           } else {
-            setStudentData(res as StudentData);
+            setStudentData(res);
             setIsMarksEvaluated(true);
           }
+  
           setIsSubmitted(true);
         })
         .catch((error) => {
@@ -128,6 +132,8 @@ export default function Home() {
         });
     }
   };
+  
+  
 
   const renderTableRows = () => {
     if (!studentData) return null;
