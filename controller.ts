@@ -645,7 +645,7 @@ const fetchCourseDetailsByCourseCode =(req: Request, res: Response)=>{
 const updateExamControl = (req: Request, res: Response) => {
   try{
     const {users,email_control} =req.body;
-    // console.log("user controller", users);
+    console.log("chota hathi", users);
     updateTheExam(users,email_control).then((results)=>{
       res.status(200).send({message: "successfully updated!"});
     }).catch((error)=>{
