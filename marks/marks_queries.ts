@@ -161,6 +161,10 @@ export const fetchBridgeStudentDetails: string=`
 
 export const fetchAllResultQuery: string=`
   SELECT * FROM users AS u
-  JOIN bridge_course AS bc ON u.rollno = bc.rollno
   JOIN aggregate_marks AS am ON am.rollno = u.rollno;
+`;
+
+export const fetchAllResultBridgeQuery: string=`
+  SELECT * FROM users AS u
+  JOIN bridge_course AS bc ON bc.rollno = u.rollno;
 `;

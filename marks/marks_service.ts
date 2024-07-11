@@ -30,7 +30,8 @@ import {
     fetchBridgeStudentDetailsModal,
     toggleResultControlModal,
     fetchResultControlModal,
-    fetchAllResultModal
+    fetchAllResultModal,
+    fetchAllResultBridgeModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -838,13 +839,20 @@ export function fetchMarksDetailsService() : Promise<any>{
     })
 }
 
-export function fetchAllResultService() : Promise<any>{
-    return new Promise(async(resolve, reject) => {
-        fetchAllResultModal().then((results)=>{
-            resolve(results.rows);
-        }).catch((error)=>{
-            console.log("error: ", error);
-            reject(error);
-        })
-    })
-}
+export function fetchAllResultService(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Promise.all([
+        fetchAllResultModal(),
+        fetchAllResultBridgeModal()
+      ]).then(([aggregateMarksResults, bridgeResults]) => {
+        const results = [
+          { aggregate_marks: aggregateMarksResults.rows },
+          { bridge: bridgeResults.rows }
+        ];
+        resolve(results);
+      }).catch((error) => {
+        console.log("error: ", error);
+        reject(error);
+      });
+    });
+  }
