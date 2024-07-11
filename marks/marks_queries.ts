@@ -160,7 +160,7 @@ export const fetchBridgeStudentDetails: string=`
 
 
 export const fetchAllResultQuery: string=`
-  SELECT * FROM aggregate_marks AS am
-  JOIN bridge_course AS bc ON am.rollno = bc.rollno
-  JOIN Users AS u ON am.rollno = u.rollno;
+  SELECT * FROM users AS u
+  JOIN bridge_course AS bc ON u.rollno = bc.rollno
+  JOIN aggregate_marks AS am ON am.rollno = u.rollno;
 `;
