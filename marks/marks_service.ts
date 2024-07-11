@@ -29,7 +29,8 @@ import {
     fetchMarksDetailsModal,
     fetchBridgeStudentDetailsModal,
     toggleResultControlModal,
-    fetchResultControlModal
+    fetchResultControlModal,
+    fetchAllResultModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -829,6 +830,17 @@ export function fetchMarkControlDetailsService(): Promise<any> {
 export function fetchMarksDetailsService() : Promise<any>{
     return new Promise(async(resolve, reject) => {
         fetchMarksDetailsModal().then((results)=>{
+            resolve(results.rows);
+        }).catch((error)=>{
+            console.log("error: ", error);
+            reject(error);
+        })
+    })
+}
+
+export function fetchAllResultService() : Promise<any>{
+    return new Promise(async(resolve, reject) => {
+        fetchAllResultModal().then((results)=>{
             resolve(results.rows);
         }).catch((error)=>{
             console.log("error: ", error);

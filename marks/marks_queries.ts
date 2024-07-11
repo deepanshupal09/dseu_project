@@ -157,3 +157,10 @@ export const fetchBridgeStudentDetails: string=`
     JOIN courses AS c ON bc.course_code=c.course_code
     WHERE bc.academic_year = $2 AND bc.rollno = $1;
 `; 
+
+
+export const fetchAllResultQuery: string=`
+  SELECT * FROM aggregate_marks AS am
+  JOIN bridge_course AS bc ON am.rollno = bc.rollno
+  JOIN Users AS u ON am.rollno = u.rollno;
+`;
