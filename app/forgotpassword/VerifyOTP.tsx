@@ -4,15 +4,22 @@ import { useState, useEffect } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
 import { sendEmail, verifyOtpAndPassword } from "../actions/api";
+import { useRouter } from "next/navigation";
 
 export default function VerifyOTP({rollno,setStep}:{ rollno: string, setStep: Function}) {
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [otp, setOtp] = useState<string>("");
+  const [tries,setTries]=useState<number>(5);
+  const router = useRouter();
 
 
   async function handleVerifyOtp() {
+    setTries(tries-1);
+    if(tries===0){
+      router.push("/")
+    }
     setLoading(true);
     verifyOtpAndPassword(rollno, otp).then((res) => {
         setStep(3)
