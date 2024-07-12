@@ -585,9 +585,9 @@ export function fetchResultControlModal(rollno: string): Promise<QueryResult<any
     });
 }
 
-export function fetchAllResultModal(): Promise<QueryResult<any>> {
+export function fetchAllResultModal( academic_year : string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        pool.query(fetchAllResultQuery, (error, results) => {
+        pool.query(fetchAllResultQuery,[academic_year], (error, results) => {
             if (error) {
                 console.log("error: ", error);
                 reject(error);
@@ -598,9 +598,9 @@ export function fetchAllResultModal(): Promise<QueryResult<any>> {
     });
 }
 
-export function fetchAllResultBridgeModal(): Promise<QueryResult<any>> {
+export function fetchAllResultBridgeModal(academic_year : string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        pool.query(fetchAllResultBridgeQuery, (error, results) => {
+        pool.query(fetchAllResultBridgeQuery,[academic_year], (error, results) => {
             if (error) {
                 console.log("error: ", error);
                 reject(error);

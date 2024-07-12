@@ -839,11 +839,11 @@ export function fetchMarksDetailsService() : Promise<any>{
     })
 }
 
-export function fetchAllResultService(): Promise<any> {
+export function fetchAllResultService(academic_year : string): Promise<any> {
     return new Promise((resolve, reject) => {
       Promise.all([
-        fetchAllResultModal(),
-        fetchAllResultBridgeModal()
+        fetchAllResultModal(academic_year),
+        fetchAllResultBridgeModal(academic_year)
       ]).then(([aggregateMarksResults, bridgeResults]) => {
         const results = [
           { aggregate_marks: aggregateMarksResults.rows },

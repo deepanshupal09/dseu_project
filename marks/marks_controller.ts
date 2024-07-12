@@ -366,8 +366,9 @@ const fetchMarksDetailsController = (req:Request, res:Response)=>{
 const fetchAllResultController = (req:Request, res:Response)=>{
     try{
       // const details= req.body;
+      const academic_year: string = req.headers.academicyear as string;
       console.log("here")
-      fetchAllResultService().then((results)=>{
+      fetchAllResultService(academic_year).then((results)=>{
         console.log("resulsets: ", results.length)
         res.status(200).send(results);
       }).catch((error)=>{
