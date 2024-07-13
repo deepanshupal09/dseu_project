@@ -862,26 +862,57 @@ export function fetchAllResultService(academic_year : string): Promise<any> {
   }
 
 
-export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
+  export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
     return new Promise((resolve, reject) => {
         fetchAllMarkSheetModal()
             .then((users) => {
-                const markSheetPromises = users.rows.map(user => 
-                    fetchMarksService(user.rollno, academic_year, user.semester)
+                const markSheetPromises = users.rows.map(user => {
+                    const personalDetails = {
+                        name: user.name,
+                        program: user.program,
+                        semester: user.semester,
+                        phone: user.phone,
+                        campus: user.campus,
+                        emailid: user.emailid,
+                        gender: user.gender,
+                        alternate_phone: user.alternate_phone,
+                        father: user.father,
+                        mother: user.mother,
+                        guardian: user.guardian,
+                        abc_id: user.abc_id,
+                        aadhar: user.aadhar,
+                        pwbd_certificate: user.pwbd_certificate,
+                        last_modified: user.last_modified,
+                        program_type: user.program_type,
+                        photo: user.photo,
+                        year_of_admission: user.year_of_admission,
+                        dob: user.dob
+                    };
+
+                    return fetchMarksService(user.rollno, academic_year, user.semester)
+                        .then(markSheet => {
+                            if (markSheet && markSheet.message !== "Marks not evaluated yet.") {
+                                return {
+                                    personalDetails,
+                                    markSheet
+                                };
+                            }
+                            return null;
+                        })
                         .catch(error => {
                             console.error(`Error fetching marks for user ${user.rollno}:`, error);
                             return null; // Return null for failed fetches
-                        })
-                );
+                        });
+                });
 
                 Promise.all(markSheetPromises)
-                    .then(markSheets => {
-                        const result = markSheets.filter(sheet => sheet !== null && sheet.message !== "Marks not evaluated yet.");
-                        console.log(`Successfully fetched ${result.length} mark sheets out of ${users.rows.length} users`);
-                        resolve(result);
+                    .then(results => {
+                        const filteredResults = results.filter(result => result !== null);
+                        console.log(`Successfully fetched ${filteredResults.length} mark sheets out of ${users.rows.length} users`);
+                        resolve(filteredResults);
                     })
                     .catch(error => {
-                        // console.error("Error in Promise.all for mark sheets:", error);
+                        console.error("Error in Promise.all for mark sheets:", error);
                         reject("Error processing mark sheets");
                     });
             })
