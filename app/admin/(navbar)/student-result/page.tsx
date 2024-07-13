@@ -1,16 +1,19 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { getAuth } from "../../actions/cookie";
-import { parseJwt } from "../../actions/utils";
-import { StudentDetails } from "../profile/page";
+import React, { useState, useEffect, useRef, use } from "react";
+
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material";
-import { fetchUserByRollno, fetchMarksController } from "../../actions/api";
+import { Select, MenuItem, FormControl, InputLabel, Button, TextField } from "@mui/material";
+
 import ReactToPrint from "react-to-print";
-import logo from "../../images/dseu.png";
-import result_info_updated from "../../images/result_info_updated.png";
+import logo from "@/app/images/dseu.png";
+import result_info_updated from "@/app/images/result_info_updated.png";
 import Image from "next/image";
 import { SelectChangeEvent } from "@mui/material/Select";
+import { getAuth, getAuthAdmin } from "@/app/actions/cookie";
+import { parseJwt } from "@/app/actions/utils";
+import { StudentDetails } from "@/app/(navbar)/profile/page";
+import { fetchMarksController, fetchUserByRollno, getUserByRollNo } from "@/app/actions/api";
+import {useDebounce} from "use-debounce";
 
 interface InternalMark {
   course_code: string;
@@ -63,40 +66,77 @@ interface StudentData {
   sgpa_grade: string;
 }
 
+type StudentInfo = {
+    aadhar: string;
+    abc_id: string;
+    alternate_phone: string;
+    campus: string;
+    dob: string;
+    emailid: string;
+    father: string;
+    gender: string;
+    guardian: string | null;
+    last_modified: string;
+    mother: string;
+    name: string;
+    otp: string;
+    password: string;
+    phone: string;
+    photo: string;
+    program: string;
+    program_type: string;
+    pwbd_certificate: string;
+    rollno: string;
+    semester: number;
+    year_of_admission: string;
+  };
+  
+
 export default function Home() {
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [token, setToken] = useState("");
   const [academicYear, setAcademicYear] = useState("");
   const [semester, setSemester] = useState("");
   const [academicYears, setAcademicYears] = useState<string[]>(["2023-2024"]);
+  const [rollno, setRollno] = useState("")
   // const [semesters, setSemesters] = useState<number[]>([1, 2, 4, 6]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMarksEvaluated, setIsMarksEvaluated] = useState(true);
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const componentRef = useRef<HTMLDivElement>(null);
+  const [debouncedRollNo] = useDebounce(rollno, 500);
+  const [student, setStudent] = useState<StudentInfo | null>(null);
+
+
 
   useEffect(() => {
-    getAuth().then((auth: any) => {
-      const temp = parseJwt(auth?.value);
-      setToken(auth?.value);
-      setUser(temp.user);
-    });
-  }, []);
-
-  useEffect(() => {
-    getAuth().then((auth) => {
+    getAuthAdmin().then((auth) => {
       if (auth) {
         setToken(auth.value);
         const temp = parseJwt(auth?.value as string);
-        fetchUserByRollno(temp.user.rollno, auth.value)
-          .then((res) => {
-            setUser(res[0]);
-            setSemester(res[0].semester.toString());
-          })
-          .catch((error: any) => {});
+        // getUserByRollNo(rollno, auth.value)
+        //   .then((res) => {
+        //     setUser(res[0]);
+        //     setSemester(res[0].semester.toString());
+        //   })
+        //   .catch((error: any) => {});
       }
     });
   }, []);
+
+  useEffect(()=>{
+    //   console.log("api call")
+    setIsSubmitted(false)
+    if (debouncedRollNo !== "") {
+        getUserByRollNo(debouncedRollNo, token).then((user) => {
+            // console.log("first ", user)
+            setStudent(user[0]);
+            setSemester(user[0].semester.toString());
+        }).catch((error)=>{
+            console.log("Error fetching user");
+        })
+    }
+  },[debouncedRollNo])
 
   const handleAcademicYearChange = (event: SelectChangeEvent<string>) => {
     setAcademicYear(event.target.value);
@@ -107,11 +147,11 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    if (academicYear && user && semester) {
-      fetchMarksController(academicYear, semester, user.rollno, token)
+    //   console.log("here ", academicYear, semester, )
+    if (academicYear && semester && rollno !== "") {
+      fetchMarksController(academicYear, semester, rollno, token)
         .then((res: StudentData | { message: string } | boolean) => {
-          console.log(res);
-  
+          console.log("res ", res);
           if (typeof res === 'boolean') {
             setIsMarksEvaluated(res);
             setStudentData(null);
@@ -127,11 +167,12 @@ export default function Home() {
   
           setIsSubmitted(true);
         })
-        .catch((error) => {
+        .catch((error:any) => {
           console.error(error);
         });
     }
   };
+
   
   
 
@@ -181,80 +222,80 @@ export default function Home() {
     return [...normalCourseRows, ...bridgeCourseRows];
   };
   const renderParentInfo = () => {
-    if (user?.father && user?.mother) {
+    if (student?.father && student?.mother) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{student?.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{user.father}</span>
+              {"Father's name: "} <span className="font-semibold">{student?.father}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{student?.mother}</span>
             </div>
           </div>
         </>
       );
-    } else if (user?.father) {
+    } else if (student?.father) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{student?.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{user.father}</span>
+              {"Father's name: "} <span className="font-semibold">{student?.father}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
             </div>
           </div>
         </>
       );
-    } else if (user?.mother) {
+    } else if (student?.mother) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{student?.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{student?.mother}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
             </div>
           </div>
         </>
       );
-    } else if (user?.guardian) {
+    } else if (student?.guardian) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{student?.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Guardian's name"}: <span className="font-semibold">{user.guardian}</span>
+              {"Guardian's name"}: <span className="font-semibold">{student?.guardian}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold font-roboto">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              Relation: <span className="font-semibold">{user.relation}</span>
+              Relation: <span className="font-semibold">Guardian</span>
             </div>
           </div>
         </>
@@ -269,10 +310,19 @@ export default function Home() {
       <div className="bg-[#dfdede]"></div>
       <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         <div className="bg-dseublue py-2 px-2 sm:mx-8 rounded shadow mt-28">
-          <h1 className="text-2xl text-white font-bold text-center">Result</h1>
+          <h1 className="text-2xl text-white font-bold text-center">Student Result</h1>
         </div>
         <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
           <div className="flex mb-2 space-x-3">
+            <FormControl fullWidth variant="outlined" className="my-2">
+              {/* <InputLabel id="academic-year-label">Roll No</InputLabel> */}
+              <TextField
+                id="academic-year"
+                value={rollno}
+                onChange={(e)=>{setRollno(e.target.value)}}
+                label="Roll No"
+              />
+            </FormControl>
             <FormControl fullWidth variant="outlined" className="my-2">
               <InputLabel id="academic-year-label">Academic Year</InputLabel>
               <Select
@@ -318,8 +368,8 @@ export default function Home() {
           </div>
         ) : (
           isSubmitted &&
-          studentData &&
-          user && (
+          studentData
+          && (
             <div>
               <ReactToPrint
                 trigger={() => (
@@ -331,9 +381,9 @@ export default function Home() {
               />
               <div className="w-full overflow-x-auto">
                 <div ref={componentRef} className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
-                  {user && user.abc_id && (
+                  {student && student?.abc_id && (
                     <div className="mx-8 my-2 font-bold">
-                      <h4>ABC ID: {user.abc_id}</h4>
+                      <h4>ABC ID: {student?.abc_id}</h4>
                     </div>
                   )}
                   <div className="flex flex-row mx-auto">
@@ -355,7 +405,7 @@ export default function Home() {
                   <div className="text-center flex flex-col mx-auto">
                     <div className="text-xl font-extrabold font-serif p-1">PROVISIONAL GRADESHEET OF EOSE OF {academicYear}</div>
                     <div className="text-xl font-extrabold font-serif p-1 mb-4">
-                      {user && user.program} (Batch - {user.year_of_admission})
+                      {student && student?.program} (Batch - {student?.year_of_admission})
                     </div>
                   </div>
                   <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
