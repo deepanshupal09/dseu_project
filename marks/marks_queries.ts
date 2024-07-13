@@ -162,25 +162,25 @@ export const fetchBridgeStudentDetails: string=`
 export const fetchAllResultQuery: string=`
   SELECT * FROM users AS u
   JOIN aggregate_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+  WHERE am.academic_year = $1;
 `;
 
 export const fetchInternalResultQuery: string=`
   SELECT * FROM users AS u
   JOIN internal_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+  WHERE am.academic_year = $1;
 `;
 
 export const fetchExternalResultQuery: string=`
   SELECT * FROM users AS u
   JOIN external_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+  WHERE am.academic_year = $1;
 `;
 
 export const fetchAllResultBridgeQuery: string=`
   SELECT * FROM users AS u
   JOIN bridge_course AS bc ON bc.rollno = u.rollno
-  WHERE bc.academic_year = $1 AND bc."freeze" = true;
+  WHERE bc.academic_year = $1;
 `;
 
 export const fetchAllMarkSheetQuery: string=`
