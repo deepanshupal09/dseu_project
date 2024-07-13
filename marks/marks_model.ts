@@ -1,6 +1,6 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery, fetchInternalResultQuery, fetchExternalResultQuery, fetchAllMarkSheetQuery } from "./marks_queries";
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
@@ -598,6 +598,32 @@ export function fetchAllResultModal( academic_year : string): Promise<QueryResul
     });
 }
 
+export function fetchInternalResultModal( academic_year : string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchInternalResultQuery,[academic_year], (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchExternalResultModal( academic_year : string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchExternalResultQuery,[academic_year], (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
 export function fetchAllResultBridgeModal(academic_year : string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(fetchAllResultBridgeQuery,[academic_year], (error, results) => {
@@ -610,3 +636,17 @@ export function fetchAllResultBridgeModal(academic_year : string): Promise<Query
         });
     });
 }
+
+export function fetchAllMarkSheetModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchAllMarkSheetQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+

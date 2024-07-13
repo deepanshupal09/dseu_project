@@ -135,6 +135,7 @@ app.get("/fetchFreezeDetailsController",marks_controller.fetchFreezeDetailsContr
 app.get("/sendEmailMarksController",marks_controller.sendEmailMarksController);
 app.get("/fetchMarkControlDetailsController",marks_controller.fetchMarkControlDetailsController);
 app.get("/fetchAllResultController",marks_controller.fetchAllResultController);
+app.get("/fetchAllMarkSheetsController",marks_controller.fetchAllMarkSheetsController);
 
 
 

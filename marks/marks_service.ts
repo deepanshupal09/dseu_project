@@ -31,7 +31,10 @@ import {
     toggleResultControlModal,
     fetchResultControlModal,
     fetchAllResultModal,
-    fetchAllResultBridgeModal
+    fetchAllResultBridgeModal,
+    fetchExternalResultModal,
+    fetchInternalResultModal,
+    fetchAllMarkSheetModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -562,9 +565,8 @@ export function fetchStudentsCourseCodeService(course_code: string, campus: stri
     });
 }
 
-export function fetchMarksService(rollno: string, academic_year: string, semester:number): Promise<any> {
+export async function fetchMarksService(rollno: string, academic_year: string, semester:number): Promise<any> {
     return fetchResultControlModal(rollno).then((resultControl) => {
-        console.log("yo :", resultControl.rows[0].result_control);
         if (!resultControl.rows[0].result_control){
             return Promise.resolve(resultControl.rows[0].result_control);
         } else {
@@ -578,9 +580,9 @@ export function fetchMarksService(rollno: string, academic_year: string, semeste
                 ])
                 .then(([internalResults, externalResults, aggregateResults, bridgeResults, examRegistration]) => {
                     const allFreezeMarksTrue = aggregateResults.rows.every(row => row.freeze_marks);
-                    console.log("77", examRegistration);
-                    console.log("277", examRegistration.length, aggregateResults.rows.length)
-                    console.log(allFreezeMarksTrue)
+                    // console.log("77", examRegistration);
+                    // console.log("277", examRegistration.length, aggregateResults.rows.length)
+                    // console.log(allFreezeMarksTrue)
                     if (!allFreezeMarksTrue || aggregateResults.rows.length < examRegistration.length) {
                         resolve({ message: "Marks not evaluated yet." });
                         return;
@@ -843,6 +845,8 @@ export function fetchAllResultService(academic_year : string): Promise<any> {
     return new Promise((resolve, reject) => {
       Promise.all([
         fetchAllResultModal(academic_year),
+        fetchExternalResultModal(academic_year),
+        fetchInternalResultModal(academic_year),
         fetchAllResultBridgeModal(academic_year)
       ]).then(([aggregateMarksResults, bridgeResults]) => {
         const results = [
@@ -856,3 +860,34 @@ export function fetchAllResultService(academic_year : string): Promise<any> {
       });
     });
   }
+
+
+export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetchAllMarkSheetModal()
+            .then((users) => {
+                const markSheetPromises = users.rows.map(user => 
+                    fetchMarksService(user.rollno, academic_year, user.semester)
+                        .catch(error => {
+                            console.error(`Error fetching marks for user ${user.rollno}:`, error);
+                            return null; // Return null for failed fetches
+                        })
+                );
+
+                Promise.all(markSheetPromises)
+                    .then(markSheets => {
+                        const result = markSheets.filter(sheet => sheet !== null && sheet.message !== "Marks not evaluated yet.");
+                        console.log(`Successfully fetched ${result.length} mark sheets out of ${users.rows.length} users`);
+                        resolve(result);
+                    })
+                    .catch(error => {
+                        // console.error("Error in Promise.all for mark sheets:", error);
+                        reject("Error processing mark sheets");
+                    });
+            })
+            .catch(error => {
+                console.error("Error fetching users:", error);
+                reject("Error fetching users");
+            });
+    });
+}
