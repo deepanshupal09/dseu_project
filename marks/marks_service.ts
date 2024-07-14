@@ -848,9 +848,11 @@ export function fetchAllResultService(academic_year : string): Promise<any> {
         fetchExternalResultModal(academic_year),
         fetchInternalResultModal(academic_year),
         fetchAllResultBridgeModal(academic_year)
-      ]).then(([aggregateMarksResults, bridgeResults]) => {
+      ]).then(([aggregateMarksResults,internalMarksResults, externalMarksResults, bridgeResults]) => {
         const results = [
           { aggregate_marks: aggregateMarksResults.rows },
+          { continuous_evaluation: internalMarksResults.rows },
+          { endSem_evaluation: externalMarksResults.rows},
           { bridge: bridgeResults.rows }
         ];
         resolve(results);
