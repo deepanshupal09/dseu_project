@@ -186,3 +186,30 @@ export const fetchAllResultBridgeQuery: string=`
 export const fetchAllMarkSheetQuery: string=`
   SELECT * FROM users;
 `;
+
+export const departmentAggregateDetailsQuery: string = `
+  SELECT DISTINCT campus, program_type, program, semester, freeze_marks
+  FROM aggregate_marks
+  WHERE freeze_marks = false
+
+  UNION
+
+  SELECT DISTINCT d.campus, d.program_type, d.program, d.semester, a.freeze_marks
+  FROM departments d
+  LEFT JOIN aggregate_marks a ON d.campus = a.campus
+    AND d.program_type = a.program_type
+    AND d.program = a.program
+    AND d.semester = a.semester
+  WHERE a.campus IS NULL OR a.program_type IS NULL OR a.program IS NULL OR a.semester IS NULL
+`;
+
+
+export const departmentEmails: string=`
+  SELECT DISTINCT ad.emailid FROM admin AS ad
+  JOIN departments AS d ON d.campus = ad.campus
+  WHERE d.campus=$1 AND d.program_type=$2 AND d.program=$3 AND d.semester=$4 AND ad.role = 'admin';
+`;
+
+// export const departmentBridgeDetailsQuery: string=`
+//   SELECT campus, program, semester FROM external_marks WHERE freeze_marks = false;
+// `;

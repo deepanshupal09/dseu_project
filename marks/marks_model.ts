@@ -1,6 +1,7 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery, fetchInternalResultQuery, fetchExternalResultQuery, fetchAllMarkSheetQuery } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery, fetchInternalResultQuery, fetchExternalResultQuery, fetchAllMarkSheetQuery, departmentAggregateDetailsQuery, 
+    departmentEmails } from "./marks_queries";
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
@@ -649,4 +650,36 @@ export function fetchAllMarkSheetModal(): Promise<QueryResult<any>> {
         });
     });
 }
+
+export function departmentAggregateDetailsModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(departmentAggregateDetailsQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+
+
+
+
+export function departmentEmailsModal(campus:string, program_type:string, program:string, semester:number): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(departmentEmails, [campus, program_type, program, semester], (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+
 

@@ -34,10 +34,13 @@ import {
     fetchAllResultBridgeModal,
     fetchExternalResultModal,
     fetchInternalResultModal,
-    fetchAllMarkSheetModal
+    fetchAllMarkSheetModal,
+    departmentAggregateDetailsModal,
+    departmentEmailsModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
+
 
 export interface FreezeData {
     campus: string;
@@ -46,6 +49,43 @@ export interface FreezeData {
     semester: number;
     course_name: string;
 }
+
+ export interface DetailRow {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: number;
+  }
+  
+  export interface EmailRow {
+    emailid: string;
+  }
+  
+  export interface AggregateWithEmails extends DetailRow {
+    emails: string[];
+  }
+  
+  export interface InfoGroup {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: number;
+  }
+  
+  export interface EmailGroupInfo {
+    infoGroups: InfoGroup[];
+    count: number;
+  }
+  
+  export interface ResultObject {
+    aggregate_marks: AggregateWithEmails[];
+    emailGroups: { [email: string]: EmailGroupInfo };
+    aggregate_marks_length: number;
+    emailGroups_length: number;
+    emailGroupsCounts: { [email: string]: number };
+  }
+
+
 export function checkDepartmentService(rollno: any, depEmail: any) {
     return new Promise((resolve, reject) => {
         checkDepartmentModel(rollno, depEmail)
@@ -924,3 +964,80 @@ export function fetchAllResultService(academic_year : string): Promise<any> {
             });
     });
 }
+
+
+export function fetchDepartmentDetailsService(): Promise<ResultObject> {
+    return new Promise((resolve, reject) => {
+      Promise.all([
+        departmentAggregateDetailsModal(),
+      ]).then(([aggregateResults]) => {
+        const emailPromises = aggregateResults.rows.map((detail: DetailRow) => 
+          departmentEmailsModal(detail.campus, detail.program_type, detail.program, detail.semester)
+        );
+  
+        Promise.all(emailPromises)
+          .then(emailResults => {
+            const aggregateWithEmails: AggregateWithEmails[] = aggregateResults.rows.map((detail: DetailRow, index: number) => ({
+              ...detail,
+              emails: emailResults[index].rows.map((row: EmailRow) => row.emailid)
+            }));
+  
+            const emailGroups: { [email: string]: EmailGroupInfo } = {};
+  
+            aggregateWithEmails.forEach((detail: AggregateWithEmails) => {
+              const infoGroup: InfoGroup = {
+                campus: detail.campus,
+                program_type: detail.program_type,
+                program: detail.program,
+                semester: detail.semester
+              };
+  
+              detail.emails.forEach((email: string) => {
+                if (!emailGroups[email]) {
+                  emailGroups[email] = { infoGroups: [], count: 0 };
+                }
+                // Check if this info group already exists for this email
+                const exists = emailGroups[email].infoGroups.some(
+                  group => 
+                    group.campus === infoGroup.campus &&
+                    group.program_type === infoGroup.program_type &&
+                    group.program === infoGroup.program &&
+                    group.semester === infoGroup.semester
+                );
+                if (!exists) {
+                  emailGroups[email].infoGroups.push(infoGroup);
+                  emailGroups[email].count++;
+                }
+              });
+            });
+  
+            const emailGroupsCounts: { [email: string]: number } = {};
+            Object.entries(emailGroups).forEach(([email, groupInfo]) => {
+              emailGroupsCounts[email] = groupInfo.count;
+            });
+  
+            const resultObject: ResultObject = {
+              aggregate_marks: aggregateWithEmails,
+              emailGroups: emailGroups,
+              aggregate_marks_length: aggregateWithEmails.length,
+              emailGroups_length: Object.keys(emailGroups).length,
+              emailGroupsCounts: emailGroupsCounts
+            };
+  
+            console.log("Individual email group entry counts:");
+            Object.entries(emailGroupsCounts).forEach(([email, count]) => {
+              console.log(`${email}: ${count}`);
+            });
+  
+            resolve(resultObject);
+          })
+          .catch(error => {
+            console.log("Error fetching emails: ", error);
+            reject(error);
+          });
+      }).catch(error => {
+        console.log("Error fetching details: ", error);
+        reject(error);
+      });
+    });
+  }

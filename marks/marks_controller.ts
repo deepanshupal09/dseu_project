@@ -22,6 +22,9 @@ import {
     toggleResultControlService,
     fetchAllResultService,
     fetchAllMarkSheetsService,
+    fetchDepartmentDetailsService,
+    ResultObject,
+    InfoGroup,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -396,7 +399,85 @@ const fetchAllMarkSheetsController = (req:Request, res:Response)=>{
     } catch(error){
       res.send("internal server error at fetch all result details 2");
     }
-  };
+};
+
+const test = (req:Request, res:Response)=>{
+    try{
+      // const details= req.body;
+      console.log("here")
+      fetchDepartmentDetailsService().then((results)=>{
+        // console.log("resulsets: ", results.length)
+        res.status(200).send(results);
+      }).catch((error)=>{
+        console.log("error:",error);
+        res.status(500).send("internal server error at fetch all result details 1");
+      })
+    } catch(error){
+      res.send("internal server error at fetch all result details 2");
+    }
+};
+
+
+const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
+    try {
+      const resultObject: ResultObject = await fetchDepartmentDetailsService();
+      const emailGroups = resultObject.emailGroups;
+  
+      for (const [email, groupInfo] of Object.entries(emailGroups)) {
+        let infoGroupDetails = `
+          <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+            <tr>
+              <th>Campus</th>
+              <th>Program Type</th>
+              <th>Program</th>
+              <th>Semester</th>
+            </tr>
+        `;
+  
+        groupInfo.infoGroups.forEach((info: InfoGroup) => {
+          infoGroupDetails += `
+            <tr>
+              <td>${info.campus}</td>
+              <td>${info.program_type}</td>
+              <td>${info.program}</td>
+              <td>${info.semester}</td>
+            </tr>
+          `;
+        });
+  
+        infoGroupDetails += '</table>';
+  
+        const mailOptions = {
+          from: process.env.SMTP_MAIL,
+          to: email,
+          subject: 'Marks Not Freeze',
+          html: `
+            <p>This is a test email.</p>
+            <p>These programs marks have not been freezed yet:</p>
+            ${infoGroupDetails}
+          `,
+        };
+  
+        // Send the email
+        await new Promise<void>((resolve, reject) => {
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error('Error sending email:', error);
+              reject(error);
+            } else {
+              console.log('Email sent successfully to:', email);
+              resolve();
+            }
+          });
+        });
+      }
+  
+      res.status(200).send({ message: 'Emails sent successfully!' });
+    } catch (error) {
+      console.error('Error in sendEmail:', error);
+      res.status(500).send({ message: 'Internal Server Error!' });
+    }
+  });
 
 
 
@@ -422,5 +503,7 @@ export {
     fetchMarksDetailsController,
     toggleResultControlController,
     fetchAllResultController,
-    fetchAllMarkSheetsController
+    fetchAllMarkSheetsController,
+    test,
+    sendEmailNotFreeze
 };
