@@ -188,19 +188,44 @@ export const fetchAllMarkSheetQuery: string=`
 `;
 
 export const departmentAggregateDetailsQuery: string = `
-  SELECT DISTINCT campus, program_type, program, semester, freeze_marks
-  FROM aggregate_marks
-  WHERE freeze_marks = false
+  WITH semester_courses AS (
+    SELECT DISTINCT campus, program_type, program, semester, course_code
+    FROM semester_course
+  ),
+  aggregate_status AS (
+    SELECT sc.campus, sc.program_type, sc.program, sc.semester, sc.course_code,
+          COALESCE(am.freeze_marks, false) AS freeze_marks
+    FROM semester_courses sc
+    LEFT JOIN aggregate_marks am 
+      ON sc.campus = am.campus
+      AND sc.program_type = am.program_type
+      AND sc.program = am.program
+      AND sc.semester = am.semester
+      AND sc.course_code = am.course_code
+  )
+  SELECT DISTINCT agg_status.campus, agg_status.program_type, agg_status.program, agg_status.semester, 
+        agg_status.freeze_marks, c.course_name
+  FROM aggregate_status agg_status
+  JOIN courses c ON agg_status.course_code = c.course_code
+  WHERE agg_status.freeze_marks = false
 
   UNION
 
-  SELECT DISTINCT d.campus, d.program_type, d.program, d.semester, a.freeze_marks
+  SELECT DISTINCT d.campus, d.program_type, d.program, d.semester, false AS freeze_marks, c.course_name
   FROM departments d
-  LEFT JOIN aggregate_marks a ON d.campus = a.campus
-    AND d.program_type = a.program_type
-    AND d.program = a.program
-    AND d.semester = a.semester
-  WHERE a.campus IS NULL OR a.program_type IS NULL OR a.program IS NULL OR a.semester IS NULL
+  JOIN semester_courses sc 
+    ON d.campus = sc.campus
+    AND d.program_type = sc.program_type
+    AND d.program = sc.program
+    AND d.semester = sc.semester
+  LEFT JOIN aggregate_marks am
+    ON sc.campus = am.campus
+    AND sc.program_type = am.program_type
+    AND sc.program = am.program
+    AND sc.semester = am.semester
+    AND sc.course_code = am.course_code
+  JOIN courses c ON sc.course_code = c.course_code
+  WHERE am.course_code IS NULL
 `;
 
 

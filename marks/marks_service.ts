@@ -49,41 +49,44 @@ export interface FreezeData {
     semester: number;
     course_name: string;
 }
-
- export interface DetailRow {
-    campus: string;
-    program_type: string;
-    program: string;
-    semester: number;
-  }
-  
-  export interface EmailRow {
+ 
+export interface EmailRow {
     emailid: string;
-  }
-  
-  export interface AggregateWithEmails extends DetailRow {
-    emails: string[];
-  }
-  
-  export interface InfoGroup {
+}
+
+export interface DetailRow {
     campus: string;
     program_type: string;
     program: string;
     semester: number;
-  }
-  
-  export interface EmailGroupInfo {
+    freeze_marks: boolean | null;
+    course_name: string;
+    }
+
+export interface AggregateWithEmails extends DetailRow {
+    emails: string[];
+}
+
+export interface InfoGroup {
+    campus: string;
+    program_type: string;
+    program: string;
+    semester: number;
+    course_names: string[];
+}
+
+export interface EmailGroupInfo {
     infoGroups: InfoGroup[];
     count: number;
-  }
-  
-  export interface ResultObject {
+}
+
+export interface ResultObject {
     aggregate_marks: AggregateWithEmails[];
     emailGroups: { [email: string]: EmailGroupInfo };
     aggregate_marks_length: number;
     emailGroups_length: number;
     emailGroupsCounts: { [email: string]: number };
-  }
+}
 
 
 export function checkDepartmentService(rollno: any, depEmail: any) {
@@ -985,28 +988,33 @@ export function fetchDepartmentDetailsService(): Promise<ResultObject> {
             const emailGroups: { [email: string]: EmailGroupInfo } = {};
   
             aggregateWithEmails.forEach((detail: AggregateWithEmails) => {
-              const infoGroup: InfoGroup = {
-                campus: detail.campus,
-                program_type: detail.program_type,
-                program: detail.program,
-                semester: detail.semester
-              };
-  
               detail.emails.forEach((email: string) => {
                 if (!emailGroups[email]) {
                   emailGroups[email] = { infoGroups: [], count: 0 };
                 }
-                // Check if this info group already exists for this email
-                const exists = emailGroups[email].infoGroups.some(
+                
+                let infoGroup = emailGroups[email].infoGroups.find(
                   group => 
-                    group.campus === infoGroup.campus &&
-                    group.program_type === infoGroup.program_type &&
-                    group.program === infoGroup.program &&
-                    group.semester === infoGroup.semester
+                    group.campus === detail.campus &&
+                    group.program_type === detail.program_type &&
+                    group.program === detail.program &&
+                    group.semester === detail.semester
                 );
-                if (!exists) {
+  
+                if (!infoGroup) {
+                  infoGroup = {
+                    campus: detail.campus,
+                    program_type: detail.program_type,
+                    program: detail.program,
+                    semester: detail.semester,
+                    course_names: []
+                  };
                   emailGroups[email].infoGroups.push(infoGroup);
                   emailGroups[email].count++;
+                }
+  
+                if (detail.course_name && !infoGroup.course_names.includes(detail.course_name)) {
+                  infoGroup.course_names.push(detail.course_name);
                 }
               });
             });

@@ -431,19 +431,27 @@ const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
               <th>Program Type</th>
               <th>Program</th>
               <th>Semester</th>
+              <th>Course Names</th>
             </tr>
         `;
   
         groupInfo.infoGroups.forEach((info: InfoGroup) => {
-          infoGroupDetails += `
-            <tr>
-              <td>${info.campus}</td>
-              <td>${info.program_type}</td>
-              <td>${info.program}</td>
-              <td>${info.semester}</td>
-            </tr>
-          `;
-        });
+            const courseNamesList = info.course_names.length > 0 
+              ? `<ul style="margin: 0; padding-left: 20px;">
+                  ${info.course_names.map(course => `<li>${course}</li>`).join('')}
+                 </ul>`
+              : 'No courses';
+  
+            infoGroupDetails += `
+              <tr>
+                <td>${info.campus}</td>
+                <td>${info.program_type}</td>
+                <td>${info.program}</td>
+                <td>${info.semester}</td>
+                <td>${courseNamesList}</td>
+              </tr>
+            `;
+          });
   
         infoGroupDetails += '</table>';
   
