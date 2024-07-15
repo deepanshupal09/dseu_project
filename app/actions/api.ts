@@ -9,11 +9,14 @@ export async function fetchAllMarks() {
         cache: "no-cache",
         headers: {
             "Content-Type": "application/json",
+            "academicyear":"2023-2024"
         },
     })
-        .then((res) => {
-            return res;
-        })
+        .then(async (res) => {
+            const data =await res.json();
+            console.log(data)
+            return data;
+      })
         .catch((error) => {
             throw error;
         });
@@ -990,7 +993,7 @@ export async function checkDepartment(token: string, rollno: string, depEmail: s
         throw error;
     }
 }
-export async function insertIntoBridgeMarks(token: string, listOfStudents: { rollno: string; course_code: string; marks: string; academic_year: string; name: string; freeze: boolean }[]) {
+export async function insertIntoBridgeMarks(token: string, listOfStudents: { rollno: string; course_code: string; marks: string; academic_year: string; name: string; freeze: boolean;campus:string;program:string;program_type:string;semester:string}[]) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/insertBridgeDetails`, {
             method: "POST",
@@ -1009,7 +1012,7 @@ export async function insertIntoBridgeMarks(token: string, listOfStudents: { rol
         throw error;
     }
 }
-export async function fetchBridgeDetails(token: string, email: string, course_code: string, academic_year: string) {
+export async function fetchBridgeDetails(token: string, email: string, course_code: string, academic_year: string,campus:string,program:string,semester:string,program_type:string) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchBridgeDetails`, {
             method: "POST",
@@ -1019,7 +1022,7 @@ export async function fetchBridgeDetails(token: string, email: string, course_co
                 "Content-Type": "application/json",
                 token: token,
             },
-            body: JSON.stringify({ email: email, course_code: course_code, academic_year: academic_year }),
+            body: JSON.stringify({ email: email, course_code: course_code, academic_year: academic_year,campus:campus,program:program,semester:semester,program_type:program_type }),
         });
 
         const data = await response.json();

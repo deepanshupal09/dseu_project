@@ -78,12 +78,16 @@ function BridgeCoursesTable({
   academicYear,
   campus,
   course,
+  semester,
+  program_type,
   program,
   marksControl,
 }: {
   academicYear: string;
   campus: string;
   course: string;
+  semester:string;
+  program_type:string;
   program: string
   marksControl: boolean;
 }) {
@@ -95,9 +99,10 @@ function BridgeCoursesTable({
   const [user, setUser] = useState<User | null>(null);
 
   const course_code: { [key: string]: string } = {
-    "Applied Mathematics-II": "FC-012",
+    "Applied Mathematics-II": "BT-BS201",
     "Basic Sciences (Applied Chemistry)": "FC-1-CH051",
     "Basic Sciences (Applied Physics)": "FC-1-PH051",
+    "Applied Mathematics II":"FC-012"
   };
   const [errors, setErrors] = useState<Error[]>([]);
   const [errorDialog, setErrorDialog] = useState(false);
@@ -138,7 +143,7 @@ function BridgeCoursesTable({
 
   useEffect(() => {
     if (user) {
-      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear)
+      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear,campus,program,semester,program_type)
         .then((res) => {
           console.log("brige details: ", res);
           const newRows = res.map((row: { rollno: string; marks: string; name: string }) => {
@@ -196,6 +201,10 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: false,
+        semester:semester,
+        program:program,
+        program_type:program_type,
+        campus:campus
       };
     });
 
@@ -267,6 +276,10 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: true,
+        campus:campus,
+        program:program,
+        program_type:program_type,
+        semester:semester
       };
     });
 
@@ -314,6 +327,10 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: false,
+        campus:campus,
+        semester:semester,
+        program:program,
+        program_type:program_type
       };
     });
 

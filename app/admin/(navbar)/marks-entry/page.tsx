@@ -146,7 +146,7 @@ export default function Marks() {
   const router = useRouter();
   const [globalFreeze, setGlobalFreeze] = useState(false);
   const [save, setSave] = useState(true);
-  const bridgeCourseList = ["Applied Mathematics-II", "Basic Sciences (Applied Chemistry)", "Basic Sciences (Applied Physics)"];
+  const bridgeCourseList = ["Applied Mathematics-II","Applied Mathematics II", "Basic Sciences (Applied Chemistry)", "Basic Sciences (Applied Physics)"];
   const [allMarksControl, setAllMarksControl] = useState<marksControlType[]>([]);
   const [marksControl, setMarksControl] = useState(false);
 
@@ -907,6 +907,8 @@ export default function Marks() {
                           academicYear={selectedAcademicYear}
                           course={selectedCourse}
                           campus={selectedCampus}
+                          semester={selectedSemester}
+                          program_type={selectedProgramCategory}
                         />
                       )}
                     </CustomTabPanel>
