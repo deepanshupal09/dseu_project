@@ -4,11 +4,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { fetchCoursesBySemester, fetchMarksDetailsController } from "@/app/actions/api";
+import { fetchCoursesBySemester, fetchMarksDetailsController, sendEmails } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { TransformedType, useData } from "@/contexts/DataContext";
-import { Box, ButtonProps, Snackbar } from "@mui/material";
+import { Box, Button, ButtonProps, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
 import {
   DataGrid,
@@ -266,14 +266,32 @@ export default function Marks() {
       );
     }
   }, [selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester, selectedCourse]);
+  const sendEmailsAPI=async()=>{
+    try{
+      
 
-  return (
+  console.log("hathi")  
+    // await sendEmails();
+    setAlert(true);
+    setMessage('Email sent successfully')
+  }
+    catch(error){
+      setAlert(true);
+      setMessage("Error occured")
+      console.log(error);
+    }
+  }
+
+   return (
     <>
       <div className="bg-[#dfdede] mt-2"></div>
       <div className="announcement bg-dseublue py-2 px-4 rounded shadow absolute top-[130px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
         <h1 className="text-2xl text-white font-bold text-center">Marks Status </h1>
       </div>
       <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
+        <Button onClick={sendEmailsAPI} variant='contained' >
+          Send Email
+        </Button>
         {/* <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">SELECT</h2>
         {data && (
           <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">

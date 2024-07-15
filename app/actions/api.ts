@@ -1031,6 +1031,48 @@ export async function fetchBridgeDetails(token: string, email: string, course_co
         throw error;
     }
 }
+export async function fetchAllMarksheetController(academicyear: string,token:string) {
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllMarkSheetsController`, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          academicyear: academicyear,
+          token : token, 
+        },
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log(errorText);
+        throw new Error(errorText);
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+export async function sendEmails(){
+    try{
+        // const response ={ok:true}
+        const response=await fetch(`${process.env.BACKEND_URL}/api/admin/sendEmailNotFreeze`)
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log(errorText);
+            throw new Error(errorText);
+          }
+      
+          const data = await response.json();
+          return data;
+    }
+    catch(error){
+        throw error;
+    }
+}
 export async function deleteBridgeDetails(token: string, rollno: string, course_code: string, academic_year: string) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/deleteBridgeDetails`, {
