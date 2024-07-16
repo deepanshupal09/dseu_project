@@ -139,6 +139,7 @@ app.get("/fetchAllResultController",marks_controller.fetchAllResultController);
 app.get("/fetchAllMarkSheetsController",marks_controller.fetchAllMarkSheetsController);
 app.get("/test",marks_controller.test);
 app.get("/sendEmailNotFreeze",marks_controller.sendEmailNotFreeze);
+app.get("/fetchMarksDetailsController",marks_controller.fetchMarksDetailsController);
 
 
 

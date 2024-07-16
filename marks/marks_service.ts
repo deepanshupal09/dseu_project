@@ -890,27 +890,66 @@ export function fetchMarkControlDetailsService(): Promise<any> {
     });
 }
 
-export function fetchAllResultService(academic_year : string): Promise<any> {
+export function fetchAllResultService(academic_year: string): Promise<any> {
     return new Promise((resolve, reject) => {
       Promise.all([
         fetchAllResultModal(academic_year),
         fetchExternalResultModal(academic_year),
         fetchInternalResultModal(academic_year),
         fetchAllResultBridgeModal(academic_year)
-      ]).then(([aggregateMarksResults,internalMarksResults, externalMarksResults, bridgeResults]) => {
-        const results = [
-          { aggregate_marks: aggregateMarksResults.rows },
-          { continuous_evaluation: internalMarksResults.rows },
-          { endSem_evaluation: externalMarksResults.rows},
-          { bridge: bridgeResults.rows }
-        ];
-        resolve(results);
+      ]).then(([aggregateMarksResults, internalMarksResults, externalMarksResults, bridgeResults]) => {
+  
+        const studentDataMap: Record<string, any> = {};
+  
+        // Helper function to create a composite key
+        const createCompositeKey = (student: any) => {
+          return `${student.rollno}-${student.course_code}-${student.campus}-${student.program}-${student.program_type}-${student.semester}`;
+        };
+  
+        // Helper function to add marks to the student data map
+        const addMarksToStudent = (marksData: any[], marksType: string) => {
+          marksData.forEach(student => {
+            const compositeKey = createCompositeKey(student);
+            if (!studentDataMap[compositeKey]) {
+              studentDataMap[compositeKey] = {
+                rollno: student.rollno,
+                course_code: student.course_code,
+                campus: student.campus,
+                program: student.program,
+                program_type: student.program_type,
+                semester: student.semester,
+                name: student.name,
+                father: student.father,
+                mother: student.mother,
+                guardian: student.guardian,
+                abc_id: student.abc_id,
+                aadhar: student.aadhar,
+                year_of_admission: student.year_of_admission,
+                academic_year: student.academic_year,
+                aggregate_marks: null,
+                continuous_evaluation: null,
+                endSem_evaluation: null,
+                bridge: null
+              };
+            }
+            studentDataMap[compositeKey][marksType] = student.marks;
+          });
+        };
+  
+        addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
+        addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
+        addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
+        addMarksToStudent(bridgeResults.rows, 'bridge');
+  
+        const combinedResults = Object.values(studentDataMap);
+        resolve(combinedResults);
       }).catch((error) => {
         console.log("error: ", error);
         reject(error);
       });
     });
   }
+  
 
 
   export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
