@@ -254,7 +254,7 @@ export default function Registration() {
                             Name of the Student: <span className="font-semibold">{personalDetails.name}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
-                            Father's name: <span className="font-semibold">{personalDetails.father}</span>
+                            {"Father's"} name: <span className="font-semibold">{personalDetails.father}</span>
                         </div>
                     </div>
                     <div className="flex">
@@ -262,7 +262,7 @@ export default function Registration() {
                             Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
-                            Mother's name: <span className="font-semibold">{personalDetails.mother}</span>
+                            {"Mother's name:"} <span className="font-semibold">{personalDetails.mother}</span>
                         </div>
                     </div>
                 </>
@@ -275,7 +275,7 @@ export default function Registration() {
                             Name of the Student: <span className="font-semibold">{personalDetails.name}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
-                            Father's name: <span className="font-semibold">{personalDetails.father}</span>
+                            {"Father's"} name: <span className="font-semibold">{personalDetails.father}</span>
                         </div>
                     </div>
                     <div className="flex">
@@ -293,7 +293,7 @@ export default function Registration() {
                             Name of the Student: <span className="font-semibold">{personalDetails.name}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
-                            Mother's name: <span className="font-semibold">{personalDetails.mother}</span>
+                            {"Mother's"} name: <span className="font-semibold">{personalDetails.mother}</span>
                         </div>
                     </div>
                     <div className="flex">
@@ -311,7 +311,7 @@ export default function Registration() {
                             Name of the Student: <span className="font-semibold">{personalDetails.name}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
-                            Guardian's name: <span className="font-semibold">{personalDetails.guardian}</span>
+                            {"Guardian's"} name: <span className="font-semibold">{personalDetails.guardian}</span>
                         </div>
                     </div>
                     <div className="flex">
