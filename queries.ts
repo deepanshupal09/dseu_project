@@ -106,7 +106,7 @@ export const fetchSpecialization: string = `
   SELECT program FROM specialization WHERE special=$1;
 `;
 
-
+//currently not used below query
 export const fetchExamRegistrationByRollNo: string = `
     SELECT er.course_code, c.course_name, er.last_modified, sc.course_type
     FROM exam_registeration er 
@@ -116,6 +116,32 @@ export const fetchExamRegistrationByRollNo: string = `
     WHERE er.rollno=$1;
 `;
 
+export const fetchExamRegistrationByRoll: string = `
+    SELECT course_code, last_modified
+    FROM exam_registeration
+    WHERE rollno = $1;
+`;
+
+export const fetchCourseDetailsByRoll: string = `
+    SELECT course_code, course_name
+    FROM courses
+    WHERE course_code = ANY($1);
+`;
+
+export const fetchUserDetailsByRoll: string = `
+    SELECT rollno, program_type, program, campus
+    FROM users
+    WHERE rollno = $1;
+`;
+
+export const fetchSemesterCourseDetailsByRoll: string = `
+    SELECT course_code, course_type
+    FROM semester_course
+    WHERE course_code = ANY($1)
+    AND program_type = $2
+    AND program = $3
+    AND campus = $4;
+`;
 
 export const fetchExamRegistrationByCourseCode: string = `
   SELECT u.name, er.rollno, u.program, u.semester FROM exam_registeration er

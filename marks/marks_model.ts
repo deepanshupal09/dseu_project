@@ -6,7 +6,28 @@ import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkContr
     fetchCoursesQuery,
     fetchInternalMarksQuery,
     fetchExternalMarksQuery,
-    fetchAggregateMarksQuery} from "./marks_queries";
+    fetchAggregateMarksQuery,
+    fetchInternalMarks,
+    fetchSemesterCourse,
+    fetchCourseNames,
+    fetchExternalMarks,
+    fetchExternalSemesterCourse,
+    fetchExternalCourseNames,
+    fetchAggregateMarks,
+    fetchAggregateSemesterCourse,
+    fetchAggregateCourseNames} from "./marks_queries";
+
+function queryDatabase(query: string, params: any[]): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(query, params, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string, campus: string, program: string, program_type: string, semester: string) {
     return new Promise((resolve, reject) => {
@@ -437,41 +458,82 @@ export function toggleResultControlModal(
     });
 }
 
-export function fetchMarksInternalModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksInternal, [rollno, academic_year], (error, results) => {
-            if (error) {
-                console.log("error: ", error);
-                reject(error);
-            } else {
-                resolve(results);
-            }
+export async function fetchMarksInternalModal(rollno: string, academic_year: string, semester:number): Promise<any> {
+    try {
+        const [internalMarksResult, semesterCourseResult, courseNamesResult] = await Promise.all([
+            queryDatabase(fetchInternalMarks, [rollno, academic_year]),
+            queryDatabase(fetchSemesterCourse, [rollno, academic_year]),
+            queryDatabase(fetchCourseNames, [rollno, academic_year])
+        ]);
+
+        // Combine the results
+        const combinedResult = internalMarksResult.rows.map(mark => {
+            const semesterCourse = semesterCourseResult.rows.find(sc => sc.course_code === mark.course_code);
+            const courseName = courseNamesResult.rows.find(c => c.course_code === mark.course_code);
+            return {
+                ...mark,
+                credit: semesterCourse ? semesterCourse.credit : null,
+                course_name: courseName ? courseName.course_name : null
+            };
         });
-    });
+
+        return combinedResult;
+    } catch (error) {
+        console.log("error: ", error);
+        throw error;
+    }
 }
-export function fetchMarksExternalModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksExternal, [rollno, academic_year], (error, results) => {
-            if (error) {
-                console.log("error: ", error);
-                reject(error);
-            } else {
-                resolve(results);
-            }
+
+export async function fetchMarksExternalModal(rollno: string, academic_year: string, semester:number): Promise<any> {
+    try {
+        const [externalMarksResult, semesterCourseResult, courseNamesResult] = await Promise.all([
+            queryDatabase(fetchExternalMarks, [rollno, academic_year]),
+            queryDatabase(fetchExternalSemesterCourse, [rollno, academic_year]),
+            queryDatabase(fetchExternalCourseNames, [rollno, academic_year])
+        ]);
+
+        // Combine the results
+        const combinedResult = externalMarksResult.rows.map(mark => {
+            const semesterCourse = semesterCourseResult.rows.find(sc => sc.course_code === mark.course_code);
+            const courseName = courseNamesResult.rows.find(c => c.course_code === mark.course_code);
+            return {
+                ...mark,
+                credit: semesterCourse ? semesterCourse.credit : null,
+                course_name: courseName ? courseName.course_name : null
+            };
         });
-    });
+
+        return combinedResult;
+    } catch (error) {
+        console.log("error: ", error);
+        throw error;
+    }
 }
-export function fetchMarksAggregateModal(rollno: string, academic_year: string, semester: number): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject) => {
-        pool.query(fetchMarksAggregate, [rollno, academic_year], (error, results) => {
-            if (error) {
-                console.log("error: ", error);
-                reject(error);
-            } else {
-                resolve(results);
-            }
+
+export async function fetchMarksAggregateModal(rollno: string, academic_year: string, semester:number): Promise<any> {
+    try {
+        const [aggregateMarksResult, semesterCourseResult, courseNamesResult] = await Promise.all([
+            queryDatabase(fetchAggregateMarks, [rollno, academic_year]),
+            queryDatabase(fetchAggregateSemesterCourse, [rollno, academic_year]),
+            queryDatabase(fetchAggregateCourseNames, [rollno, academic_year])
+        ]);
+
+        // Combine the results
+        const combinedResult = aggregateMarksResult.rows.map(mark => {
+            const semesterCourse = semesterCourseResult.rows.find(sc => sc.course_code === mark.course_code);
+            const courseName = courseNamesResult.rows.find(c => c.course_code === mark.course_code);
+            return {
+                ...mark,
+                credit: semesterCourse ? semesterCourse.credit : null,
+                course_name: courseName ? courseName.course_name : null
+            };
         });
-    });
+
+        return combinedResult;
+    } catch (error) {
+        console.log("error: ", error);
+        throw error;
+    }
 }
 
 export function fetchStudentsCourseCodeModal(course_code: string, campus: string, program_type: string, program: string, semester: string, academic_year: string): Promise<QueryResult<any>> {

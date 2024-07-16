@@ -39,7 +39,10 @@ import {
     fetchAllStudentsModals,
     fetchAllRegisterStudentsModal,
     fetchAllStudentCampusModal,
-    fetchAllRegisterStudentCampusModal
+    fetchAllRegisterStudentCampusModal,
+    fetchUserDetails,
+    fetchExamCourseDetails,
+    fetchSemesterCourseDetails
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
@@ -325,17 +328,50 @@ export function fetchTheCoursesRollNo(rollno: string): Promise<any> {
     });
 }
 
-export function fetchTheExamRegistration(rollno: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        fetchExamRegistration(rollno)
-            .then((result) => {
-                resolve(result.rows);
-            })
-            .catch((error) => {
-                console.log("error in fetching exam registeration: ", error);
-                reject("Internal server error fetch exam registeration 1");
-            });
-    });
+export async function fetchTheExamRegistration(rollno: string): Promise<any> {
+    try {
+        const examRegistrationPromise = fetchExamRegistration(rollno);
+        const userDetailsPromise = fetchUserDetails(rollno);
+
+        const [examRegistration, userDetails] = await Promise.all([
+            examRegistrationPromise,
+            userDetailsPromise
+        ]);
+
+        if (examRegistration.rows.length === 0) {
+            throw new Error("No exam registration found for the given roll number");
+        }
+
+        const courseCodes = examRegistration.rows.map(row => row.course_code);
+
+        const [examCourseDetails, semesterCourseDetails] = await Promise.all([
+            fetchExamCourseDetails(courseCodes),
+            fetchSemesterCourseDetails(
+                courseCodes,
+                userDetails.rows[0].program_type,
+                userDetails.rows[0].program,
+                userDetails.rows[0].campus
+            )
+        ]);
+
+        // Combine and transform the data
+        const combinedData = examRegistration.rows.map(regItem => {
+            const courseDetails = examCourseDetails.rows.find(c => c.course_code === regItem.course_code);
+            const semesterDetails = semesterCourseDetails.rows.find(s => s.course_code === regItem.course_code);
+            
+            return {
+                course_code: regItem.course_code,
+                course_name: courseDetails ? courseDetails.course_name : '',
+                last_modified: regItem.last_modified,
+                course_type: semesterDetails ? semesterDetails.course_type : ''
+            };
+        });
+
+        return combinedData;
+    } catch (error) {
+        console.error("Error in fetching exam registration:", error);
+        throw new Error("Internal server error: Unable to fetch exam registration");
+    }
 }
 
 export function fetchTheExamRegistrationCourse(

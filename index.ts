@@ -117,6 +117,7 @@ app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);
 // app.get("/updateMultipleDetailsByRollno", controller.updateMultipleDetailsByRollno);
 app.post("/updateExamControl", controller.updateExamControl);
+app.get("/fetchExamRegistrationByRollNo", controller.fetchExamRegistrationByRollNo);
 // app.get("/fetchExamRegistrationByProgramAndSemester", controller.fetchExamRegistrationByProgramAndSemester);
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);

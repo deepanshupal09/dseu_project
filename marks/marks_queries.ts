@@ -49,7 +49,7 @@ export const toggleResultControl:string =`
 `;
 
 
-
+//currently not used below query
 export const fetchMarksInternal: string = `
   SELECT DISTINCT im.course_code, im.marks, sc.credit, c.course_name
   FROM internal_marks AS im
@@ -59,6 +59,33 @@ export const fetchMarksInternal: string = `
   WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
 `;
 
+export const fetchInternalMarks: string = `
+  SELECT DISTINCT course_code, marks
+  FROM internal_marks
+  WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true;
+`;
+
+export const fetchSemesterCourse: string = `
+  SELECT course_code, credit
+  FROM semester_course
+  WHERE course_code IN (
+    SELECT course_code
+    FROM internal_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
+`;
+
+export const fetchCourseNames: string = `
+  SELECT course_code, course_name
+  FROM courses
+  WHERE course_code IN (
+    SELECT course_code
+    FROM internal_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
+`;
+
+//currently not used below query
 export const fetchMarksExternal: string = `
   SELECT DISTINCT im.course_code, im.marks ,sc.credit, c.course_name
   FROM external_marks AS im
@@ -68,6 +95,34 @@ export const fetchMarksExternal: string = `
   WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
 `;
 
+
+export const fetchExternalMarks: string = `
+  SELECT DISTINCT course_code, marks
+  FROM external_marks
+  WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true;
+`;
+
+export const fetchExternalSemesterCourse: string = `
+  SELECT course_code, credit
+  FROM semester_course
+  WHERE course_code IN (
+    SELECT course_code
+    FROM external_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
+`;
+
+export const fetchExternalCourseNames: string = `
+  SELECT course_code, course_name
+  FROM courses
+  WHERE course_code IN (
+    SELECT course_code
+    FROM external_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
+`;
+
+//currently not used below query
 export const fetchMarksAggregate: string = `
   SELECT DISTINCT im.course_code, im.marks, im.rollno, im.campus, im.program_type, im.program, im.semester, sc.credit, c.course_name, im.freeze_marks
   FROM aggregate_marks AS im
@@ -75,6 +130,32 @@ export const fetchMarksAggregate: string = `
   JOIN semester_course AS sc ON im.course_code=sc.course_code
   JOIN courses AS c ON im.course_code=c.course_code 
   WHERE im.academic_year = $2 AND im.rollno = $1 and im.freeze_marks=true;
+`;
+
+export const fetchAggregateMarks: string = `
+  SELECT DISTINCT course_code, marks, rollno, campus, program_type, program, semester, freeze_marks
+  FROM aggregate_marks
+  WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true;
+`;
+
+export const fetchAggregateSemesterCourse: string = `
+  SELECT course_code, credit
+  FROM semester_course
+  WHERE course_code IN (
+    SELECT course_code
+    FROM aggregate_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
+`;
+
+export const fetchAggregateCourseNames: string = `
+  SELECT course_code, course_name
+  FROM courses
+  WHERE course_code IN (
+    SELECT course_code
+    FROM aggregate_marks
+    WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
+  );
 `;
 
 

@@ -39,7 +39,11 @@ import {
     fetchAllStudents,
     fetchAllRegisterStudents,
     fetchAllStudentCampus,
-    fetchAllRegisterStudentCampus
+    fetchAllRegisterStudentCampus,
+    fetchExamRegistrationByRoll,
+    fetchCourseDetailsByRoll,
+    fetchUserDetailsByRoll,
+    fetchSemesterCourseDetailsByRoll
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -273,13 +277,86 @@ export function fetchCoursesRollNo(rollno: string): Promise<QueryResult<any>> {
     });
 }
 
-export function fetchExamRegistration(
-    rollno: string
+// export function fetchExamRegistration(
+//     rollno: string
+// ): Promise<QueryResult<any>> {
+//     return new Promise((resolve, reject) => {
+//         pool.query(
+//             fetchExamRegistrationByRollNo,
+//             [rollno],
+//             (error, results) => {
+//                 if (error) {
+//                     reject(error);
+//                 } else {
+//                     resolve(results);
+//                 }
+//             }
+//         );
+//     });
+// }
+
+
+export function fetchExamRegistration(rollno: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            fetchExamRegistrationByRoll,
+            [rollno],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}
+
+// Model for fetching course details
+export function fetchExamCourseDetails(courseCodes: string[]): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            fetchCourseDetailsByRoll,
+            [courseCodes],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}
+
+// Model for fetching user details
+export function fetchUserDetails(rollno: string): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            fetchUserDetailsByRoll,
+            [rollno],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            }
+        );
+    });
+}
+
+// Model for fetching semester course details
+export function fetchSemesterCourseDetails(
+    courseCodes: string[], 
+    programType: string, 
+    program: string, 
+    campus: string
 ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(
-            fetchExamRegistrationByRollNo,
-            [rollno],
+            fetchSemesterCourseDetailsByRoll,
+            [courseCodes, programType, program, campus],
             (error, results) => {
                 if (error) {
                     reject(error);
