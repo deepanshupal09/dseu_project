@@ -2,25 +2,28 @@
 
 import { StudentDetails } from "../(navbar)/profile/page";
 
-export async function fetchAllMarks() {
-    const res = await fetch(`${process.env.BACKEND_URL}/fetchAllResultController`, {
+export async function fetchAllMarks(token: string, academic_year: string) {
+    try {
+      const res = await fetch(`${process.env.BACKEND_URL}/fetchAllResultController`, {
         method: "GET",
         mode: "cors",
         cache: "no-cache",
         headers: {
-            "Content-Type": "application/json",
-            "academicyear":"2023-2024"
+          "Content-Type": "application/json",
+          "token": token,
+          "academicyear": academic_year
         },
-    })
-        .then(async (res) => {
-            const data =await res.json();
-            console.log(data)
-            return data;
-      })
-        .catch((error) => {
-            throw error;
-        });
-}
+      });
+      
+      const data = await res.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching marks:", error);
+      throw error;
+    }
+  }
+  
 
 export async function signup(body: any) {
     const res = await fetch(`${process.env.BACKEND_URL}/signup`, {
