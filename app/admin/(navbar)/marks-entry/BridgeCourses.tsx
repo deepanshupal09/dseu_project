@@ -485,7 +485,7 @@ function BridgeCoursesTable({
                           setDel(true);
                           setDelIndex(index);
                         }}
-                        disabled={rows.length === 1}
+                        // disabled={rows.length === 1}
                         variant="text"
                         color="error"
                         aria-label="delete"
