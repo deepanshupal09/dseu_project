@@ -26,7 +26,6 @@ import {
     checkDepartmentModel,
     fetchBridgeDetailsModel,
     deleteBridgeDetailsModel,
-    fetchMarksDetailsModal,
     fetchBridgeStudentDetailsModal,
     toggleResultControlModal,
     fetchResultControlModal,
@@ -36,7 +35,12 @@ import {
     fetchInternalResultModal,
     fetchAllMarkSheetModal,
     departmentAggregateDetailsModal,
-    departmentEmailsModal
+    departmentEmailsModal,
+    fetchSemesterCoursesModal,
+    fetchCoursesModal,
+    fetchInternalMarksModal,
+    fetchExternalMarksModal,
+    fetchAggregateMarksModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -873,17 +877,6 @@ export function fetchMarkControlDetailsService(): Promise<any> {
     });
 }
 
-export function fetchMarksDetailsService() : Promise<any>{
-    return new Promise(async(resolve, reject) => {
-        fetchMarksDetailsModal().then((results)=>{
-            resolve(results.rows);
-        }).catch((error)=>{
-            console.log("error: ", error);
-            reject(error);
-        })
-    })
-}
-
 export function fetchAllResultService(academic_year : string): Promise<any> {
     return new Promise((resolve, reject) => {
       Promise.all([
@@ -1049,3 +1042,53 @@ export function fetchDepartmentDetailsService(): Promise<ResultObject> {
       });
     });
   }
+
+  export function fetchMarksDetailsServiceSecond(): Promise<any> {
+    return new Promise((resolve, reject) => {
+        Promise.all([
+            fetchSemesterCoursesModal(),
+            fetchCoursesModal(),
+            fetchInternalMarksModal(),
+            fetchExternalMarksModal(),
+            fetchAggregateMarksModal()
+        ]).then(([semesterCourses, courses, internalMarks, externalMarks, aggregateMarks]) => {
+            // Combine the results here
+            const result = semesterCourses.rows.map(sc => {
+                const course = courses.rows.find(c => c.course_code === sc.course_code);
+                const internal = internalMarks.rows.find(im => 
+                    im.campus === sc.campus && 
+                    im.program_type === sc.program_type && 
+                    im.program === sc.program && 
+                    im.semester === sc.semester && 
+                    im.course_code === sc.course_code
+                );
+                const external = externalMarks.rows.find(em => 
+                    em.campus === sc.campus && 
+                    em.program_type === sc.program_type && 
+                    em.program === sc.program && 
+                    em.semester === sc.semester && 
+                    em.course_code === sc.course_code
+                );
+                const aggregate = aggregateMarks.rows.find(am => 
+                    am.campus === sc.campus && 
+                    am.program === sc.program && 
+                    am.semester === sc.semester && 
+                    am.course_code === sc.course_code
+                );
+
+                return {
+                    ...sc,
+                    course_name: course ? course.course_name : null,
+                    internal: internal ? internal.internal : false,
+                    external: external ? external.external : false,
+                    aggregate: aggregate ? aggregate.aggregate : false
+                };
+            });
+
+            resolve(result);
+        }).catch((error) => {
+            console.log("error: ", error);
+            reject(error);
+        });
+    });
+}

@@ -18,13 +18,13 @@ import {
     checkDepartmentService,
     fetchBridgeDetailsService,
     deleteBridgeDetailsService,
-    fetchMarksDetailsService,
     toggleResultControlService,
     fetchAllResultService,
     fetchAllMarkSheetsService,
     fetchDepartmentDetailsService,
     ResultObject,
     InfoGroup,
+    fetchMarksDetailsServiceSecond,
 } from "./marks_service";
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
@@ -355,7 +355,7 @@ const fetchMarksDetailsController = (req:Request, res:Response)=>{
     try{
       // const details= req.body;
       console.log("here")
-      fetchMarksDetailsService().then((results)=>{
+      fetchMarksDetailsServiceSecond().then((results)=>{
         console.log("resulsets: ", results.length)
         res.status(200).send(results);
       }).catch((error)=>{
@@ -513,5 +513,5 @@ export {
     fetchAllResultController,
     fetchAllMarkSheetsController,
     test,
-    sendEmailNotFreeze
+    sendEmailNotFreeze,
 };

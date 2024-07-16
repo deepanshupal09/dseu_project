@@ -1,7 +1,12 @@
 import { QueryResult } from "pg";
 import pool from "../db";
-import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchMarksDetailsQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery, fetchInternalResultQuery, fetchExternalResultQuery, fetchAllMarkSheetQuery, departmentAggregateDetailsQuery, 
-    departmentEmails } from "./marks_queries";
+import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkControl, fetchMarksInternal, fetchMarksExternal, fetchMarksAggregate, fetchUsersByCourseCode, fetchDepartDetailsByEmailid, resetPassword, fetchFreezeDetailsQuery, getEmailidAdminQuery, fetchMarkControlDetailsQuery, updateStudentDetailsToAggregateQuery, fetchBridgeStudentDetails, toggleResultControl, fetchResultControlQuery, fetchAllResultQuery, fetchAllResultBridgeQuery, fetchInternalResultQuery, fetchExternalResultQuery, fetchAllMarkSheetQuery, departmentAggregateDetailsQuery, 
+    departmentEmails, 
+    fetchSemesterCoursesQuery,
+    fetchCoursesQuery,
+    fetchInternalMarksQuery,
+    fetchExternalMarksQuery,
+    fetchAggregateMarksQuery} from "./marks_queries";
 
 export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
     return new Promise((resolve, reject) => {
@@ -545,21 +550,6 @@ export function fetchMarkControlDetailsModal(): Promise<QueryResult<any>> {
     });
 }
 
-export function fetchMarksDetailsModal(): Promise<QueryResult<any>> {
-    return new Promise((resolve, reject)=>{
-        pool.query(fetchMarksDetailsQuery, (error, results)=>{
-            if(error){
-                console.log("error: ", error);
-                reject(error);
-            } else{
-                resolve(results);
-            }
-        });
-    });
-}
-
-
-
 export function fetchBridgeStudentDetailsModal(rollno: string, academic_year: string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(fetchBridgeStudentDetails, [rollno, academic_year], (error, results) => {
@@ -683,3 +673,67 @@ export function departmentEmailsModal(campus:string, program_type:string, progra
 
 
 
+export function fetchSemesterCoursesModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchSemesterCoursesQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchCoursesModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchCoursesQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchInternalMarksModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchInternalMarksQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchExternalMarksModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchExternalMarksQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchAggregateMarksModal(): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(fetchAggregateMarksQuery, (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}

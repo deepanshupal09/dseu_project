@@ -44,4 +44,5 @@ router.get("/fetchAllResultController",marks_controller.fetchAllResultController
 router.get("/fetchAllMarkSheetsController",marks_controller.fetchAllMarkSheetsController);
 router.get("/sendEmailNotFreeze",marks_controller.sendEmailNotFreeze);
 
+
 export default router;
