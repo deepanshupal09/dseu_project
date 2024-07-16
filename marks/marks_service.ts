@@ -106,9 +106,9 @@ export function checkDepartmentService(rollno: any, depEmail: any) {
     });
 }
 
-export function fetchBridgeDetailsService(email: string, course_code: string, academic_year: string) {
+export function fetchBridgeDetailsService(email: string, course_code: string, academic_year: string, campus:string, program: string, program_type:string, semester: string) {
     return new Promise((resolve, reject) => {
-        fetchBridgeDetailsModel(email, course_code, academic_year)
+        fetchBridgeDetailsModel(email, course_code, academic_year, campus, program, program_type, semester)
             .then((result: any) => {
                 resolve(result.rows);
             })

@@ -8,19 +8,19 @@ import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkContr
     fetchExternalMarksQuery,
     fetchAggregateMarksQuery} from "./marks_queries";
 
-export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string) {
+export function fetchBridgeDetailsModel(email: string, course_code: string, academic_year: string, campus: string, program: string, program_type: string, semester: string) {
     return new Promise((resolve, reject) => {
         const query = `
             SELECT b.rollno,b.marks, u.name,b.freeze
             FROM bridge_course b
             JOIN users u ON b.rollno = u.rollno
             JOIN departments d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
-            WHERE d.emailid = $1 AND b.course_code = $2 AND b.academic_year = $3;
+            WHERE d.emailid = $1 AND b.course_code = $2 AND b.academic_year = $3 AND b.campus = $4 AND b.program = $5 AND b.program_type = $6 AND b.semester = $7;
         `;
 
-        const values = [email, course_code, academic_year];
+        const values = [email, course_code, academic_year, campus, program, program_type, semester];
 
-        console.log("INTERNAL query:", query);
+        console.log("INTERNAL query:", query, values);
 
         pool.query(query, values, (error, results) => {
             if (error) {
@@ -56,15 +56,16 @@ export function deleteBridgeDetailsModel(rollno: string, course_code: string, ac
 export function insertBridgeDetailsModel(student: any): Promise<any> {
     return new Promise((resolve, reject) => {
         const query = `
-            INSERT INTO bridge_course (rollno, course_code, marks, academic_year, "freeze")
-            VALUES ($1, $2, $3, $4, $5)
-            ON CONFLICT (rollno, course_code, academic_year)
+            INSERT INTO bridge_course (rollno, course_code, marks, academic_year, "freeze", campus, program_type, program, semester)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            ON CONFLICT (rollno, course_code, academic_year, campus, program_type, program, semester)
             DO UPDATE SET
                 marks = EXCLUDED.marks,
                 "freeze" = EXCLUDED."freeze"
         `;
+        console.log("students: ", student)
 
-        const values = [student.rollno, student.course_code, student.marks, student.academic_year, student.freeze];
+        const values = [student.rollno, student.course_code, student.marks, student.academic_year, student.freeze, student.campus, student.program_type, student.program, student.semester];
 
         console.log("INTERNAL query:", query);
         console.log("values: ", values)

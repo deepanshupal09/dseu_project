@@ -43,9 +43,9 @@ const insertBridgeDetails = (req: Request, res: Response): void => {
 };
 
 const fetchBridgeDetails = (req: Request, res: Response): void => {
-    const { email, course_code, academic_year } = req.body;
+    const { email, course_code, academic_year, campus, program, program_type, semester } = req.body;
     // console.log("body: ", req.body)
-    fetchBridgeDetailsService(email, course_code, academic_year)
+    fetchBridgeDetailsService(email, course_code, academic_year, campus, program, program_type, semester)
         .then((list: any) => {
             res.status(200).send(list);
         })
