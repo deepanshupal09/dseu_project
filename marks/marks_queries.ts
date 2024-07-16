@@ -180,7 +180,7 @@ export const fetchExternalResultQuery: string=`
 export const fetchAllResultBridgeQuery: string=`
   SELECT * FROM users AS u
   JOIN bridge_course AS bc ON bc.rollno = u.rollno
-  WHERE bc.academic_year = $1 AND am."freeze" = true;
+  WHERE bc.academic_year = $1 AND bc."freeze" = true;
 `;
 
 export const fetchAllMarkSheetQuery: string=`
