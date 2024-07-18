@@ -897,7 +897,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
         fetchExternalResultModal(academic_year),
         fetchInternalResultModal(academic_year),
         fetchAllResultBridgeModal(academic_year)
-      ]).then(([aggregateMarksResults, internalMarksResults, externalMarksResults, bridgeResults]) => {
+      ]).then(([aggregateMarksResults,  externalMarksResults,internalMarksResults, bridgeResults]) => {
   
         const studentDataMap: Record<string, any> = {};
   
@@ -938,6 +938,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 full_mark_end: "25"
               };
             }
+            if(student.rollno==='41521032'){
+                
+            console.log(parseInt(student.semester),parseInt(student.user_semester))}
             studentDataMap[compositeKey][marksType] = student.marks;
             
             // Ensure credits and course_name are set even if they come from a different result set
