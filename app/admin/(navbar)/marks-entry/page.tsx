@@ -69,6 +69,7 @@ type StudentType = {
   rollno: string;
   name: string;
   marks: string;
+  reappear: string;
 };
 
 interface TabPanelProps {
@@ -324,6 +325,7 @@ export default function Marks() {
             rollno: student.rollno,
             name: student.name,
             marks: "",
+            reappear: "Regular"
           }));
 
           const allMarks = await fetchAllMarksControl(token);
@@ -378,7 +380,6 @@ export default function Marks() {
               }
               // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
               console.log("marks: ", marks);
-
               setStudentList(mergeStudentLists(formattedStudentList, marks));
             }
           }
@@ -411,7 +412,7 @@ export default function Marks() {
       campus: selectedCampus,
       program_type: selectedProgramCategory,
       program: selectedProgram,
-      semester: selectedSemester,
+      semester: (selectedSemester),
       academic_year: selectedAcademicYear,
       course_code: course_code,
       rollno: rollno,
@@ -459,7 +460,7 @@ export default function Marks() {
       campus: selectedCampus,
       program_type: selectedProgramCategory,
       program: selectedProgram,
-      semester: selectedSemester,
+      semester: (selectedSemester),
       academic_year: selectedAcademicYear,
       course_code: course_code,
       rollno: rollno,
@@ -484,6 +485,7 @@ export default function Marks() {
       }
 
       setLoading(false);
+      console.log("details: ", details)
 
       if (!res || res.length === 0) {
         return [];
@@ -497,6 +499,7 @@ export default function Marks() {
         rollno: student.rollno,
         name: student.name,
         marks: student.marks,
+        reappear: student.reappear?'Reappear':'Regular'
       }));
     } catch (error) {
       setLoading(false);
@@ -948,7 +951,8 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-
+              setFreeze(false);
+              
               if (students && students?.length > 0) {
                 let temp = mergeStudentLists(studentList, students);
                 setStudentList(temp);
@@ -968,6 +972,7 @@ export default function Marks() {
                 studentList.map((student) => student.rollno)
               );
               console.log("here");
+              setFreeze(false);
 
               if (students && students?.length > 0) {
                 console.log("here 1");

@@ -40,6 +40,7 @@ type StudentType = {
   rollno: string;
   name: string;
   marks: string;
+  reappear: string;
 };
 
 type Error = {
@@ -115,7 +116,7 @@ export default function MarksTable({
       rollno: student.rollno,
       name: student.name,
       marks: student.marks,
-      reappear: "Regular",
+      reappear: student.reappear,
     }));
 
     // console.log("converted: ", marksArray);
@@ -275,6 +276,7 @@ export default function MarksTable({
                   rollno: columns[1],
                   marks: columns[3],
                   sno: -1,
+                  reappear: "Regular"
                 };
               });
               updatedStudentList.sort((a, b) => a.rollno.localeCompare(b.rollno));
