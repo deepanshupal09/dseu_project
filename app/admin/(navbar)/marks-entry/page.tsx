@@ -558,6 +558,7 @@ export default function Marks() {
   }
 
   useEffect(() => {
+    setLoading(true);
     fetchStudentMarks(
       subjectType,
       value,
@@ -568,20 +569,23 @@ export default function Marks() {
         // console.log("freeze fetched control: ", fetchedControl)
         // if (fetchedControl) {
           setMarksControl(fetchedControl||false);
-        // }
-        setAllMarksControl(allMarks);
-        if (students && students.length > 0) {
-          fetchStudentList()
+          // }
+          setAllMarksControl(allMarks);
+          if (students && students.length > 0) {
+            fetchStudentList()
             .then((formattedStudentList) => {
+              setLoading(false)
               let temp = mergeStudentLists(formattedStudentList, students);
               console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp);
               setStudentList(temp);
             })
-            .catch((error) => {});
+            .catch((error) => {
+              setLoading(false)});
         } else {
           const newStudentList: StudentType[] = studentList.map((student) => {
             return { ...student, marks: "" };
           });
+          setLoading(false)
           setFreeze(false);
           setStudentList(newStudentList);
         }

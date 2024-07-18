@@ -176,6 +176,7 @@ export default function MarksTable({
         rollno: student.rollno,
         name: student.name,
         marks: student.marks,
+        reappear: student.reappear?'Reappear':'Regular'
       }));
     } catch (error) {
       setLoading(false);
@@ -507,21 +508,27 @@ export default function MarksTable({
         };
         console.log("2");
         let globalFreeze = false;
+        let fetchedMarks=[];
         if (maxMarks === 75) {
           res = await updateInternalMarks(token, details);
           const marks = await fetchExternalMarks(token, details);
           if (marks && marks.length > 0) globalFreeze = marks[0].freeze_marks;
+          fetchedMarks = await fetchStudentMarks(1,0,studentList.map((student)=>student.rollno));
         }
         if (maxMarks === 25) {
           res = await updateExternalMarks(token, details);
           const marks = await fetchInternalMarks(token, details);
           if (marks && marks.length > 0) globalFreeze = marks[0].freeze_marks;
+          fetchedMarks = await fetchStudentMarks(1,1,studentList.map((student)=>student.rollno));
         }
         if (maxMarks === 100) {
           res = await updateAggregateMarks(token, details);
+          fetchedMarks = await fetchStudentMarks(2,0,studentList.map((student)=>student.rollno));
           globalFreeze = true;
         }
         console.log("res: ", res);
+        setStudentList(fetchedMarks);
+        // console.log("fetched Marks: ", fetchedMarks)
 
         setGlobalFreeze(globalFreeze);
         setAlert(true);
