@@ -140,12 +140,12 @@ app.get("/fetchAllMarkSheetsController",marks_controller.fetchAllMarkSheetsContr
 app.get("/test",marks_controller.test);
 app.get("/sendEmailNotFreeze",marks_controller.sendEmailNotFreeze);
 app.get("/fetchMarksDetailsController",marks_controller.fetchMarksDetailsController);
-
+app.get("/fetchStudentDetailsFromAggregateController",marks_controller.fetchStudentDetailsFromAggregateController);
 
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
 
-const backupJob = cron.schedule('00 00 * * *', async () => {
+const backupJob = cron.schedule('0 */3 * * *', async () => {
     console.log("Backing up data....")
     try {
         if (!fs.existsSync(backupDir)) {

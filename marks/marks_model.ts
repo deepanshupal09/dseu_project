@@ -139,19 +139,18 @@ export function checkDepartmentModel(rollno: any, email: any) {
     });
 }
 
-export function fetchStudentDetailsFromInternal(data: { 
+export function fetchStudentDetailsFromInternal(
     details: { 
         campus: string; 
         program_type: string; 
         program: string; 
-        semester: number; 
+        semester: string; 
         academic_year: string; 
         course_code: string; 
         rollno: Array<string> 
-    } 
+    
 }): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        const details = data.details;
         console.log("details rollno: ", details.rollno);
 
         if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
@@ -188,7 +187,7 @@ export function fetchStudentDetailsFromInternal(data: {
                             const userSemester = semesterResult.rows[0]?.semester;
                             return {
                                 ...row,
-                                reappear: userSemester !== details.semester
+                                reappear: parseInt(userSemester) !== parseInt(details.semester)
                             };
                         })
                 );
@@ -207,19 +206,18 @@ export function fetchStudentDetailsFromInternal(data: {
     });
 }
 
-export function fetchStudentDetailsFromExternal(data: { 
+export function fetchStudentDetailsFromExternal(
     details: { 
         campus: string; 
         program_type: string; 
         program: string; 
-        semester: number; 
+        semester: string; 
         academic_year: string; 
         course_code: string; 
         rollno: Array<string> 
     } 
-}): Promise<QueryResult<any>> {
+): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        const details = data.details;
         console.log("details rollno: ", details.rollno);
 
         if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
@@ -256,7 +254,7 @@ export function fetchStudentDetailsFromExternal(data: {
                             const userSemester = semesterResult.rows[0]?.semester;
                             return {
                                 ...row,
-                                reappear: userSemester !== details.semester
+                                reappear: parseInt(userSemester) !== parseInt(details.semester)
                             };
                         })
                 );
@@ -444,19 +442,18 @@ export function updateStudentDetailsFromAggregate(details: { campus: string; pro
 }
 
 
-export function fetchStudentDetailsFromAggregate(data: { 
+export function fetchStudentDetailsFromAggregate( 
     details: { 
         campus: string; 
         program_type: string; 
         program: string; 
-        semester: number; 
+        semester: string; 
         academic_year: string; 
         course_code: string; 
         rollno: Array<string> 
     } 
-}): Promise<QueryResult<any>> {
+): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        const details = data.details;
         console.log("details rollno: ", details.rollno);
 
         if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
@@ -493,7 +490,7 @@ export function fetchStudentDetailsFromAggregate(data: {
                             const userSemester = semesterResult.rows[0]?.semester;
                             return {
                                 ...row,
-                                reappear: userSemester !== details.semester
+                                reappear: parseInt(userSemester) !== parseInt(details.semester)
                             };
                         })
                 );
