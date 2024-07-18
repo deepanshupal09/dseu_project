@@ -1,11 +1,11 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: "dasad",
+  user: "postgres",
   password: "1234",
   host: "localhost",
   port: 5432, // default Postgres port
-  database: "dseu_erp" ,
+  database: "dseu_local2" ,
   ssl: false
 });
 

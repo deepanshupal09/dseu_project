@@ -250,17 +250,49 @@ WHERE
     AND am.freeze_marks = true;
 `;
 
-export const fetchInternalResultQuery: string=`
-  SELECT * FROM users AS u
-  JOIN internal_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+export const fetchInternalResultQuery: string = `
+SELECT 
+    u.*,
+    am.*,
+    u.semester AS user_semester,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
+FROM 
+    users AS u 
+JOIN 
+    internal_marks AS am ON am.rollno = u.rollno 
+WHERE 
+    am.academic_year = $1 
+    AND am.freeze_marks = true;
 `;
 
-export const fetchExternalResultQuery: string=`
-  SELECT * FROM users AS u
-  JOIN external_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+export const fetchExternalResultQuery: string = `
+SELECT 
+    u.*,
+    am.*,
+    u.semester AS user_semester,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
+FROM 
+    users AS u 
+JOIN 
+    external_marks AS am ON am.rollno = u.rollno 
+WHERE 
+    am.academic_year = $1 
+    AND am.freeze_marks = true;
 `;
+
+// export const fetchInternalResultQuery: string=`
+//   SELECT * FROM users AS u
+//   JOIN internal_marks AS am ON am.rollno = u.rollno 
+//   WHERE am.academic_year = $1 AND am.freeze_marks = true;
+// `;
+
+// export const fetchExternalResultQuery: string=`
+//   SELECT * FROM users AS u
+//   JOIN external_marks AS am ON am.rollno = u.rollno 
+//   WHERE am.academic_year = $1 AND am.freeze_marks = true;
+// `;
 
 export const fetchAllResultBridgeQuery: string=`
   SELECT * FROM users AS u

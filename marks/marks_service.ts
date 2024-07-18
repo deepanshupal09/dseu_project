@@ -917,7 +917,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 campus: student.campus,
                 program: student.program,
                 program_type: student.program_type,
-                semester: student.semester,
+                semester: student.user_semester,
                 name: student.name,
                 father: student.father,
                 mother: student.mother,
