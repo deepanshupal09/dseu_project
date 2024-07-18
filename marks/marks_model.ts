@@ -15,7 +15,8 @@ import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkContr
     fetchExternalCourseNames,
     fetchAggregateMarks,
     fetchAggregateSemesterCourse,
-    fetchAggregateCourseNames} from "./marks_queries";
+    fetchAggregateCourseNames,
+    getSemester} from "./marks_queries";
 
 function queryDatabase(query: string, params: any[]): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
@@ -138,44 +139,138 @@ export function checkDepartmentModel(rollno: any, email: any) {
     });
 }
 
-export function fetchStudentDetailsFromInternal(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
+export function fetchStudentDetailsFromInternal(data: { 
+    details: { 
+        campus: string; 
+        program_type: string; 
+        program: string; 
+        semester: number; 
+        academic_year: string; 
+        course_code: string; 
+        rollno: Array<string> 
+    } 
+}): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
+        const details = data.details;
+        console.log("details rollno: ", details.rollno);
+
+        if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
+            reject(new Error("Invalid or missing rollno array"));
+            return;
+        }
+
         const query = `
-            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code, im.created_at
             FROM internal_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
+            WHERE im.campus=$1 AND im.program_type=$2 AND im.program=$3 AND im.semester=$4 AND im.course_code=$5 AND im.academic_year=$6 AND im.rollno = ANY($7::text[])
             ORDER BY im.rollno
         `;
+
+        const values = [
+            details.campus,
+            details.program_type,
+            details.program,
+            details.semester,
+            details.course_code,
+            details.academic_year,
+            details.rollno
+        ];
+
         console.log("INTERNAL query:", query);
-        pool.query(query, (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                console.log("internal result: ", results.rows)
-                resolve(results);
-            }
-        });
+        console.log("values:", values);
+
+        pool.query(query, values)
+            .then(results => {
+                const promises = results.rows.map(row => 
+                    pool.query(getSemester, [row.rollno])
+                        .then(semesterResult => {
+                            const userSemester = semesterResult.rows[0]?.semester;
+                            return {
+                                ...row,
+                                reappear: userSemester !== details.semester
+                            };
+                        })
+                );
+
+                Promise.all(promises)
+                    .then(updatedRows => {
+                        console.log("internal result: ", updatedRows);
+                        resolve({
+                            ...results,
+                            rows: updatedRows
+                        });
+                    })
+                    .catch(error => reject(error));
+            })
+            .catch(error => reject(error));
     });
 }
 
-export function fetchStudentDetailsFromExternal(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
+export function fetchStudentDetailsFromExternal(data: { 
+    details: { 
+        campus: string; 
+        program_type: string; 
+        program: string; 
+        semester: number; 
+        academic_year: string; 
+        course_code: string; 
+        rollno: Array<string> 
+    } 
+}): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
+        const details = data.details;
+        console.log("details rollno: ", details.rollno);
+
+        if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
+            reject(new Error("Invalid or missing rollno array"));
+            return;
+        }
+
         const query = `
-            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code, im.created_at
             FROM external_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
+            WHERE im.campus=$1 AND im.program_type=$2 AND im.program=$3 AND im.semester=$4 AND im.course_code=$5 AND im.academic_year=$6 AND im.rollno = ANY($7::text[])
             ORDER BY im.rollno
         `;
-        // console.log("query:",query);
-        pool.query(query, (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results);
-            }
-        });
+
+        const values = [
+            details.campus,
+            details.program_type,
+            details.program,
+            details.semester,
+            details.course_code,
+            details.academic_year,
+            details.rollno
+        ];
+
+        console.log("query:", query);
+        console.log("values:", values);
+
+        pool.query(query, values)
+            .then(results => {
+                const promises = results.rows.map(row => 
+                    pool.query(getSemester, [row.rollno])
+                        .then(semesterResult => {
+                            const userSemester = semesterResult.rows[0]?.semester;
+                            return {
+                                ...row,
+                                reappear: userSemester !== details.semester
+                            };
+                        })
+                );
+
+                Promise.all(promises)
+                    .then(updatedRows => {
+                        resolve({
+                            ...results,
+                            rows: updatedRows
+                        });
+                    })
+                    .catch(error => reject(error));
+            })
+            .catch(error => reject(error));
     });
 }
 
@@ -349,23 +444,71 @@ export function updateStudentDetailsFromAggregate(details: { campus: string; pro
 }
 
 
-export function fetchStudentDetailsFromAggregate(details: { campus: string; program_type: string; program: string; semester: number; academic_year: string; course_code: string; rollno: Array<string> }): Promise<QueryResult<any>> {
+export function fetchStudentDetailsFromAggregate(data: { 
+    details: { 
+        campus: string; 
+        program_type: string; 
+        program: string; 
+        semester: number; 
+        academic_year: string; 
+        course_code: string; 
+        rollno: Array<string> 
+    } 
+}): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
+        const details = data.details;
+        console.log("details rollno: ", details.rollno);
+
+        if (!details.rollno || !Array.isArray(details.rollno) || details.rollno.length === 0) {
+            reject(new Error("Invalid or missing rollno array"));
+            return;
+        }
+
         const query = `
-            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code,  im.created_at
+            SELECT u.name, im.rollno, im.campus, im.program_type, im.program, im.semester, im.academic_year, im.marks, im.freeze_marks, im.course_code, im.created_at
             FROM aggregate_marks im
             JOIN users u ON im.rollno = u.rollno
-            WHERE im.campus='${details.campus}' AND im.program_type='${details.program_type}' AND im.program='${details.program}' AND im.semester='${details.semester}' AND im.course_code='${details.course_code}'AND im.academic_year='${details.academic_year}' AND im.rollno IN (${details.rollno.map((roll) => `'${roll}'`).join(", ")})
+            WHERE im.campus=$1 AND im.program_type=$2 AND im.program=$3 AND im.semester=$4 AND im.course_code=$5 AND im.academic_year=$6 AND im.rollno = ANY($7::text[])
             ORDER BY im.rollno
         `;
-        // console.log("query:",query);
-        pool.query(query, (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results);
-            }
-        });
+
+        const values = [
+            details.campus,
+            details.program_type,
+            details.program,
+            details.semester,
+            details.course_code,
+            details.academic_year,
+            details.rollno
+        ];
+
+        console.log("AGGREGATE query:", query);
+        console.log("values:", values);
+
+        pool.query(query, values)
+            .then(results => {
+                const promises = results.rows.map(row => 
+                    pool.query(getSemester, [row.rollno])
+                        .then(semesterResult => {
+                            const userSemester = semesterResult.rows[0]?.semester;
+                            return {
+                                ...row,
+                                reappear: userSemester !== details.semester
+                            };
+                        })
+                );
+
+                Promise.all(promises)
+                    .then(updatedRows => {
+                        console.log("aggregate result: ", updatedRows);
+                        resolve({
+                            ...results,
+                            rows: updatedRows
+                        });
+                    })
+                    .catch(error => reject(error));
+            })
+            .catch(error => reject(error));
     });
 }
 

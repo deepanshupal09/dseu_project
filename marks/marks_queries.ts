@@ -313,3 +313,7 @@ export const departmentEmails: string=`
 // export const departmentBridgeDetailsQuery: string=`
 //   SELECT campus, program, semester FROM external_marks WHERE freeze_marks = false;
 // `;
+
+export const getSemester: string = `
+  SELECT semester FROM users WHERE rollno=$1;
+`;
