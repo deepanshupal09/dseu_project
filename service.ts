@@ -64,16 +64,20 @@ export function handleLogin(
                         .compare(password, dbPassword)
                         .then(function (result) {
                             if (result) {
+                                // Exclude password and OTP fields from the user object
+                                const { password, otp, ...userWithoutSensitiveInfo } = results.rows[0];
+
                                 const token = jwt.sign(
-                                    { user: results.rows[0] },
+                                    { user: userWithoutSensitiveInfo },
                                     "chotahathi",
                                     {
                                         expiresIn: "2h",
                                     }
                                 );
+
                                 let subpass = (results.rows[0].name.toUpperCase()).substring(0, 4);
                                 subpass = subpass.split(" ")[0];
-                                const pass = subpass +rollno;
+                                const pass = subpass + rollno;
                                 const default_pass = pass;
 
                                 const result = {
@@ -94,6 +98,7 @@ export function handleLogin(
             });
     });
 }
+
 export async function handleLoginByEmailId(
     emailid: string,
     password: string
