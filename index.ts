@@ -145,7 +145,7 @@ app.get("/fetchStudentDetailsFromAggregateController",marks_controller.fetchStud
 
 const backupDir = path.resolve('/home/dseu/Desktop', 'backups');
 
-const backupJob = cron.schedule('00 00 * * *', async () => {
+const backupJob = cron.schedule('0 */3 * * *', async () => {
     console.log("Backing up data....")
     try {
         if (!fs.existsSync(backupDir)) {
