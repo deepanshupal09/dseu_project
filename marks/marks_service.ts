@@ -933,7 +933,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 endSem_evaluation: null,
                 bridge: null,
                 isBridge: false,
-                exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear'
+                exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
+                full_mark_continuous: "75",
+                full_mark_end: "25"
               };
             }
             studentDataMap[compositeKey][marksType] = student.marks;
