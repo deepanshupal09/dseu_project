@@ -461,7 +461,7 @@ export default function MarksTable({
     let errors: Error[] = [];
     studentList.map((student) => {
       console.log("error check: ", student, (parseInt(student.marks)))
-      if (isNaN(Number(student.marks)) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
+      if ((student.marks.trim() === "" || isNaN(Number(student.marks))) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
         console.log(1)
         if (student.marks?.trim() === "") {
           console.log(2)

@@ -345,7 +345,7 @@ export default function Marks() {
             "hello ",
             freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze
           );
-          setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
+          // setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
           setGlobalFreeze(freezeStatus.aggFreeze);
           if (!control) {
             console.log("freeze 1");
@@ -366,6 +366,7 @@ export default function Marks() {
                   0,
                   formattedStudentList.map((student) => student.rollno)
                 );
+                setFreeze(freezeStatus.internalFreeze)
               } else {
                 setSubjectType(2);
                 marks = await fetchStudentMarks(
@@ -373,6 +374,7 @@ export default function Marks() {
                   0,
                   formattedStudentList.map((student) => student.rollno)
                 );
+                setFreeze(freezeStatus.aggFreeze)
               }
               // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
               console.log("marks: ", marks);

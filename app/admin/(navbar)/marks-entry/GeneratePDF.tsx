@@ -144,7 +144,8 @@ const GeneratePDF: React.FC<ResultDocumentProps> = ({
   courseCode,
   courseName,
   maxMarks,
-}) => { const [user, setUser] = useState<StudentDetails | null>(null);
+}) => {
+  const [user, setUser] = useState<StudentDetails | null>(null);
   const [token, setToken] = useState("");
 
   const generateDummyData = () => {
@@ -230,7 +231,7 @@ const GeneratePDF: React.FC<ResultDocumentProps> = ({
               <View style={[styles.tableCol, { width: "30%" }]}>
                 <Text style={styles.tableCell}>{row.name}</Text>
               </View>
-              <View style={[styles.tableCol, { width: "10%" } ]}>
+              <View style={[styles.tableCol, { width: "10%" }]}>
                 <Text style={styles.tableCell}>{row.marks}</Text>
               </View>
               <View style={[styles.tableCol, { width: "30%" }]}>
@@ -352,29 +353,29 @@ const GeneratePDF: React.FC<ResultDocumentProps> = ({
   return (
     <>
       <PDFDownloadLink
-        document={<ResultDocument
-          maxMarks={maxMarks}
-          marks={marks}
-          campus={campus}
-          program={program}
-          semester={semester}
-          academicYear={academicYear}
-          courseCode={courseCode}
-          courseName={courseName}
-        />}
-        fileName={`Marks-${campus}-${program}-${semester}-${courseName}-${academicYear}-${parseInt(maxMarks)===75?'Internal':parseInt(maxMarks)===25?'External':'Aggregate'}.pdf`}
-      >
-        {({ loading }) =>
-          loading ? (
-            <CircularProgress />
-          ) : (
-            <Button variant="contained" startIcon={<Download />}>
-              Download PDF
-            </Button>
-          )
+        document={
+          <ResultDocument
+            maxMarks={maxMarks}
+            marks={marks}
+            campus={campus}
+            program={program}
+            semester={semester}
+            academicYear={academicYear}
+            courseCode={courseCode}
+            courseName={courseName}
+          />
         }
+        fileName={`Marks-${campus}-${program}-${semester}-${courseName}-${academicYear}-${
+          parseInt(maxMarks) === 75 ? "Internal" : parseInt(maxMarks) === 25 ? "External" : "Aggregate"
+        }.pdf`}
+      >
+        {({ loading }) => (
+          <Button variant="contained" startIcon={<Download />}>
+            {loading ? "Loading..." : "Download PDF"}
+          </Button>
+        )}
       </PDFDownloadLink>
     </>
   );
-}
+};
 export default GeneratePDF;
