@@ -932,6 +932,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 continuous_evaluation: null,
                 endSem_evaluation: null,
                 bridge: null,
+                isBridge: false,
                 exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear'
               };
             }
@@ -943,6 +944,10 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
             }
             if (student.course_name) {
               studentDataMap[compositeKey].course_name = student.course_name;
+            }
+
+            if(student.bridge !== null){
+                studentDataMap[compositeKey].isBridge = true;
             }
           });
         };
