@@ -926,13 +926,24 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 aadhar: student.aadhar,
                 year_of_admission: student.year_of_admission,
                 academic_year: student.academic_year,
+                credits: student.credit,
+                course_name: student.course_name, 
                 aggregate_marks: null,
                 continuous_evaluation: null,
                 endSem_evaluation: null,
-                bridge: null
+                bridge: null,
+                exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear'
               };
             }
             studentDataMap[compositeKey][marksType] = student.marks;
+            
+            // Ensure credits and course_name are set even if they come from a different result set
+            if (student.credits) {
+              studentDataMap[compositeKey].credits = student.credits;
+            }
+            if (student.course_name) {
+              studentDataMap[compositeKey].course_name = student.course_name;
+            }
           });
         };
   

@@ -234,10 +234,20 @@ export const fetchBridgeStudentDetails: string=`
 `; 
 
 
-export const fetchAllResultQuery: string=`
-  SELECT * FROM users AS u
-  JOIN aggregate_marks AS am ON am.rollno = u.rollno 
-  WHERE am.academic_year = $1 AND am.freeze_marks = true;
+export const fetchAllResultQuery: string = `
+SELECT 
+    u.*,
+    am.*,
+    u.semester AS user_semester,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
+FROM 
+    users AS u 
+JOIN 
+    aggregate_marks AS am ON am.rollno = u.rollno 
+WHERE 
+    am.academic_year = $1 
+    AND am.freeze_marks = true;
 `;
 
 export const fetchInternalResultQuery: string=`
