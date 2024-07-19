@@ -206,7 +206,7 @@ function Home() {
 
       fetchExamRegisterationsByRollNo(rollno, token)
         .then((res: any) => {
-          console.log(res);
+          // console.log(res);
           if (res.length > 0) {
             const temp: Subject[] = [];
             res.forEach((subject: any) => {
@@ -355,7 +355,7 @@ function Home() {
   };
 
   const handlePreview = () => {
-    console.log("here");
+    // console.log("here");
     setPreviewSelection(true);
   };
 

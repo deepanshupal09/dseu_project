@@ -16,7 +16,7 @@ export async function fetchAllMarks(token: string, academic_year: string) {
       });
       
       const data = await res.json();
-      console.log(data);
+    //   console.log(data);
       return data;
     } catch (error) {
       console.error("Error fetching marks:", error);
@@ -827,7 +827,7 @@ export async function updateInternalMarks(
     }
 ) {
     try {
-        console.log("body: ", details);
+        // console.log("body: ", details);
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromInternalController`, {
             method: "POST",
             mode: "cors",
@@ -891,7 +891,7 @@ export async function updateAggregateMarks(
     }
 ) {
     try {
-        console.log("this api ");
+        // console.log("this api ");
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/handleStudentDetailsFromAggregateController`, {
             method: "POST",
             mode: "cors",
@@ -911,7 +911,7 @@ export async function updateAggregateMarks(
 
 export async function fetchDepartDetailsByEmailid(token: string, email: string) {
     try {
-        console.log("this api ");
+        // console.log("this api ");
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchDepartDetailsByEmailid`, {
             method: "GET",
             mode: "cors",
@@ -1122,7 +1122,7 @@ export async function fetchMarksController(academicYear: string, semester: strin
 }
 export async function fetchMarksDetailsController(token: string) {
     try {
-        console.log("first");
+        // console.log("first");
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchMarksDetailsController`, {
             method: "GET",
             mode: "cors",

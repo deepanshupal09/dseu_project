@@ -136,16 +136,16 @@ export default function Marks() {
 
   useEffect(() => {
     if (token) {
-      console.log("here");
+      // console.log("here");
       setLoading(true);
       fetchMarksDetailsController(token)
         .then((response) => {
-          console.log("response: ", response);
+          // console.log("response: ", response);
           let temp: DetailsType[] = [];
           response.map((element: any, index: number) => {
             temp.push({ id: index + 1, ...element });
           });
-          console.log("converted: ", temp);
+          // console.log("converted: ", temp);
           setDetailsList(temp);
           setLoading(false);
           setRows(temp);
@@ -270,7 +270,7 @@ export default function Marks() {
     try{
       
 
-  console.log("hathi")  
+  // console.log("hathi")  
     // await sendEmails();
     setAlert(true);
     setMessage('Email sent successfully')

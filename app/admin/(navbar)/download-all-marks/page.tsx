@@ -112,24 +112,30 @@ export default function Marks() {
 
       const newColumns: GridColDef[] = [
         { field: "id", headerName: "S.No", width: columnWidth },
+        { field: "campus", headerName: "Inst name", width: columnWidth },
         { field: "rollno", headerName: "Roll No", width: columnWidth },
-        { field: "course_code", headerName: "Course Code", width: columnWidth },
-        { field: "campus", headerName: "Campus", width: columnWidth },
-        { field: "program", headerName: "Program", width: columnWidth },
-        { field: "program_type", headerName: "Program Type", width: columnWidth },
-        { field: "semester", headerName: "Semester", width: columnWidth },
         { field: "name", headerName: "Student Name", width: columnWidth },
+        { field: "program", headerName: "Program Name", width: columnWidth },
+        { field: "exam_type", headerName: "Exam type", width: columnWidth },
+        { field: "isBridge", headerName: "Bridge Course", width: columnWidth },
+        { field: "semester", headerName: "Semester", width: columnWidth },
+        { field: "course_code", headerName: "Course Code", width: columnWidth },
+        { field: "course_name", headerName: "Course Name", width: columnWidth },
+        { field: "credits", headerName: "Credit", width: columnWidth },
+        { field: "full_mark_continuous", headerName: "full marks continuous", width: columnWidth },
+        { field: "continuous_evaluation", headerName: " Marks Obtained continuous evaluation", width: columnWidth },
+        { field: "program_type", headerName: "Program Type", width: columnWidth },
+        { field: "full_mark_end", headerName: "full marks EoSE", width: columnWidth },
+        { field: "endSem_evaluation", headerName: " Marks Obtained EoSE", width: columnWidth },
+        { field: "aggregate_marks", headerName: "aggregate marks", width: columnWidth },
+        { field: "year_of_admission", headerName: "Batch", width: columnWidth },
+        { field: "academic_year", headerName: "Academic Year", width: columnWidth },
         { field: "father", headerName: "Father's name", width: columnWidth },
         { field: "mother", headerName: "Mother's name", width: columnWidth },
         { field: "guardian", headerName: "Guardian's name", width: columnWidth },
         { field: "abc_id", headerName: "ABC_id", width: columnWidth },
         { field: "aadhar", headerName: "Aadhar number", width: columnWidth },
-        { field: "year_of_admission", headerName: "Year of Admission", width: columnWidth },
-        { field: "academic_year", headerName: "Academic Year", width: columnWidth },
-        { field: "aggregate_marks", headerName: "aggregate marks", width: columnWidth },
-        { field: "continuous_evaluation", headerName: "continuous evaluation", width: columnWidth },
-        { field: "endSem_evaluation", headerName: "end of Semester evaluation", width: columnWidth },
-        { field: "bridge", headerName: "bridge evaluation", width: columnWidth }
+        { field: "bridge", headerName: "bridge evaluation", width: columnWidth },
       ];
 
       setColumns(newColumns);
@@ -143,16 +149,16 @@ export default function Marks() {
    
   useEffect(() => {
     if (token) {
-      console.log("here");
+      // console.log("here");
       setLoading(true);
       fetchAllMarks(token,'2023-2024')
         .then((response:any) => {
-          console.log("response: ", response);
+          // console.log("response: ", response);
           let temp: any[] = [];
           response.map((element: any, index: number) => {
             temp.push({ id: index + 1, ...element });
           });
-          console.log("converted: ", temp);
+          // console.log("converted: ", temp);
           setDetailsList(temp);
           setLoading(false);
           setRows(temp);

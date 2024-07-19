@@ -109,7 +109,7 @@ export default function MarksTable({
   const generateMarksArray = (
     studentList: StudentType[]
   ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
-    console.log(studentList);
+    // console.log(studentList);
 
     const marksArray = studentList.map((student) => ({
       sno: student.sno,
@@ -126,7 +126,7 @@ export default function MarksTable({
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   async function fetchStudentMarks(subjectType: number, value: number, rollno: Array<string>) {
-    console.log(`fetch student marks: subjectType: ${subjectType}, value: ${value}`);
+    // console.log(`fetch student marks: subjectType: ${subjectType}, value: ${value}`);
 
     if (rollno.length === 0) {
       console.log("No students available to fetch marks for");
@@ -143,7 +143,7 @@ export default function MarksTable({
       rollno: rollno,
     };
 
-    console.log("Details for fetching marks:", details);
+    // console.log("Details for fetching marks:", details);
 
     try {
       setLoading(true);
@@ -169,7 +169,7 @@ export default function MarksTable({
         return [];
       }
 
-      console.log("Marks data returned:", res);
+      // console.log("Marks data returned:", res);
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -224,7 +224,7 @@ export default function MarksTable({
 
     let csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
 
-    console.log(csvContent);
+    // console.log(csvContent);
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -248,14 +248,14 @@ export default function MarksTable({
           const studentData = rows.slice(1, -1);
           const newData = studentList;
 
-          console.log(studentData);
+          // console.log(studentData);
 
           if (studentData.length !== newData.length) {
             setAlert(true);
             setMessage("Invalid CSV format(Missing rows)! Please download the CSV template from actions menu");
             setFileData(null);
           } else {
-            console.log("students : ", newData);
+            // console.log("students : ", newData);
             let missing = 0;
             studentData.map((row) => {
               const rollno = row.split(",")[1];
@@ -333,7 +333,7 @@ export default function MarksTable({
   
   const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
     const updatedMarks = [...marks];
-    console.log("updated initial: ", formattedStudentlist, "students: ", marks);
+    // console.log("updated initial: ", formattedStudentlist, "students: ", marks);
 
     formattedStudentlist.forEach((student) => {
       const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
@@ -350,7 +350,7 @@ export default function MarksTable({
     updatedMarks.map((student,index:number) => {
       student.sno = index+1;
     })
-    console.log("updated: ", updatedMarks);
+    // console.log("updated: ", updatedMarks);
     return updatedMarks;
   };
 
@@ -402,7 +402,7 @@ export default function MarksTable({
     let mergedExternal = mergeStudentLists(formattedStudentList,externalMarks);
     let mergedAggregate = mergeStudentLists(formattedStudentList,aggregateMarks); 
     
-    console.log("merged internal,external,aggregate", mergedInternal,mergedExternal, mergedAggregate)
+    // console.log("merged internal,external,aggregate", mergedInternal,mergedExternal, mergedAggregate)
 
     const details = {
       campus: campus,
@@ -429,15 +429,15 @@ export default function MarksTable({
     };
 
     try {
-      console.log("1");
+      // console.log("1");
       if (internal.length > 0) {
         const res = await updateInternalMarks(token, detailsInternal);
       }
-      console.log("2");
+      // console.log("2");
       if (external.length > 0) {
         const res = await updateExternalMarks(token, detailsExternal);
       }
-      console.log("3");
+      // console.log("3");
       if (aggregate.length > 0) {
         const res = await updateAggregateMarks(token, detailsAggregate);
       }
@@ -456,34 +456,34 @@ export default function MarksTable({
   }
 
   useEffect(() => {
-    console.log("students 1: ", students)
+    // console.log("students 1: ", students)
     setStudentList(students)
   },[students])
 
   async function handleFreezeMarks() {
     let errors: Error[] = [];
     studentList.map((student) => {
-      console.log("error check: ", student, (parseInt(student.marks)))
+      // console.log("error check: ", student, (parseInt(student.marks)))
       if ((student.marks.trim() === "" || isNaN(Number(student.marks))) && student.marks.trim() !== "X" && student.marks.trim() !== "U") {
-        console.log(1)
+        // console.log(1)
         if (student.marks?.trim() === "") {
-          console.log(2)
+          // console.log(2)
           errors.push({ ...student, error: `Marks can not be empty` });
         } else {
-          console.log(3)
+          // console.log(3)
           errors.push({
             ...student,
             error: `Marks can not be '${student.marks}'`,
           });
         }
       } else if (Number(student.marks) > maxMarks) {
-        console.log(4)
+        // console.log(4)
         errors.push({
           ...student,
           error: `Marks can not be larger than ${maxMarks}!`,
         });
       } else if (Number(student.marks) < 0) {
-        console.log(5)
+        // console.log(5)
         errors.push({ ...student, error: "Marks can not be negative!" });
       }
     });
@@ -493,7 +493,7 @@ export default function MarksTable({
     } else {
       setLoading(true);
       let res;
-      console.log("1");
+      // console.log("1");
       try {
         const details = {
           campus: campus,
@@ -506,7 +506,7 @@ export default function MarksTable({
           marks: studentList.map((student) => student.marks),
           freeze_marks: true,
         };
-        console.log("2");
+        // console.log("2");
         let globalFreeze = false;
         let fetchedMarks=[];
         if (maxMarks === 75) {
@@ -526,7 +526,7 @@ export default function MarksTable({
           fetchedMarks = await fetchStudentMarks(2,0,studentList.map((student)=>student.rollno));
           globalFreeze = true;
         }
-        console.log("res: ", res);
+        // console.log("res: ", res);
         setStudentList(fetchedMarks);
         // console.log("fetched Marks: ", fetchedMarks)
 
@@ -536,7 +536,7 @@ export default function MarksTable({
         setLoading(false);
         setFreeze(true);
         setAnchorEl(null);
-        console.log("res: ", res);
+        // console.log("res: ", res);
       } catch (error) {
         setLoading(false);
         setAlert(true);
@@ -591,7 +591,7 @@ export default function MarksTable({
           freeze_marks: false,
         };
         res = await updateAggregateMarks(token, details);
-        console.log("res: ", res);
+        // console.log("res: ", res);
       }
       setLoading(false);
       setAlert(true);

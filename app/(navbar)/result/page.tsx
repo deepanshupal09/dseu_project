@@ -110,7 +110,7 @@ export default function Home() {
     if (academicYear && user && semester) {
       fetchMarksController(academicYear, semester, user.rollno, token)
         .then((res: StudentData | { message: string } | boolean) => {
-          console.log(res);
+          // console.log(res);
   
           if (typeof res === 'boolean') {
             setIsMarksEvaluated(res);

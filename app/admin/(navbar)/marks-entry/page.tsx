@@ -176,7 +176,7 @@ export default function Marks() {
     if (token) {
       fetchAllMarksControl(token)
         .then((res: marksControlType[]) => {
-          console.log("marks control: ", res);
+          // console.log("marks control: ", res);
           setAllMarksControl(res);
         })
         .catch((error) => {
@@ -204,9 +204,7 @@ export default function Marks() {
     }
   }, [freeze]);
 
-  useEffect(() => {
-    console.log("value: ", value);
-  }, [value]);
+
 
   useEffect(() => {
     setSelectedProgramCategory("");
@@ -249,9 +247,9 @@ export default function Marks() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      `campus: ${selectedCampus} program: ${selectedProgram} programcatergory: ${selectedProgramCategory} semester: ${selectedSemester} academic year ${selectedAcademicYear}`
-    );
+    // console.log(
+    //   `campus: ${selectedCampus} program: ${selectedProgram} programcatergory: ${selectedProgramCategory} semester: ${selectedSemester} academic year ${selectedAcademicYear}`
+    // );
     if (
       selectedCampus !== "" &&
       selectedProgramCategory !== "" &&
@@ -341,20 +339,20 @@ export default function Marks() {
           }
 
           const freezeStatus = await fetchFreeze(formattedStudentList.map((student) => student.rollno));
-          console.log(
-            "agg freeze, ",
-            freezeStatus.aggFreeze,
-            "hello ",
-            freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze
-          );
+          // console.log(
+          //   "agg freeze, ",
+          //   freezeStatus.aggFreeze,
+          //   "hello ",
+          //   freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze
+          // );
           // setFreeze(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze);
           setGlobalFreeze(freezeStatus.aggFreeze);
           if (!control) {
-            console.log("freeze 1");
+            // console.log("freeze 1");
             setFreeze(true);
             setStudentList(formattedStudentList);
           } else {
-            console.log("freeze 2");
+            // console.log("freeze 2");
             if (!(freezeStatus.aggFreeze || freezeStatus.internalFreeze || freezeStatus.externalFreeze)) {
               setOpen(true);
               setStudentList(formattedStudentList);
@@ -379,7 +377,7 @@ export default function Marks() {
                 setFreeze(freezeStatus.aggFreeze)
               }
               // console.log("marks from db: ", marks, "exam registration: ", formattedStudentList)
-              console.log("marks: ", marks);
+              // console.log("marks: ", marks);
               setStudentList(mergeStudentLists(formattedStudentList, marks));
             }
           }
@@ -441,7 +439,7 @@ export default function Marks() {
     if (externalFreeze === undefined) externalFreeze = false;
 
     if (internalFreeze === undefined) internalFreeze = false;
-    console.log("freeze statuses: ", aggFreeze, internalFreeze, externalFreeze);
+    // console.log("freeze statuses: ", aggFreeze, internalFreeze, externalFreeze);
 
     return { internalFreeze: internalFreeze, externalFreeze: externalFreeze, aggFreeze: aggFreeze };
   }
@@ -485,14 +483,14 @@ export default function Marks() {
       }
 
       setLoading(false);
-      console.log("details: ", details)
+      // console.log("details: ", details)
 
       if (!res || res.length === 0) {
         return [];
       }
 
       setFreeze(res[0].freeze_marks);
-      console.log("first: ", res);
+      // console.log("first: ", res);
 
       return res.map((student: any, index: number) => ({
         sno: index + 1,
@@ -510,7 +508,7 @@ export default function Marks() {
 
   const mergeStudentLists = (formattedStudentlist: StudentType[], marks: StudentType[]): StudentType[] => {
     const updatedMarks = [...marks];
-    console.log("updated initial: ", formattedStudentlist, "students: ", marks);
+    // console.log("updated initial: ", formattedStudentlist, "students: ", marks);
 
     formattedStudentlist.forEach((student) => {
       const isStudentInMarks = marks.some((mark) => mark.rollno === student.rollno);
@@ -527,7 +525,7 @@ export default function Marks() {
     updatedMarks.map((student, index: number) => {
       student.sno = index + 1;
     });
-    console.log("updated: ", updatedMarks);
+    // console.log("updated: ", updatedMarks);
     return updatedMarks;
   };
 
@@ -576,7 +574,7 @@ export default function Marks() {
             .then((formattedStudentList) => {
               setLoading(false)
               let temp = mergeStudentLists(formattedStudentList, students);
-              console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp);
+              // console.log("here students: ", "value: ", value, formattedStudentList, students, "temp: ", temp);
               setStudentList(temp);
             })
             .catch((error) => {
@@ -975,13 +973,13 @@ export default function Marks() {
                 value,
                 studentList.map((student) => student.rollno)
               );
-              console.log("here");
+              // console.log("here");
               setFreeze(false);
 
               if (students && students?.length > 0) {
-                console.log("here 1");
+                // console.log("here 1");
                 let temp = mergeStudentLists(studentList, students);
-                console.log("here 2: ", temp);
+                // console.log("here 2: ", temp);
                 setStudentList(temp);
               }
               setOpen(false);

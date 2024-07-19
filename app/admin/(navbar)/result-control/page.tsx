@@ -65,7 +65,7 @@ export default function Registration() {
     useEffect(() => {
         if (token) {
             fetchAllMarksControl(token).then((res: CampusData2[]) => {
-                console.log(res);
+                // console.log(res);
                 setResultControlDetails(res); 
             }).catch((error) => {
                 console.error(error); 
@@ -272,7 +272,7 @@ export default function Registration() {
 
     const handleConfirmFilteredAction = async () => {
         const payload: { campus: string; program: string; semester: number; result_control: boolean }[] = [];
-        console.log(payload);
+        // console.log(payload);
 
         selectedCampus.forEach((campus) => {
             (selectedProgram[campus] || []).forEach((program) => {

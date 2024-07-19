@@ -117,9 +117,9 @@ function BridgeCoursesTable({
     { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
   ]);
   useEffect(() => {
-    console.log("use effect");
+    // console.log("use effect");
     if (marksControl && marksControl === true && !freeze && !columns.find((column) => column.id === "actions")) {
-      console.log("inside if");
+      // console.log("inside if");
       let newColumns = [
         { id: "name", label: "Name", minWidth: 100 },
         { id: "rollno", label: "Roll No", minWidth: 70 },
@@ -128,9 +128,9 @@ function BridgeCoursesTable({
       ];
       setColumns(newColumns);
     } else {
-      console.log("inside else");
+      // console.log("inside else");
       if (columns.find((column) => column.id === "actions")) {
-        console.log("inside else if");
+        // console.log("inside else if");
         let newColumns = [
           { id: "name", label: "Name", minWidth: 100 },
           { id: "rollno", label: "Roll No", minWidth: 70 },
@@ -145,7 +145,7 @@ function BridgeCoursesTable({
     if (user) {
       fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear,campus,program,semester,program_type)
         .then((res) => {
-          console.log("brige details: ", res);
+          // console.log("brige details: ", res);
           const newRows = res.map((row: { rollno: string; marks: string; name: string }) => {
             return { ...row, academicYear: academicYear, course: course };
           });
@@ -208,7 +208,7 @@ function BridgeCoursesTable({
       };
     });
 
-    console.log("handle Submit", data);
+    // console.log("handle Submit", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -246,13 +246,13 @@ function BridgeCoursesTable({
   };
 
   const handleSearch = async (rollno: string, index: number) => {
-    console.log("Searching for rollno:", rollno);
+    // console.log("Searching for rollno:", rollno);
     if (user) {
       try {
-        console.log(1);
+        // console.log(1);
         const res = await checkDepartment(token, rollno, user.emailid);
-        console.log(2);
-        console.log("res: ", res.name);
+        // console.log(2);
+        // console.log("res: ", res.name);
         const newRows = [...rows];
         // console.log("res")
         if (res.name) {
@@ -283,7 +283,7 @@ function BridgeCoursesTable({
       };
     });
 
-    console.log("handle freeze", data);
+    // console.log("handle freeze", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -334,7 +334,7 @@ function BridgeCoursesTable({
       };
     });
 
-    console.log("handle unfreeze", data);
+    // console.log("handle unfreeze", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -379,7 +379,7 @@ function BridgeCoursesTable({
   const generateMarksArray = (
     studentList: Row[]
   ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
-    console.log(studentList);
+    // console.log(studentList);
 
     const marksArray = studentList.map((student, index: number) => ({
       sno: index + 1,
