@@ -589,7 +589,7 @@ export default function Marks() {
         }
       });
     });
-  }, [value, subjectType]);
+  }, [value]);
 
   const handleChangeSelectedCampus = (event: SelectChangeEvent) => {
     setSelectedCampus(event.target.value);
