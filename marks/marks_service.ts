@@ -951,7 +951,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
               studentDataMap[compositeKey].course_name = student.course_name;
             }
 
-            if(student.bridge !== null){
+            if(student.bridge){
                 studentDataMap[compositeKey].isBridge = true;
             }
           });
