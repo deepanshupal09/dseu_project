@@ -190,12 +190,12 @@ export default function Home() {
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_name}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit_earned}</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">
+          {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">
             {internalMark ? internalMark.grade : "-"}
           </td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">
             {externalMark ? externalMark.grade : "-"}
-          </td>
+          </td> */}
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade_point}</td>
         </tr>
@@ -294,9 +294,9 @@ export default function Home() {
             <div className="w-8/12 text-left font-normal p-1">
               Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
-            <div className="w-4/12 text-left font-normal font-serif p-1">
+            {/* <div className="w-4/12 text-left font-normal font-serif p-1">
               Relation: <span className="font-semibold">Guardian</span>
-            </div>
+            </div> */}
           </div>
         </>
       );
@@ -415,25 +415,25 @@ export default function Home() {
                       <tr>
                         <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          style={{ width: "8%" }}
                         >
                           S.No
                         </th>
                         <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "15%" }}
+                          style={{ width: "20%" }}
                         >
                           Course Code
                         </th>
                         <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "40%" }}
+                          style={{ width: "50%" }}
                         >
                           Course Name
                         </th>
                         <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          style={{ width: "8%" }}
                         >
                           Credits
                         </th>
@@ -443,18 +443,18 @@ export default function Home() {
                         >
                           Credits Earned
                         </th>
-                        <th
+                        {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "9%" }}
                         >
                           Letter Grade Continuous Evaluation(CA)
-                        </th>
-                        <th
+                        </th> */}
+                        {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "10%" }}
                         >
                           Letter Grade End of Semester Evaluation (EOSE)
-                        </th>
+                        </th> */}
                         <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "6%" }}

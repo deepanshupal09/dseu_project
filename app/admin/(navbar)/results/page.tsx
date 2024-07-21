@@ -150,7 +150,7 @@ export default function Registration() {
         setLoading(true);
         try {
             const resultData = await fetchAllMarksheetController(selectedAcademicYear, token);
-            console.log(resultData);
+            // console.log(resultData);
             const processedData = processStudentData(resultData);
             setStudentData(processedData);
             setDataReceived(true);
@@ -207,7 +207,7 @@ export default function Registration() {
     };
 
     const handleApplyFilters = () => {
-        console.log("Selected filters:", selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester);
+        // console.log("Selected filters:", selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester);
 
         const filtered = studentData.filter((student) => {
             const { personalDetails } = student;
@@ -222,7 +222,7 @@ export default function Registration() {
             );
         });
 
-        console.log("Filtered student data:", filtered);
+        // console.log("Filtered student data:", filtered);
         setFilteredData(filtered); 
         setIsApplied(true);
         setIsLoading(false);
@@ -318,9 +318,9 @@ export default function Registration() {
                         <div className="w-8/12 text-left font-normal p-1">
                             Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
                         </div>
-                        <div className="w-4/12 text-left font-normal font-serif p-1">
+                        {/* <div className="w-4/12 text-left font-normal font-serif p-1">
                             Relation: <span className="font-semibold">{personalDetails.relation}</span>
-                        </div>
+                        </div> */}
                     </div>
                 </>
             );
@@ -361,8 +361,8 @@ export default function Registration() {
                     <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_name}</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit}</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit_earned}</td>
-                    <td className="px-2 py-3 border border-black text-center text-xs font-medium">{internalMark.grade || '-'}</td>
-                    <td className="px-2 py-3 border border-black text-center text-xs font-medium">{externalMark.grade || '-'}</td>
+                    {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">{internalMark.grade || '-'}</td> */}
+                    {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">{externalMark.grade || '-'}</td> */}
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade}</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.grade_point}</td>
                 </tr>
@@ -696,12 +696,12 @@ export default function Registration() {
                                                 <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                                                     Credits Earned
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "9%" }}>
+                                                {/* <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "9%" }}>
                                                     Letter Grade Continuous Evaluation (CA)
                                                 </th>
                                                 <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "10%" }}>
                                                     Letter Grade End of Semester Evaluation (EOSE)
-                                                </th>
+                                                </th> */}
                                                 <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
                                                     Grade
                                                 </th>
