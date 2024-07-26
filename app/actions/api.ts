@@ -213,7 +213,7 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
       throw new Error(errorMessage);
     }
 
-    const data = await response.json(); // Parse the JSON response
+    const data = await response.json(); 
     return data;
   } catch (error) {
     throw error;
@@ -1124,4 +1124,33 @@ export async function fetchToggleResult(
     throw error;
   }
 }
+
+export async function fetchAllMarksheetController(academicyear: string,token:string) {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllMarkSheetsController`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        academicyear: academicyear,
+        token : token, 
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log(errorText);
+      throw new Error(errorText);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
 

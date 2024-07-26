@@ -109,18 +109,22 @@ export default function Home() {
   const handleSubmit = () => {
     if (academicYear && user && semester) {
       fetchMarksController(academicYear, semester, user.rollno, token)
-        .then((res: StudentData | { message: string }) => {
+        .then((res: StudentData | { message: string } | boolean) => {
           console.log(res);
-          if (
-            ("message" in res && res.message === "Marks not evaluated yet.") ||
-            ("message" in res && res.message === "No data found for the given roll number and academic year")
-          ) {
-            setIsMarksEvaluated(false);
+  
+          if (typeof res === 'boolean') {
+            setIsMarksEvaluated(res);
             setStudentData(null);
+          } else if ('message' in res) {
+            if (res.message === "Marks not evaluated yet." || res.message === "No data found for the given roll number and academic year") {
+              setIsMarksEvaluated(false);
+              setStudentData(null);
+            }
           } else {
-            setStudentData(res as StudentData);
+            setStudentData(res);
             setIsMarksEvaluated(true);
           }
+  
           setIsSubmitted(true);
         })
         .catch((error) => {
@@ -128,6 +132,8 @@ export default function Home() {
         });
     }
   };
+  
+  
 
   const renderTableRows = () => {
     if (!studentData) return null;
@@ -141,8 +147,8 @@ export default function Home() {
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{index + 1}</td>
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_code}</td>
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{aggregateMark.course_name}</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit}</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit_earned}</td>
+          {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit}</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">{aggregateMark.credit_earned}</td> */}
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">
             {internalMark ? internalMark.grade : "-"}
           </td>
@@ -165,8 +171,8 @@ export default function Home() {
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{bridgeMark.course_name}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+          {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td> */}
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade_point}</td>
         </tr>
@@ -323,10 +329,10 @@ export default function Home() {
                 )}
                 content={() => componentRef.current}
               />
-              <div className="w-full overflow-x-auto">
-                <div ref={componentRef} className="py-1 px-2 rounded sm:mx-8 mt-6 relative w-[1400px] sm:overflow-x-hidden">
+              <div className="w-full overflow-x-auto ">
+                <div ref={componentRef} className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
                   {user && user.abc_id && (
-                    <div className="mx-8 my-2 font-bold">
+                    <div className="mx-8 my-2 font-bold ">
                       <h4>ABC ID: {user.abc_id}</h4>
                     </div>
                   )}
@@ -354,40 +360,40 @@ export default function Home() {
                   </div>
                   <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
 
-                  <table className="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto">
+                  <table className="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto ">
                     <thead>
                       <tr>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "7%" }}
                         >
                           S.No
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "15%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "20%" }}
                         >
                           Course Code
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "40%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "45%" }}
                         >
                           Course Name
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "8%" }}
                         >
                           Credits
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "8%" }}
                         >
                           Credits Earned
                         </th>
-                        <th
+                        {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "9%" }}
                         >
@@ -398,16 +404,16 @@ export default function Home() {
                           style={{ width: "10%" }}
                         >
                           Letter Grade End of Semester Evaluation (EOSE)
-                        </th>
+                        </th> */}
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "10%" }}
                         >
                           Grade
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-xs font-bold uppercase tracking-wider"
+                          style={{ width: "10%" }}
                         >
                           Grade Point
                         </th>

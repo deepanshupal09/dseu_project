@@ -65,7 +65,7 @@ export default function Registration() {
     useEffect(() => {
         if (token) {
             fetchAllExamControlDetails(token).then((res: CampusData2[]) => {
-                // console.log(res);
+                console.log(res);
                 setExamControlDetails(res); 
             }).catch((error) => {
                 console.error(error); 
