@@ -162,8 +162,21 @@ export const fetchAggregateCourseNames: string = `
 export const fetchUsersByCourseCode: string =`
     SELECT er.rollno, u.name FROM exam_registeration AS er 
     INNER JOIN users AS u ON er.rollno=u.rollno
-    WHERE er.course_code=$1 AND u.campus=$2 AND u.program_type=$3 AND u.program=$4  AND er.academic_year=$5 order by er.rollno ;
+    WHERE er.course_code=$1 
+      AND u.campus=$2 
+      AND u.program_type=$3 
+      AND (
+          u.program=$4 
+          OR u.program IN (
+              SELECT special 
+              FROM specialization 
+              WHERE program=$4
+          )
+      )
+      AND er.academic_year=$5 
+    ORDER BY er.rollno;
 `;
+
 
 export const fetchDepartDetailsByEmailid: string=`
   SELECT campus, program, program_type, semester FROM departments WHERE emailid=$1;

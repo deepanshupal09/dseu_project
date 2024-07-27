@@ -640,6 +640,7 @@ interface AggregateMarkRow {
 
 export async function fetchMarksService(rollno: string, academic_year: string, semester: number): Promise<any> {
     try {
+        console.log(1,rollno,academic_year,semester)
         const resultControl = await fetchResultControlModal(rollno);
         if (!resultControl.rows[0].result_control) {
             return resultControl.rows[0].result_control;
@@ -654,12 +655,13 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
         ]);
 
         const allFreezeMarksTrue = aggregateResults.every((row: AggregateMarkRow) => row.freeze_marks);
-
+        
         if (!allFreezeMarksTrue || aggregateResults.length < examRegistration.length) {
             return { message: "Marks not evaluated yet." };
         }
 
-        if (internalResults.length > 0 && externalResults.length > 0 && aggregateResults.length > 0 && allFreezeMarksTrue) {
+        if (aggregateResults.length > 0 && allFreezeMarksTrue) {
+            
             const getGrade = (marks: string, credit: number): string => {
                 let marksFloat = parseFloat(marks);
                 if (credit === 0) {
@@ -759,11 +761,14 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
                     if (getGradePoint(grade) !== ' ') {
                         gradePoint = getGradePoint(grade);
                     } else {
-                        gradePoint = '0';
+                        gradePoint = '-';
                     }
-                    let earnedCredit = gradePoint !== '0' ? row.credit : 0;
-                    totalEarnedCredit += earnedCredit; // No need for parseInt here
-                    sgpa += (parseFloat(gradePoint) * earnedCredit);
+                    let earnedCredit = 0;
+                    if (gradePoint !== '-'){
+                        earnedCredit = gradePoint !== '0' ? row.credit : 0;
+                        totalEarnedCredit += earnedCredit; // No need for parseInt here
+                        sgpa += (parseFloat(gradePoint) * earnedCredit);
+                    }
                     return {
                         course_code: row.course_code,
                         course_name: row.course_name,

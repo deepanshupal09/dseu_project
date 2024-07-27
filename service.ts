@@ -42,7 +42,8 @@ import {
     fetchAllRegisterStudentCampusModal,
     fetchUserDetails,
     fetchExamCourseDetails,
-    fetchSemesterCourseDetails
+    fetchSemesterCourseDetails,
+    fetchOtpTimeModel
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
@@ -509,9 +510,20 @@ export function fetchTheEmailId(rollno: string) : Promise<any> {
     })
 }
 
-export function otpUpdateService(otp:string, rollno: string) : Promise<any> {
+export function otpUpdateService(otp:string, rollno: string,currentTime:string) : Promise<any> {
     return new Promise((resolve,reject) => {
-        otpUpdateModel(otp, rollno).then((result) => {
+        otpUpdateModel(otp, rollno,currentTime).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            console.log("Error in otp udation: ",error);
+            reject("Internal server error in otp updation");
+        })
+    })
+}
+
+export function fetchOtpTimeService(rollno: string) : Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchOtpTimeModel( rollno).then((result) => {
             resolve(result);
         }).catch((error) => {
             console.log("Error in otp udation: ",error);
@@ -552,12 +564,20 @@ export function otpVerifyServiceAdmin( emailid: string) : Promise<any> {
     })
 }
 
-export async function updateThePassword(password:string, rollno: string) : Promise<any> {
+export async function updateThePassword(password:string, rollno: string,otp:string) : Promise<any> {
     const hash = await bcrypt.hash(password, 10);
+    const verifyOtp:any=otpVerifyService(rollno);
+    if(otp!==verifyOtp){
+        console.log("returend from here");
+        return ("incorrect OTP")
+    }
     return new Promise((resolve,reject) => {
+        
         updatePassword(hash, rollno).then((result) => {
+            console.log("done")
             resolve(result);
         }).catch((error) => {
+
             console.log("Error in password updation: ",error);
             reject("Internal server error in password updation");
         })

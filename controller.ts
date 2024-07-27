@@ -30,7 +30,8 @@ import {
   otpVerifyServiceAdmin,
   updateThePasswordAdmin,
   otpUpdateServiceAdmin,
-  fetchStudentService
+  fetchStudentService,
+  fetchOtpTimeService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -398,9 +399,31 @@ export const transporter = nodemailer.createTransport({
 const sendEmail = asyncHandler(async (req: Request, res: Response) => {
   try {
     const rollno: string = req.headers.rollno as string;
+    const OtpTime:string =(await fetchOtpTimeService(rollno)).rows[0].otp_time;
+    console.log(OtpTime);
     const otp = generateOTP(); 
+    if (OtpTime) {
+      const otpDate = new Date(OtpTime);
+      const currentTime = new Date();
+      const timeDifference = ((currentTime.getTime() - otpDate.getTime()) / 1000); // in seconds
+      const timeDifferenceMinutes = Math.floor(timeDifference / 60);
+      const timeDifferenceSeconds = Math.floor(timeDifference % 60);
+      
+      if (timeDifference <= 300) { // 5 minutes * 60 seconds
+          const remainingMinutes = 4 - timeDifferenceMinutes;
+          const remainingSeconds = 60 - timeDifferenceSeconds;
+          
+          res.status(400).send({ 
+              message: `Try again after ${remainingMinutes} minutes and ${remainingSeconds} seconds`
+          });
+          return;
+      }
+  }
+  
+    const currentTime=new Date().toString();
 
-    await otpUpdateService(otp,rollno);
+
+    await otpUpdateService(otp,rollno,currentTime);
     const email = await fetchTheEmailId(rollno);
     
     const mailOptions = {
@@ -528,11 +551,12 @@ const sendUserDetailsEmail = asyncHandler(async (req: Request, res: Response) =>
 
 const updatePasswordByOtp = (req: Request, res: Response)=>{
   try{
-    const {rollno, password} = req.headers;
+    const {rollno, password,otp} = req.headers;
     console.log("rollno, ",rollno, "password: ",password)
-    updateThePassword(password as string, rollno as string).then((results)=> {
+    updateThePassword(password as string, rollno as string,otp as string).then((results)=> {
       res.status(200).send({message: "Password updated successfully!"});
     }).catch((error)=>{
+      console.log(error);
       res.status(500).send({message: "Internal server error in password updation 1"});
     })
   }
@@ -562,11 +586,32 @@ const verifyOtpAndPassword = (async(req: Request, res: Response)=>{
     console.log(otp);
     const storedOTPResult = await otpVerifyService(rollno as string);
     const storedOTP: string = storedOTPResult.rows[0]?.otp;
-    console.log(storedOTP);
+    const loginTries:number = storedOTPResult.rows[0]?.login_tries;
+    const otpTime:string = storedOTPResult.rows[0]?.otp_time;
 
-    if(otp === storedOTP ){
-      res.status(200).send({message: "OTP verified successfully!"});
-    } else{
+    console.log(loginTries);
+
+    if(loginTries<=0){
+      res.status(400).send({message: "OTP tries limit reached"});
+    }
+    else if(otp === storedOTP ){
+      if(otpTime ){
+        const otpDate = new Date(otpTime);
+      const currentTime = new Date();
+      const timeDifference = (currentTime.getTime() - otpDate.getTime()) / (1000 * 60); 
+
+        if(timeDifference>15){
+          res.status(400).send({message: "OTP Expired"});
+        }
+        else{
+          res.status(200).send({message: "OTP verified successfully!"});
+        }
+      }
+       else{
+        res.status(200).send({message: "OTP verified successfully!"});
+      }
+    }
+     else{
       res.status(400).send({message: "Invalid OTP"});
     }
   }

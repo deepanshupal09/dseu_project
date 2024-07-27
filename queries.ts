@@ -169,15 +169,26 @@ export const fetchEmailIdByRollno: string = `
 `;
 
 export const updateOTP: string = `
-  UPDATE users SET otp = $1 WHERE rollno = $2;
+  UPDATE users SET otp = $1 , otp_time=$3 , login_tries=10 WHERE rollno = $2;
 `;
+
+export const fetchOtpTime:string =`SELECT otp_time from users where rollno = $1`
+
 export const updateOTPAdmin: string = `
   UPDATE admin SET otp = $1 WHERE emailid = $2;
 `;
 
 export const verifyOTP: string = `
-  SELECT otp FROM users WHERE rollno = $1; 
+  WITH updated_users AS (
+    UPDATE users 
+    SET login_tries = login_tries - 1 
+    WHERE rollno = $1 
+    RETURNING otp, login_tries, otp_time
+  )
+  SELECT otp, login_tries, otp_time 
+  FROM updated_users;
 `;
+
 export const verifyOTPAdmin: string = `
   SELECT otp FROM admin WHERE emailid = $1; 
 `;

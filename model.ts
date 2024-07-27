@@ -43,7 +43,8 @@ import {
     fetchExamRegistrationByRoll,
     fetchCourseDetailsByRoll,
     fetchUserDetailsByRoll,
-    fetchSemesterCourseDetailsByRoll
+    fetchSemesterCourseDetailsByRoll,
+    fetchOtpTime
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -535,9 +536,21 @@ export function fetchEmailId( rollno: string) : Promise<QueryResult<any>> {
     })
 }
 
-export function otpUpdateModel(  otp: string , rollno: string,) : Promise<QueryResult<any>> {
+export function otpUpdateModel(  otp: string , rollno: string,currentTime:string) : Promise<QueryResult<any>> {
     return new Promise((resolve, reject)=>{
-        pool.query(updateOTP,[ otp , rollno ],(error, results) => {
+        pool.query(updateOTP,[ otp , rollno,currentTime ],(error, results) => {
+            if(error){
+                reject(error);
+            } else{
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function fetchOtpTimeModel(   rollno: string,) : Promise<QueryResult<any>> {
+    return new Promise((resolve, reject)=>{
+        pool.query(fetchOtpTime,[ rollno ],(error, results) => {
             if(error){
                 reject(error);
             } else{
