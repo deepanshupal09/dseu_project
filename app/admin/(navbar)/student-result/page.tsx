@@ -212,8 +212,8 @@ export default function Home() {
           <td className="px-2 py-3 border border-black text-left text-xs font-medium">{bridgeMark.course_name}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
-          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+          {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+          <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td> */}
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade}</td>
           <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade_point}</td>
         </tr>
@@ -235,7 +235,7 @@ export default function Home() {
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
               {"Mother's name: "} <span className="font-semibold">{student?.mother}</span>
@@ -256,7 +256,7 @@ export default function Home() {
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
           </div>
         </>
@@ -274,7 +274,7 @@ export default function Home() {
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold">{student?.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
           </div>
         </>
@@ -403,45 +403,46 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="text-center flex flex-col mx-auto">
-                    <div className="text-xl font-extrabold font-serif p-1">PROVISIONAL GRADESHEET OF EOSE OF {academicYear}</div>
+                    <div className="text-xl font-extrabold font-serif p-1">GRADESHEET OF EOSE OF {academicYear}</div>
                     <div className="text-xl font-extrabold font-serif p-1 mb-4">
                       {student && student?.program} (Batch - {student?.year_of_admission})
                     </div>
                   </div>
+                  <div className="border border-solid py-16">
                   <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
 
-                  <table className="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto">
+                  <table className="w-11/12 mx-auto leading-normal my-2 font-bold  tracking-wider font-roboto">
                     <thead>
                       <tr>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "8%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "6%" }}
                         >
                           S.No
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "20%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "16%" }}
                         >
                           Course Code
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "50%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "38%" }}
                         >
                           Course Name
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
                           style={{ width: "8%" }}
                         >
                           Credits
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "12%" }}
                         >
-                          Credits Earned
+                          Credits Earned (C<sub>i</sub>)
                         </th>
                         {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
@@ -456,16 +457,16 @@ export default function Home() {
                           Letter Grade End of Semester Evaluation (EOSE)
                         </th> */}
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "10%" }}
                         >
                           Grade
                         </th>
                         <th
-                          className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
-                          style={{ width: "6%" }}
+                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                          style={{ width: "10%" }}
                         >
-                          Grade Point
+                          Grade Point (P<sub>i</sub>)
                         </th>
                       </tr>
                     </thead>
@@ -477,46 +478,46 @@ export default function Home() {
                         <tr className="border border-black">
                           <th
                             rowSpan={2}
-                            className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider"
+                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                           >
                             Credits Earned in this semester
                           </th>
                           <th
                             rowSpan={2}
-                            className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black"
+                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                           >
                             Total Credits earned as on date
                           </th>
                           <th
                             colSpan={2}
-                            className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black"
+                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                           >
                             SGPA
                           </th>
                           <th
                             colSpan={2}
-                            className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black"
+                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                           >
                             CGPA
                           </th>
                           <th
                             rowSpan={2}
-                            className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black"
+                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                           >
                             Grading System
                           </th>
                         </tr>
                         <tr>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                          <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                             Earned
                           </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                          <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                             Grade Letter
                           </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                          <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                             Earned
                           </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                          <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                             Grade Letter
                           </th>
                         </tr>
@@ -541,6 +542,7 @@ export default function Home() {
                     </table>
                     <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
                   </div>
+                   </div>
 
                   <div className="print-only overflow-y-auto h-auto break-before-page break-after-avoid">
                     <Image

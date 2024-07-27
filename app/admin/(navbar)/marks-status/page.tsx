@@ -269,13 +269,14 @@ export default function Marks() {
   const sendEmailsAPI=async()=>{
     try{
       
-
+    
   // console.log("hathi")  
-    // await sendEmails();
+    // await sendEmails(token);
     setAlert(true);
     setMessage('Email sent successfully')
   }
     catch(error){
+      // const e=error as Error;
       setAlert(true);
       setMessage("Error occured")
       console.log(error);

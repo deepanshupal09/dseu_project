@@ -6,7 +6,7 @@ import Image from "next/image";
 import { sendEmail } from "../actions/api";
 
 export default function SendOTP({RollNo, setRollNo, setStep}:{RollNo: string, setRollNo: Function, setStep: Function}) {
-  const [Password, setPass] = useState<string>("");
+  // const [Password, setPass] = useState<string>("");
   const [helperText, setHelperText] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,15 +37,24 @@ export default function SendOTP({RollNo, setRollNo, setStep}:{RollNo: string, se
     setLoading(true);
     sendEmail(RollNo)
       .then((res) => {
-        setLoading(false);
-        setResendDisabled(true);
-        setStep(2);
-        setRemainingTime(300); // Reset the timer to 5 minutes
+        // console.log("response: ", res)
+        if (res.status === 200) {
+          setLoading(false);
+          setResendDisabled(true);
+          setStep(2);
+          setRemainingTime(300); // Reset the timer to 5 minutes
+        } else {
+          setLoading(false);
+          setError(true);
+          setHelperText(res.message) 
+        }
       })
-      .catch((error) => {
+      .catch((error:any) => {
         setLoading(false);
         setError(true);
-        setHelperText("Something went wrong! Please try again later");
+        const e=error as Error;
+        // console.log(error,e,e.message);
+        setHelperText(e.message) 
 
       });
   }

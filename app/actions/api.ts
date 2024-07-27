@@ -196,6 +196,7 @@ export async function fetchExamRegisterationsByRollNo(rollno: string, token: str
 
 export async function sendEmail(rollno: string) {
     try {
+        // console.log("ujjawal  madamadamadamadamada")
         const response = await fetch(`${process.env.BACKEND_URL}/sendEmail`, {
             method: "GET",
             mode: "cors",
@@ -206,15 +207,20 @@ export async function sendEmail(rollno: string) {
             },
         });
 
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
-        }
-
+        // if (!response.ok) {
+        //     const errorMessage = await response.text();
+        //     throw new Error(errorMessage);
+        // }
         const data = await response.json(); // Parse the JSON response
-        return data;
-    } catch (error) {
-        throw error;
+        if (!response.ok) {
+            return {status: response.status, ...data}
+        }
+        return {status: 200, ...data};
+    } catch (error:any) {
+        
+        console.log(error);
+        
+        return error;
     }
 }
 
@@ -231,18 +237,17 @@ export async function verifyOtpAndPassword(rollno: string, otp: string) {
             },
         });
 
+        const data = await response.json(); // Parse the JSON response
         if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(errorMessage);
+            return {status: response.status, ...data}
         }
 
-        const data = await response.json(); // Parse the JSON response
-        return data;
+        return {status: response.status, ...data};
     } catch (error) {
         throw error;
     }
 }
-export async function updatePasswordByOtp(rollno: string, password: string) {
+export async function updatePasswordByOtp(rollno: string, password: string,otp:string) {
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/updatePasswordByOtp`, {
             method: "GET",
@@ -252,6 +257,7 @@ export async function updatePasswordByOtp(rollno: string, password: string) {
                 "Content-Type": "application/json",
                 rollno: rollno,
                 password: password,
+                otp:otp
             },
         });
 
@@ -1059,21 +1065,25 @@ export async function fetchAllMarksheetController(academicyear: string,token:str
       throw error;
     }
   }
-export async function sendEmails(){
+export async function sendEmails(token:string){
     try{
+        console.log("entered")
         // const response ={ok:true}
-        const response=await fetch(`${process.env.BACKEND_URL}/api/admin/sendEmailNotFreeze`)
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log(errorText);
-            throw new Error(errorText);
-          }
+        const response=await fetch(`${process.env.BACKEND_URL}/api/admin/sendEmailNotFreeze`,{method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          token : token, 
+        },})
+        
       
           const data = await response.json();
           return data;
     }
-    catch(error){
-        throw error;
+    catch(error:any){
+        console.log(123,error);
+        return error;
     }
 }
 export async function deleteBridgeDetails(token: string, rollno: string, course_code: string, academic_year: string) {
