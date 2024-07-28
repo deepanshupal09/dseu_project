@@ -288,13 +288,15 @@ export default function Marks() {
   }, [selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester, selectedCourse]);
   const sendEmailsAPI = async () => {
     try {
-      await sendEmails(token);
       setLoading(true);
+      setConfirm(false)
+      await sendEmails(token);
       setAlert(true);
       setMessage("Email sent successfully");
       setLoading(false);
     } catch (error) {
       setAlert(true);
+      setConfirm(false)
       setMessage("Something went wrong. Please try again later");
       console.log(error);
     }
