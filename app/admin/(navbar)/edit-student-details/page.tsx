@@ -57,7 +57,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 //   programTypeList,
 // } from "@/app/getuserdetails/[rollno]/page";
 import { useDebouncedCallback } from "use-debounce";
-import { DeleteForever } from "@mui/icons-material";
+import { CalendarMonth, DateRange, DeleteForever } from "@mui/icons-material";
 
 import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
@@ -106,6 +106,7 @@ function Home() {
   const [selectedSemester, setSelectedSemester] = useState("");
   const [chosen, setChosen] = useState(true);
   const [selectedSub, setSelectedSub] = useState<Subject[]>([]);
+  const academicYears = ["2021","2022","2023","2024"]
 
   const [reload, setReload] = useState<boolean>(true);
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -496,7 +497,7 @@ function Home() {
     if (rollno) {
       try {
         const response = await getUserByRollNo(rollno, token);
-
+        response[0].date_of_birth = response[0].dob;
         setUser(response[0]);
         setOriginal(response[0]);
       } catch (error) {
@@ -720,6 +721,23 @@ function Home() {
                       />
                     </p>
                   </div>
+                  <div className="flex items-center mb-2">
+                    <CalendarMonth className="mr-2" />
+                    <p>
+                      <span className="font-bold">DOB:</span>
+                      <br />
+                      <TextField
+                        hiddenLabel
+                        type="date"
+                        className="mt-2"
+                        size="small"
+                        variant="filled"
+                        name="date_of_birth"
+                        value={user.date_of_birth}
+                        onChange={handleChange}
+                      />
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -862,6 +880,29 @@ function Home() {
                       </p>
                     </div>
                     <div className="flex mb-2">
+                      <DateRange className="mr-2" />
+                      <p>
+                        <span className="font-bold">Academic Year:</span>
+                        <br />
+                        <Select
+                          hiddenLabel
+                          className="mt-2"
+                          size="small"
+                          value={user.year_of_admission}
+                          onChange={handleSelectChange}
+                          name="year_of_admission"
+                          sx={{ width: 150 }}
+                          variant="filled"
+                        >
+                          {academicYears.map((year: string) => (
+                              <MenuItem key={year} value={year}>
+                                {year}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </p>
+                    </div>
+                    <div className="flex mb-2">
                       <PersonIcon className="mr-2" />
                       <p>
                         <span className="font-bold">Role:</span>
@@ -877,6 +918,7 @@ function Home() {
                         />
                       </p>
                     </div>
+
                   </div>
                 </div>
               </div>

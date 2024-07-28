@@ -19,6 +19,7 @@ export default function Nav() {
         getAuthAdmin().then(async (t: any) => {
             if (t) {
                 const data = await parseJwt(t.value);
+                console.log("data: ", data)
                 if (data?.user?.role === "super") {
                     setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result","Results","Download All Marks"]);
                 }
@@ -27,6 +28,9 @@ export default function Nav() {
                 }
                 if (data?.user?.role === "admin") {
                     setOptions(["Registration Chart", "Admit Card", "Query"]);
+                }
+                if (data?.user?.role === "mod") {
+                    setOptions(["Dashboard","Download All Marks","Edit Student Details"]);
                 }
             }
         });
