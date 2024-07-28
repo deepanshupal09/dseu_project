@@ -315,6 +315,7 @@ const sendEmailMarksController = asyncHandler(async (req: Request, res: Response
         const mailOptions = {
             from: process.env.SMTP_MAIL,
             bcc: email,
+            // cc:""
             subject: "all is well",
             text: `testing mail`,
         };
@@ -434,7 +435,7 @@ const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
               <th>Course Names</th>
             </tr>
         `;
-  
+        const campusName = groupInfo.infoGroups[0]?.campus || '';
         groupInfo.infoGroups.forEach((info: InfoGroup) => {
             const courseNamesList = info.course_names.length > 0 
               ? `<ul style="margin: 0; padding-left: 20px;">
@@ -456,15 +457,30 @@ const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
         infoGroupDetails += '</table>';
   
         const mailOptions = {
-          from: process.env.SMTP_MAIL,
-          to: email,
-          subject: 'Marks Not Freeze',
-          html: `
-            <p>This is a test email.</p>
-            <p>These programs marks have not been freezed yet:</p>
-            ${infoGroupDetails}
-          `,
-        };
+            from: process.env.SMTP_MAIL,
+            to: email,
+            cc: 'vc@dseu.ac.in, coe@dseu.ac.in, registrar@dseu.ac.in, acoe@dseu.ac.in, ar-exam@dseu.ac.in',
+            subject: `Urgent: Pending Marks Entry on Exam Portal ${campusName}`,
+            html: `
+              <p>Dear Sir/Madam,</p>
+          
+              <p>Greetings!</p>
+          
+              <p>The deadline for marks submission for the Exam of Academic Year 2023-24 (Even Semester) was initially set for July 10th, 2024, on the Exam Portal.</p>
+          
+              <p>However, at the request of the Campus Directors, the Controller of Examination extended this deadline to July 20th, 2024.</p>
+          
+              <p>As of today, the marks for the following courses have not yet been received from your campus:</p>
+          
+              ${infoGroupDetails}
+          
+              <p>This delay in marks submission is resulting in a delay in the declaration of results. The competent authority has taken this matter seriously. In view of this, you are requested to complete the marks entry on the Exam Portal within 24 hours of receiving this email.</p>
+          
+              <p>Regards,</p>
+              <p>Controller of Examinations</p>
+            `,
+          };
+          
   
         // Send the email
         await new Promise<void>((resolve, reject) => {
