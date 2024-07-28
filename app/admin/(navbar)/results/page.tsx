@@ -259,7 +259,7 @@ export default function Registration() {
                     </div>
                     <div className="flex">
                         <div className="w-8/12 text-left font-normal p-1">
-                            Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
+                            Enrollment no: <span className="font-semibold font-roboto">{markSheet.rollno}</span>
                         </div>
                         <div className="w-4/12 text-left font-normal font-serif p-1">
                             {"Mother's name:"} <span className="font-semibold">{personalDetails.mother}</span>
@@ -280,7 +280,7 @@ export default function Registration() {
                     </div>
                     <div className="flex">
                         <div className="w-8/12 text-left font-normal p-1">
-                            Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
+                            Enrollment no: <span className="font-semibold font-roboto">{markSheet.rollno}</span>
                         </div>
                     </div>
                 </>
@@ -298,7 +298,7 @@ export default function Registration() {
                     </div>
                     <div className="flex">
                         <div className="w-8/12 text-left font-normal p-1">
-                            Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
+                            Enrollment no: <span className="font-semibold font-roboto">{markSheet.rollno}</span>
                         </div>
                     </div>
                 </>
@@ -316,7 +316,7 @@ export default function Registration() {
                     </div>
                     <div className="flex">
                         <div className="w-8/12 text-left font-normal p-1">
-                            Enrollment no: <span className="font-semibold">{markSheet.rollno}</span>
+                            Enrollment no: <span className="font-semibold font-roboto">{markSheet.rollno}</span>
                         </div>
                         {/* <div className="w-4/12 text-left font-normal font-serif p-1">
                             Relation: <span className="font-semibold">{personalDetails.relation}</span>
@@ -376,8 +376,8 @@ export default function Registration() {
                     <td className="px-2 py-3 border border-black text-left text-xs font-medium">{bridgeMark.course_name}</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">0</td>
-                    <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
-                    <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+                    {/* <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td>
+                    <td className="px-2 py-3 border border-black text-center text-xs font-medium">-</td> */}
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade}</td>
                     <td className="px-2 py-3 border border-black text-center text-xs font-medium">{bridgeMark.grade_point}</td>
                 </tr>
@@ -409,6 +409,7 @@ export default function Registration() {
             <div class="text-xl font-extrabold font-serif p-1">PROVISIONAL GRADESHEET OF EOSE OF ${academicYears}</div>
             <div class="text-xl font-extrabold font-serif p-1 mb-4">${student.personalDetails.program} (Batch - ${student.personalDetails.year_of_admission})</div>
           </div>
+
           <div class="text-center flex flex-col my-2 mr-5 px-14 sm:">${renderParentInfo(student)}</div>
           <table class="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto">
             <thead>
@@ -418,8 +419,8 @@ export default function Registration() {
                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 40%;">Course Name</th>
                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 6%;">Credits</th>
                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 6%;">Credits Earned</th>
-                <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 9%;">Letter Grade Continuous Evaluation (CA)</th>
-                <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 10%;">Letter Grade End of Semester Evaluation (EOSE)</th>
+                {/* <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 9%;">Letter Grade Continuous Evaluation (CA)</th>
+                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 10%;">Letter Grade End of Semester Evaluation (EOSE)</th> */}
                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 6%;">Grade</th>
                 <th class="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style="width: 6%;">Grade Point</th>
               </tr>
@@ -674,27 +675,28 @@ export default function Registration() {
                                             {student.personalDetails.program} (Batch - {student.personalDetails.year_of_admission})
                                         </div>
                                     </div>
+                                    <div className="border border-solid py-16">
                                     <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">
                                         {renderParentInfo(student)}
                                     </div>
 
-                                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold uppercase tracking-wider font-roboto">
+                                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold tracking-wider font-roboto">
                                         <thead>
                                             <tr>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "6%" }}>
                                                     S.No
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "15%" }}>
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "16%" }}>
                                                     Course Code
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "40%" }}>
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "38%" }}>
                                                     Course Name
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "8%" }}>
                                                     Credits
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
-                                                    Credits Earned
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "12%" }}>
+                                                    Credits Earned (C<sub>i</sub>)
                                                 </th>
                                                 {/* <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "9%" }}>
                                                     Letter Grade Continuous Evaluation (CA)
@@ -702,11 +704,11 @@ export default function Registration() {
                                                 <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "10%" }}>
                                                     Letter Grade End of Semester Evaluation (EOSE)
                                                 </th> */}
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "10%" }}>
                                                     Grade
                                                 </th>
-                                                <th className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider" style={{ width: "6%" }}>
-                                                    Grade Point
+                                                <th className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider" style={{ width: "10%" }}>
+                                                    Grade Point (P<sub>i</sub>)
                                                 </th>
                                             </tr>
                                         </thead>
@@ -719,30 +721,30 @@ export default function Registration() {
                                                 <th rowSpan={2} className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
                                                     Credits Earned in this semester
                                                 </th>
-                                                <th rowSpan={2} className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black">
+                                                <th rowSpan={2} className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Total Credits earned as on date
                                                 </th>
-                                                <th colSpan={2} className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black">
+                                                <th colSpan={2} className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     SGPA
                                                 </th>
-                                                <th colSpan={2} className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black">
+                                                <th colSpan={2} className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     CGPA
                                                 </th>
-                                                <th rowSpan={2} className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider border border-black">
+                                                <th rowSpan={2} className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Grading System
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Earned
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Grade Letter
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Earned
                                                 </th>
-                                                <th className="px-6 py-3 text-center text-xs font-bold border border-black uppercase tracking-wider">
+                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                                                     Grade Letter
                                                 </th>
                                             </tr>
@@ -767,6 +769,7 @@ export default function Registration() {
                                     </table>
 
                                     <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
+                                </div>
                                 </div>
                             //     <div className="print-only overflow-y-auto h-auto break-before-page break-after-avoid">
                             //     <Image

@@ -7,11 +7,13 @@ import { updatePasswordByOtp, verifyOtpAndPassword } from "../actions/api";
 interface ChangePasswordProps {
   setStep: React.Dispatch<React.SetStateAction<Number>>;
   rollno: string;
+  otp:string;
 }
 
 export default function ChangePassword({
   rollno,
   setStep,
+  otp
 }: ChangePasswordProps) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,7 +41,7 @@ export default function ChangePassword({
     }
 
     setLoading(true);
-    updatePasswordByOtp(rollno, newPassword)
+    updatePasswordByOtp(rollno, newPassword,otp)
       .then((res) => {
         setStep(4)
         setLoading(false);

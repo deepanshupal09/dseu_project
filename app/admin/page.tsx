@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative">
+      {/* <div className="relative">
                 <div className="flex items-center fixed max-sm:top-2 max-sm:right-7 top-8 right-20 z-30">
                     <button
                         className="relative w-10 h-10"
@@ -106,7 +106,7 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {section === 0 && (
                 <div className=" ">
