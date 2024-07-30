@@ -111,12 +111,15 @@ export default function Home() {
       fetchMarksController(academicYear, semester, user.rollno, token)
         .then((res: StudentData | { message: string } | boolean) => {
           // console.log(res);
-  
-          if (typeof res === 'boolean') {
+
+          if (typeof res === "boolean") {
             setIsMarksEvaluated(res);
             setStudentData(null);
-          } else if ('message' in res) {
-            if (res.message === "Marks not evaluated yet." || res.message === "No data found for the given roll number and academic year") {
+          } else if ("message" in res) {
+            if (
+              res.message === "Marks not evaluated yet." ||
+              res.message === "No data found for the given roll number and academic year"
+            ) {
               setIsMarksEvaluated(false);
               setStudentData(null);
             }
@@ -124,7 +127,7 @@ export default function Home() {
             setStudentData(res);
             setIsMarksEvaluated(true);
           }
-  
+
           setIsSubmitted(true);
         })
         .catch((error) => {
@@ -132,8 +135,6 @@ export default function Home() {
         });
     }
   };
-  
-  
 
   const renderTableRows = () => {
     if (!studentData) return null;
@@ -355,48 +356,50 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="text-center flex flex-col mx-auto">
-                    <div className="text-xl font-extrabold font-serif p-1">GRADESHEET OF EOSE OF {academicYear}</div>
-                    <div className="text-xl font-extrabold font-serif p-1 mb-4">
-                      {user && user.program} (Batch - {user.year_of_admission})
+                    <div className="text-xl font-serif p-1">
+                      Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
+                    </div>
+                    <div className="text-lg font-bold font-serif mb-4">
+                      {user && user?.program}-Batch <span className="font-sans">{user?.year_of_admission}</span>
                     </div>
                   </div>
                   <div className="border border-solid py-16">
-                  <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
+                    <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
 
-                  <table className="w-11/12 mx-auto leading-normal my-2 font-bold tracking-wider font-roboto ">
-                    <thead>
-                      <tr>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-md font-bold tracking-wider"
-                          style={{ width: "6%" }}
-                        >
-                          S.No
-                        </th>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "16%" }}
-                        >
-                          Course Code
-                        </th>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "38%" }}
-                        >
-                          Course Name
-                        </th>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "8%" }}
-                        >
-                          Credits
-                        </th>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "12%" }}
-                        >
-                          Credits Earned (C<sub>i</sub>)
-                        </th>
-                        {/* <th
+                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold tracking-wider font-roboto ">
+                      <thead>
+                        <tr>
+                          <th
+                            className="px-2 py-3 border border-black text-center text-md font-bold tracking-wider"
+                            style={{ width: "6%" }}
+                          >
+                            S.No
+                          </th>
+                          <th
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "16%" }}
+                          >
+                            Course Code
+                          </th>
+                          <th
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "38%" }}
+                          >
+                            Course Name
+                          </th>
+                          <th
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "8%" }}
+                          >
+                            Credits
+                          </th>
+                          <th
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "12%" }}
+                          >
+                            Credits Earned (C<sub>i</sub>)
+                          </th>
+                          {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "9%" }}
                         >
@@ -408,92 +411,92 @@ export default function Home() {
                         >
                           Letter Grade End of Semester Evaluation (EOSE)
                         </th> */}
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "10%" }}
-                        >
-                          Grade
-                        </th>
-                        <th
-                          className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                          style={{ width: "10%" }}
-                        >
-                          Grade Point (P<sub>i</sub>)
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="font-semibold">{renderTableRows()}</tbody>
-                  </table>
-                  <div>
-                    <table className="w-11/12 mx-auto leading-normal mt-5 font-bold  tracking-wider font-roboto sm:overflow-x-hidden">
-                      <thead className="border border-black">
-                        <tr className="border border-black">
                           <th
-                            rowSpan={2}
-                            className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "10%" }}
                           >
-                            Credits Earned in this semester
+                            Grade
                           </th>
                           <th
-                            rowSpan={2}
-                            className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                            style={{ width: "10%" }}
                           >
-                            Total Credits earned as on date
-                          </th>
-                          <th
-                            colSpan={2}
-                            className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
-                          >
-                            SGPA
-                          </th>
-                          <th
-                            colSpan={2}
-                            className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
-                          >
-                            CGPA
-                          </th>
-                          <th
-                            rowSpan={2}
-                            className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
-                          >
-                            Grading System
-                          </th>
-                        </tr>
-                        <tr>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
-                            Earned
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
-                            Grade Letter
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
-                            Earned
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
-                            Grade Letter
+                            Grade Point (P<sub>i</sub>)
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white">
-                        <tr className="border border-black">
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                            {studentData.Credits_earned}
-                          </td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                            {studentData.sgpa_result.toPrecision(3)}
-                          </td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                            {studentData.sgpa_grade}
-                          </td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                          <td className="px-6 py-4 text-center border border-black whitespace-nowrap">ABS</td>
-                        </tr>
-                      </tbody>
+                      <tbody className="font-semibold">{renderTableRows()}</tbody>
                     </table>
-                    <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
-                  </div>
+                    <div>
+                      <table className="w-11/12 mx-auto leading-normal mt-5 font-bold  tracking-wider font-roboto sm:overflow-x-hidden">
+                        <thead className="border border-black">
+                          <tr className="border border-black">
+                            <th
+                              rowSpan={2}
+                              className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                            >
+                              Credits Earned in this semester
+                            </th>
+                            <th
+                              rowSpan={2}
+                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                            >
+                              Total Credits earned as on date
+                            </th>
+                            <th
+                              colSpan={2}
+                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                            >
+                              SGPA
+                            </th>
+                            <th
+                              colSpan={2}
+                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                            >
+                              CGPA
+                            </th>
+                            <th
+                              rowSpan={2}
+                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                            >
+                              Grading System
+                            </th>
+                          </tr>
+                          <tr>
+                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                              Earned
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                              Grade Letter
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                              Earned
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                              Grade Letter
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white">
+                          <tr className="border border-black">
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                              {studentData.Credits_earned}
+                            </td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                              {studentData.sgpa_result.toPrecision(3)}
+                            </td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                              {studentData.sgpa_grade}
+                            </td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                            <td className="px-6 py-4 text-center border border-black whitespace-nowrap">ABS</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
+                    </div>
                   </div>
 
                   <div className="print-only overflow-y-auto h-auto break-before-page break-after-avoid">
@@ -518,4 +521,5 @@ export default function Home() {
         )}
       </div>
     </>
-);}
+  );
+}
