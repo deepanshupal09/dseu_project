@@ -566,8 +566,8 @@ export function otpVerifyServiceAdmin( emailid: string) : Promise<any> {
 
 export async function updateThePassword(password:string, rollno: string,otp:string) : Promise<any> {
     const hash = await bcrypt.hash(password, 10);
-    const verifyOtp:any=otpVerifyService(rollno);
-    if(otp!==verifyOtp){
+    const verifyOtp:any=await otpVerifyService(rollno);
+    if(otp!==verifyOtp.rows[0].otp){
         console.log("returend from here");
         return ("incorrect OTP")
     }
