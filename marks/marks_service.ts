@@ -640,7 +640,7 @@ interface AggregateMarkRow {
 
 export async function fetchMarksService(rollno: string, academic_year: string, semester: number): Promise<any> {
     try {
-        console.log(1,rollno,academic_year,semester)
+        console.log(1, rollno, academic_year, semester);
         const resultControl = await fetchResultControlModal(rollno);
         if (!resultControl.rows[0].result_control) {
             return resultControl.rows[0].result_control;
@@ -654,14 +654,20 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
             fetchTheExamRegistration(rollno)
         ]);
 
-        const allFreezeMarksTrue = aggregateResults.every((row: AggregateMarkRow) => row.freeze_marks);
-        
-        if (!allFreezeMarksTrue || aggregateResults.length < examRegistration.length) {
+        console.log("exam Registration :", examRegistration);
+        console.log("aggregate :", aggregateResults);
+
+        const examCourseCodes = new Set(examRegistration.map((row: any) => row.course_code));
+        const filteredAggregateResults = aggregateResults.filter((row: any) => examCourseCodes.has(row.course_code));
+
+        const allFreezeMarksTrue = filteredAggregateResults.every((row: AggregateMarkRow) => row.freeze_marks);
+
+        if (!allFreezeMarksTrue || filteredAggregateResults.length < examRegistration.length) {
             return { message: "Marks not evaluated yet." };
         }
 
-        if (aggregateResults.length > 0 && allFreezeMarksTrue) {
-            
+        if (filteredAggregateResults.length > 0 && allFreezeMarksTrue) {
+
             const getGrade = (marks: string, credit: number): string => {
                 let marksFloat = parseFloat(marks);
                 if (credit === 0) {
@@ -714,10 +720,10 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
             const result = {
                 rollno: rollno,
                 academic_year: academic_year,
-                campus: aggregateResults[0].campus,
-                program_type: aggregateResults[0].program_type,
-                program: aggregateResults[0].program,
-                semester: aggregateResults[0].semester,
+                campus: filteredAggregateResults[0].campus,
+                program_type: filteredAggregateResults[0].program_type,
+                program: filteredAggregateResults[0].program,
+                semester: filteredAggregateResults[0].semester,
                 internal_marks: internalResults.map((row: InternalMarkRow) => {
                     let marks = row.marks.trim();
                     let grade = getGrade(marks, row.credit);
@@ -754,7 +760,7 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
                         grade: grade
                     };
                 }),
-                aggregate_marks: aggregateResults.map((row: AggregateMarkRow) => {
+                aggregate_marks: filteredAggregateResults.map((row: AggregateMarkRow) => {
                     let marks = row.marks.trim();
                     let grade = getGrade(marks, row.credit);
                     let gradePoint = '0';
@@ -764,7 +770,7 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
                         gradePoint = '-';
                     }
                     let earnedCredit = 0;
-                    if (gradePoint !== '-'){
+                    if (gradePoint !== '-') {
                         earnedCredit = gradePoint !== '0' ? row.credit : 0;
                         totalEarnedCredit += earnedCredit; // No need for parseInt here
                         sgpa += (parseFloat(gradePoint) * earnedCredit);
@@ -816,6 +822,7 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
         throw new Error("Internal server error in fetchMarksService");
     }
 }
+
 
 export function fetchDepartDetailsByEmailidService(emailid: string): Promise<any> {
     return new Promise((resolve, reject) => {
