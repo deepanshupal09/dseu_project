@@ -40,7 +40,8 @@ import {
     fetchCoursesModal,
     fetchInternalMarksModal,
     fetchExternalMarksModal,
-    fetchAggregateMarksModal
+    fetchAggregateMarksModal,
+    fetchExamModal
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -904,84 +905,180 @@ export function fetchMarkControlDetailsService(): Promise<any> {
 
 export function fetchAllResultService(academic_year: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      Promise.all([
-        fetchAllResultModal(academic_year),
-        fetchExternalResultModal(academic_year),
-        fetchInternalResultModal(academic_year),
-        fetchAllResultBridgeModal(academic_year)
-      ]).then(([aggregateMarksResults,  externalMarksResults,internalMarksResults, bridgeResults]) => {
-  
-        const studentDataMap: Record<string, any> = {};
-  
-        // Helper function to create a composite key
-        const createCompositeKey = (student: any) => {
-          return `${student.rollno}-${student.course_code}-${student.campus}-${student.program}-${student.program_type}-${student.semester}`;
-        };
-  
-        // Helper function to add marks to the student data map
-        const addMarksToStudent = (marksData: any[], marksType: string) => {
-          marksData.forEach(student => {
-            const compositeKey = createCompositeKey(student);
-            if (!studentDataMap[compositeKey]) {
-              studentDataMap[compositeKey] = {
-                rollno: student.rollno,
-                course_code: student.course_code,
-                campus: student.campus,
-                program: student.program,
-                program_type: student.program_type,
-                semester: student.user_semester,
-                name: student.name,
-                father: student.father,
-                mother: student.mother,
-                guardian: student.guardian,
-                abc_id: student.abc_id,
-                aadhar: student.aadhar,
-                year_of_admission: student.year_of_admission,
-                academic_year: student.academic_year,
-                credits: student.credit,
-                course_name: student.course_name, 
-                aggregate_marks: null,
-                continuous_evaluation: null,
-                endSem_evaluation: null,
-                bridge: null,
-                isBridge: false,
-                exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
-                full_mark_continuous: "75",
-                full_mark_end: "25"
-              };
-            }
-            if(student.rollno==='41521032'){
-                
-            console.log(parseInt(student.semester),parseInt(student.user_semester))}
-            studentDataMap[compositeKey][marksType] = student.marks;
-            
-            // Ensure credits and course_name are set even if they come from a different result set
-            if (student.credits) {
-              studentDataMap[compositeKey].credits = student.credits;
-            }
-            if (student.course_name) {
-              studentDataMap[compositeKey].course_name = student.course_name;
-            }
+        Promise.all([
+            fetchAllResultModal(academic_year),
+            fetchExternalResultModal(academic_year),
+            fetchInternalResultModal(academic_year),
+            fetchAllResultBridgeModal(academic_year),
+            fetchExamModal(academic_year)
+        ]).then(([aggregateMarksResults, externalMarksResults, internalMarksResults, bridgeResults, examResults]) => {
 
-            if(student.bridge){
-                studentDataMap[compositeKey].isBridge = true;
-            }
-          });
-        };
-  
-        addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
-        addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
-        addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
-        addMarksToStudent(bridgeResults.rows, 'bridge');
-  
-        const combinedResults = Object.values(studentDataMap);
-        resolve(combinedResults);
-      }).catch((error) => {
-        console.log("error: ", error);
-        reject(error);
-      });
+            const studentDataMap: Record<string, any> = {};
+
+            // Helper function to create a composite key
+            const createCompositeKey = (student: any) => {
+                return `${student.rollno}-${student.course_code}`;
+            };
+
+            // Create a set of valid composite keys from the exam registeration data
+            const validExamKeys = new Set<string>();
+            examResults.rows.forEach((exam: any) => {
+                validExamKeys.add(createCompositeKey(exam));
+            });
+
+            // Helper function to add marks to the student data map
+            const addMarksToStudent = (marksData: any[], marksType: string) => {
+                marksData.forEach(student => {
+                    const compositeKey = createCompositeKey(student);
+
+                    // Check if the composite key is in the set of valid exam keys
+                    if (!validExamKeys.has(compositeKey)) {
+                        return;
+                    }
+
+                    if (!studentDataMap[compositeKey]) {
+                        studentDataMap[compositeKey] = {
+                            rollno: student.rollno,
+                            course_code: student.course_code,
+                            campus: student.campus,
+                            program: student.program,
+                            program_type: student.program_type,
+                            semester: student.user_semester,
+                            name: student.name,
+                            father: student.father,
+                            mother: student.mother,
+                            guardian: student.guardian,
+                            abc_id: student.abc_id,
+                            aadhar: student.aadhar,
+                            year_of_admission: student.year_of_admission,
+                            academic_year: student.academic_year,
+                            credits: student.credit,
+                            course_name: student.course_name,
+                            aggregate_marks: null,
+                            continuous_evaluation: null,
+                            endSem_evaluation: null,
+                            bridge: null,
+                            isBridge: false,
+                            exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
+                            full_mark_continuous: "75",
+                            full_mark_end: "25"
+                        };
+                    }
+
+                    if (student.rollno === '41521032') {
+                        console.log(parseInt(student.semester), parseInt(student.user_semester));
+                    }
+
+                    studentDataMap[compositeKey][marksType] = student.marks;
+
+                    // Ensure credits and course_name are set even if they come from a different result set
+                    if (student.credits) {
+                        studentDataMap[compositeKey].credits = student.credits;
+                    }
+                    if (student.course_name) {
+                        studentDataMap[compositeKey].course_name = student.course_name;
+                    }
+
+                    if (student.bridge) {
+                        studentDataMap[compositeKey].isBridge = true;
+                    }
+                });
+            };
+
+            addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
+            addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
+            addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
+            addMarksToStudent(bridgeResults.rows, 'bridge');
+
+            const combinedResults = Object.values(studentDataMap);
+            resolve(combinedResults);
+        }).catch((error) => {
+            console.log("error: ", error);
+            reject(error);
+        });
     });
-  }
+}
+
+// export function fetchAllResultService(academic_year: string): Promise<any> {
+//     return new Promise((resolve, reject) => {
+//       Promise.all([
+//         fetchAllResultModal(academic_year),
+//         fetchExternalResultModal(academic_year),
+//         fetchInternalResultModal(academic_year),
+//         fetchAllResultBridgeModal(academic_year)
+//       ]).then(([aggregateMarksResults,  externalMarksResults,internalMarksResults, bridgeResults]) => {
+        
+//         const studentDataMap: Record<string, any> = {};
+  
+//         // Helper function to create a composite key
+//         const createCompositeKey = (student: any) => {
+//           return `${student.rollno}-${student.course_code}-${student.campus}-${student.program}-${student.program_type}-${student.semester}`;
+//         };
+  
+//         // Helper function to add marks to the student data map
+//         const addMarksToStudent = (marksData: any[], marksType: string) => {
+//           marksData.forEach(student => {
+//             const compositeKey = createCompositeKey(student);
+//             if (!studentDataMap[compositeKey]) {
+//               studentDataMap[compositeKey] = {
+//                 rollno: student.rollno,
+//                 course_code: student.course_code,
+//                 campus: student.campus,
+//                 program: student.program,
+//                 program_type: student.program_type,
+//                 semester: student.user_semester,
+//                 name: student.name,
+//                 father: student.father,
+//                 mother: student.mother,
+//                 guardian: student.guardian,
+//                 abc_id: student.abc_id,
+//                 aadhar: student.aadhar,
+//                 year_of_admission: student.year_of_admission,
+//                 academic_year: student.academic_year,
+//                 credits: student.credit,
+//                 course_name: student.course_name, 
+//                 aggregate_marks: null,
+//                 continuous_evaluation: null,
+//                 endSem_evaluation: null,
+//                 bridge: null,
+//                 isBridge: false,
+//                 exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
+//                 full_mark_continuous: "75",
+//                 full_mark_end: "25"
+//               };
+//             }
+//             if(student.rollno==='41521032'){
+                
+//             console.log(parseInt(student.semester),parseInt(student.user_semester))}
+//             studentDataMap[compositeKey][marksType] = student.marks;
+            
+//             // Ensure credits and course_name are set even if they come from a different result set
+//             if (student.credits) {
+//               studentDataMap[compositeKey].credits = student.credits;
+//             }
+//             if (student.course_name) {
+//               studentDataMap[compositeKey].course_name = student.course_name;
+//             }
+
+//             if(student.bridge){
+//                 studentDataMap[compositeKey].isBridge = true;
+//             }
+//           });
+//         };
+  
+//         addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
+//         addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
+//         addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
+//         addMarksToStudent(bridgeResults.rows, 'bridge');
+  
+//         const combinedResults = Object.values(studentDataMap);
+//         resolve(combinedResults);
+//       }).catch((error) => {
+//         console.log("error: ", error);
+//         reject(error);
+//       });
+//     });
+//   }
   
 
 

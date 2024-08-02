@@ -372,3 +372,7 @@ export const departmentEmails: string=`
 export const getSemester: string = `
   SELECT semester FROM users WHERE rollno=$1;
 `;
+
+export const getExamQuery: string = `
+  SELECT rollno, course_code FROM exam_registeration WHERE academic_year=$1;
+`;
