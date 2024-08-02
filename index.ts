@@ -180,27 +180,27 @@ app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
-// app.post("/createlogin", async (req: Request, res: Response)=> {
-//     const data = req.body; // Assuming req.body is an array of objects
-//     const insertions = [];
+app.post("/createlogin", async (req: Request, res: Response)=> {
+    const data = req.body; // Assuming req.body is an array of objects
+    const insertions = [];
     
-//     for (const item of data) {
-//         const email = item.email;
-//         const password = item.password;
-//         const campus = item.campus;
-//         const role = item.role;
+    for (const item of data) {
+        const email = item.email;
+        const password = item.password;
+        const campus = item.campus;
+        const role = item.role;
 
-//         const pwd = await hash(password, 10);
+        const pwd = await hash(password, 10);
 
-//         try {
-//             const result = await pool.query("INSERT INTO admin (emailid,password,role,campus) values ($1, $2, $3, $4)", [email, pwd, role, campus]);
-//             insertions.push({ email, campus, message: "login added at campus " + campus });
-//         } catch (error) {
-//             console.log("error adding new user: ", error)
-//             insertions.push({ email, campus, message: "Internal Server Error!" });
-//         }
-//     }
+        try {
+            const result = await pool.query("INSERT INTO admin (emailid,password,role,campus) values ($1, $2, $3, $4)", [email, pwd, role, campus]);
+            insertions.push({ email, campus, message: "login added at campus " + campus });
+        } catch (error) {
+            console.log("error adding new user: ", error)
+            insertions.push({ email, campus, message: "Internal Server Error!" });
+        }
+    }
 
-//     res.send(insertions);
-// })
+    res.send(insertions);
+})
 
