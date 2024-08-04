@@ -64,6 +64,7 @@ import { deepEqual } from "@/utils";
 import { useRouter } from "next/navigation";
 import { Deselect, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { resetStudent as resetStudentDetails } from "@/app/actions/api";
+import { parse } from "path";
 
 interface Subject {
   name: string;
@@ -98,6 +99,7 @@ function Home() {
 
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
+  const [role, setRole] = useState("");
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>(
     {}
   );
@@ -489,6 +491,8 @@ function Home() {
     getAuthAdmin().then((auth) => {
       if (auth) {
         setToken(auth.value);
+        const user = parseJwt(auth.value).user;
+        setRole(user.role);
       }
     });
   }, []);
@@ -582,7 +586,7 @@ function Home() {
                         variant="filled"
                         name="name"
                         value={user.name}
-                        disabled
+                        disabled={role !== 'super'}
                         onChange={handleChange}
                       />
                     </p>
@@ -761,6 +765,7 @@ function Home() {
                           value={user.campus}
                           onChange={handleSelectChange}
                           name="campus"
+                          disabled={role !== 'super'}
                           // sx={{ width: "74% !important" }}
                           sx={{ width: 150 }}
                           variant="filled"
@@ -781,6 +786,7 @@ function Home() {
                         <Select
                           hiddenLabel
                           className="mt-2"
+                          disabled={role !== 'super'}
                           size="small"
                           value={user.program_type}
                           onChange={handleSelectChange}
@@ -809,6 +815,7 @@ function Home() {
                           hiddenLabel
                           className="mt-2"
                           size="small"
+                          disabled={role !== 'super'}
                           value={user.program}
                           onChange={handleSelectChange}
                           name="program"
@@ -852,6 +859,7 @@ function Home() {
                         <br />
                         <Select
                           hiddenLabel
+                          disabled={role !== 'super'}
                           className="mt-2"
                           size="small"
                           value={user?.semester.toString()}
@@ -882,7 +890,7 @@ function Home() {
                     <div className="flex mb-2">
                       <DateRange className="mr-2" />
                       <p>
-                        <span className="font-bold">Academic Year:</span>
+                        <span className="font-bold">Year of Admission:</span>
                         <br />
                         <Select
                           hiddenLabel

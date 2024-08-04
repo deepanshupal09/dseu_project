@@ -28,7 +28,8 @@ const superAdminRoutes = [
 const modRoutes = [
   "/admin/dashboard",
   "/admin/edit-student-details",  
-  "/admin/download-all-marks"
+  "/admin/download-all-marks",
+  "/admin/student-result"
 ];
 const publicRoutes = ["/", "/admin","/getuserdetails"];
 const departmentRoutes = ["/admin/marks-entry"];

@@ -30,7 +30,7 @@ export default function Nav() {
                     setOptions(["Registration Chart", "Admit Card", "Query"]);
                 }
                 if (data?.user?.role === "mod") {
-                    setOptions(["Dashboard","Download All Marks","Edit Student Details"]);
+                    setOptions(["Dashboard","Download All Marks","Edit Student Details", "Student Result"]);
                 }
             }
         });
