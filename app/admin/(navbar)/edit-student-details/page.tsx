@@ -931,7 +931,7 @@ function Home() {
                 </div>
               </div>
             </div>
-            {!chosen && (
+            {!chosen && role === 'super' && (
               <div className="w-full">
                 <Typography
                   className="text-center text-2xl font-bold"
@@ -1095,7 +1095,7 @@ function Home() {
                 </div>
               </div>
             )}
-            {chosen && (
+            {chosen && role ==='super' && (
               <>
                 <Typography className=" text-xl text-center p-2 w-full">
                   {" "}
@@ -1143,6 +1143,7 @@ function Home() {
                 </div>
               </>
             )}
+            {role === 'super' && (
             <Button
               onClick={() => {
                 setConfirmDeletion(true);
@@ -1157,20 +1158,23 @@ function Home() {
               </div>
               <div> Delete Exam Registration</div>
             </Button>
-            <Button
-              onClick={() => {
-                setResetStudent(true);
-              }}
-              className="flex items-center justify-center space-x-2"
-              color="error"
-            >
-              {" "}
-              <div>
+            )}
+            {role === 'super' && (
+              <Button
+                onClick={() => {
+                  setResetStudent(true);
+                }}
+                className="flex items-center justify-center space-x-2"
+                color="error"
+              >
                 {" "}
-                <DeleteForever className="scale-75" />
-              </div>
-              <div> Reset Student Details</div>
-            </Button>
+                <div>
+                  {" "}
+                  <DeleteForever className="scale-75" />
+                </div>
+                <div> Reset Student Details</div>
+              </Button>
+            )}
           </div>
           <Button
             type="submit"
