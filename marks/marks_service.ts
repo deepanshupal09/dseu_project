@@ -719,14 +719,22 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
             };
 
             let sgpa = 0, totalEarnedCredit = 0;
-            let specialProgram = await fetchProgramSpecial(filteredAggregateResults[0].program);
-            console.log("hello",specialProgram);
+            let specialProgram = filteredAggregateResults[0].program;
+            try{
+                const fetchedResult = await fetchProgramSpecial(filteredAggregateResults[0].program);
+                if (fetchedResult && fetchedResult.rows && fetchedResult.rows[0] && fetchedResult.rows[0].program) {
+                    specialProgram = fetchedResult.rows[0].program;
+                }
+            } catch(error) {
+                specialProgram = filteredAggregateResults[0].program;
+            }
+            console.log("hello 123",specialProgram);
             const result = {
                 rollno: rollno,
                 academic_year: academic_year,
                 campus: filteredAggregateResults[0].campus,
                 program_type: filteredAggregateResults[0].program_type,
-                program: filteredAggregateResults[0].program,
+                program: specialProgram,
                 semester: filteredAggregateResults[0].semester,
                 internal_marks: internalResults.map((row: InternalMarkRow) => {
                     let marks = row.marks.trim();
@@ -826,7 +834,6 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
         throw new Error("Internal server error in fetchMarksService");
     }
 }
-
 
 export function fetchDepartDetailsByEmailidService(emailid: string): Promise<any> {
     return new Promise((resolve, reject) => {
