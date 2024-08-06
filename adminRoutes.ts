@@ -15,6 +15,7 @@ router.get("/fetchExamRegistrationByCourseCode", controller.fetchExamRegistratio
 router.post("/fetchCourseDetailsByCourseCode", controller.fetchCourseDetailsByCourseCode);
 router.get("/getUserByRollno", controller.getUserByRollno);
 router.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
+router.post("/updateNameByRollno", controller.updateNameByRollno);
 router.get("/fetchCampusDetails", controller.fetchCampusDetails);
 router.get("/deleteExamRegistrationByRollno", controller.deleteExamRegistrationByRollno);
 router.post("/updateExamControl", controller.updateExamControl);

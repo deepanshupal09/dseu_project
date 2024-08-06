@@ -27,6 +27,31 @@ export const updateDetailsByRollno: string = `
   WHERE rollno = $1;
 `;
 
+export const updateNameByRollno: string = `
+  UPDATE users 
+  SET program = COALESCE($2, program),
+      semester = COALESCE($3, semester),
+      phone = COALESCE($5, phone),
+      campus = COALESCE($6, campus),
+      emailid = COALESCE($7, emailid),
+      gender = COALESCE($8, gender),
+      alternate_phone = COALESCE($9, alternate_phone),
+      father = COALESCE($10, father),
+      mother = COALESCE($11, mother),
+      guardian = COALESCE($12, guardian),
+      aadhar = COALESCE($13, aadhar),
+      abc_id = COALESCE($14, abc_id),
+      pwbd_certificate = COALESCE($15, pwbd_certificate),
+      photo = COALESCE($16, photo),
+      last_modified = COALESCE($20, last_modified),
+      program_type = $17,
+      password = $18,
+      year_of_admission = $19,
+      name = COALESCE($21, name),
+      dob=$4
+  WHERE rollno = $1;
+`;
+
 export const putToken: string =
   "UPDATE user_tokens SET token=$1, last_modified=$2, expiry=$3 WHERE rollno=$4";
 export const fetchToken: string =

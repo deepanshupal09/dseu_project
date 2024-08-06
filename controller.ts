@@ -31,7 +31,8 @@ import {
   updateThePasswordAdmin,
   otpUpdateServiceAdmin,
   fetchStudentService,
-  fetchOtpTimeService
+  fetchOtpTimeService,
+  updateNameDetails
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -149,6 +150,41 @@ const updateDetailsByRollno = (req: Request, res: Response): void => {
     } = req.body;
     console.log(req.body)
     updateDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission).then((results)=>{
+        res.status(200).send({message: "successfully updated!"})
+    }).catch((error)=>{
+        res.status(500).send({message: "internal server error"});
+    })
+} catch (error) {
+      res.send({message: "internal server error"});    
+  }
+};
+
+const updateNameByRollno = (req: Request, res: Response): void => {
+  try {
+    const {
+      program,
+      semester,
+      phone,
+      campus,
+      emailid,
+      gender,
+      alternate_phone,
+      father,
+      mother,
+      guardian,
+      aadhar,
+      abc_id,
+      pwbd_certificate,
+      photo,
+      program_type,
+      password,
+      rollno,
+      year_of_admission,
+      date_of_birth,
+      name
+    } = req.body;
+    console.log(req.body)
+    updateNameDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission, name).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});
@@ -848,5 +884,6 @@ export {
   sendEmailAdmin,
   updatePasswordByOtpAdmin,
   verifyOtpAndPasswordAdmin,
-  fetchStudentController
+  fetchStudentController,
+  updateNameByRollno
 };

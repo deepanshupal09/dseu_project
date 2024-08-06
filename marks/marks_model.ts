@@ -17,7 +17,8 @@ import { insertStudentDetailsToAggregateQuery, fetchMarkControl, toggleMarkContr
     fetchAggregateSemesterCourse,
     fetchAggregateCourseNames,
     getSemester,
-    getExamQuery} from "./marks_queries";
+    getExamQuery,
+    getProgramQuery} from "./marks_queries";
 
 function queryDatabase(query: string, params: any[]): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
@@ -945,6 +946,19 @@ export function fetchAggregateMarksModal(): Promise<QueryResult<any>> {
 export function fetchExamModal( academic_year:string ): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
         pool.query(getExamQuery, [academic_year], (error, results) => {
+            if (error) {
+                console.log("error: ", error);
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+export function fetchProgramSpecial( special:string ): Promise<QueryResult<any>> {
+    return new Promise((resolve, reject) => {
+        pool.query(getProgramQuery, [special], (error, results) => {
             if (error) {
                 console.log("error: ", error);
                 reject(error);

@@ -376,3 +376,7 @@ export const getSemester: string = `
 export const getExamQuery: string = `
   SELECT rollno, course_code FROM exam_registeration WHERE academic_year=$1;
 `;
+
+export const getProgramQuery: string =`
+  SELECT program FROM specialization WHERE special=$1
+`;

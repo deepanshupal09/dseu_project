@@ -41,7 +41,8 @@ import {
     fetchInternalMarksModal,
     fetchExternalMarksModal,
     fetchAggregateMarksModal,
-    fetchExamModal
+    fetchExamModal,
+    fetchProgramSpecial
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
@@ -718,6 +719,8 @@ export async function fetchMarksService(rollno: string, academic_year: string, s
             };
 
             let sgpa = 0, totalEarnedCredit = 0;
+            let specialProgram = await fetchProgramSpecial(filteredAggregateResults[0].program);
+            console.log("hello",specialProgram);
             const result = {
                 rollno: rollno,
                 academic_year: academic_year,

@@ -43,7 +43,8 @@ import {
     fetchUserDetails,
     fetchExamCourseDetails,
     fetchSemesterCourseDetails,
-    fetchOtpTimeModel
+    fetchOtpTimeModel,
+    putNameByRollno
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
@@ -248,6 +249,92 @@ export async function updateDetails(
                 pw,
                 year_of_admission,
                 last_modified,
+            );
+
+            return "successfully updated!";
+
+        } else {
+            throw new Error("rollno not found!");
+        }
+    } catch (error) {
+        console.log(error);
+        throw new Error("internal server error");
+    }
+}
+
+export async function updateNameDetails(
+    rollno: string,
+    program: string,
+    semester: number,
+    date_of_birth: string,
+    phone: string,
+    campus: string,
+    emailid: string,
+    gender: string,
+    alternate_phone: string,
+    father: string,
+    mother: string,
+    guardian: string,
+    aadhar: string,
+    abc_id: string,
+    pwbd_certificate: string,
+    photo: string,
+    program_type: string,
+    password: string,
+    year_of_admission: string,
+    name: string
+): Promise<string> {
+    try {
+        const last_modified: string = new Date().toString();
+        console.log("rollno 2 ", rollno);
+
+        const passwordResult = await fetchPasswordByRollNo(rollno);
+        console.log("service ", passwordResult.rows);
+        // const currentDetails = await fetchUserByRollno(rollno);
+        // console.log("service current ", currentDetails[0]);
+        
+        
+        // Check if campus, program, or semester has been updated
+        
+        const isCampusUpdated = passwordResult.rows[0].campus !== campus;
+        const isProgramUpdated = passwordResult.rows[0].program !== program;
+        const isSemesterUpdated = passwordResult.rows[0].semester !== semester;
+        const currentPassword = passwordResult.rows[0].password;
+        
+
+        
+        // If any of these fields have been updated, call deleteExamRegistration
+        if (isCampusUpdated || isProgramUpdated || isSemesterUpdated) {
+            await deleteExamRegisteration(rollno);
+        }
+        
+        if (passwordResult.rows.length > 0) {
+            const hash = await bcrypt.hash(password, 10);
+            const pw = password === "" ? currentPassword:hash ;
+            
+            
+            const results = await putNameByRollno(
+                rollno,
+                program,
+                semester,
+                date_of_birth,
+                phone,
+                campus,
+                emailid,
+                gender,
+                alternate_phone,
+                father,
+                mother,
+                guardian,
+                aadhar,
+                abc_id,
+                pwbd_certificate, // Use the uploaded link if available, otherwise use the original value
+                photo, // Use the uploaded link if available, otherwise use the original value
+                program_type,
+                pw,
+                year_of_admission,
+                last_modified,
+                name
             );
 
             return "successfully updated!";
