@@ -112,6 +112,7 @@ app.get("/fetchEmailIdByRollno", controller.fetchEmailIdByRollno);
 app.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
 // app.get("/fetchExamRegistrationByCourseCode", controller.fetchExamRegistrationByCourseCode);
 app.get("/sendEmail", controller.sendEmail);
+app.get("/fetchAllUsersController", controller.fetchAllUsersController);
 app.get("/sendUserDetailsEmail", controller.sendUserDetailsEmail);
 app.get("/verifyOtpAndPassword", controller.verifyOtpAndPassword);
 app.get("/updatePasswordByOtp", controller.updatePasswordByOtp);

@@ -44,7 +44,8 @@ import {
     fetchExamCourseDetails,
     fetchSemesterCourseDetails,
     fetchOtpTimeModel,
-    putNameByRollno
+    putNameByRollno,
+    fetchAllUsersModel
 } from "./model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
@@ -906,6 +907,15 @@ export function fetchStudentService():Promise<any>{
     });
 }
 
-
+export function fetchAllUsersService(): Promise<any> {
+    return new Promise((resolve,reject) => {
+        fetchAllUsersModel().then((result) =>{
+            resolve(result.rows);
+        }).catch((error) => {
+            console.log("Error in fetching exam reg. details: ", error);
+                reject("Internal server error in all users.");
+        })
+    })
+}
 
 

@@ -32,7 +32,8 @@ import {
   otpUpdateServiceAdmin,
   fetchStudentService,
   fetchOtpTimeService,
-  updateNameDetails
+  updateNameDetails,
+  fetchAllUsersService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -850,6 +851,19 @@ const fetchStudentController = (req:Request, res:Response) => {
   }
 }
 
+const fetchAllUsersController = (req:Request, res:Response) => {
+  try{
+    fetchAllUsersService().then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).json({"message":"Internal server error fetch all users"})
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
 
 export {
   getUserByRollno,
@@ -885,5 +899,6 @@ export {
   updatePasswordByOtpAdmin,
   verifyOtpAndPasswordAdmin,
   fetchStudentController,
-  updateNameByRollno
+  updateNameByRollno,
+  fetchAllUsersController
 };

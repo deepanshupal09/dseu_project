@@ -318,3 +318,6 @@ export const fetchAllRegisterStudentCampus: string=`
   WHERE u.campus=$1;
 `;
 
+export const fetchAllUsers: string=`
+  SELECT * FROM users;
+`;
