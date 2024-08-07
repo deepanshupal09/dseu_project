@@ -360,7 +360,7 @@ export default function Home() {
                       Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
                     </div>
                     <div className="text-lg font-bold font-serif mb-4">
-                      {user && user?.program}-Batch <span className="font-sans">{user?.year_of_admission}</span>
+                      {studentData.program}-Batch <span className="font-sans">{user?.year_of_admission}</span>
                     </div>
                   </div>
                   <div className="border border-solid py-16">

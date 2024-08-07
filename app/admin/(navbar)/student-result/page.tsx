@@ -150,7 +150,7 @@ export default function Home() {
     if (academicYear && semester && rollno !== "") {
       fetchMarksController(academicYear, semester, rollno, token)
         .then((res: StudentData | { message: string } | boolean) => {
-          // console.log("res ", res);
+          // console.log("res ", res.program);
           if (typeof res === "boolean") {
             setIsMarksEvaluated(res);
             setStudentData(null);
@@ -407,7 +407,7 @@ export default function Home() {
                       Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
                     </div>
                     <div className="text-lg font-bold font-serif mb-4">
-                      {student && student?.program}-Batch <span className="font-sans">{student?.year_of_admission}</span>
+                      {studentData.program}-Batch <span className="font-sans">{student?.year_of_admission}</span>
                     </div>
                   </div>
                   <div className="border border-solid py-16">
