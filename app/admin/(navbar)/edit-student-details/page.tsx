@@ -49,6 +49,7 @@ import {
   fetchExamRegisterationsByRollNo,
   getUserByRollNo,
   updateDetails,
+  updateDetailsWithName,
 } from "@/app/actions/api";
 import { SelectChangeEvent } from "@mui/material/Select";
 // import {
@@ -443,7 +444,7 @@ function Home() {
   async function handleUpdate() {
     try {
       if (user) {
-        const response = await updateDetails(user, token);
+        const response = await updateDetailsWithName(user, token);
         setRefresh(true);
         setMessage("Successfully updated");
         setOpen(true);

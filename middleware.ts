@@ -22,6 +22,7 @@ const superAdminRoutes = [
   "/admin/edit-student-details",
   "/admin/result-control",
   "/admin/student-result",
+  "/admin/all-student-details",
   "/admin/results",
   "/admin/download-all-marks"
 ];
@@ -106,6 +107,7 @@ export const config = {
     "/getuserdetails/:rollno*",
     "/admin/results",
     "/admin/student-result",
+    "/admin/all-student-details",
     "/admin/download-all-marks"
   ],
 };

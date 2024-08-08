@@ -21,7 +21,7 @@ export default function Nav() {
                 const data = await parseJwt(t.value);
                 console.log("data: ", data)
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result","Results","Download All Marks"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result", "All Student Details", "Results","Download All Marks"]);
                 }
                 if (data?.user?.role === "dep") {
                     setOptions(["Marks Entry"]);
@@ -38,10 +38,10 @@ export default function Nav() {
 
     return (
         <>
-            <div className="bg-white top-0 max-sm:w-full fixed left-0 sm:h-screen  ">
+            <div className="bg-white top-0 max-sm:w-full fixed   left-0 sm:h-screen  ">
                 <div className="container mx-auto mb-2">
                     <div>
-                        <div className="w-[250px]  text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
+                        <div className="w-[250px] overflow-auto custom-scrollbar text-lg font-normal px-8 py-48 space-y-10 h-full  shadow-2xl shadow-slate-200 bg-white absolute border-2 left-0 sm:block hidden">
                             {options.map((option, index) => {
                                 const path = `/admin/${option.toLowerCase().replace(/\s+/g, "-")}`;
                                 return (

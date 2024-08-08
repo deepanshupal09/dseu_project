@@ -1174,3 +1174,75 @@ export async function fetchToggleResult(body: { campus: string; program: string;
         throw error;
     }
 }
+
+export async function updateDetailsWithName(user: StudentDetails, token: string) {
+    try {
+        const body = {
+            program: user.program,
+            semester: user.semester,
+            phone: user.phone,
+            campus: user.campus,
+            emailid: user.emailid,
+            gender: user.gender,
+            alternate_phone: user.alternate_phone,
+            father: user.father,
+            mother: user.mother,
+            guardian: user.guardian,
+            aadhar: user.aadhar,
+            abc_id: user.abc_id,
+            pwbd_certificate: user.pwbd_certificate,
+            photo: user.photo,
+            program_type: user.program_type,
+            password: "",
+            rollno: user.rollno,
+            year_of_admission: user.year_of_admission,
+            date_of_birth: user.date_of_birth,
+            name: user.name
+        };
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateNameByRollno`, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                token: token,
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json(); // Parse the JSON response
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function fetchAllStudentDetails(token: string) {
+    try {
+        // console.log("first");
+        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllUsersController`, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                token: token,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+
+        const data = await response.json();
+        // console.log("res: ", data)
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
