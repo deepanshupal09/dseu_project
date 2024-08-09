@@ -322,7 +322,7 @@ export default function Home() {
           studentData &&
           user && (
             <div>
-              {/* <ReactToPrint
+              <ReactToPrint
                 trigger={() => (
                   
                    <Button className="mx-12 mt-6" variant="contained" color="primary">
@@ -331,7 +331,7 @@ export default function Home() {
                 
                 )}
                 content={() => componentRef.current}
-              /> */}
+              />
               <div className="w-full overflow-x-auto">
                 <div ref={componentRef} className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
                   {user && user.abc_id && (
