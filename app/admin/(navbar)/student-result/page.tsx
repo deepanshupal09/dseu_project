@@ -221,15 +221,21 @@ export default function Home() {
     return [...normalCourseRows, ...bridgeCourseRows];
   };
   const renderParentInfo = () => {
+    const capitalizeName = (name:string) =>
+      name
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+  
     if (student?.father && student?.mother) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{student?.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{student?.father}</span>
+              {"Father's name: "} <span className="font-semibold">{capitalizeName(student?.father)}</span>
             </div>
           </div>
           <div className="flex">
@@ -237,7 +243,7 @@ export default function Home() {
               Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{student?.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{capitalizeName(student?.mother)}</span>
             </div>
           </div>
         </>
@@ -247,10 +253,10 @@ export default function Home() {
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{student?.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{student?.father}</span>
+              {"Father's name: "} <span className="font-semibold">{capitalizeName(student?.father)}</span>
             </div>
           </div>
           <div className="flex">
@@ -265,10 +271,10 @@ export default function Home() {
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{student?.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{student?.mother}</span>
+              {"Mother's name: "} <span className="font-semibold">{capitalizeName(student?.mother)}</span>
             </div>
           </div>
           <div className="flex">
@@ -283,19 +289,16 @@ export default function Home() {
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{student?.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Guardian's name"}: <span className="font-semibold">{student?.guardian}</span>
+              {"Guardian's name: "} <span className="font-semibold">{capitalizeName(student?.guardian)}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
               Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
-            {/* <div className="w-4/12 text-left font-normal font-serif p-1">
-              Relation: <span className="font-semibold">Guardian</span>
-            </div> */}
           </div>
         </>
       );
@@ -303,6 +306,7 @@ export default function Home() {
       return null;
     }
   };
+  
 
   return (
     <>

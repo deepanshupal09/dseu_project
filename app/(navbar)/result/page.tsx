@@ -93,7 +93,7 @@ export default function Home() {
             setUser(res[0]);
             setSemester(res[0].semester.toString());
           })
-          .catch((error: any) => {});
+          .catch((error: any) => { });
       }
     });
   }, []);
@@ -190,7 +190,15 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{user.father}</span>
+              {"Father's name: "}
+              <span className="font-semibold">
+                {user.father
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                  .join(' ')
+                }
+              </span>
+
             </div>
           </div>
           <div className="flex">
@@ -198,8 +206,14 @@ export default function Home() {
               Enrollment no: <span className="font-semibold font-roboto">{user.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
-            </div>
+              {"Mother's name: "}
+              <span className="font-semibold">
+                {user.mother
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                  .join(' ')
+                }
+              </span>            </div>
           </div>
         </>
       );
@@ -211,7 +225,14 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "} <span className="font-semibold">{user.father}</span>
+              {"Father's name: "}
+              <span className="font-semibold">
+                {user.father
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                  .join(' ')
+                }
+              </span>
             </div>
           </div>
           <div className="flex">
@@ -229,8 +250,14 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "} <span className="font-semibold">{user.mother}</span>
-            </div>
+              {"Mother's name: "}
+              <span className="font-semibold">
+                {user.mother
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                  .join(' ')
+                }
+              </span>            </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
@@ -247,8 +274,14 @@ export default function Home() {
               Name of the Student: <span className="font-semibold">{user.name}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Guardian's name"}: <span className="font-semibold">{user.guardian}</span>
-            </div>
+              {"Guardian's name: "}
+              <span className="font-semibold">
+                {user.guardian
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                  .join(' ')
+                }
+              </span>            </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
@@ -300,7 +333,7 @@ export default function Home() {
                 onChange={handleSemesterChange}
                 label="Semester"
                 IconComponent={ArrowDropDownIcon}
-                // disabled
+              // disabled
               >
                 <MenuItem value={semester}>{semester}</MenuItem>
               </Select>
@@ -324,11 +357,11 @@ export default function Home() {
             <div>
               <ReactToPrint
                 trigger={() => (
-                  
-                   <Button className="mx-12 mt-6" variant="contained" color="primary">
-                     Print
-                   </Button>
-                
+
+                  <Button className="mx-12 mt-6" variant="contained" color="primary">
+                    Print
+                  </Button>
+
                 )}
                 content={() => componentRef.current}
               />
