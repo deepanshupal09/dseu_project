@@ -223,9 +223,7 @@ export default function Home() {
   const renderParentInfo = () => {
     const capitalizeName = (name:string) =>
       name
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
+        .toUpperCase();
   
     if (student?.father && student?.mother) {
       return (
