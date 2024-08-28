@@ -250,7 +250,8 @@ function BridgeCoursesTable({
     if (user) {
       try {
         // console.log(1);
-        const res = await checkDepartment(token, rollno, user.emailid);
+        console.log(112233445566,course_code[course]);
+        const res = await checkDepartment(token, rollno, user.emailid,course_code[course]);
         // console.log(2);
         // console.log("res: ", res.name);
         const newRows = [...rows];

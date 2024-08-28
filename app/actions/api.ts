@@ -982,8 +982,10 @@ export async function fetchAllMarksControl(token: string) {
     }
 }
 
-export async function checkDepartment(token: string, rollno: string, depEmail: string) {
+export async function checkDepartment(token: string, rollno: string, depEmail: string,coursecode:string) {
     try {
+        console.log(112233445566,coursecode);
+        console.log(coursecode);
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/checkDepartment`, {
             method: "GET",
             mode: "cors",
@@ -993,6 +995,7 @@ export async function checkDepartment(token: string, rollno: string, depEmail: s
                 token: token,
                 rollno: rollno,
                 email: depEmail,
+                coursecode:coursecode
             },
         });
 
