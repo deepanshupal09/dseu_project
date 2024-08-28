@@ -105,24 +105,30 @@ export function insertBridgeDetailsModel(student: any): Promise<any> {
     });
 }
 
-export function checkDepartmentModel(rollno: any, email: any) {
+export function checkDepartmentModel(rollno: any, email: any,course_code:any) {
     return new Promise((resolve, reject) => {
         const query = `
-            SELECT 
-                u.name
-            FROM 
-                users u
-            JOIN 
-                departments d ON u.campus = d.campus 
-                              AND u.program = d.program 
-                              AND u.program_type = d.program_type
-                              AND u.semester = d.semester
-            WHERE 
-                u.rollno = $1 
-                AND d.emailid = $2
+        SELECT 
+        u.name
+    FROM 
+        users u
+    JOIN 
+        departments d ON u.campus = d.campus 
+                      AND u.program = d.program 
+                      AND u.program_type = d.program_type
+                      AND u.semester = d.semester
+    WHERE 
+        u.rollno = $1 
+        AND d.emailid = $2
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM exam_registeration er 
+            WHERE er.rollno = $1 
+              AND er.course_code = $3
+        );
         `;
 
-        const values = [rollno, email];
+        const values = [rollno, email,course_code];
 
         // console.log("INTERNAL query:", query,values);
 

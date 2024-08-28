@@ -67,7 +67,9 @@ const deleteBridgeDetails = (req: Request, res: Response): void => {
 const checkDepartment = (req: Request, res: Response): void => {
     const rollno = req.headers.rollno;
     const depEmail = req.headers.email;
-    checkDepartmentService(rollno, depEmail)
+    const course_code = req.headers.coursecode;
+    
+    checkDepartmentService(rollno, depEmail,course_code)
         .then((name) => {
             res.status(200).send({ name: name });
         })

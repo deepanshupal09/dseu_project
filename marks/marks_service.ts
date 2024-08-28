@@ -95,9 +95,9 @@ export interface ResultObject {
 }
 
 
-export function checkDepartmentService(rollno: any, depEmail: any) {
+export function checkDepartmentService(rollno: any, depEmail: any,course_code:any) {
     return new Promise((resolve, reject) => {
-        checkDepartmentModel(rollno, depEmail)
+        checkDepartmentModel(rollno, depEmail,course_code)
             .then((name) => {
                 resolve(name);
             })
