@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogTitle,
   Snackbar,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import {
@@ -83,6 +84,7 @@ export default function Marks() {
   const [detailsList, setDetailsList] = useState<DetailsType[]>([]);
   const [rows, setRows] = useState<DetailsType[]>([]);
   const [confirm, setConfirm] = useState(false);
+  const [emailContent, setEmailContent] = useState("");
 
   //   const [data, setData] = useState<TransformedType>();
   const [value, setValue] = React.useState(0);
@@ -289,14 +291,14 @@ export default function Marks() {
   const sendEmailsAPI = async () => {
     try {
       setLoading(true);
-      setConfirm(false)
-      await sendEmails(token);
+      setConfirm(false);
+      await sendEmails(token, emailContent);
       setAlert(true);
       setMessage("Email sent successfully");
       setLoading(false);
     } catch (error) {
       setAlert(true);
-      setConfirm(false)
+      setConfirm(false);
       setMessage("Something went wrong. Please try again later");
       console.log(error);
     }
@@ -431,16 +433,29 @@ export default function Marks() {
         </div>
       </div>
 
-      <Dialog open={confirm} onClose={() => setConfirm(false)}>
+      <Dialog maxWidth="sm" fullWidth  open={confirm} onClose={() => setConfirm(false)}>
         <DialogTitle> Send Emails</DialogTitle>
-        <DialogContent>Are you sure you want to send emails?</DialogContent>
 
-        <DialogActions>
-          <Button onClick={sendEmailsAPI} color="primary">
-            Yes
+        <DialogContent  className="flex space-x-3  flex-col">
+          <TextField
+          className="mt-2"
+          multiline
+          label="Enter Email Body"
+          rows={4}
+          size="small"
+            value={emailContent}
+            onChange={(e) => {
+              setEmailContent(e.target.value);
+            }}
+          />
+        </DialogContent>
+
+        <DialogActions className="px-5 pb-5">
+          <Button onClick={sendEmailsAPI} variant="contained" color="primary">
+            Send Email
           </Button>
           <Button onClick={() => setConfirm(false)} color="primary">
-            No
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

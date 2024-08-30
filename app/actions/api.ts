@@ -1068,17 +1068,20 @@ export async function fetchAllMarksheetController(academicyear: string,token:str
       throw error;
     }
   }
-export async function sendEmails(token:string){
+export async function sendEmails(token:string, body: string){
     try{
         console.log("entered")
         // const response ={ok:true}
-        const response=await fetch(`${process.env.BACKEND_URL}/api/admin/sendEmailNotFreeze`,{method: "GET",
+        const response=await fetch(`${process.env.BACKEND_URL}/api/admin/sendEmailNotFreeze`,{
+        method: "POST",
         mode: "cors",
         cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
           token : token, 
-        },})
+        },
+        body: JSON.stringify({emailbody: body})
+    })
         
       
           const data = await response.json();
