@@ -58,6 +58,8 @@ export interface StudentDetails {
   pwbd_certificate: string;
   year_of_admission: string;
   date_of_birth: string;
+  category: string;
+  is_lateral: string;
 }
 
 export default function Home() {
