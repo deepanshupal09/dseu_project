@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import { getAuth } from "../../actions/cookie";
 import { parseJwt } from "../../actions/utils";
-import { fetchExamControl, fetchExamRegisterations, fetchUserByRollno } from "../../actions/api";
+import { fetchExamControl, fetchExamRegisterations, fetchUserByRollno, updateCategoryAndLateral } from "../../actions/api";
 import { StudentDetails } from "../profile/page";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -40,17 +40,7 @@ export default function Home() {
   const handleLateralChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLateralEntry(event.target.value);
   };
-
-  const handleDialogClose = () => {
-    if (selectedCategory && isLateralEntry) {
-      setUser((prevUser) => 
-        prevUser ? { ...prevUser, category: selectedCategory, is_lateral: isLateralEntry } : prevUser
-      );
-      setDialogOpen(false);
-      setDialogsCompleted(true);
-    }
-  };
-
+  
   useEffect(() => {
     if (token !== "" && user?.campus !== undefined) {
       fetchExamControl(token, user?.campus, user?.program, user?.semester.toString(), user?.program_type)
@@ -58,7 +48,7 @@ export default function Home() {
         .catch((error) => {});
     }
   }, [user]);
-
+  
   useEffect(() => {
     getAuth().then((auth) => {
       if (auth) {
@@ -66,40 +56,57 @@ export default function Home() {
         const temp = parseJwt(auth?.value as string);
         fetchUserByRollno(temp.user.rollno, auth.value)
           .then((res) => {
-            setUser(res[0]);
-            if (!res[0]?.category || !res[0]?.is_lateral) {
+            const fetchedUser = res[0];
+            setUser(fetchedUser);
+            console.log(fetchedUser);
+            if (fetchedUser && (!fetchedUser.category || fetchedUser.category.trim() === '' ||
+                                !fetchedUser.is_lateral || fetchedUser.is_lateral.trim() === '')) {
               setDialogOpen(true);
             }
+            
             setLoading(false);
           })
-          .catch((error: any) => {
+          .catch((error) => {
             setLoading(false);
           });
       }
     });
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      const rollno = user?.rollno;
-      fetchExamRegisterations(rollno, token).then((res) => {
-        setRecentChange((prev) => ({
-          ...prev,
-          details: res.length > 0 
-            ? "Current Semesters subjects were chosen and submitted for the exams." 
-            : "Choose Current Semesters subjects for the exams.",
-          timestamp: res.length > 0 ? res[0].last_modified : "",
-        }));
-      }).catch((error) => {});
+  }, [token]);
+  
+  
+  const handleDialogClose = async () => {
+    console.log("Selected Category:", selectedCategory);
+    console.log("Is Lateral Entry:", isLateralEntry);
+  
+    if (selectedCategory && isLateralEntry && user?.rollno && token) {
+      try {
+        const body = {
+          rollno: user.rollno,
+          name: user.name,
+          category: selectedCategory,
+          is_lateral: isLateralEntry
+        };
+        const response = await updateCategoryAndLateral(body, token);
+        console.log(response);
+        setUser((prevUser) =>
+          prevUser ? { ...prevUser, category: selectedCategory, is_lateral: isLateralEntry } : prevUser
+        );
+        setDialogOpen(false);
+        setDialogsCompleted(true);
+      } catch (error) {
+        console.error("Update failed:", error);
+      }
+    } else {
+      console.error("Required fields are missing:", { selectedCategory, isLateralEntry, rollno: user?.rollno, token });
     }
-  }, [user]);
-
+  };
+  
   const [expanded, setExpanded] = useState(false);
-
+  
   const handleExpandToggle = () => {
     setExpanded(!expanded);
   };
-
+  
   return (
     <div className="sm:flex">
       {loading ? (
@@ -107,9 +114,9 @@ export default function Home() {
           <CircularProgress />
         </div>
       ) : (
-        <div className={`sm:pl-[300px] sm:mt-[100px] space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ${dialogsCompleted ? '' : 'pointer-events-none opacity-50'}`}>
-          <div className="welcome py-2 px-4 rounded bg-gray-800 text-white">
-            <h1 className="text-2xl font-bold">
+        <div className={`sm:pl-[300px] sm:mt-[100px] space-y-5 mt-[140px] max-sm:space-y-6 w-full px-2 sm:pr-10 ${dialogsCompleted ? '' : 'pointer-events-none '}`}>
+          <div className="welcome py-2 px-4 rounded">
+            <h1 className="text-2xl text-white-800 font-bold">
               Welcome {user?.name}
             </h1>
           </div>
@@ -121,10 +128,13 @@ export default function Home() {
               <li className="my-6">Result for previous semester is available.</li>
             </ul>
           </div>
-          <div className="announcement bg-white py-2 px-4 rounded shadow w-full sm:w-1/4 h-1/4">
+          <div className="announcement bg-white py-2 px-4 rounded shadow absolute w-full sm:w-1/4 h-1/4">
             <h1 className="text-xl text-black font-bold">Recent Activity</h1>
             <div className="mt-4">
-              <div className="border-b pb-2 mb-2 cursor-pointer" onClick={handleExpandToggle}>
+              <div
+                className="border-b pb-2 mb-2 cursor-pointer"
+                onClick={handleExpandToggle}
+              >
                 <h2 className="text-lg font-semibold">{recentChange.title}</h2>
                 <p className="text-xs text-gray-500">{recentChange.timestamp}</p>
                 {expanded && (
@@ -137,59 +147,58 @@ export default function Home() {
           </div>
         </div>
       )}
-
-<Dialog
-  open={dialogOpen}
-  onClose={(event, reason) => {
-    if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
-      return;
-    }
-    handleDialogClose();
-  }}
-  maxWidth="md"
-  className="rounded-lg shadow-lg"
->
-  <DialogTitle className="bg-dseublue text-white text-lg font-semibold py-4 mb-2">
-    Details Completion
-  </DialogTitle>
-  <DialogContent className="px-6 py-4 space-y-4 my-5">
-    <div className="flex flex-col space-y-2 py-4">
-      <Typography variant="h6" component="div" className="text-xl font-medium">
-        Select Your Category
-      </Typography>
-      <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
-        <div className="flex space-x-4 text-lg">
-          <FormControlLabel value="General" control={<Radio />} label="General" />
-          <FormControlLabel value="OBC" control={<Radio />} label="OBC" />
-          <FormControlLabel value="SC" control={<Radio />} label="SC" />
-          <FormControlLabel value="ST" control={<Radio />} label="ST" />
-        </div>
-      </RadioGroup>
-    </div>
-    <div className="flex flex-col space-y-2 py-4">
-      <Typography variant="h6" component="div" className="text-xl font-medium">
-        Are you a Lateral Entry Student?
-      </Typography>
-      <RadioGroup value={isLateralEntry} onChange={handleLateralChange}>
-        <div className="flex space-x-4 text-lg">
-          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-          <FormControlLabel value="No" control={<Radio />} label="No" />
-        </div>
-      </RadioGroup>
-    </div>
-  </DialogContent>
-  <DialogActions className="px-6 py-4">
-    <Button
-      onClick={handleDialogClose}
-      disabled={!selectedCategory || !isLateralEntry}
-      color="primary"
-      className="bg-dseublue text-white hover:bg-dseublue-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dseublue"
-    >
-      Submit
-    </Button>
-  </DialogActions>
-</Dialog>
-
+  
+      <Dialog
+        open={dialogOpen}
+        onClose={(event, reason) => {
+          if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
+            return;
+          }
+          handleDialogClose();
+        }}
+        maxWidth="md"
+        className="rounded-lg shadow-lg"
+      >
+        <DialogTitle className="bg-dseublue text-white text-lg font-semibold py-4 mb-2">
+          Details Completion
+        </DialogTitle>
+        <DialogContent className="px-6 py-4 space-y-4 my-5">
+          <div className="flex flex-col space-y-2 py-4">
+            <Typography variant="h6" component="div" className="text-xl font-medium">
+              Select Your Category
+            </Typography>
+            <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
+              <div className="flex space-x-4 text-lg">
+                <FormControlLabel value="General" control={<Radio />} label="General" />
+                <FormControlLabel value="OBC" control={<Radio />} label="OBC" />
+                <FormControlLabel value="SC" control={<Radio />} label="SC" />
+                <FormControlLabel value="ST" control={<Radio />} label="ST" />
+              </div>
+            </RadioGroup>
+          </div>
+          <div className="flex flex-col space-y-2 py-4">
+            <Typography variant="h6" component="div" className="text-xl font-medium">
+              Are you a Lateral Entry Student?
+            </Typography>
+            <RadioGroup value={isLateralEntry} onChange={handleLateralChange}>
+              <div className="flex space-x-4 text-lg">
+                <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                <FormControlLabel value="no" control={<Radio />} label="No" />
+              </div>
+            </RadioGroup>
+          </div>
+        </DialogContent>
+        <DialogActions className="px-6 py-4">
+          <Button
+            onClick={handleDialogClose} 
+            disabled={!selectedCategory || !isLateralEntry || !token || !user?.rollno} 
+            color="primary"
+            className="border"
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
-}
+}  

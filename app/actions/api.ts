@@ -1227,7 +1227,7 @@ export async function updateDetailsWithName(user: StudentDetails, token: string)
 export async function fetchAllStudentDetails(token: string) {
     try {
         // console.log("first");
-        const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllUsersController`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/fetchAllUsersController`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -1248,4 +1248,29 @@ export async function fetchAllStudentDetails(token: string) {
         throw error;
     }
 }
+export async function updateCategoryAndLateral(body: {rollno: string; name: string; category: string; is_lateral: string}, token: string) {
+    try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/data/categoryLateralController`, {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json",
+                token: token,
+            },
+            body: JSON.stringify(body),
+        });
+        console.log(response,"response");
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+
+
+
+
 
