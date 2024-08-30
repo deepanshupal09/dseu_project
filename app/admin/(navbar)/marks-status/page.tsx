@@ -4,11 +4,22 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { fetchCoursesBySemester, fetchMarksDetailsController } from "@/app/actions/api";
+import { fetchCoursesBySemester, fetchMarksDetailsController, sendEmails } from "@/app/actions/api";
 import { getAuthAdmin } from "@/app/actions/cookie";
 import { parseJwt } from "@/app/actions/utils";
 import { TransformedType, useData } from "@/contexts/DataContext";
-import { Box, ButtonProps, Snackbar } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  ButtonProps,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import {
   DataGrid,
@@ -71,6 +82,7 @@ export default function Marks() {
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<string>("");
   const [detailsList, setDetailsList] = useState<DetailsType[]>([]);
   const [rows, setRows] = useState<DetailsType[]>([]);
+  const [confirm, setConfirm] = useState(false);
 
   //   const [data, setData] = useState<TransformedType>();
   const [value, setValue] = React.useState(0);
@@ -136,16 +148,16 @@ export default function Marks() {
 
   useEffect(() => {
     if (token) {
-      console.log("here");
+      // console.log("here");
       setLoading(true);
       fetchMarksDetailsController(token)
         .then((response) => {
-          console.log("response: ", response);
+          // console.log("response: ", response);
           let temp: DetailsType[] = [];
           response.map((element: any, index: number) => {
             temp.push({ id: index + 1, ...element });
           });
-          console.log("converted: ", temp);
+          // console.log("converted: ", temp);
           setDetailsList(temp);
           setLoading(false);
           setRows(temp);
@@ -252,8 +264,16 @@ export default function Marks() {
 
   useEffect(() => {
     if (selectedCourse) {
-      console.log(detailsList[0].semester, " ", selectedSemester)
-      console.log(detailsList.filter(e => e.campus === selectedCampus &&  e.program_type === selectedProgramCategory && e.program === selectedProgram && e.semester.toString() === selectedSemester ))
+      console.log(detailsList[0].semester, " ", selectedSemester);
+      console.log(
+        detailsList.filter(
+          (e) =>
+            e.campus === selectedCampus &&
+            e.program_type === selectedProgramCategory &&
+            e.program === selectedProgram &&
+            e.semester.toString() === selectedSemester
+        )
+      );
       setRows(
         detailsList.filter(
           (detail) =>
@@ -266,6 +286,21 @@ export default function Marks() {
       );
     }
   }, [selectedCampus, selectedProgramCategory, selectedProgram, selectedSemester, selectedCourse]);
+  const sendEmailsAPI = async () => {
+    try {
+      setLoading(true);
+      setConfirm(false)
+      await sendEmails(token);
+      setAlert(true);
+      setMessage("Email sent successfully");
+      setLoading(false);
+    } catch (error) {
+      setAlert(true);
+      setConfirm(false)
+      setMessage("Something went wrong. Please try again later");
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -274,6 +309,14 @@ export default function Marks() {
         <h1 className="text-2xl text-white font-bold text-center">Marks Status </h1>
       </div>
       <div className="py-2 px-4 rounded shadow absolute top-[200px] sm:left-[250px] left-0 right-0  mx-2 sm:mx-12 mt-6">
+        <Button
+          onClick={() => {
+            setConfirm(true);
+          }}
+          variant="contained"
+        >
+          Send Email
+        </Button>
         {/* <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">SELECT</h2>
         {data && (
           <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
@@ -383,11 +426,27 @@ export default function Marks() {
           </div>
         )} */}
         {/* <div></div> */}
-        <div className="my-10 w-full h-screen " id="datagrid-container" >
+        <div className="my-10 w-full h-screen " id="datagrid-container">
           <DataGrid slots={{ toolbar: CustomToolbar }} rows={rows} columns={columns} loading={loading} />
         </div>
       </div>
 
+      <Dialog open={confirm} onClose={() => setConfirm(false)}>
+        <DialogTitle> Send Emails</DialogTitle>
+        <DialogContent>Are you sure you want to send emails?</DialogContent>
+
+        <DialogActions>
+          <Button onClick={sendEmailsAPI} color="primary">
+            Yes
+          </Button>
+          <Button onClick={() => setConfirm(false)} color="primary">
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Snackbar
         open={alert}
         autoHideDuration={6000}

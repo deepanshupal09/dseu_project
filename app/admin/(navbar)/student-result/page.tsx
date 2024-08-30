@@ -1,16 +1,19 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { getAuth } from "../../actions/cookie";
-import { parseJwt } from "../../actions/utils";
-import { StudentDetails } from "../profile/page";
+import React, { useState, useEffect, useRef, use } from "react";
+
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material";
-import { fetchUserByRollno, fetchMarksController } from "../../actions/api";
+import { Select, MenuItem, FormControl, InputLabel, Button, TextField } from "@mui/material";
+
 import ReactToPrint from "react-to-print";
-import logo from "../../images/dseu.png";
-import result_info_updated from "../../images/result_info_updated.png";
+import logo from "@/app/images/dseu.png";
+import result_info_updated from "@/app/images/result_info_updated.png";
 import Image from "next/image";
 import { SelectChangeEvent } from "@mui/material/Select";
+import { getAuth, getAuthAdmin } from "@/app/actions/cookie";
+import { parseJwt } from "@/app/actions/utils";
+import { StudentDetails } from "@/app/(navbar)/profile/page";
+import { fetchMarksController, fetchUserByRollno, getUserByRollNo } from "@/app/actions/api";
+import { useDebounce } from "use-debounce";
 
 interface InternalMark {
   course_code: string;
@@ -63,40 +66,76 @@ interface StudentData {
   sgpa_grade: string;
 }
 
+type StudentInfo = {
+  aadhar: string;
+  abc_id: string;
+  alternate_phone: string;
+  campus: string;
+  dob: string;
+  emailid: string;
+  father: string;
+  gender: string;
+  guardian: string | null;
+  last_modified: string;
+  mother: string;
+  name: string;
+  otp: string;
+  password: string;
+  phone: string;
+  photo: string;
+  program: string;
+  program_type: string;
+  pwbd_certificate: string;
+  rollno: string;
+  semester: number;
+  year_of_admission: string;
+};
+
 export default function Home() {
   const [user, setUser] = useState<StudentDetails | null>(null);
   const [token, setToken] = useState("");
   const [academicYear, setAcademicYear] = useState("");
   const [semester, setSemester] = useState("");
   const [academicYears, setAcademicYears] = useState<string[]>(["2023-2024"]);
+  const [rollno, setRollno] = useState("");
   // const [semesters, setSemesters] = useState<number[]>([1, 2, 4, 6]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMarksEvaluated, setIsMarksEvaluated] = useState(true);
   const [studentData, setStudentData] = useState<StudentData | null>(null);
   const componentRef = useRef<HTMLDivElement>(null);
+  const [debouncedRollNo] = useDebounce(rollno, 500);
+  const [student, setStudent] = useState<StudentInfo | null>(null);
 
   useEffect(() => {
-    getAuth().then((auth: any) => {
-      const temp = parseJwt(auth?.value);
-      setToken(auth?.value);
-      setUser(temp.user);
-    });
-  }, []);
-
-  useEffect(() => {
-    getAuth().then((auth) => {
+    getAuthAdmin().then((auth) => {
       if (auth) {
         setToken(auth.value);
         const temp = parseJwt(auth?.value as string);
-        fetchUserByRollno(temp.user.rollno, auth.value)
-          .then((res) => {
-            setUser(res[0]);
-            setSemester(res[0].semester.toString());
-          })
-          .catch((error: any) => { });
+        // getUserByRollNo(rollno, auth.value)
+        //   .then((res) => {
+        //     setUser(res[0]);
+        //     setSemester(res[0].semester.toString());
+        //   })
+        //   .catch((error: any) => {});
       }
     });
   }, []);
+
+  useEffect(() => {
+    //   console.log("api call")
+    setIsSubmitted(false);
+    if (debouncedRollNo !== "") {
+      getUserByRollNo(debouncedRollNo, token)
+        .then((user) => {
+          // console.log("first ", user)
+          setStudent(user[0]);
+          setSemester(user[0].semester.toString());
+        })
+        .catch((error) => {
+          console.log("Error fetching user");
+        });
+    }
+  }, [debouncedRollNo]);
 
   const handleAcademicYearChange = (event: SelectChangeEvent<string>) => {
     setAcademicYear(event.target.value);
@@ -107,11 +146,11 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    if (academicYear && user && semester) {
-      fetchMarksController(academicYear, semester, user.rollno, token)
+    //   console.log("here ", academicYear, semester, )
+    if (academicYear && semester && rollno !== "") {
+      fetchMarksController(academicYear, semester, rollno, token)
         .then((res: StudentData | { message: string } | boolean) => {
-          // console.log(res);
-
+          // console.log("res ", res.program);
           if (typeof res === "boolean") {
             setIsMarksEvaluated(res);
             setStudentData(null);
@@ -130,13 +169,11 @@ export default function Home() {
 
           setIsSubmitted(true);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.error(error);
         });
     }
   };
-  
-  
 
   const renderTableRows = () => {
     if (!studentData) return null;
@@ -184,113 +221,81 @@ export default function Home() {
     return [...normalCourseRows, ...bridgeCourseRows];
   };
   const renderParentInfo = () => {
-    if (user?.father && user?.mother) {
+    const capitalizeName = (name:string) =>
+      name
+        .toUpperCase();
+  
+    if (student?.father && student?.mother) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "}
-              <span className="font-semibold">
-                {user.father
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                  .join(' ')
-                }
-              </span>
-
+              {"Father's name: "} <span className="font-semibold">{capitalizeName(student?.father)}</span>
             </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold font-roboto">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "}
-              <span className="font-semibold">
-                {user.mother
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                  .join(' ')
-                }
-              </span>            </div>
-          </div>
-        </>
-      );
-    } else if (user?.father) {
-      return (
-        <>
-          <div className="flex font-roboto">
-            <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
-            </div>
-            <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Father's name: "}
-              <span className="font-semibold">
-                {user.father
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                  .join(' ')
-                }
-              </span>
-            </div>
-          </div>
-          <div className="flex">
-            <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold font-roboto">{user.rollno}</span>
+              {"Mother's name: "} <span className="font-semibold">{capitalizeName(student?.mother)}</span>
             </div>
           </div>
         </>
       );
-    } else if (user?.mother) {
+    } else if (student?.father) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Mother's name: "}
-              <span className="font-semibold">
-                {user.mother
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                  .join(' ')
-                }
-              </span>            </div>
+              {"Father's name: "} <span className="font-semibold">{capitalizeName(student?.father)}</span>
+            </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold font-roboto">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
           </div>
         </>
       );
-    } else if (user?.guardian) {
+    } else if (student?.mother) {
       return (
         <>
           <div className="flex font-roboto">
             <div className="w-8/12 text-left font-normal font-serif p-1">
-              Name of the Student: <span className="font-semibold">{user.name}</span>
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {"Guardian's name: "}
-              <span className="font-semibold">
-                {user.guardian
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                  .join(' ')
-                }
-              </span>            </div>
+              {"Mother's name: "} <span className="font-semibold">{capitalizeName(student?.mother)}</span>
+            </div>
           </div>
           <div className="flex">
             <div className="w-8/12 text-left font-normal p-1">
-              Enrollment no: <span className="font-semibold font-roboto font-roboto">{user.rollno}</span>
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
+            </div>
+          </div>
+        </>
+      );
+    } else if (student?.guardian) {
+      return (
+        <>
+          <div className="flex font-roboto">
+            <div className="w-8/12 text-left font-normal font-serif p-1">
+              Name of the Student: <span className="font-semibold">{capitalizeName(student?.name)}</span>
             </div>
             <div className="w-4/12 text-left font-normal font-serif p-1">
-              {/* Relation: <span className="font-semibold">{user.relation}</span> */}
+              {"Guardian's name: "} <span className="font-semibold">{capitalizeName(student?.guardian)}</span>
+            </div>
+          </div>
+          <div className="flex">
+            <div className="w-8/12 text-left font-normal p-1">
+              Enrollment no: <span className="font-semibold font-roboto">{student?.rollno}</span>
             </div>
           </div>
         </>
@@ -299,16 +304,28 @@ export default function Home() {
       return null;
     }
   };
+  
 
   return (
     <>
       <div className="bg-[#dfdede]"></div>
       <div className="mt-[154px] max-sm:mt-[150px] px-2 sm:ml-[250px]">
         <div className="bg-dseublue py-2 px-2 sm:mx-8 rounded shadow mt-28">
-          <h1 className="text-2xl text-white font-bold text-center">Result</h1>
+          <h1 className="text-2xl text-white font-bold text-center">Student Result</h1>
         </div>
         <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
           <div className="flex mb-2 space-x-3">
+            <FormControl fullWidth variant="outlined" className="my-2">
+              {/* <InputLabel id="academic-year-label">Roll No</InputLabel> */}
+              <TextField
+                id="academic-year"
+                value={rollno}
+                onChange={(e) => {
+                  setRollno(e.target.value);
+                }}
+                label="Roll No"
+              />
+            </FormControl>
             <FormControl fullWidth variant="outlined" className="my-2">
               <InputLabel id="academic-year-label">Academic Year</InputLabel>
               <Select
@@ -335,7 +352,7 @@ export default function Home() {
                 onChange={handleSemesterChange}
                 label="Semester"
                 IconComponent={ArrowDropDownIcon}
-              // disabled
+                // disabled
               >
                 <MenuItem value={semester}>{semester}</MenuItem>
               </Select>
@@ -354,24 +371,21 @@ export default function Home() {
           </div>
         ) : (
           isSubmitted &&
-          studentData &&
-          user && (
+          studentData && (
             <div>
               <ReactToPrint
                 trigger={() => (
-
                   <Button className="mx-12 mt-6" variant="contained" color="primary">
                     Print
                   </Button>
-
                 )}
                 content={() => componentRef.current}
               />
               <div className="w-full overflow-x-auto">
                 <div ref={componentRef} className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
-                  {user && user.abc_id && (
-                    <div className="mx-8 my-2 font-bold ">
-                      <h4>ABC ID: {user.abc_id}</h4>
+                  {student && student?.abc_id && (
+                    <div className="mx-8 my-2 font-bold">
+                      <h4>ABC ID: {student?.abc_id}</h4>
                     </div>
                   )}
                   <div className="flex flex-row mx-auto">
@@ -395,17 +409,17 @@ export default function Home() {
                       Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
                     </div>
                     <div className="text-lg font-bold font-serif mb-4">
-                      {studentData.program}-Batch <span className="font-sans">{user?.year_of_admission}</span>
+                      {studentData.program}-Batch <span className="font-sans">{student?.year_of_admission}</span>
                     </div>
                   </div>
                   <div className="border border-solid py-16">
                     <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
 
-                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold tracking-wider font-roboto ">
+                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold  tracking-wider font-roboto">
                       <thead>
                         <tr>
                           <th
-                            className="px-2 py-3 border border-black text-center text-md font-bold tracking-wider"
+                            className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
                             style={{ width: "6%" }}
                           >
                             S.No
@@ -439,8 +453,8 @@ export default function Home() {
                           style={{ width: "9%" }}
                         >
                           Letter Grade Continuous Evaluation(CA)
-                        </th>
-                        <th
+                        </th> */}
+                          {/* <th
                           className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                           style={{ width: "10%" }}
                         >
@@ -463,7 +477,7 @@ export default function Home() {
                       <tbody className="font-semibold">{renderTableRows()}</tbody>
                     </table>
                     <div>
-                      <table className="w-11/12 mx-auto leading-normal mt-5 font-bold  tracking-wider font-roboto sm:overflow-x-hidden">
+                      <table className="w-11/12 mx-auto leading-normal mt-5 font-bold uppercase tracking-wider font-roboto sm:overflow-x-hidden">
                         <thead className="border border-black">
                           <tr className="border border-black">
                             <th
@@ -474,40 +488,40 @@ export default function Home() {
                             </th>
                             <th
                               rowSpan={2}
-                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                              className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                             >
                               Total Credits earned as on date
                             </th>
                             <th
                               colSpan={2}
-                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                              className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                             >
                               SGPA
                             </th>
                             <th
                               colSpan={2}
-                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                              className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                             >
                               CGPA
                             </th>
                             <th
                               rowSpan={2}
-                              className="px-6 py-3 text-center text-sm font-bold  tracking-wider border border-black"
+                              className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
                             >
                               Grading System
                             </th>
                           </tr>
                           <tr>
-                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                            <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                               Earned
                             </th>
-                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                            <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                               Grade Letter
                             </th>
-                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                            <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                               Earned
                             </th>
-                            <th className="px-6 py-3 text-center text-xs font-bold border border-black  tracking-wider">
+                            <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
                               Grade Letter
                             </th>
                           </tr>

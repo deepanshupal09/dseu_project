@@ -49,6 +49,7 @@ import {
   fetchExamRegisterationsByRollNo,
   getUserByRollNo,
   updateDetails,
+  updateDetailsWithName,
 } from "@/app/actions/api";
 import { SelectChangeEvent } from "@mui/material/Select";
 // import {
@@ -57,13 +58,14 @@ import { SelectChangeEvent } from "@mui/material/Select";
 //   programTypeList,
 // } from "@/app/getuserdetails/[rollno]/page";
 import { useDebouncedCallback } from "use-debounce";
-import { DeleteForever } from "@mui/icons-material";
+import { CalendarMonth, DateRange, DeleteForever } from "@mui/icons-material";
 
 import { useData } from "@/contexts/DataContext";
 import { deepEqual } from "@/utils";
 import { useRouter } from "next/navigation";
 import { Deselect, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { resetStudent as resetStudentDetails } from "@/app/actions/api";
+import { parse } from "path";
 
 interface Subject {
   name: string;
@@ -98,6 +100,7 @@ function Home() {
 
   const [subjectsData, setSubjectsData] = useState<Subject[]>([]);
   const [backlogsData, setBacklogsData] = useState<Backlog[]>([]);
+  const [role, setRole] = useState("");
   const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubjects>(
     {}
   );
@@ -106,6 +109,7 @@ function Home() {
   const [selectedSemester, setSelectedSemester] = useState("");
   const [chosen, setChosen] = useState(true);
   const [selectedSub, setSelectedSub] = useState<Subject[]>([]);
+  const academicYears = ["2021","2022","2023","2024"]
 
   const [reload, setReload] = useState<boolean>(true);
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -206,7 +210,7 @@ function Home() {
 
       fetchExamRegisterationsByRollNo(rollno, token)
         .then((res: any) => {
-          console.log(res);
+          // console.log(res);
           if (res.length > 0) {
             const temp: Subject[] = [];
             res.forEach((subject: any) => {
@@ -355,7 +359,7 @@ function Home() {
   };
 
   const handlePreview = () => {
-    console.log("here");
+    // console.log("here");
     setPreviewSelection(true);
   };
 
@@ -440,7 +444,7 @@ function Home() {
   async function handleUpdate() {
     try {
       if (user) {
-        const response = await updateDetails(user, token);
+        const response = await updateDetailsWithName(user, token);
         setRefresh(true);
         setMessage("Successfully updated");
         setOpen(true);
@@ -488,6 +492,8 @@ function Home() {
     getAuthAdmin().then((auth) => {
       if (auth) {
         setToken(auth.value);
+        const user = parseJwt(auth.value).user;
+        setRole(user.role);
       }
     });
   }, []);
@@ -496,7 +502,7 @@ function Home() {
     if (rollno) {
       try {
         const response = await getUserByRollNo(rollno, token);
-
+        response[0].date_of_birth = response[0].dob;
         setUser(response[0]);
         setOriginal(response[0]);
       } catch (error) {
@@ -581,7 +587,7 @@ function Home() {
                         variant="filled"
                         name="name"
                         value={user.name}
-                        disabled
+                        disabled={role !== 'super'}
                         onChange={handleChange}
                       />
                     </p>
@@ -720,6 +726,23 @@ function Home() {
                       />
                     </p>
                   </div>
+                  <div className="flex items-center mb-2">
+                    <CalendarMonth className="mr-2" />
+                    <p>
+                      <span className="font-bold">DOB:</span>
+                      <br />
+                      <TextField
+                        hiddenLabel
+                        type="date"
+                        className="mt-2"
+                        size="small"
+                        variant="filled"
+                        name="date_of_birth"
+                        value={user.date_of_birth}
+                        onChange={handleChange}
+                      />
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -743,6 +766,7 @@ function Home() {
                           value={user.campus}
                           onChange={handleSelectChange}
                           name="campus"
+                          disabled={role !== 'super'}
                           // sx={{ width: "74% !important" }}
                           sx={{ width: 150 }}
                           variant="filled"
@@ -763,6 +787,7 @@ function Home() {
                         <Select
                           hiddenLabel
                           className="mt-2"
+                          disabled={role !== 'super'}
                           size="small"
                           value={user.program_type}
                           onChange={handleSelectChange}
@@ -791,6 +816,7 @@ function Home() {
                           hiddenLabel
                           className="mt-2"
                           size="small"
+                          disabled={role !== 'super'}
                           value={user.program}
                           onChange={handleSelectChange}
                           name="program"
@@ -834,6 +860,7 @@ function Home() {
                         <br />
                         <Select
                           hiddenLabel
+                          disabled={role !== 'super'}
                           className="mt-2"
                           size="small"
                           value={user?.semester.toString()}
@@ -862,6 +889,29 @@ function Home() {
                       </p>
                     </div>
                     <div className="flex mb-2">
+                      <DateRange className="mr-2" />
+                      <p>
+                        <span className="font-bold">Year of Admission:</span>
+                        <br />
+                        <Select
+                          hiddenLabel
+                          className="mt-2"
+                          size="small"
+                          value={user.year_of_admission}
+                          onChange={handleSelectChange}
+                          name="year_of_admission"
+                          sx={{ width: 150 }}
+                          variant="filled"
+                        >
+                          {academicYears.map((year: string) => (
+                              <MenuItem key={year} value={year}>
+                                {year}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </p>
+                    </div>
+                    <div className="flex mb-2">
                       <PersonIcon className="mr-2" />
                       <p>
                         <span className="font-bold">Role:</span>
@@ -877,11 +927,12 @@ function Home() {
                         />
                       </p>
                     </div>
+
                   </div>
                 </div>
               </div>
             </div>
-            {!chosen && (
+            {!chosen && role === 'super' && (
               <div className="w-full">
                 <Typography
                   className="text-center text-2xl font-bold"
@@ -1045,7 +1096,7 @@ function Home() {
                 </div>
               </div>
             )}
-            {chosen && (
+            {chosen && role ==='super' && (
               <>
                 <Typography className=" text-xl text-center p-2 w-full">
                   {" "}
@@ -1093,6 +1144,7 @@ function Home() {
                 </div>
               </>
             )}
+            {role === 'super' && (
             <Button
               onClick={() => {
                 setConfirmDeletion(true);
@@ -1107,20 +1159,23 @@ function Home() {
               </div>
               <div> Delete Exam Registration</div>
             </Button>
-            <Button
-              onClick={() => {
-                setResetStudent(true);
-              }}
-              className="flex items-center justify-center space-x-2"
-              color="error"
-            >
-              {" "}
-              <div>
+            )}
+            {role === 'super' && (
+              <Button
+                onClick={() => {
+                  setResetStudent(true);
+                }}
+                className="flex items-center justify-center space-x-2"
+                color="error"
+              >
                 {" "}
-                <DeleteForever className="scale-75" />
-              </div>
-              <div> Reset Student Details</div>
-            </Button>
+                <div>
+                  {" "}
+                  <DeleteForever className="scale-75" />
+                </div>
+                <div> Reset Student Details</div>
+              </Button>
+            )}
           </div>
           <Button
             type="submit"

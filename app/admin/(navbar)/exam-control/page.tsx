@@ -291,7 +291,7 @@ export default function Registration() {
 
         try {
             const body: { campus: string; program: string; semester: number; exam_control: boolean }[] = ([] = payload);
-            const res = await fetchUpdateExamControl(body, token);
+            const res = await fetchUpdateExamControl({users: body, email_control: false}, token);
 
             const message = openCloseAction === "true" ? "Exam registrations opened for your selections." : "Exam registrations closed for your selections.";
             setSnackbarMessage(message);

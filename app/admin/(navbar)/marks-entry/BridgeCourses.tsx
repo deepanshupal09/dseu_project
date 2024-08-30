@@ -78,12 +78,16 @@ function BridgeCoursesTable({
   academicYear,
   campus,
   course,
+  semester,
+  program_type,
   program,
   marksControl,
 }: {
   academicYear: string;
   campus: string;
   course: string;
+  semester:string;
+  program_type:string;
   program: string
   marksControl: boolean;
 }) {
@@ -95,9 +99,10 @@ function BridgeCoursesTable({
   const [user, setUser] = useState<User | null>(null);
 
   const course_code: { [key: string]: string } = {
-    "Applied Mathematics-II": "FC-012",
+    "Applied Mathematics-II": "BT-BS201",
     "Basic Sciences (Applied Chemistry)": "FC-1-CH051",
     "Basic Sciences (Applied Physics)": "FC-1-PH051",
+    "Applied Mathematics II":"FC-012"
   };
   const [errors, setErrors] = useState<Error[]>([]);
   const [errorDialog, setErrorDialog] = useState(false);
@@ -112,9 +117,9 @@ function BridgeCoursesTable({
     { id: "marks", label: "Marks (Out of 100)", minWidth: 100 },
   ]);
   useEffect(() => {
-    console.log("use effect");
+    // console.log("use effect");
     if (marksControl && marksControl === true && !freeze && !columns.find((column) => column.id === "actions")) {
-      console.log("inside if");
+      // console.log("inside if");
       let newColumns = [
         { id: "name", label: "Name", minWidth: 100 },
         { id: "rollno", label: "Roll No", minWidth: 70 },
@@ -123,9 +128,9 @@ function BridgeCoursesTable({
       ];
       setColumns(newColumns);
     } else {
-      console.log("inside else");
+      // console.log("inside else");
       if (columns.find((column) => column.id === "actions")) {
-        console.log("inside else if");
+        // console.log("inside else if");
         let newColumns = [
           { id: "name", label: "Name", minWidth: 100 },
           { id: "rollno", label: "Roll No", minWidth: 70 },
@@ -138,9 +143,9 @@ function BridgeCoursesTable({
 
   useEffect(() => {
     if (user) {
-      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear)
+      fetchBridgeDetails(token, user?.emailid, course_code[course], academicYear,campus,program,semester,program_type)
         .then((res) => {
-          console.log("brige details: ", res);
+          // console.log("brige details: ", res);
           const newRows = res.map((row: { rollno: string; marks: string; name: string }) => {
             return { ...row, academicYear: academicYear, course: course };
           });
@@ -196,10 +201,14 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: false,
+        semester:semester,
+        program:program,
+        program_type:program_type,
+        campus:campus
       };
     });
 
-    console.log("handle Submit", data);
+    // console.log("handle Submit", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -237,13 +246,14 @@ function BridgeCoursesTable({
   };
 
   const handleSearch = async (rollno: string, index: number) => {
-    console.log("Searching for rollno:", rollno);
+    // console.log("Searching for rollno:", rollno);
     if (user) {
       try {
-        console.log(1);
-        const res = await checkDepartment(token, rollno, user.emailid);
-        console.log(2);
-        console.log("res: ", res.name);
+        // console.log(1);
+        console.log(112233445566,course_code[course]);
+        const res = await checkDepartment(token, rollno, user.emailid,course_code[course]);
+        // console.log(2);
+        // console.log("res: ", res.name);
         const newRows = [...rows];
         // console.log("res")
         if (res.name) {
@@ -267,10 +277,14 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: true,
+        campus:campus,
+        program:program,
+        program_type:program_type,
+        semester:semester
       };
     });
 
-    console.log("handle freeze", data);
+    // console.log("handle freeze", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -314,10 +328,14 @@ function BridgeCoursesTable({
         academic_year: academicYear,
         course_code: course_code[course],
         freeze: false,
+        campus:campus,
+        semester:semester,
+        program:program,
+        program_type:program_type
       };
     });
 
-    console.log("handle unfreeze", data);
+    // console.log("handle unfreeze", data);
     const newErrors: Error[] = [];
     const rollNoTracker: { [key: string]: boolean } = {};
 
@@ -362,7 +380,7 @@ function BridgeCoursesTable({
   const generateMarksArray = (
     studentList: Row[]
   ): { sno: number; rollno: string; name: string; marks: string; reappear: string }[] => {
-    console.log(studentList);
+    // console.log(studentList);
 
     const marksArray = studentList.map((student, index: number) => ({
       sno: index + 1,
@@ -468,7 +486,7 @@ function BridgeCoursesTable({
                           setDel(true);
                           setDelIndex(index);
                         }}
-                        disabled={rows.length === 1}
+                        // disabled={rows.length === 1}
                         variant="text"
                         color="error"
                         aria-label="delete"

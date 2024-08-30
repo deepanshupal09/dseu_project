@@ -65,7 +65,7 @@ export default function Registration() {
     useEffect(() => {
         if (token) {
             fetchAllMarksControl(token).then((res: CampusData2[]) => {
-                console.log(res);
+                // console.log(res);
                 setMarksControlDetails(res); 
             }).catch((error) => {
                 console.error(error); 

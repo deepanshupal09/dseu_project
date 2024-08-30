@@ -19,8 +19,18 @@ const superAdminRoutes = [
   "/admin/marks-entry",
   "/admin/marks-control",
   "/admin/marks-status",
+  "/admin/edit-student-details",
   "/admin/result-control",
-  "/admin/results"
+  "/admin/student-result",
+  "/admin/all-student-details",
+  "/admin/results",
+  "/admin/download-all-marks"
+];
+const modRoutes = [
+  "/admin/dashboard",
+  "/admin/edit-student-details",  
+  "/admin/download-all-marks",
+  "/admin/student-result"
 ];
 const publicRoutes = ["/", "/admin","/getuserdetails"];
 const departmentRoutes = ["/admin/marks-entry"];
@@ -33,6 +43,7 @@ export default async function middleware(req: NextRequest) {
   const isAdminRoute = adminRoutes.includes(path);
   const isSuperAdminRoute = superAdminRoutes.includes(path);
   const isDepartmentRoute = departmentRoutes.includes(path);
+  const isModRoute = modRoutes.includes(path);
   const isBlockedRoute = blockedRoutes.includes(path);
   const cookie = (await parseJwt(cookies().get("auth")?.value))?.user;
   const adminCookie = (await parseJwt(cookies().get("admin")?.value))?.user;
@@ -68,6 +79,10 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin/dashboard", req.nextUrl));
   }
 
+  if(adminCookie && adminCookie.role==='mod' && !isModRoute) {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.nextUrl));
+  }
+
 
   return NextResponse.next();
 }
@@ -89,6 +104,10 @@ export const config = {
     "/admin/marks-control",
     "/admin/marks-entry",
     "/admin/result-control",
-    "/getuserdetails/:rollno*"
+    "/getuserdetails/:rollno*",
+    "/admin/results",
+    "/admin/student-result",
+    "/admin/all-student-details",
+    "/admin/download-all-marks"
   ],
 };

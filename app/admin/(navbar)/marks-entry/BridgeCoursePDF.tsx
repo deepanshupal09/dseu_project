@@ -359,13 +359,11 @@ const GeneratePDF: React.FC<ResultDocumentProps> = ({
         fileName={`Marks-${campus}-${program}-${semester}-${courseName}-${academicYear}-${parseInt(maxMarks)===75?'Internal':parseInt(maxMarks)===25?'External':'Aggregate'}.pdf`}
       >
         {({ loading }) =>
-          loading ? (
-            <CircularProgress />
-          ) : (
+
             <Button variant="contained" startIcon={<Download />}>
-              Download PDF
+              {loading ? "Loading...": "Download PDF"}
             </Button>
-          )
+
         }
       </PDFDownloadLink>
     </>
