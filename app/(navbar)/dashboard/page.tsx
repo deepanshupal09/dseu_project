@@ -15,6 +15,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function Home() {
   const [selected, setSelected] = useState(0);
@@ -32,6 +34,9 @@ export default function Home() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [dialogsCompleted, setDialogsCompleted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(event.target.value);
@@ -93,14 +98,24 @@ export default function Home() {
         );
         setDialogOpen(false);
         setDialogsCompleted(true);
+        setSnackbarMessage("Details submitted successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
       } catch (error) {
         console.error("Update failed:", error);
+        setSnackbarMessage("Details can't be submitted right now. Try again later.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     } else {
-      console.error("Required fields are missing:", { selectedCategory, isLateralEntry, rollno: user?.rollno, token });
+      setSnackbarMessage("Required fields are missing.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   };
-  
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
   const [expanded, setExpanded] = useState(false);
   
   const handleExpandToggle = () => {
@@ -157,18 +172,18 @@ export default function Home() {
           handleDialogClose();
         }}
         maxWidth="md"
-        className="rounded-lg shadow-lg"
+        className=" shadow-lg"
       >
-        <DialogTitle className="bg-dseublue text-white text-lg font-semibold py-4 mb-2">
+        <DialogTitle className=" text-lg font-semibold py-4 mb-2">
           Details Completion
         </DialogTitle>
-        <DialogContent className="px-6 py-4 space-y-4 my-5">
-          <div className="flex flex-col space-y-2 py-4">
-            <Typography variant="h6" component="div" className="text-xl font-medium">
+        <DialogContent className="px-6 space-y-2">
+          <div className="flex flex-col space-y-2">
+            <Typography component="div" className="font-medium">
               Select Your Category
             </Typography>
             <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
-              <div className="flex space-x-4 text-lg">
+              <div className="flex space-x-4 ">
                 <FormControlLabel value="General" control={<Radio />} label="General" />
                 <FormControlLabel value="OBC" control={<Radio />} label="OBC" />
                 <FormControlLabel value="SC" control={<Radio />} label="SC" />
@@ -176,19 +191,19 @@ export default function Home() {
               </div>
             </RadioGroup>
           </div>
-          <div className="flex flex-col space-y-2 py-4">
-            <Typography variant="h6" component="div" className="text-xl font-medium">
+          <div className="flex flex-col space-y-2">
+            <Typography  component="div" className=" font-medium">
               Are you a Lateral Entry Student?
             </Typography>
             <RadioGroup value={isLateralEntry} onChange={handleLateralChange}>
-              <div className="flex space-x-4 text-lg">
+              <div className="flex space-x-4">
                 <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="no" control={<Radio />} label="No" />
               </div>
             </RadioGroup>
           </div>
         </DialogContent>
-        <DialogActions className="px-6 py-4">
+        <DialogActions className="px-6">
           <Button
             onClick={handleDialogClose} 
             disabled={!selectedCategory || !isLateralEntry || !token || !user?.rollno} 
@@ -199,6 +214,15 @@ export default function Home() {
           </Button>
         </DialogActions>
       </Dialog>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
     </div>
   );
 }  

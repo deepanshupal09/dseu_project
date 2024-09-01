@@ -472,6 +472,27 @@ export default function Home() {
                           )}
                         </p>
                       </div>
+                      <div className="flex items-center mb-2">
+                        <PersonIcon className="mr-2" />
+                        <p>
+                          <span className="font-bold">{"Category:"}</span>
+                          <br />
+                          {edit ? (
+                            <TextField
+                              hiddenLabel
+                              className="mt-2"
+                              size="small"
+                              variant="filled"
+                              name="category"
+                              value={user?.category}
+                              onChange={handleChange}
+                            />
+                          ) : (
+                            <span>{user?.category}</span>
+                          )}
+                        </p>
+                      </div>
+                      
                     </div>
                   </div>
                 </div>
@@ -639,6 +660,7 @@ export default function Home() {
                             )}
                           </p>
                         </div>
+                        
                         <div className="flex mb-2">
                           <PersonIcon className="mr-2" />
                           <p>
@@ -659,6 +681,26 @@ export default function Home() {
                             )}
                           </p>
                         </div>
+                        <div className="flex items-center mb-2">
+                        <PersonIcon className="mr-2" />
+                        <p>
+                          <span className="font-bold">{"Lateral Entry:"}</span>
+                          <br />
+                          {edit ? (
+                            <TextField
+                              hiddenLabel
+                              className="mt-2"
+                              size="small"
+                              variant="filled"
+                              name="lateralentry"
+                              value={user?.is_lateral}
+                              onChange={handleChange}
+                            />
+                          ) : (
+                            <span>{user?.is_lateral}</span>
+                          )}
+                        </p>
+                      </div>
                       </div>
                     </div>
                   </div>
