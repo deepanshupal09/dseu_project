@@ -123,6 +123,7 @@ app.get("/fetchExamRegistrationByRollNo", controller.fetchExamRegistrationByRoll
 // app.get("/fetchStudentByProgramAndSemester", controller.fetchStudentByProgramAndSemester);
 // app.get("/fetchStudentByCampusAndProgram", controller.fetchStudentByCampusAndProgram);
 app.get("/loginByEmailId", controller.loginByEmailId);
+app.post("/categoryLateralController", controller.categoryLateralController);
 // app.get("/fetchExamControl", controller.fetchExamControl);
 app.post("/handleStudentDetailsFromInternalController",marks_controller.handleStudentDetailsFromInternalController);
 // app.get("/fetchStudentDetailsFromInternalController",marks_controller.fetchStudentDetailsFromInternalController);

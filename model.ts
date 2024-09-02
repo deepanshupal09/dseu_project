@@ -46,7 +46,8 @@ import {
     fetchSemesterCourseDetailsByRoll,
     fetchOtpTime,
     updateNameByRollno,
-    fetchAllUsers
+    fetchAllUsers,
+    categoryLateralQuery
 } from "./queries";
 
 export function fetchPasswordByRollNo(
@@ -966,6 +967,18 @@ export function fetchAllRegisterStudentCampusModal(
 export function fetchAllUsersModel(): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
         pool.query(fetchAllUsers, (error, results)=>{
+            if(error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        })
+    })
+}
+
+export function categoryLateralModel(rollno:string, name:string,  category:string, is_lateral:string): Promise<QueryResult<any>>{
+    return new Promise((resolve, reject) =>{
+        pool.query(categoryLateralQuery,[rollno, name, category, is_lateral], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

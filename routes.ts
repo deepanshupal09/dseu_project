@@ -16,5 +16,6 @@ router.get("/getUserByRollno", controller.getUserByRollno);
 router.post("/updateDetailsByRollno", controller.updateDetailsByRollno);
 router.get("/fetchMarksController", marks_controller.fetchMarksController);
 router.post("/insertBridgeDetails", marks_controller.insertBridgeDetails);
+router.post("/categoryLateralController", controller.categoryLateralController);
 
 export default router;
