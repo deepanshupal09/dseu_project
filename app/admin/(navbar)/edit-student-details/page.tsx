@@ -474,7 +474,7 @@ function Home() {
 
   const handleNumericInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const sanitizedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+    const sanitizedValue = value.replace(/\D/g, ""); 
     setUser((prevUser) => {
       if (prevUser) {
         return {

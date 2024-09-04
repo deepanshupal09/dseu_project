@@ -238,10 +238,11 @@ export default function Home() {
         <DialogTitle>Confirm Submission</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you selected the correct category:{" "}<br/>
-            <strong>{selectedCategory}</strong> and Lateral Entry:{" "}
-            <strong>{isLateralEntry === "yes" ? "Yes" : "No"}</strong>?
-            <p>You will not be able to change these fields again.</p>
+          Are you sure about the selections you have made?
+            {/* <br/>category:{" "} */}
+            {/* <strong>{selectedCategory}</strong> and Lateral student: {" "}
+            <strong>{isLateralEntry === "yes" ? "Yes" : "No"}</strong> */}
+            <p>These fields cannot be changed later.</p>
           </Typography>
         </DialogContent>
         <DialogActions>

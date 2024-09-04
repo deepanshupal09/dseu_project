@@ -490,8 +490,6 @@ export async function updateDetailsUser(user: StudentDetails, token: string) {
             rollno: user.rollno,
             year_of_admission: user.year_of_admission,
             date_of_birth: user.date_of_birth,
-            category: user.category,
-            is_lateral: user.is_lateral,
         };
         const response = await fetch(`${process.env.BACKEND_URL}/api/data/updateDetailsByRollno`, {
             method: "POST",
