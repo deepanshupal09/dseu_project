@@ -691,8 +691,7 @@ function Home() {
                         <PersonIcon className="mr-2" />
                         <p>
                           <span className="font-bold">{"Category:"}</span>
-                          <br />
-                          
+                          <br />                         
                             <Select
                               hiddenLabel
                               className="mt-2"
