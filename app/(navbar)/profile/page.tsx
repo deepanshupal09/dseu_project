@@ -465,7 +465,8 @@ export default function Home() {
                               variant="filled"
                               name="category"
                               value={user?.category}
-                              onChange={handleSelectChange}
+                              disabled
+                              //onChange={handleSelectChange}
                             >
                               <MenuItem value="general">general</MenuItem>
                               <MenuItem value="obc">obc</MenuItem>
@@ -698,9 +699,10 @@ export default function Home() {
                               className="mt-2"
                               size="small"
                               variant="filled"
-                              name="lateralentry"
+                              name="is_lateral"
                               value={user?.is_lateral}
-                              onChange={handleSelectChange}
+                              disabled
+                              //onChange={handleSelectChange}
                             >
                               <MenuItem value="yes">yes</MenuItem>
                               <MenuItem value="no">no</MenuItem>

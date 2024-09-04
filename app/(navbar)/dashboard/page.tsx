@@ -38,6 +38,17 @@ export default function Home() {
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+
+  const handleConfirmOpen = () => {
+    setConfirmOpen(true);
+  };
+  const handleConfirmClose = (confirm:boolean) =>{
+    setConfirmOpen(false);
+    if(confirm){
+      handleFinalSubmit();
+    }
+  }
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(event.target.value);
@@ -79,8 +90,11 @@ export default function Home() {
     });
   }, [token]);
   
+  const handleDialogClose = () => {
+    handleConfirmOpen();
+  };
   
-  const handleDialogClose = async () => {
+  const handleFinalSubmit = async () => {
     console.log("Selected Category:", selectedCategory);
     console.log("Is Lateral Entry:", isLateralEntry);
   
@@ -217,6 +231,23 @@ export default function Home() {
           >
             Submit
             {isSubmitting ? <CircularProgress size={24} /> : ""}         
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={confirmOpen} onClose={() => handleConfirmClose(false)}>
+        <DialogTitle>Confirm Submission</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you selected the correct category:{" "}
+            <strong>{selectedCategory}</strong> and Lateral Entry:{" "}
+            <strong>{isLateralEntry === "yes" ? "Yes" : "No"}</strong>?
+            <p>You will not be able to change these fields again.</p>
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleConfirmClose(false)}>No</Button>
+          <Button onClick={() => handleConfirmClose(true)} color="primary">
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
