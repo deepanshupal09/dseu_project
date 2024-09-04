@@ -37,6 +37,7 @@ export default function Home() {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(event.target.value);
@@ -64,7 +65,7 @@ export default function Home() {
             const fetchedUser = res[0];
             setUser(fetchedUser);
             console.log(fetchedUser);
-            if (fetchedUser && (!fetchedUser.category || fetchedUser.category.trim() === '' ||
+            if (fetchedUser && (!fetchedUser.category || fetchedUser.category=== "[null]" || fetchedUser.category.trim() === '' ||
                                 !fetchedUser.is_lateral || fetchedUser.is_lateral.trim() === '')) {
               setDialogOpen(true);
             }
@@ -84,6 +85,7 @@ export default function Home() {
     console.log("Is Lateral Entry:", isLateralEntry);
   
     if (selectedCategory && isLateralEntry && user?.rollno && token) {
+      setIsSubmitting(true);
       try {
         const body = {
           rollno: user.rollno,
@@ -106,6 +108,9 @@ export default function Home() {
         setSnackbarMessage("Details can't be submitted right now. Try again later.");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
+      }
+      finally {
+        setIsSubmitting(false);  
       }
     } else {
       setSnackbarMessage("Required fields are missing.");
@@ -184,10 +189,10 @@ export default function Home() {
             </Typography>
             <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
               <div className="flex space-x-4 ">
-                <FormControlLabel value="General" control={<Radio />} label="General" />
-                <FormControlLabel value="OBC" control={<Radio />} label="OBC" />
-                <FormControlLabel value="SC" control={<Radio />} label="SC" />
-                <FormControlLabel value="ST" control={<Radio />} label="ST" />
+                <FormControlLabel value="general" control={<Radio />} label="General" />
+                <FormControlLabel value="obc" control={<Radio />} label="OBC" />
+                <FormControlLabel value="sc" control={<Radio />} label="SC" />
+                <FormControlLabel value="st" control={<Radio />} label="ST" />
               </div>
             </RadioGroup>
           </div>
@@ -211,6 +216,7 @@ export default function Home() {
             className="border"
           >
             Submit
+            {isSubmitting ? <CircularProgress size={24} /> : ""}         
           </Button>
         </DialogActions>
       </Dialog>

@@ -75,6 +75,7 @@ type DetailsType = {
   rollno: string;
   semester: string | null;
   year_of_admission: string | null;
+  is_lateral: string | null;
 };
 
 export default function Marks() {
@@ -133,6 +134,7 @@ export default function Marks() {
         { field: "abc_id", headerName: "ABC ID", width: columnWidth },
         { field: "alternate_phone", headerName: "Alternate Phone", width: columnWidth },
         { field: "year_of_admission", headerName: "Year of Admission", width: columnWidth },
+        { field: "is_lateral", headerName: "Lateral Entry", width: columnWidth },
       ];      
 
       setColumns(newColumns);

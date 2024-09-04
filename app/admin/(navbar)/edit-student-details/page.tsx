@@ -687,29 +687,30 @@ function Home() {
                       </Select>
                     </p>
                   </div>
-
                   <div className="flex mb-2">
-                    <VpnKeyIcon className="mr-2" />
-                    <p>
-                      <span className="font-bold">abc_id:</span>
-                      <br />
-                      <TextField
-                        hiddenLabel
-                        className="mt-2"
-                        size="small"
-                        variant="filled"
-                        name="abc_id"
-                        value={user.abc_id}
-                        onChange={handleNumericInputChange}
-                        inputProps={{
-                          maxLength: 12,
-                          inputMode: "numeric",
-                          pattern: "[0-9]*",
-                        }}
-                        type="text"
-                      />
-                    </p>
-                  </div>
+                        <PersonIcon className="mr-2" />
+                        <p>
+                          <span className="font-bold">{"Category:"}</span>
+                          <br />
+                          
+                            <Select
+                              hiddenLabel
+                              className="mt-2"
+                              size="small"
+                              variant="filled"
+                              name="category"
+                              value={user.category}
+                              onChange={handleSelectChange}
+                            >
+                              <MenuItem value="general">general</MenuItem>
+                              <MenuItem value="obc">obc</MenuItem>
+                              <MenuItem value="sc">sc</MenuItem>
+                              <MenuItem value="st">st</MenuItem>
+                            </Select>
+                        </p>
+                      </div>
+
+                  
                   <div className="flex items-center mb-2">
                     <MailIcon className="mr-2" />
                     <p>
@@ -912,6 +913,48 @@ function Home() {
                       </p>
                     </div>
                     <div className="flex mb-2">
+                    <VpnKeyIcon className="mr-2" />
+                    <p>
+                      <span className="font-bold">abc_id:</span>
+                      <br />
+                      <TextField
+                        hiddenLabel
+                        className="mt-2"
+                        size="small"
+                        variant="filled"
+                        name="abc_id"
+                        value={user.abc_id}
+                        onChange={handleNumericInputChange}
+                        inputProps={{
+                          maxLength: 12,
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
+                        }}
+                        type="text"
+                      />
+                    </p>
+                  </div>
+                  <div className="flex mb-2">
+                        <PersonIcon className="mr-2" />
+                        <p>
+                          <span className="font-bold">{"Lateral Entry:"}</span>
+                          <br />
+                            <Select
+                              hiddenLabel
+                              className="mt-2"
+                              size="small"
+                              variant="filled"
+                              name="is_lateral"
+                              value={user.is_lateral}
+                              onChange={handleSelectChange}
+                            >
+                              <MenuItem value="yes">yes</MenuItem>
+                              <MenuItem value="no">no</MenuItem>
+                              </Select>                        
+                            {/* <span>{user?.is_lateral}</span> */}                     
+                        </p>
+                      </div>
+                    <div className="flex mb-2">
                       <PersonIcon className="mr-2" />
                       <p>
                         <span className="font-bold">Role:</span>
@@ -926,7 +969,7 @@ function Home() {
                           disabled
                         />
                       </p>
-                    </div>
+                    </div>                
 
                   </div>
                 </div>

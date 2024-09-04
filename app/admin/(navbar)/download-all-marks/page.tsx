@@ -35,6 +35,7 @@ export interface Student {
   rollno: string;
   program: string;
   semester: number;
+  is_lateral: string;
 }
 
 export interface User {
@@ -115,6 +116,7 @@ export default function Marks() {
         { field: "campus", headerName: "Inst name", width: columnWidth },
         { field: "rollno", headerName: "Roll No", width: columnWidth },
         { field: "name", headerName: "Student Name", width: columnWidth },
+        { field: "is_lateral", headerName: "Lateral Entry", width: columnWidth },
         { field: "program", headerName: "Program Name", width: columnWidth },
         { field: "exam_type", headerName: "Exam type", width: columnWidth },
         { field: "isBridge", headerName: "Bridge Course", width: columnWidth },
