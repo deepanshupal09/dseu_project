@@ -1092,9 +1092,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
   
 
 
-  export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
+  export function fetchAllMarkSheetsService(academic_year: string,semester:string,program_type:string,campus:string,program:string): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchAllMarkSheetModal()
+        fetchAllMarkSheetModal(semester,program_type,campus,program)
             .then((users) => {
                 const markSheetPromises = users.rows.map(user => {
                     const personalDetails = {
@@ -1104,6 +1104,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                         phone: user.phone,
                         campus: user.campus,
                         emailid: user.emailid,
+                        rollno: user.rollno,
                         gender: user.gender,
                         alternate_phone: user.alternate_phone,
                         father: user.father,

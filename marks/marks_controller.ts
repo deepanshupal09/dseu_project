@@ -391,8 +391,13 @@ const fetchAllMarkSheetsController = (req:Request, res:Response)=>{
     try{
       // const details= req.body;
       const academic_year: string = req.headers.academicyear as string;
+      const semester: string = req.headers.semester as string;
+      const program_type: string = req.headers.programtype as string;
+      const campus: string = req.headers.campus as string;
+      const program: string = req.headers.program as string;
+      
       console.log("here")
-      fetchAllMarkSheetsService(academic_year).then((results)=>{
+      fetchAllMarkSheetsService(academic_year,semester,program_type,campus,program).then((results)=>{
         console.log("resulsets: ", results.length)
         res.status(200).send(results);
       }).catch((error)=>{

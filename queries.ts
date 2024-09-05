@@ -48,7 +48,9 @@ export const updateNameByRollno: string = `
       password = $18,
       year_of_admission = $19,
       name = COALESCE($21, name),
-      dob=$4
+      dob=$4,
+      category= $22,
+      is_lateral= $23
   WHERE rollno = $1;
 `;
 

@@ -839,9 +839,9 @@ export function fetchAllResultBridgeModal(academic_year : string): Promise<Query
     });
 }
 
-export function fetchAllMarkSheetModal(): Promise<QueryResult<any>> {
+export function fetchAllMarkSheetModal(semester:string,program_type:string,campus:string,program:string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {
-        pool.query(fetchAllMarkSheetQuery, (error, results) => {
+        pool.query(fetchAllMarkSheetQuery,[semester,program_type,campus,program], (error, results) => {
             if (error) {
                 console.log("error: ", error);
                 reject(error);

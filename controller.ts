@@ -183,10 +183,12 @@ const updateNameByRollno = (req: Request, res: Response): void => {
       rollno,
       year_of_admission,
       date_of_birth,
-      name
+      name,
+      category,
+      is_lateral
     } = req.body;
     console.log(req.body)
-    updateNameDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission, name).then((results)=>{
+    updateNameDetails(rollno, program, semester, date_of_birth, phone, campus, emailid, gender, alternate_phone, father, mother, guardian, aadhar, abc_id, pwbd_certificate, photo, program_type, password, year_of_admission, name, category, is_lateral).then((results)=>{
         res.status(200).send({message: "successfully updated!"})
     }).catch((error)=>{
         res.status(500).send({message: "internal server error"});
@@ -356,7 +358,7 @@ const fetchExamRegistrationByProgramAndSemester = (req: Request, res: Response):
     const campus: string = req.headers.campus as string;
     const programtype:string = req.headers.programtype as string;
 
-    console.log("program_type: ", req.headers)
+    console.log("fetching exam registration: ", req.headers)
     fetchTheExamRegistrationProgramAndSemester(campus, programtype, program, semester).then((results) => {
       res.status(200).send(results);
     }).catch((error) => {

@@ -314,7 +314,7 @@ export const fetchAllResultBridgeQuery: string=`
 `;
 
 export const fetchAllMarkSheetQuery: string=`
-  SELECT * FROM users;
+  SELECT * FROM users WHERE semester = $1 AND program_type=$2 AND campus=$3 AND program=$4;
 `;
 
 export const departmentAggregateDetailsQuery: string = `
