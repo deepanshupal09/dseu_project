@@ -159,6 +159,7 @@ export default function Home() {
                 setToken(auth.value);
                 const data = parseJwt(auth?.value as string);
                 setAdmin(data.user)
+                console.log("role: ", data.user.role)
                 if (data.user.role === 'admin') {
                     setSelectedCampus(data.user.campus)
                 }
@@ -401,7 +402,7 @@ export default function Home() {
                         <h2 className="text-xl font-semibold mb-5 md:text-center sm:mb-5 text-center">SELECT</h2>
                         {data && (
                             <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
-                                {admin?.role === "super" || admin?.role === "mod" && (
+                                {(admin?.role === "super" || admin?.role === "mod") && (
                                     <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
                                         <InputLabel id="program-category-label">Campus</InputLabel>
                                         <Select labelId="program-category-label" id="program-category" value={selectedCampus} label="Program category" onChange={handleChangeSelectedCampus}>
