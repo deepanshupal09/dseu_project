@@ -37,6 +37,18 @@ export default function Home() {
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+
+  const handleConfirmOpen = () => {
+    setConfirmOpen(true);
+  };
+  const handleConfirmClose = (confirm:boolean) =>{
+    setConfirmOpen(false);
+    if(confirm){
+      handleFinalSubmit();
+    }
+  }
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(event.target.value);
@@ -64,7 +76,7 @@ export default function Home() {
             const fetchedUser = res[0];
             setUser(fetchedUser);
             console.log(fetchedUser);
-            if (fetchedUser && (!fetchedUser.category || fetchedUser.category.trim() === '' ||
+            if (fetchedUser && (!fetchedUser.category || fetchedUser.category=== "[null]" || fetchedUser.category.trim() === '' ||
                                 !fetchedUser.is_lateral || fetchedUser.is_lateral.trim() === '')) {
               setDialogOpen(true);
             }
@@ -78,12 +90,16 @@ export default function Home() {
     });
   }, [token]);
   
+  const handleDialogClose = () => {
+    handleConfirmOpen();
+  };
   
-  const handleDialogClose = async () => {
+  const handleFinalSubmit = async () => {
     console.log("Selected Category:", selectedCategory);
     console.log("Is Lateral Entry:", isLateralEntry);
   
     if (selectedCategory && isLateralEntry && user?.rollno && token) {
+      setIsSubmitting(true);
       try {
         const body = {
           rollno: user.rollno,
@@ -106,6 +122,9 @@ export default function Home() {
         setSnackbarMessage("Details can't be submitted right now. Try again later.");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
+      }
+      finally {
+        setIsSubmitting(false);  
       }
     } else {
       setSnackbarMessage("Required fields are missing.");
@@ -184,10 +203,10 @@ export default function Home() {
             </Typography>
             <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
               <div className="flex space-x-4 ">
-                <FormControlLabel value="General" control={<Radio />} label="General" />
-                <FormControlLabel value="OBC" control={<Radio />} label="OBC" />
-                <FormControlLabel value="SC" control={<Radio />} label="SC" />
-                <FormControlLabel value="ST" control={<Radio />} label="ST" />
+                <FormControlLabel value="general" control={<Radio />} label="General" />
+                <FormControlLabel value="obc" control={<Radio />} label="OBC" />
+                <FormControlLabel value="sc" control={<Radio />} label="SC" />
+                <FormControlLabel value="st" control={<Radio />} label="ST" />
               </div>
             </RadioGroup>
           </div>
@@ -211,6 +230,25 @@ export default function Home() {
             className="border"
           >
             Submit
+            {isSubmitting ? <CircularProgress size={24} /> : ""}         
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={confirmOpen} onClose={() => handleConfirmClose(false)}>
+        <DialogTitle>Confirm Submission</DialogTitle>
+        <DialogContent>
+          <Typography>
+          Are you sure about the selections you have made?
+            {/* <br/>category:{" "} */}
+            {/* <strong>{selectedCategory}</strong> and Lateral student: {" "}
+            <strong>{isLateralEntry === "yes" ? "Yes" : "No"}</strong> */}
+            <p>These fields cannot be changed later.</p>
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleConfirmClose(false)}>No</Button>
+          <Button onClick={() => handleConfirmClose(true)} color="primary">
+            Yes
           </Button>
         </DialogActions>
       </Dialog>

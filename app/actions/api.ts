@@ -1234,7 +1234,9 @@ export async function updateDetailsWithName(user: StudentDetails, token: string)
             rollno: user.rollno,
             year_of_admission: user.year_of_admission,
             date_of_birth: user.date_of_birth,
-            name: user.name
+            name: user.name,
+            category:user.category,
+            is_lateral:user.is_lateral
         };
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/updateNameByRollno`, {
             method: "POST",

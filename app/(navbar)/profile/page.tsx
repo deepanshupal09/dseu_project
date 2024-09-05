@@ -453,9 +453,35 @@ export default function Home() {
                         </p>
                       </div>
                       <div className="flex items-center mb-2">
+                        <PersonIcon className="mr-2" />
+                        <p>
+                          <span className="font-bold">{"Category:"}</span>
+                          <br />
+                          {edit ? (
+                            <Select
+                              hiddenLabel
+                              className="mt-2"
+                              size="small"
+                              variant="filled"
+                              name="category"
+                              value={user?.category}
+                              disabled
+                              //onChange={handleSelectChange}
+                            >
+                              <MenuItem value="general">general</MenuItem>
+                              <MenuItem value="obc">obc</MenuItem>
+                              <MenuItem value="sc">sc</MenuItem>
+                              <MenuItem value="st">st</MenuItem>
+                            </Select>
+                          ) : (
+                            <span>{user?.category}</span>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex items-center mb-2">
                         <MailIcon className="mr-2" />
                         <p>
-                          <span className="font-bold">Email:</span>
+                          <span className="font-bold ">Email:</span>
                           <br />
                           {edit ? (
                             <TextField
@@ -468,30 +494,11 @@ export default function Home() {
                               onChange={handleChange}
                             />
                           ) : (
-                            <span>{user?.emailid}</span>
+                            <span className="break-all">{user?.emailid}</span>
                           )}
                         </p>
                       </div>
-                      <div className="flex items-center mb-2">
-                        <PersonIcon className="mr-2" />
-                        <p>
-                          <span className="font-bold">{"Category:"}</span>
-                          <br />
-                          {edit ? (
-                            <TextField
-                              hiddenLabel
-                              className="mt-2"
-                              size="small"
-                              variant="filled"
-                              name="category"
-                              value={user?.category}
-                              onChange={handleChange}
-                            />
-                          ) : (
-                            <span>{user?.category}</span>
-                          )}
-                        </p>
-                      </div>
+                      
                       
                     </div>
                   </div>
@@ -687,15 +694,19 @@ export default function Home() {
                           <span className="font-bold">{"Lateral Entry:"}</span>
                           <br />
                           {edit ? (
-                            <TextField
+                            <Select
                               hiddenLabel
                               className="mt-2"
                               size="small"
                               variant="filled"
-                              name="lateralentry"
+                              name="is_lateral"
                               value={user?.is_lateral}
-                              onChange={handleChange}
-                            />
+                              disabled
+                              //onChange={handleSelectChange}
+                            >
+                              <MenuItem value="yes">yes</MenuItem>
+                              <MenuItem value="no">no</MenuItem>
+                              </Select>
                           ) : (
                             <span>{user?.is_lateral}</span>
                           )}

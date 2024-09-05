@@ -75,6 +75,8 @@ type DetailsType = {
   rollno: string;
   semester: string | null;
   year_of_admission: string | null;
+  is_lateral: string | null;
+  category: string| null;
 };
 
 export default function Marks() {
@@ -133,6 +135,8 @@ export default function Marks() {
         { field: "abc_id", headerName: "ABC ID", width: columnWidth },
         { field: "alternate_phone", headerName: "Alternate Phone", width: columnWidth },
         { field: "year_of_admission", headerName: "Year of Admission", width: columnWidth },
+        { field: "is_lateral", headerName: "Lateral Entry", width: columnWidth },
+        { field: "category", headerName: "Category", width: columnWidth },
       ];      
 
       setColumns(newColumns);
@@ -192,7 +196,6 @@ export default function Marks() {
           <DataGrid slots={{ toolbar: CustomToolbar }} checkboxSelection rows={rows} columns={columns} loading={loading} />
         </div>
       </div>
-
 
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
         <CircularProgress color="inherit" />
