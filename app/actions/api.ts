@@ -1,5 +1,6 @@
 "use server";
 
+import { CleaningServices } from "@mui/icons-material";
 import { StudentDetails } from "../(navbar)/profile/page";
 
 export async function fetchAllMarks(token: string, academic_year: string) {
@@ -299,6 +300,7 @@ export async function loginAdmin(email: string, password: string) {
 }
 
 export async function fetchExamRegistrationByProgramAndSemester(token: string, campus: string, program_type: string, program: string, semester: string) {
+    console.log(`2 campus ${campus} prgoram ${program} program ${program_type} semester ${semester}`)
     try {
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchExamRegistrationByProgramAndSemester`, {
             method: "GET",
@@ -312,6 +314,8 @@ export async function fetchExamRegistrationByProgramAndSemester(token: string, c
                 semester: semester,
             },
         });
+
+        console.log("response: ", response)
 
         if (!response.ok) {
             const errorMessage = await response.text();
@@ -327,7 +331,7 @@ export async function fetchExamRegistrationByProgramAndSemester(token: string, c
 
 export async function fetchCoursesBySemester(token: string, campus: string, program: string, semester: string, program_type: string) {
     try {
-        //
+
         const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchCoursesBySemester`, {
             method: "GET",
             mode: "cors",
@@ -1053,6 +1057,36 @@ export async function fetchAllMarksheetController(academicyear: string,token:str
           "Content-Type": "application/json",
           academicyear: academicyear,
           token : token, 
+        },
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log(errorText);
+        throw new Error(errorText);
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  export async function fetchBatchResult(campus: string, program: string, program_type: string, semester: string, academicyear: string,token:string) {
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/admin/fetchAllMarkSheetsController`, {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          academicyear: academicyear,
+          token : token, 
+          campus: campus,
+          program: program,
+          programtype: program_type,
+          semester: semester
         },
       });
   

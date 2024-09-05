@@ -25,6 +25,7 @@ import { fetchCourseDetailsByCourseCode, fetchCoursesBySemester, fetchExamRegist
 import Image from "next/image";
 import { Course, User } from "../query/page";
 import { useData } from "@/contexts/DataContext";
+import { CleaningServices } from "@mui/icons-material";
 
 interface ProgramList {
     [key: string]: string[];

@@ -24,7 +24,8 @@ const superAdminRoutes = [
   "/admin/student-result",
   "/admin/all-student-details",
   "/admin/results",
-  "/admin/download-all-marks"
+  "/admin/download-all-marks",
+  "/admin/batch-result"
 ];
 const modRoutes = [
   "/admin/dashboard",
@@ -108,6 +109,7 @@ export const config = {
     "/admin/results",
     "/admin/student-result",
     "/admin/all-student-details",
-    "/admin/download-all-marks"
+    "/admin/download-all-marks",
+    "/admin/batch-result"
   ],
 };

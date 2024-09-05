@@ -21,7 +21,7 @@ export default function Nav() {
                 const data = await parseJwt(t.value);
                 console.log("data: ", data)
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result", "All Student Details", "Results","Download All Marks"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result", "All Student Details", "Batch Result", "Results","Download All Marks"]);
                 }
                 if (data?.user?.role === "dep") {
                     setOptions(["Marks Entry"]);
