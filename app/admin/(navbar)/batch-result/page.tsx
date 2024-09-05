@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, use } from "react";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Select, MenuItem, FormControl, InputLabel, Button, TextField } from "@mui/material";
+import { Select, MenuItem, FormControl, InputLabel, Button, TextField, CircularProgress } from "@mui/material";
 
 import ReactToPrint from "react-to-print";
 import logo from "@/app/images/dseu.png";
@@ -148,6 +148,7 @@ export default function Home() {
     const [submitEnabled, setSubmitEnabled] = useState(false)
     const [admin, setAdmin] = useState<User | null>(null)
     const [results, setResults] = useState<StudentData[]>([])
+    const [loading, setLoading] = useState(false)
     const { data } = useData();
 
     const [selectedAcademicYear, setSelectedAcademicYear] = useState("")
@@ -245,14 +246,15 @@ export default function Home() {
 
     const handleSubmit = async () => {
         //   console.log("here ", academicYear, semester, )
-
+        setResults([])
         if (token) {
-            const res: StudentData[] = await fetchBatchResult(selectedCampus, selectedProgram, selectedProgramCategory, selectedSemester, selectedAcademicYear , token);
+            setLoading(true);
+            const res: StudentData[] = await fetchBatchResult(selectedCampus, selectedProgram, selectedProgramCategory, selectedSemester, selectedAcademicYear, token);
             const sortedRes = res.sort((a, b) => {
                 return a.personalDetails.rollno.localeCompare(b.personalDetails.rollno, undefined, { numeric: true });
             });
             setResults(sortedRes);
-            console.log("res: ", res)
+            setLoading(false);
         }
 
     };
@@ -461,10 +463,10 @@ export default function Home() {
                                     <InputLabel id="academic-year-label">Academic Year</InputLabel>
                                     <Select labelId="academic-year-label" id="academic-year" value={selectedAcademicYear} label="Semester" onChange={handleChangeAcademicYear} disabled={!selectedSemester}>
                                         {academicYears?.map((academicYear, index) => (
-                                                <MenuItem key={index} value={academicYear}>
-                                                    {academicYear}
-                                                </MenuItem>
-                                            ))}
+                                            <MenuItem key={index} value={academicYear}>
+                                                {academicYear}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </div>
@@ -490,18 +492,20 @@ export default function Home() {
                         </Button>
                     </div>
                 </div>
-                <ReactToPrint
-                    trigger={() => (
-                        <Button className="mx-12 mt-6" variant="contained" color="primary">
-                            Print
-                        </Button>
-                    )}
-                    content={() => componentRef.current}
-                />
+                {results.length > 0 && (
+
+                    <ReactToPrint
+                        trigger={() => (
+                            <Button className="mx-12 mt-6" variant="contained" color="primary">
+                                Print
+                            </Button>
+                        )}
+                        content={() => componentRef.current}
+                    />
+                )}
 
                 <div className="">
-
-
+                    {!loading  && (
                     <div ref={componentRef} >
 
                         {results.map((studentData: StudentData, index: number) => {
@@ -699,6 +703,12 @@ export default function Home() {
 
                         })}
                     </div>
+                    )}
+                    {loading && (
+                        <div className="flex w-full my-8 h-[70vh] justify-center items-center">
+                            <CircularProgress />
+                        </div>
+                    )}
                 </div>
             </div>
         </>
