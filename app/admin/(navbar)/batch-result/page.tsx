@@ -678,7 +678,7 @@ export default function Home() {
                                                     </div>
                                                 </div>
 
-                                                <div className="print-only h-[800px] overflow-y-clip h-auto break-before-page break-after-avoid">
+                                                <div className=" h-[930px] overflow-y-clip  ">
                                                     <Image
                                                         src={result_info_updated}
                                                         alt="Grade Scheme used for calculating result."
