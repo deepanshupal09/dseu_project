@@ -8,6 +8,7 @@ const adminRoutes = [
   "/admin/dashboard",
   "/admin/registration-chart",
   "/admin/admit-card",
+  "/admin/student-result",
   "/admin/batch-result",
   "/admin/query",
 ];

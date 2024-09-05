@@ -412,7 +412,7 @@ export default function Home() {
                       {studentData.program}-Batch <span className="font-sans">{student?.year_of_admission}</span>
                     </div>
                   </div>
-                  <div className="border border-solid py-16">
+                  <div className="border border-solid">
                     <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo()}</div>
 
                     <table className="w-11/12 mx-auto leading-normal my-2 font-bold  tracking-wider font-roboto">

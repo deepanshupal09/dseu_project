@@ -27,7 +27,7 @@ export default function Nav() {
                     setOptions(["Marks Entry"]);
                 }
                 if (data?.user?.role === "admin") {
-                    setOptions(["Registration Chart", "Admit Card", "Query","Batch Result"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Student Result","Batch Result"]);
                 }
                 if (data?.user?.role === "mod") {
                     setOptions(["Dashboard","Download All Marks","Edit Student Details", "Student Result","Batch Result"]);
