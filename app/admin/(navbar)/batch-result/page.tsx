@@ -505,190 +505,190 @@ export default function Home() {
                 )}
 
                 <div className="">
-                    {!loading  && (
-                    <div ref={componentRef} >
+                    {!loading && (
+                        <div ref={componentRef} >
 
-                        {results.map((studentData: StudentData, index: number) => {
-                            return (
-                                <div key={index} className="print-new-page ">
+                            {results.map((studentData: StudentData, index: number) => {
+                                return (
+                                    <div key={index} className="print-new-page ">
 
-                                    <div className="">
-                                        <div className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
+                                        <div className="">
+                                            <div className="py-1 px-2 rounded sm:mx-auto mt-6 relative w-[1400px] sm:overflow-x-hidden">
 
-                                            <div className="mx-8 my-2 font-bold">
-                                                <h4>ABC ID: {studentData.personalDetails.abc_id}</h4>
-                                            </div>
-                                            <div className="flex flex-row mx-auto">
-                                                <div>
-                                                    <Image className="w-44 h-44 mt-2 absolute" src={logo} alt="DSEU Logo" />
+                                                <div className="mx-8 my-2 font-bold">
+                                                    <h4>ABC ID: {studentData.personalDetails.abc_id}</h4>
                                                 </div>
-                                                <div className="text-center flex flex-col mx-auto p-1">
-                                                    <div className="text-dseublue text-2xl font-extrabold font-mono">
-                                                        दिल्ली कौशल एवं उद्यमिता विश्वविद्यालय
+                                                <div className="flex flex-row mx-auto">
+                                                    <div>
+                                                        <Image className="w-44 h-44 mt-2 absolute" src={logo} alt="DSEU Logo" />
                                                     </div>
-                                                    <div className="text-dseublue text-4xl font-extrabold font-serif">
-                                                        Delhi Skill & Entrepreneurship University
+                                                    <div className="text-center flex flex-col mx-auto p-1">
+                                                        <div className="text-dseublue text-2xl font-extrabold font-mono">
+                                                            दिल्ली कौशल एवं उद्यमिता विश्वविद्यालय
+                                                        </div>
+                                                        <div className="text-dseublue text-4xl font-extrabold font-serif">
+                                                            Delhi Skill & Entrepreneurship University
+                                                        </div>
+                                                        <div className="text-dseublue text-lg font-extrabold font-serif">
+                                                            (A State University Established under Govt. of NCT of Delhi Act 04 of 2020)
+                                                        </div>
                                                     </div>
-                                                    <div className="text-dseublue text-lg font-extrabold font-serif">
-                                                        (A State University Established under Govt. of NCT of Delhi Act 04 of 2020)
+                                                </div>
+                                                <div className="text-center flex flex-col mx-auto">
+                                                    <div className="text-xl font-serif p-1">
+                                                        Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
+                                                    </div>
+                                                    <div className="text-lg font-bold font-serif mb-4">
+                                                        {studentData.markSheet.program}-Batch <span className="font-sans">{studentData.personalDetails.year_of_admission}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="text-center flex flex-col mx-auto">
-                                                <div className="text-xl font-serif p-1">
-                                                    Grade sheet of EoSE of <span className="font-bold font-sans">June-2024</span>
-                                                </div>
-                                                <div className="text-lg font-bold font-serif mb-4">
-                                                    {studentData.markSheet.program}-Batch <span className="font-sans">{studentData.personalDetails.year_of_admission}</span>
-                                                </div>
-                                            </div>
-                                            <div className="border border-solid ">
-                                                <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo(studentData.personalDetails)}</div>
+                                                <div className="border border-solid ">
+                                                    <div className="text-center flex flex-col my-2 mr-5 px-14 sm:">{renderParentInfo(studentData.personalDetails)}</div>
 
-                                                <table className="w-11/12 mx-auto leading-normal my-2 font-bold  tracking-wider font-roboto">
-                                                    <thead>
-                                                        <tr>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "6%" }}
-                                                            >
-                                                                S.No
-                                                            </th>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "16%" }}
-                                                            >
-                                                                Course Code
-                                                            </th>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "38%" }}
-                                                            >
-                                                                Course Name
-                                                            </th>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "8%" }}
-                                                            >
-                                                                Credits
-                                                            </th>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "12%" }}
-                                                            >
-                                                                Credits Earned (C<sub>i</sub>)
-                                                            </th>
-                                                            {/* <th
+                                                    <table className="w-11/12 mx-auto leading-normal my-2 font-bold  tracking-wider font-roboto">
+                                                        <thead>
+                                                            <tr>
+                                                                <th
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "6%" }}
+                                                                >
+                                                                    S.No
+                                                                </th>
+                                                                <th
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "16%" }}
+                                                                >
+                                                                    Course Code
+                                                                </th>
+                                                                <th
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "38%" }}
+                                                                >
+                                                                    Course Name
+                                                                </th>
+                                                                <th
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "8%" }}
+                                                                >
+                                                                    Credits
+                                                                </th>
+                                                                <th
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "12%" }}
+                                                                >
+                                                                    Credits Earned (C<sub>i</sub>)
+                                                                </th>
+                                                                {/* <th
                                   className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                                   style={{ width: "9%" }}
                                 >
                                   Letter Grade Continuous Evaluation(CA)
                                 </th> */}
-                                                            {/* <th
+                                                                {/* <th
                                   className="px-2 py-3 border border-black text-left text-xs font-bold uppercase tracking-wider"
                                   style={{ width: "10%" }}
                                 >
                                   Letter Grade End of Semester Evaluation (EOSE)
                                 </th> */}
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "10%" }}
-                                                            >
-                                                                Grade
-                                                            </th>
-                                                            <th
-                                                                className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
-                                                                style={{ width: "10%" }}
-                                                            >
-                                                                Grade Point (P<sub>i</sub>)
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="font-semibold">{renderTableRows(studentData.markSheet)}</tbody>
-                                                </table>
-                                                <div>
-                                                    <table className="w-11/12 mx-auto leading-normal mt-5 font-bold uppercase tracking-wider font-roboto sm:overflow-x-hidden">
-                                                        <thead className="border border-black">
-                                                            <tr className="border border-black">
                                                                 <th
-                                                                    rowSpan={2}
-                                                                    className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "10%" }}
                                                                 >
-                                                                    Credits Earned in this semester
+                                                                    Grade
                                                                 </th>
                                                                 <th
-                                                                    rowSpan={2}
-                                                                    className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    className="px-2 py-3 border border-black text-center text-sm font-bold tracking-wider"
+                                                                    style={{ width: "10%" }}
                                                                 >
-                                                                    Total Credits earned as on date
-                                                                </th>
-                                                                <th
-                                                                    colSpan={2}
-                                                                    className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
-                                                                >
-                                                                    SGPA
-                                                                </th>
-                                                                <th
-                                                                    colSpan={2}
-                                                                    className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
-                                                                >
-                                                                    CGPA
-                                                                </th>
-                                                                <th
-                                                                    rowSpan={2}
-                                                                    className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
-                                                                >
-                                                                    Grading System
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
-                                                                    Earned
-                                                                </th>
-                                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
-                                                                    Grade Letter
-                                                                </th>
-                                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
-                                                                    Earned
-                                                                </th>
-                                                                <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
-                                                                    Grade Letter
+                                                                    Grade Point (P<sub>i</sub>)
                                                                 </th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody className="bg-white">
-                                                            <tr className="border border-black">
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                                                                    {studentData.markSheet.Credits_earned}
-                                                                </td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                                                                    {studentData.markSheet.sgpa_result.toPrecision(3)}
-                                                                </td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
-                                                                    {studentData.markSheet.sgpa_grade}
-                                                                </td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
-                                                                <td className="px-6 py-4 text-center border border-black whitespace-nowrap">ABS</td>
-                                                            </tr>
-                                                        </tbody>
+                                                        <tbody className="font-semibold">{renderTableRows(studentData.markSheet)}</tbody>
                                                     </table>
-                                                    <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
+                                                    <div>
+                                                        <table className="w-11/12 mx-auto leading-normal mt-5 font-bold uppercase tracking-wider font-roboto sm:overflow-x-hidden">
+                                                            <thead className="border border-black">
+                                                                <tr className="border border-black">
+                                                                    <th
+                                                                        rowSpan={2}
+                                                                        className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    >
+                                                                        Credits Earned in this semester
+                                                                    </th>
+                                                                    <th
+                                                                        rowSpan={2}
+                                                                        className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    >
+                                                                        Total Credits earned as on date
+                                                                    </th>
+                                                                    <th
+                                                                        colSpan={2}
+                                                                        className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    >
+                                                                        SGPA
+                                                                    </th>
+                                                                    <th
+                                                                        colSpan={2}
+                                                                        className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    >
+                                                                        CGPA
+                                                                    </th>
+                                                                    <th
+                                                                        rowSpan={2}
+                                                                        className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider"
+                                                                    >
+                                                                        Grading System
+                                                                    </th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
+                                                                        Earned
+                                                                    </th>
+                                                                    <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
+                                                                        Grade Letter
+                                                                    </th>
+                                                                    <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
+                                                                        Earned
+                                                                    </th>
+                                                                    <th className="px-6 py-3 text-center text-sm font-bold border border-black  tracking-wider">
+                                                                        Grade Letter
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="bg-white">
+                                                                <tr className="border border-black">
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                                                                        {studentData.markSheet.Credits_earned}
+                                                                    </td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                                                                        {studentData.markSheet.sgpa_result.toPrecision(3)}
+                                                                    </td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">
+                                                                        {studentData.markSheet.sgpa_grade}
+                                                                    </td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">-</td>
+                                                                    <td className="px-6 py-4 text-center border border-black whitespace-nowrap">ABS</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <p className="text-right mx-14">Computer Generated Provisional Grade Sheet</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="print-only h-[800px] overflow-y-clip h-auto break-before-page break-after-avoid">
+                                                    <Image
+                                                        src={result_info_updated}
+                                                        alt="Grade Scheme used for calculating result."
+                                                        layout="responsive"
+                                                        objectFit="contain"
+                                                    />
                                                 </div>
                                             </div>
-
-                                            {/* <div className="print-only overflow-y-auto h-auto break-before-page break-after-avoid">
-                                        <Image
-                                            src={result_info_updated}
-                                            alt="Grade Scheme used for calculating result."
-                                            layout="responsive"
-                                            objectFit="contain"
-                                        />
-                                    </div> */}
                                         </div>
-                                    </div>
-                                    <style jsx global>{`
+                                        <style jsx global>{`
                         @media print {
                           @page {
                             size: landscape;
@@ -698,11 +698,11 @@ export default function Home() {
                             }
                         }
                       `}</style>
-                                </div>
-                            )
+                                    </div>
+                                )
 
-                        })}
-                    </div>
+                            })}
+                        </div>
                     )}
                     {loading && (
                         <div className="flex w-full my-8 h-[70vh] justify-center items-center">
