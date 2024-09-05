@@ -21,16 +21,16 @@ export default function Nav() {
                 const data = await parseJwt(t.value);
                 console.log("data: ", data)
                 if (data?.user?.role === "super") {
-                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result", "All Student Details", "Batch Result", "Results","Download All Marks"]);
+                    setOptions(["Dashboard","Registration Chart", "Admit Card", "Query","Exam Control","Marks Entry","Marks Control","Marks Status", "Edit Student Details","Result Control", "Student Result", "All Student Details", "Batch Result", "Download All Marks"]);
                 }
                 if (data?.user?.role === "dep") {
                     setOptions(["Marks Entry"]);
                 }
                 if (data?.user?.role === "admin") {
-                    setOptions(["Registration Chart", "Admit Card", "Query"]);
+                    setOptions(["Registration Chart", "Admit Card", "Query","Batch Result"]);
                 }
                 if (data?.user?.role === "mod") {
-                    setOptions(["Dashboard","Download All Marks","Edit Student Details", "Student Result"]);
+                    setOptions(["Dashboard","Download All Marks","Edit Student Details", "Student Result","Batch Result"]);
                 }
             }
         });

@@ -8,6 +8,7 @@ const adminRoutes = [
   "/admin/dashboard",
   "/admin/registration-chart",
   "/admin/admit-card",
+  "/admin/batch-result",
   "/admin/query",
 ];
 const superAdminRoutes = [
@@ -31,7 +32,8 @@ const modRoutes = [
   "/admin/dashboard",
   "/admin/edit-student-details",  
   "/admin/download-all-marks",
-  "/admin/student-result"
+  "/admin/student-result",
+  "/admin/batch-result"
 ];
 const publicRoutes = ["/", "/admin","/getuserdetails"];
 const departmentRoutes = ["/admin/marks-entry"];

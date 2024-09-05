@@ -558,7 +558,7 @@ export default function Registration() {
           <div className="py-2 px-2 rounded shadow max-sm:w-full mt-5 sm:mx-8">
             {data && (
               <div className="flex flex-col md:flex-row items-center md:space-x-4 mb-4">
-                {user?.role === "super" && (
+                {(user?.role === "super" || user?.role === "mod") && (
                   <FormControl size="small" className="w-full md:w-1/3 sm:w-auto mt-5">
                     <InputLabel id="program-category-label">Campus</InputLabel>
                     <Select
