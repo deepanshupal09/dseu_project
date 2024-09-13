@@ -919,7 +919,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
             fetchAllResultModal(academic_year),
             fetchExternalResultModal(academic_year),
             fetchInternalResultModal(academic_year),
-            fetchAllResultBridgeModal(academic_year),
+            fetchAllResultBridgeModal(academic_year),  // Assumes this returns bridge courses
             fetchExamModal(academic_year)
         ]).then(([aggregateMarksResults, externalMarksResults, internalMarksResults, bridgeResults, examResults]) => {
 
@@ -930,19 +930,19 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 return `${student.rollno}-${student.course_code}`;
             };
 
-            // Create a set of valid composite keys from the exam registeration data
+            // Create a set of valid composite keys from the exam registration data
             const validExamKeys = new Set<string>();
             examResults.rows.forEach((exam: any) => {
                 validExamKeys.add(createCompositeKey(exam));
             });
 
             // Helper function to add marks to the student data map
-            const addMarksToStudent = (marksData: any[], marksType: string) => {
+            const addMarksToStudent = (marksData: any[], marksType: string, isBridge: boolean = false) => {
                 marksData.forEach(student => {
                     const compositeKey = createCompositeKey(student);
 
-                    // Check if the composite key is in the set of valid exam keys
-                    if (!validExamKeys.has(compositeKey)) {
+                    // For non-bridge courses, check if the composite key is in the set of valid exam keys
+                    if (!isBridge && !validExamKeys.has(compositeKey)) {
                         return;
                     }
 
@@ -975,10 +975,6 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                         };
                     }
 
-                    if (student.rollno === '41521032') {
-                        console.log(parseInt(student.semester), parseInt(student.user_semester));
-                    }
-
                     studentDataMap[compositeKey][marksType] = student.marks;
 
                     // Ensure credits and course_name are set even if they come from a different result set
@@ -989,16 +985,22 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                         studentDataMap[compositeKey].course_name = student.course_name;
                     }
 
-                    if (student.bridge) {
+                    if (isBridge) {
                         studentDataMap[compositeKey].isBridge = true;
                     }
                 });
             };
 
+            // Add aggregate, internal, and external marks
             addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
             addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
             addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
-            addMarksToStudent(bridgeResults.rows, 'bridge');
+
+            // Filter bridge results to include only courses where freeze = true
+            const frozenBridgeResults = bridgeResults.rows.filter((bridge: any) => bridge.freeze === true);
+
+            // Add bridge courses with freeze = true
+            addMarksToStudent(frozenBridgeResults, 'bridge', true);
 
             const combinedResults = Object.values(studentDataMap);
             resolve(combinedResults);
@@ -1008,6 +1010,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
         });
     });
 }
+
 
 // export function fetchAllResultService(academic_year: string): Promise<any> {
 //     return new Promise((resolve, reject) => {
