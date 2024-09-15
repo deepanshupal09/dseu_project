@@ -38,7 +38,7 @@ export function fetchBridgeDetailsModel(email: string, course_code: string, acad
             SELECT b.rollno,b.marks, u.name,b.freeze
             FROM bridge_course b
             JOIN users u ON b.rollno = u.rollno
-            JOIN departments d ON u.program = d.program AND u.semester = d.semester AND u.campus = d.campus
+            JOIN departments d ON u.program = d.program AND u.program_type = d.program_type AND u.semester = d.semester AND u.campus = d.campus
             WHERE d.emailid = $1 AND b.course_code = $2 AND b.academic_year = $3 AND b.campus = $4 AND b.program = $5 AND b.program_type = $6 AND b.semester = $7;
         `;
 
