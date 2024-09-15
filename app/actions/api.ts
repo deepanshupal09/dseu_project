@@ -1102,7 +1102,7 @@ export async function fetchAllMarksheetController(academicyear: string,token:str
       throw error;
     }
   }
-export async function sendEmails(token:string, body: string){
+export async function sendEmails(token:string, body: string, body: string){
     try{
         console.log("entered")
         // const response ={ok:true}
