@@ -46,6 +46,7 @@ import {
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
+import { createLanguageService } from "typescript";
 
 
 export interface FreezeData {
@@ -951,9 +952,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             rollno: student.rollno,
                             course_code: student.course_code,
                             campus: student.campus,
-                            program: student.program,
+                            program: student.program.split("with specialization")[0],
                             program_type: student.program_type,
-                            semester: student.user_semester,
+                            semester: student.user_semester?student.user_semester:student.semester,
                             name: student.name,
                             father: student.father,
                             mother: student.mother,
@@ -962,7 +963,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             aadhar: student.aadhar,
                             year_of_admission: student.year_of_admission,
                             academic_year: student.academic_year,
-                            credits: student.credit,
+                            credits: student.credit===null||student.credit===undefined?0:student.credit,
                             course_name: student.course_name,
                             aggregate_marks: null,
                             continuous_evaluation: null,
@@ -971,11 +972,15 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             isBridge: false,
                             exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
                             full_mark_continuous: "75",
-                            full_mark_end: "25"
+                            full_mark_end: "25",
+                            is_lateral:student.is_lateral!==null?false:student.is_lateral==='yes'?true:false
                         };
                     }
-
+                    //console.log([0].is_lateral)
                     studentDataMap[compositeKey][marksType] = student.marks;
+                    // if(student.semester){
+                    //     console.log(student)
+                    // }
 
                     // Ensure credits and course_name are set even if they come from a different result set
                     if (student.credits) {
@@ -1000,6 +1005,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
             const frozenBridgeResults = bridgeResults.rows.filter((bridge: any) => bridge.freeze === true);
 
             // Add bridge courses with freeze = true
+console.log(frozenBridgeResults)
             addMarksToStudent(frozenBridgeResults, 'bridge', true);
 
             const combinedResults = Object.values(studentDataMap);

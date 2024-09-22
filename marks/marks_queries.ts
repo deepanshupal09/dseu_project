@@ -308,9 +308,12 @@ WHERE
 // `;
 
 export const fetchAllResultBridgeQuery: string=`
-  SELECT * FROM users AS u
-  JOIN bridge_course AS bc ON bc.rollno = u.rollno
-  WHERE bc.academic_year = $1 AND bc."freeze" = true;
+SELECT u.*, bc.*, c.course_name
+FROM users AS u
+JOIN bridge_course AS bc ON bc.rollno = u.rollno
+JOIN courses AS c ON c.course_code = bc.course_code
+WHERE bc.academic_year = $1 AND bc."freeze" = true;
+
 `;
 
 export const fetchAllMarkSheetQuery: string=`
