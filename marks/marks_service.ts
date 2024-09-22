@@ -952,7 +952,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             rollno: student.rollno,
                             course_code: student.course_code,
                             campus: student.campus,
-                            program: student.program.split("with specialization")[0],
+                            program:  student.program.split(" with specialization")[0] + (student.program.split(" with specialization")[0].includes('(') && !student.program.split(" with specialization")[0].endsWith(')') ? ')' : '') ,
                             program_type: student.program_type,
                             semester: student.user_semester?student.user_semester:student.semester,
                             name: student.name,
@@ -1005,7 +1005,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
             const frozenBridgeResults = bridgeResults.rows.filter((bridge: any) => bridge.freeze === true);
 
             // Add bridge courses with freeze = true
-console.log(frozenBridgeResults)
+// console.log(frozenBridgeResults)
             addMarksToStudent(frozenBridgeResults, 'bridge', true);
 
             const combinedResults = Object.values(studentDataMap);
