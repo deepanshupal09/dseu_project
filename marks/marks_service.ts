@@ -992,6 +992,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
 
                     if (isBridge) {
                         studentDataMap[compositeKey].isBridge = true;
+                        studentDataMap[compositeKey].exam_type = "";
                     }
                 });
             };
