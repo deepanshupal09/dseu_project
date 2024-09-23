@@ -308,11 +308,12 @@ WHERE
 // `;
 
 export const fetchAllResultBridgeQuery: string=`
-SELECT u.*, bc.*, c.course_name
+SELECT u.*, u.semester AS user_semester, bc.*, c.course_name
 FROM users AS u
 JOIN bridge_course AS bc ON bc.rollno = u.rollno
 JOIN courses AS c ON c.course_code = bc.course_code
 WHERE bc.academic_year = $1 AND bc."freeze" = true;
+
 
 `;
 
