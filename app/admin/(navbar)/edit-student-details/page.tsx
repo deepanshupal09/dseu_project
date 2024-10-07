@@ -974,7 +974,7 @@ function Home() {
                 </div>
               </div>
             </div>
-            {!chosen && role === 'super' && (
+            {!chosen && role === 'super' && deepEqual(original, user) && (
               <div className="w-full">
                 <Typography
                   className="text-center text-2xl font-bold"
@@ -1138,7 +1138,7 @@ function Home() {
                 </div>
               </div>
             )}
-            {chosen && role ==='super' && (
+            {chosen && role ==='super' && deepEqual(original, user) && (
               <>
                 <Typography className=" text-xl text-center p-2 w-full">
                   {" "}
