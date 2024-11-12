@@ -239,7 +239,9 @@ export function putNameByRollno(
     password: string,
     year_of_admission: string,
     last_modified: string,
-    name: string
+    name: string,
+    category:string,
+    is_lateral: string
 ): Promise<QueryResult<any>> {
     console.log("here");
     return new Promise((resolve, reject) => {
@@ -285,7 +287,9 @@ export function putNameByRollno(
                 password,
                 year_of_admission,
                 last_modified,
-                name
+                name,
+                category,
+                is_lateral
             ],
             (error, results) => {
                 if (error) {
@@ -976,10 +980,9 @@ export function fetchAllUsersModel(): Promise<QueryResult<any>>{
     })
 }
 
-
-export function categoryLateralModel(rollno:string, category:string, is_lateral:string): Promise<QueryResult<any>>{
+export function categoryLateralModel(rollno:string, name:string,  category:string, is_lateral:string): Promise<QueryResult<any>>{
     return new Promise((resolve, reject) =>{
-        pool.query(categoryLateralQuery,[rollno, category, is_lateral], (error, results)=>{
+        pool.query(categoryLateralQuery,[rollno, name, category, is_lateral], (error, results)=>{
             if(error) {
                 reject(error);
             } else {

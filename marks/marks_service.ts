@@ -46,6 +46,7 @@ import {
 } from "./marks_model";
 import bcrypt, { hash } from "bcrypt";
 import { fetchTheExamRegistration } from "../service";
+import { createLanguageService } from "typescript";
 
 
 export interface FreezeData {
@@ -919,7 +920,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
             fetchAllResultModal(academic_year),
             fetchExternalResultModal(academic_year),
             fetchInternalResultModal(academic_year),
-            fetchAllResultBridgeModal(academic_year),
+            fetchAllResultBridgeModal(academic_year),  // Assumes this returns bridge courses
             fetchExamModal(academic_year)
         ]).then(([aggregateMarksResults, externalMarksResults, internalMarksResults, bridgeResults, examResults]) => {
 
@@ -930,19 +931,19 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                 return `${student.rollno}-${student.course_code}`;
             };
 
-            // Create a set of valid composite keys from the exam registeration data
+            // Create a set of valid composite keys from the exam registration data
             const validExamKeys = new Set<string>();
             examResults.rows.forEach((exam: any) => {
                 validExamKeys.add(createCompositeKey(exam));
             });
 
             // Helper function to add marks to the student data map
-            const addMarksToStudent = (marksData: any[], marksType: string) => {
+            const addMarksToStudent = (marksData: any[], marksType: string, isBridge: boolean = false) => {
                 marksData.forEach(student => {
                     const compositeKey = createCompositeKey(student);
 
-                    // Check if the composite key is in the set of valid exam keys
-                    if (!validExamKeys.has(compositeKey)) {
+                    // For non-bridge courses, check if the composite key is in the set of valid exam keys
+                    if (!isBridge && !validExamKeys.has(compositeKey)) {
                         return;
                     }
 
@@ -951,9 +952,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             rollno: student.rollno,
                             course_code: student.course_code,
                             campus: student.campus,
-                            program: student.program,
+                            program:  student.program.split(" with specialization")[0] + (student.program.split(" with specialization")[0].includes('(') && !student.program.split(" with specialization")[0].endsWith(')') ? ')' : '') ,
                             program_type: student.program_type,
-                            semester: student.user_semester,
+                            semester: student.user_semester?student.user_semester:student.semester,
                             name: student.name,
                             father: student.father,
                             mother: student.mother,
@@ -962,7 +963,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             aadhar: student.aadhar,
                             year_of_admission: student.year_of_admission,
                             academic_year: student.academic_year,
-                            credits: student.credit,
+                            credits: student.credit===null||student.credit===undefined?0:student.credit,
                             course_name: student.course_name,
                             aggregate_marks: null,
                             continuous_evaluation: null,
@@ -971,15 +972,15 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                             isBridge: false,
                             exam_type: parseInt(student.semester) === parseInt(student.user_semester) ? 'regular' : 'reappear',
                             full_mark_continuous: "75",
-                            full_mark_end: "25"
+                            full_mark_end: "25",
+                            is_lateral:student.is_lateral!==null?false:student.is_lateral==='yes'?true:false
                         };
                     }
-
-                    if (student.rollno === '41521032') {
-                        console.log(parseInt(student.semester), parseInt(student.user_semester));
-                    }
-
+                    //console.log([0].is_lateral)
                     studentDataMap[compositeKey][marksType] = student.marks;
+                    // if(student.semester){
+                    //     console.log(student)
+                    // }
 
                     // Ensure credits and course_name are set even if they come from a different result set
                     if (student.credits) {
@@ -989,16 +990,24 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                         studentDataMap[compositeKey].course_name = student.course_name;
                     }
 
-                    if (student.bridge) {
+                    if (isBridge) {
                         studentDataMap[compositeKey].isBridge = true;
+                        studentDataMap[compositeKey].exam_type = "";
                     }
                 });
             };
 
+            // Add aggregate, internal, and external marks
             addMarksToStudent(aggregateMarksResults.rows, 'aggregate_marks');
             addMarksToStudent(internalMarksResults.rows, 'continuous_evaluation');
             addMarksToStudent(externalMarksResults.rows, 'endSem_evaluation');
-            addMarksToStudent(bridgeResults.rows, 'bridge');
+
+            // Filter bridge results to include only courses where freeze = true
+            const frozenBridgeResults = bridgeResults.rows.filter((bridge: any) => bridge.freeze === true);
+
+            // Add bridge courses with freeze = true
+// console.log(frozenBridgeResults)
+            addMarksToStudent(frozenBridgeResults, 'bridge', true);
 
             const combinedResults = Object.values(studentDataMap);
             resolve(combinedResults);
@@ -1008,6 +1017,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
         });
     });
 }
+
 
 // export function fetchAllResultService(academic_year: string): Promise<any> {
 //     return new Promise((resolve, reject) => {
@@ -1092,9 +1102,9 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
   
 
 
-  export function fetchAllMarkSheetsService(academic_year: string): Promise<any> {
+  export function fetchAllMarkSheetsService(academic_year: string,semester:string,program_type:string,campus:string,program:string): Promise<any> {
     return new Promise((resolve, reject) => {
-        fetchAllMarkSheetModal()
+        fetchAllMarkSheetModal(semester,program_type,campus,program)
             .then((users) => {
                 const markSheetPromises = users.rows.map(user => {
                     const personalDetails = {
@@ -1104,6 +1114,7 @@ export function fetchAllResultService(academic_year: string): Promise<any> {
                         phone: user.phone,
                         campus: user.campus,
                         emailid: user.emailid,
+                        rollno: user.rollno,
                         gender: user.gender,
                         alternate_phone: user.alternate_phone,
                         father: user.father,

@@ -391,8 +391,13 @@ const fetchAllMarkSheetsController = (req:Request, res:Response)=>{
     try{
       // const details= req.body;
       const academic_year: string = req.headers.academicyear as string;
+      const semester: string = req.headers.semester as string;
+      const program_type: string = req.headers.programtype as string;
+      const campus: string = req.headers.campus as string;
+      const program: string = req.headers.program as string;
+      
       console.log("here")
-      fetchAllMarkSheetsService(academic_year).then((results)=>{
+      fetchAllMarkSheetsService(academic_year,semester,program_type,campus,program).then((results)=>{
         console.log("resulsets: ", results.length)
         res.status(200).send(results);
       }).catch((error)=>{
@@ -423,6 +428,9 @@ const test = (req:Request, res:Response)=>{
 
 const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
     try {
+        console.log("Sending emails api...")
+        const body = req.body.emailbody as string;
+        console.log("body: ", body)
       const resultObject: ResultObject = await fetchDepartmentDetailsService();
       const emailGroups = resultObject.emailGroups;
   
@@ -464,20 +472,10 @@ const sendEmailNotFreeze = asyncHandler(async (req: Request, res: Response) => {
             cc: 'vc@dseu.ac.in, coe@dseu.ac.in, registrar@dseu.ac.in, acoe@dseu.ac.in, ar-exam@dseu.ac.in',
             subject: `Urgent: Pending Marks Entry on Exam Portal ${campusName}`,
             html: `
-              <p>Dear Sir/Madam,</p>
-          
-              <p>Greetings!</p>
-          
-              <p>The deadline for marks submission for the Exam of Academic Year 2023-24 (Even Semester) was initially set for July 10th, 2024, on the Exam Portal.</p>
-          
-              <p>However, at the request of the Campus Directors, the Controller of Examination extended this deadline to July 20th, 2024.</p>
-          
-              <p>As of today, the marks for the following courses have not yet been received from your campus:</p>
+             ${body}
           
               ${infoGroupDetails}
-          
-              <p>This delay in marks submission is resulting in a delay in the declaration of results. The competent authority has taken this matter seriously. In view of this, you are requested to complete the marks entry on the Exam Portal within 24 hours of receiving this email.</p>
-          
+                    
               <p>Regards,</p>
               <p>Controller of Examinations</p>
             `,

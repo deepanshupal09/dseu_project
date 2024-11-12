@@ -284,7 +284,9 @@ export async function updateNameDetails(
     program_type: string,
     password: string,
     year_of_admission: string,
-    name: string
+    name: string,
+    category:string,
+    is_lateral:string
 ): Promise<string> {
     try {
         const last_modified: string = new Date().toString();
@@ -336,7 +338,9 @@ export async function updateNameDetails(
                 pw,
                 year_of_admission,
                 last_modified,
-                name
+                name,
+                category,
+                is_lateral
             );
 
             return "successfully updated!";
@@ -500,7 +504,7 @@ export function fetchTheExamRegistrationProgramAndSemester(
         fetchExamRegistrationProgramAndSemester(campus, program_type ,program, semester)
             .then((result) => {
                 const data = result.rows;
-                // console.log("data: ", data)
+                console.log("data: ", data)
                 let students:any = {};
                 data.forEach((student)=>{
                     const {rollno, name, dob, photo, program, semester, course_code} = student;
@@ -919,9 +923,9 @@ export function fetchAllUsersService(): Promise<any> {
     })
 }
 
-export function categoryLateralService(rollno:string, category:string, is_lateral:string): Promise<any> {
+export function categoryLateralService(rollno:string, name:string, category:string, is_lateral:string): Promise<any> {
     return new Promise((resolve,reject) => {
-        categoryLateralModel(rollno, category, is_lateral).then((result) =>{
+        categoryLateralModel(rollno, name, category, is_lateral).then((result) =>{
             resolve(result.rows);
         }).catch((error) => {
             console.log("Error in fetching exam reg. details: ", error);
