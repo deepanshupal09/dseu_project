@@ -33,7 +33,8 @@ import {
   fetchStudentService,
   fetchOtpTimeService,
   updateNameDetails,
-  fetchAllUsersService
+  fetchAllUsersService,
+  categoryLateralService
 } from "./service";
 import generateOTP from "./otp_generator"
 import nodemailer from "nodemailer";
@@ -865,6 +866,21 @@ const fetchAllUsersController = (req:Request, res:Response) => {
 }
 
 
+const categoryLateralController = (req:Request, res:Response) => {
+  try{
+    const {rollno, category, is_lateral} = req.body;
+    categoryLateralService(rollno, category, is_lateral).then((results)=>{
+      res.status(200).send(results)
+    }).catch((error)=>{
+      res.status(500).json({"message":"Internal server error fetch all users"})
+    })
+  }
+  catch(error){
+    res.send({message: "internal server error"});
+  }
+}
+
+
 export {
   getUserByRollno,
   login,
@@ -900,5 +916,6 @@ export {
   verifyOtpAndPasswordAdmin,
   fetchStudentController,
   updateNameByRollno,
-  fetchAllUsersController
+  fetchAllUsersController,
+  categoryLateralController
 };

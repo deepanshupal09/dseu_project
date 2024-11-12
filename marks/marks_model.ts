@@ -658,15 +658,18 @@ export async function fetchMarksExternalModal(rollno: string, academic_year: str
     }
 }
 
-export async function fetchMarksAggregateModal(rollno: string, academic_year: string, semester:number): Promise<any> {
+export async function fetchMarksAggregateModal(rollno: string, academic_year: string, semester: number): Promise<any> {
     try {
-        const [aggregateMarksResult, semesterCourseResult, courseNamesResult] = await Promise.all([
-            queryDatabase(fetchAggregateMarks, [rollno, academic_year]),
-            queryDatabase(fetchAggregateSemesterCourse, [rollno, academic_year]),
+        const aggregateMarksResult = await queryDatabase(fetchAggregateMarks, [rollno, academic_year]);
+        const campus = aggregateMarksResult.rows[0]?.campus;
+        const program = aggregateMarksResult.rows[0]?.program;
+        console.log(campus);
+        console.log("! ", program);
+        const [semesterCourseResult, courseNamesResult] = await Promise.all([
+            queryDatabase(fetchAggregateSemesterCourse, [rollno, academic_year, campus, program]),
             queryDatabase(fetchAggregateCourseNames, [rollno, academic_year])
         ]);
 
-        // Combine the results
         const combinedResult = aggregateMarksResult.rows.map(mark => {
             const semesterCourse = semesterCourseResult.rows.find(sc => sc.course_code === mark.course_code);
             const courseName = courseNamesResult.rows.find(c => c.course_code === mark.course_code);
@@ -683,6 +686,7 @@ export async function fetchMarksAggregateModal(rollno: string, academic_year: st
         throw error;
     }
 }
+
 
 export function fetchStudentsCourseCodeModal(course_code: string, campus: string, program_type: string, program: string, semester: string, academic_year: string): Promise<QueryResult<any>> {
     return new Promise((resolve, reject) => {

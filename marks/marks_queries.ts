@@ -145,7 +145,7 @@ export const fetchAggregateSemesterCourse: string = `
     SELECT course_code
     FROM aggregate_marks
     WHERE academic_year = $2 AND rollno = $1 AND freeze_marks = true
-  );
+  ) AND campus = $3 AND program=$4;
 `;
 
 export const fetchAggregateCourseNames: string = `

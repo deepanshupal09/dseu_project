@@ -321,3 +321,12 @@ export const fetchAllRegisterStudentCampus: string=`
 export const fetchAllUsers: string=`
   SELECT * FROM users;
 `;
+
+export const categoryLateralQuery: string=`
+  INSERT INTO users (rollno, category, is_lateral)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (rollno)
+    DO UPDATE SET
+        category = EXCLUDED.category,
+        is_lateral = EXCLUDED.is_lateral,
+`;
