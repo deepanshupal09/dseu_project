@@ -252,7 +252,7 @@ SELECT
     u.*,
     am.*,
     u.semester AS user_semester,
-    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code AND campus = am.campus AND program = am.program LIMIT 1) AS credit,
     (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
 FROM 
     users AS u 
@@ -268,7 +268,7 @@ SELECT
     u.*,
     am.*,
     u.semester AS user_semester,
-    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code AND campus = am.campus AND program = am.program LIMIT 1) AS credit,
     (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
 FROM 
     users AS u 
@@ -284,7 +284,7 @@ SELECT
     u.*,
     am.*,
     u.semester AS user_semester,
-    (SELECT credit FROM semester_course WHERE course_code = am.course_code LIMIT 1) AS credit,
+    (SELECT credit FROM semester_course WHERE course_code = am.course_code AND campus = am.campus AND program = am.program LIMIT 1) AS credit,
     (SELECT course_name FROM courses WHERE course_code = am.course_code LIMIT 1) AS course_name
 FROM 
     users AS u 
