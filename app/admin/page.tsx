@@ -12,46 +12,46 @@ import OurTeam from "../team/OurTeam";
 import FAQPageTwo from "@/FAQ/FAQPage2";
 
 export default function Home() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [helperText, setHelperText] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [startBottomAnimation, setStartBottomAnimation] = useState(false);
-  const [section, setSection] = useState(0);
-  const router = useRouter();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [helperText, setHelperText] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [startBottomAnimation, setStartBottomAnimation] = useState(false);
+    const [section, setSection] = useState(0);
+    const router = useRouter();
 
-  useEffect(() => {
-    if (isOpen) {
-      const timer = setTimeout(() => {
-        setStartBottomAnimation(true);
-      }, 700);
+    useEffect(() => {
+        if (isOpen) {
+            const timer = setTimeout(() => {
+                setStartBottomAnimation(true);
+            }, 700);
 
-      return () => clearTimeout(timer);
-    } else {
-      setStartBottomAnimation(false);
+            return () => clearTimeout(timer);
+        } else {
+            setStartBottomAnimation(false);
+        }
+    }, [isOpen]);
+
+    async function handleLogin() {
+        try {
+            setLoading(true);
+            const response = await loginAdmin(email, password);
+            await setAuthAdmin(response.token);
+            router.push("/admin/dashboard");
+            setLoading(false);
+        } catch (error: any) {
+            setLoading(false);
+            setError(true);
+            const message = JSON.parse(error.message);
+            setHelperText(message.message);
+        }
     }
-  }, [isOpen]);
 
-  async function handleLogin() {
-    try {
-      setLoading(true);
-      const response = await loginAdmin(email, password);
-      await setAuthAdmin(response.token);
-      router.push("/admin/dashboard");
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
-      setError(true);
-      const message = JSON.parse(error.message);
-      setHelperText(message.message);
-    }
-  }
-
-  return (
-    <>
-      {/* <div className="relative">
+    return (
+        <>
+            {/* <div className="relative">
                 <div className="flex items-center fixed max-sm:top-2 max-sm:right-7 top-8 right-20 z-30">
                     <button
                         className="relative w-10 h-10"
@@ -123,99 +123,96 @@ export default function Home() {
                             <div className="text-2xl w-full font-semibold ">Login</div>
                             <div className="mt-1 w-[100%]">
                                 <TextField
-                                  required
-                                  onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    setHelperText("");
-                                    setError(false);
-                                  }}
-                                  value={email}
-                                  helperText={helperText}
-                                  error={error}
-                                  className=""
-                                  sx={{
-                                    ".MuiInputBase-input": {
-                                      borderRadius: "10px",
-                                    },
-                                    "&:before, &:after": {
-                                      borderRadius: "10px",
-                                    },
-                                  }}
-                                  InputProps={{
-                                    style: {
-                                      borderRadius: "10px",
-                                    },
-                                  }}
-                                  id="myfilled-name"
-                                  label="User ID"
-                                  variant="outlined"
-                                  color="grey"
-                                  fullWidth
+                                    required
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        setHelperText("");
+                                        setError(false);
+                                    }}
+                                    value={email}
+                                    helperText={helperText}
+                                    error={error}
+                                    className=""
+                                    sx={{
+                                        ".MuiInputBase-input": {
+                                            borderRadius: "10px",
+                                        },
+                                        "&:before, &:after": {
+                                            borderRadius: "10px",
+                                        },
+                                    }}
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        },
+                                    }}
+                                    id="myfilled-name"
+                                    label="User ID"
+                                    variant="outlined"
+                                    fullWidth
                                 />
-                              </div>
-                              <div className="mt-1 w-[100%]">
+                            </div>
+                            <div className="mt-1 w-[100%]">
                                 <TextField
-                                  required
-                                  onChange={(e) => {
-                                    setPassword(e.target.value);
-                                    setHelperText("");
-                                    setError(false);
-                                  }}
-                                  type="password"
-                                  value={password}
-                                  helperText={helperText}
-                                  error={error}
-                                  sx={{
-                                    "&:before, &:after": {
-                                      borderRadius: "10px",
-                                    },
-                                  }}
-                                  InputProps={{
-                                    style: {
-                                      borderRadius: "10px",
-                                    },
-                                  }}
-                                  id="myfilled-name"
-                                  label="Password"
-                                  variant="outlined"
-                                  color="grey"
-                                  fullWidth
+                                    required
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setHelperText("");
+                                        setError(false);
+                                    }}
+                                    type="password"
+                                    value={password}
+                                    helperText={helperText}
+                                    error={error}
+                                    sx={{
+                                        "&:before, &:after": {
+                                            borderRadius: "10px",
+                                        },
+                                    }}
+                                    InputProps={{
+                                        style: {
+                                            borderRadius: "10px",
+                                        },
+                                    }}
+                                    id="myfilled-name"
+                                    label="Password"
+                                    variant="outlined"
+                                    fullWidth
                                 />
-                              </div>
-                          <button className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold">
-                                <div> Sign In </div>{" "}
-                                <ArrowForwardIosIcon className="scale-75" />
-                          </button>
-                              <div className="flex w-full justify-between">
+                            </div>
+                            <button className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold">
+                                <div> Sign In </div> <ArrowForwardIosIcon className="scale-75" />
+                            </button>
+                            <div className="flex w-full justify-between">
                                 <div
-                                  onClick={() => {
-                                    router.push("/");
-                                  }}
-                                  className="w-full cursor-pointer hover:underline"
+                                    onClick={() => {
+                                        router.push("/");
+                                    }}
+                                    className="w-full cursor-pointer hover:underline"
                                 >
-                                  Are you a student?
+                                    Are you a student?
                                 </div>
-                              </div>
-                            </form>
-                          </div>
-                          </div>
-                        )}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
-                        {section === 1 && (
-                          <div>
-                            <OurTeam />
-                          </div>
-                        )}
+            {section === 1 && (
+                <div>
+                    <OurTeam />
+                </div>
+            )}
 
-                        {section === 2 && (
-                          <div className="my-5 h-[100vh] mx-24">
-                            <FAQPageTwo />
-                          </div>
-                        )}
+            {section === 2 && (
+                <div className="my-5 h-[100vh] mx-24">
+                    <FAQPageTwo />
+                </div>
+            )}
 
-                        <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-                            <CircularProgress color="inherit" />
-                        </Backdrop>
-                      </>
-                    );
-                  }
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        </>
+    );
+}

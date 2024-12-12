@@ -165,7 +165,6 @@ export default function Home() {
                                     id="myfilled-name"
                                     label="Roll No"
                                     variant="outlined"
-                                    color="grey"
                                     fullWidth
                                 />
                             </div>
@@ -194,7 +193,6 @@ export default function Home() {
                                     id="myfilled-name"
                                     label="Password"
                                     variant="outlined"
-                                    color="grey"
                                     fullWidth
                                 />
                             </div>

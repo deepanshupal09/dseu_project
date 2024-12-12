@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-    TextField,
-    Button,
-    MenuItem,
-    Typography,
-    FormControl,
-    Select,
-    InputLabel,
-} from "@mui/material";
+import { TextField, Button, MenuItem, Typography, FormControl, Select, InputLabel } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { ArrowBackIosNew } from "@mui/icons-material";
 
@@ -24,18 +16,7 @@ interface UserDetailsProps {
     onNext: () => void;
 }
 
-export default function UserDetailsPage({
-    emailid,
-    gen,
-    phoneno,
-    altphone,
-    onNext,
-    setemailid,
-    setgender,
-    setphone,
-    setaltphone,
-    onPrevious,
-}: UserDetailsProps) {
+export default function UserDetailsPage({ emailid, gen, phoneno, altphone, onNext, setemailid, setgender, setphone, setaltphone, onPrevious }: UserDetailsProps) {
     const [email, setEmail] = useState(emailid || "");
     const [gender, setGender] = useState(gen || "");
     const [phone, setPhone] = useState(phoneno || "");
@@ -59,10 +40,7 @@ export default function UserDetailsPage({
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="flex flex-col  bg-white  rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100vh] w-[460px] ] my-10"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col  bg-white  rounded-3xl shadow-2xl max-[450px]:backdrop-blur-0 max-[450px]:rounded-none shadow-slate-400 p-6 items-center space-y-10 justify-start h-fit pt-16 pb-10 px-10 max-[450px]:w-[100%] max-[450px]:h-[100vh] w-[460px] ] my-10">
             <Typography variant="h4" gutterBottom>
                 User General Details
             </Typography>
@@ -74,9 +52,7 @@ export default function UserDetailsPage({
                     value={email}
                     onChange={handleEmailChange}
                     error={error}
-                    helperText={
-                        error ? "Please enter a valid email address" : ""
-                    }
+                    helperText={error ? "Please enter a valid email address" : ""}
                     id="email"
                     variant="outlined"
                     color="primary"
@@ -99,26 +75,10 @@ export default function UserDetailsPage({
             <div className="w-[100%]">
                 <FormControl variant="outlined" fullWidth>
                     <InputLabel id="gender-label">Gender</InputLabel>
-                    <Select
-                        labelId="gender-label"
-                        id="gender"
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                        label="Gender"
-                        fullWidth
-                        required
-                        color="grey"
-                        sx={{ borderRadius: "10px" }}
-                    >
-                        <MenuItem color="grey" value="male">
-                            Male
-                        </MenuItem>
-                        <MenuItem color="grey" value="female">
-                            Female
-                        </MenuItem>
-                        <MenuItem color="grey" value="other">
-                            Other
-                        </MenuItem>
+                    <Select labelId="gender-label" id="gender" value={gender} onChange={(e) => setGender(e.target.value)} label="Gender" fullWidth required sx={{ borderRadius: "10px" }}>
+                        <MenuItem value="male">Male</MenuItem>
+                        <MenuItem value="female">Female</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
                     </Select>
                 </FormControl>
             </div>
@@ -155,7 +115,6 @@ export default function UserDetailsPage({
                     inputProps={{
                         pattern: "\\d{10}",
                     }}
-                    color="grey"
                 />
             </div>
             <div className="w-[100%]">
@@ -209,14 +168,10 @@ export default function UserDetailsPage({
                     inputProps={{
                         pattern: "\\d{10}",
                     }}
-                    color="grey"
                 />
             </div>
             <div className="flex  gap-x-2 w-full">
-                <button
-                    type="submit"
-                    className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800"
-                >
+                <button type="submit" className="bg-black flex justify-center items-center transition-all duration-150 gap-x-3 text-white w-full p-4 rounded-2xl font-semibold hover:bg-gray-800 focus:bg-gray-800">
                     <div>Next</div>
                     <ArrowForwardIosIcon className="scale-75 -mr-4" />
                 </button>
